@@ -1,0 +1,32 @@
+{
+  "name": "intelligent_academic_planner",
+  "version": "0.0.1",
+  "description": "ibm conversation agent",
+  "main": "server.js",
+  "dependencies": {
+    "async": "^0.2.10",
+    "body-parser": "^1.15.2",
+    "express": "^3.21.2",
+    "watson-developer-cloud": "^2.0.1",
+    "socket.io": "^0.9.17",
+    "fs": "^0.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "ibm"
+  ],
+  "author": "xiaoyu zhou",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viane/Intelligent-Academic-Planner.git"
+  },
+  "bugs": {
+    "url": "https://github.com/viane/Intelligent-Academic-Planner/issues"
+  },
+  "homepage": "https://github.com/viane/Intelligent-Academic-Planner#readme"
+}
