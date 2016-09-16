@@ -512,3 +512,137 @@ button.ready:after {
     text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #FF1177, 0 0 35px #FF1177, 0 0 40px #FF1177, 0 0 50px #FF1177, 0 0 75px #FF1177;
   }
 }
+
+/*Header menu bar style*/
+.menu-col1, .menu-col2 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background: #f7f7f7;
+    z-index:10;  
+    overflow:hidden;
+    box-shadow: 2px 0 18px rgba(0, 0, 0, 0.26);
+}
+.menu-col1 li a{
+  display: block;
+  text-indent: -500em;
+  height: 5em;
+  width: 5em;
+  line-height: 5em;
+  text-align:center;
+  color: #72739f;
+  position: relative;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background 0.1s ease-in-out;
+}
+.menu-col1 li a:before {
+  font-family: FontAwesome;
+  speak: none;
+  text-indent: 0em;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 1.4em;
+}
+.menu-col1 li a.search:before {
+  content: "\f002";
+}
+.menu-col1 li a.archive:before {
+  content: "\f187";
+}
+.menu-col1 li a.pencil:before {
+  content: "\f040";
+}
+.menu-col1 li a.contact:before {
+  content: "\f003";
+}
+.menu-col1 li a.menu-user-btn:before {
+  content: "\f007";
+}
+.menu-col1 li a.home:before {
+  content: "\f039";
+}
+.menu-col2 li a:hover,
+.menu-col1 li a:hover {
+  background: #267fdd;
+  color: #fff;
+}
+.menu-col2{
+    overflow:hidden;
+    left:5em;
+    z-index:5;
+    width:0;
+    height:0;
+    transition: all 0.1s ease-in-out;
+}
+.menu-col2 li a{
+  display: block;
+  height: 4em;
+  line-height: 4em;
+  text-align:center;
+  color: #72739f;
+  text-decoration:none;  
+  position: relative;
+  font-family:verdana;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background 0.1s ease-in-out;
+}
+
+
+.para{
+    color:#033f72;
+    padding-left:100px;
+    font-size:3em;
+    margin-bottom:20px;
+}
+
+.open{
+    width:10em;
+    height:100%;
+}
+
+@media all and (max-width: 500px) {
+    .container{
+        margin-top:100px;
+    }
+    .menu-col1{
+        height:5em;
+        width:100%;
+    }
+    .menu-col1 li{
+        display:inline-block;
+        float:left;
+    }
+    .menu-col2 li a{
+        width:100%;
+    }
+    .menu-col2{
+        width:100%;
+        left:0;
+        height:0;
+    }
+    .open{
+        width:100%;
+        height:auto;
+    }
+    .para{
+    padding-left:5px;
+}  
+}
+@media screen and (max-height: 34em){
+  .menu-col1 li,
+  .menu-col2 {
+    font-size:70%;
+  }
+}
+@media screen and (max-height: 34em) and (max-width: 500px){
+  .menu-col1{
+        height:3.5em;
+    }
+}

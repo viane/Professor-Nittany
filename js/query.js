@@ -1,6 +1,8 @@
 /*global $*/
+//this file contains event handlers for submiting question and receiving answer from server
 var myvar;
 
+//update chat window with newly input and answered information
 var chatWindow=$('.chat-thread');
 $('#querySubmitBtn').click(function() {
     var self=$(this);
@@ -50,6 +52,7 @@ $('#userQueryInput').keypress(function(e){
     }
 })
 
+//voice submition to server
 $('#voiceSubmitBtn').click(function() {
     //toggleRecording(this);
     if ($(this).hasClass("recording")) {
@@ -136,6 +139,7 @@ var hideAnimateTranscripting=function() {
     )
 }
 
+//auto scroll to bottom where the newest asked and answered info appears.
 var scrollChatWindowToBottom=function() {
     $(".chat-thread").animate( {
         scrollTop: $(".chat-thread").height()

@@ -1,0 +1,43 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="conversation agent">
+  <meta name="keywords" content="IBM,conversation,retrive and rank">
+  <meta name="author" content="Xiaoyu Zhou">
+  <title>Conversation agent</title>
+
+  <script type="text/javascript" src="../js/recordInit.js"></script>
+  <script type="text/javascript" src="../js/recorder.js"></script>
+</head>
+
+<body>
+	<!-- include menu bar -->
+	<%- include header.ejs %>
+	<!-- end of menu bar -->
+  <ul class="chat-thread">
+
+  </ul>
+  <div class="chat-window">
+    <button id="voiceSubmitBtn" style="width: 100px;" value="record"><i class="fa fa-microphone" aria-hidden="true"></i></button>
+
+      <span class="transcripting_loading_span">Recognizing</span>
+      <div class="dot dot1 pulse"> </div>
+      <div class="dot dot2 pulse"> </div>
+      <div class="dot dot3 pulse"> </div>
+
+    <textarea id="userQueryInput" class="chat-window-message" name="chat-window-message" type="text" autocomplete="on"></textarea>
+    <button id="querySubmitBtn" type="submit"><i class="fa fa-reply" aria-hidden="true"></i></button>
+  </div>
+  <div class="notification">
+<span></span>
+    </div>
+
+    <script src="../js/query.js"></script>
+    
+</body>
+
+</html>
+
