@@ -1,4 +1,4 @@
-@@ -3,5 +3,5 @@
+# Intelligent Academic Planer
 >A virtual agent that answer questions based on training materials of academic information. Uses Node.JS and IBM Watson's API.
 
 ### Mongo Database Provider
