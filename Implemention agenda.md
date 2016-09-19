@@ -1,23 +1,24 @@
 ## Implemention agenda
->User login system:
->>Instagram
->>
->>Tumblr
->>
->>Reddit
->>
->>Weibo
->>
->>Amazon
->>
->>Evernote
->>
->>Github
->>
->>TQQ
->>
->>Wechat
->>
+### Clean routes from server.js to router.js
+
+### User login system:
+>Instagram
+>
+>Tumblr
+>
+>Reddit
+>
+>Weibo
+>
+>Amazon
+>
+>Evernote
+>
+>Github
+>
+>TQQ
+>
+>Wechat
 
 ### Notes:
 >Check race ratio of students.
