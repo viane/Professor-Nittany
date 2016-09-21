@@ -2,8 +2,6 @@
 ### Clean routes from server.js to router.js
 
 ### User login system:
->Reddit
->
 >Weibo
 >
 >Amazon
