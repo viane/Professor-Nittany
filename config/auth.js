@@ -18,9 +18,27 @@ module.exports = {
 	},
 
 	'googleAuth' : {
-		'clientID' 		: 'your-secret-clientID-here',
-		'clientSecret' 	: 'your-client-secret-here',
+		'clientID' 		: '291186601308-3im5rnno66cnohquivm4sh97taip4rlj.apps.googleusercontent.com',
+		'clientSecret' 	: 'k_mV3vd3qLJGaSe4qVzB0rF1',
 		'callbackURL' 	: 'https://agent-allen-allenz.c9users.io/auth/google/callback'
+	},
+
+	'linkedinAuth' : {
+		'clientID' 		: '77pspualk4ip3x',
+		'clientSecret' 	: 'ql1xSpb8wtT2Mh6G',
+		'callbackURL' 	: 'https://agent-allen-allenz.c9users.io/auth/linkedin/callback'
+	},
+	
+	'instagramAuth' : {
+		'clientID' 		: 'c36ed58b9ea848deb94520f896d5a510',
+		'clientSecret' 	: 'bb4cf3b16e3a4188aa3a875324e66f74',
+		'callbackURL' 	: 'https://agent-allen-allenz.c9users.io/auth/instagram/callback'
+	},
+	
+	'redditAuth' : {
+		'clientID' 		: 'yo-BqUiqPXuSXA',
+		'clientSecret' 	: 'vyY0HbuiunObb4eGT-lEkx4CwyM',
+		'callbackURL' 	: 'https://agent-allen-allenz.c9users.io/auth/reddit/callback'
 	}
 
 };
