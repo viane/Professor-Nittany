@@ -1,10 +1,6 @@
 {
   "name": "intelligent_academic_planner",
-<<<<<<< HEAD
   "version": "0.0.3",
-=======
-  "version": "0.0.2",
->>>>>>> master
   "description": "ibm conversation agent",
   "main": "server.js",
   "dependencies": {
@@ -18,7 +14,6 @@
     "express": "^3.21.2",
     "formidable": "^1.0.17",
     "fs": "^0.0.2",
-<<<<<<< HEAD
     "mongoose": "~3.8.1",
     "passport": "^0.1.18",
     "passport-facebook": "~1.0.2",
@@ -33,16 +28,6 @@
     "string": "^3.3.1",
     "util": "^0.10.3",
     "watson-developer-cloud": "^2.0.1"
-=======
-    "ejs": "~0.8.5",
-    "mongoose": "~3.8.1",
-    "passport": "^0.1.18",
-    "passport-local": "~0.1.6",
-    "passport-facebook": "~1.0.2",
-    "passport-twitter": "~1.0.2",
-    "connect-flash": "~0.1.1",
-    "bcrypt-nodejs": "latest"
->>>>>>> master
   },
   "devDependencies": {},
   "scripts": {
