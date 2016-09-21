@@ -2,10 +2,6 @@
 ### Clean routes from server.js to router.js
 
 ### User login system:
->Instagram
->
->Tumblr
->
 >Reddit
 >
 >Weibo
