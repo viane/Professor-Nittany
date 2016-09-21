@@ -48,7 +48,7 @@ app.use(bodyParser.urlencoded({
 	app.set('view engine', 'ejs'); // set up ejs for templating
 
 	// required for passport
-	app.use(express.session({ secret: 'intellegent_student_administrtion' })); // session secret
+	app.use(express.session({ secret: 'intellegent_student_administrtion', maxAge: 360*5 })); // session secret
 	app.use(passport.initialize());
 	app.use(passport.session()); // persistent login sessions
 	app.use(flash()); // use connect-flash for flash messages stored in session

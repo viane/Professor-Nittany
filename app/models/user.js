@@ -9,13 +9,18 @@ var userSchema = mongoose.Schema({
     local: {
         email: String,
         password: String,
+        displayName: String
     },
     facebook: {
         id: String,
         token: String,
         email: String,
-        name: String,
-        avatar: String
+        displayName: String,
+        avatar: String,
+        familyName: String,
+        givenName: String,
+        gender: String,
+        ageMin: Number
     },
     twitter: {
         id: String,
@@ -25,7 +30,32 @@ var userSchema = mongoose.Schema({
         avatar: String
     },
     google: {
-
+        id:String,
+        displayName: String,
+        familyName: String,
+        givenName: String,
+        language:String,
+        email:String,
+        gender:String,
+        avatar:String
+    },
+    linkedin:{
+        id: String,
+        displayName: String,
+        familyName: String,
+        givenName: String,
+        email:String,
+        avatar:String
+    },
+    instagram:{
+        id: String,
+        displayName: String,
+        avatar:String
+    },
+    reddit:{
+        id: String,
+        displayName: String,
+        avatar:String
     }
 });
 

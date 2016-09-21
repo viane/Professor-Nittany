@@ -1,11 +1,16 @@
 // app/routes.js
+
+var crypto = require('crypto');
+
 module.exports = function(app, passport) {
 
 	// =====================================
 	// HOME PAGE (with login links) ========
 	// =====================================
 	app.get('/', function(req, res) {
-		res.render('index.ejs'); // load the index.ejs file
+		res.render('index.ejs', {
+			user: req.user
+		}); // load the index.ejs file
 	});
 
 	// =====================================
@@ -39,7 +44,7 @@ module.exports = function(app, passport) {
 	});
 
 	// process the signup form
-	app.post('/signup', 
+	app.post('/signup',
 
 		//email and password not empty, start local authentication
 		passport.authenticate('local-signup', {
@@ -88,6 +93,73 @@ module.exports = function(app, passport) {
 			successRedirect: '/profile',
 			failureRedirect: '/'
 		}));
+
+	// =====================================
+	// GOOGLE ROUTES =====================
+	// =====================================
+	// route for facebook authentication and login
+	app.get('/auth/google', passport.authenticate('google', {
+		scope: ['https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/plus.me', 'profile']
+	}));
+
+
+	// handle the callback after facebook has authenticated the user
+	app.get('/auth/google/callback',
+		passport.authenticate('google', {
+			successRedirect: '/profile',
+			failureRedirect: '/'
+		}));
+
+	// =====================================
+	// LINKEDIN ROUTES =====================
+	// =====================================
+	// route for facebook authentication and login
+	app.get('/auth/linkedin', passport.authenticate('linkedin', {
+		scope: ['r_basicprofile', 'r_emailaddress']
+	}));
+
+	app.get('/auth/linkedin/callback',
+		passport.authenticate('linkedin', {
+			successRedirect: '/profile',
+			failureRedirect: '/'
+		}));
+
+	// =====================================
+	// INSTAGRAM ROUTES =====================
+	// =====================================
+	// route for facebook authentication and login
+	app.get('/auth/instagram', passport.authenticate('instagram'));
+
+	app.get('/auth/instagram/callback',
+		passport.authenticate('instagram', {
+			successRedirect: '/profile',
+			failureRedirect: '/'
+		}));
+
+	// =====================================
+	// REDDIT ROUTES =====================
+	// =====================================
+	// route for facebook authentication and login
+	app.get('/auth/reddit', function(req, res, next) {
+		req.session.state = crypto.randomBytes(32).toString('hex');
+		passport.authenticate('reddit', {
+			state: req.session.state,
+			duration: 'permanent',
+		})(req, res, next);
+	});
+
+	app.get('/auth/reddit/callback', function(req, res, next) {
+		// Check for origin via state token
+		if (req.query.state == req.session.state) {
+			passport.authenticate('reddit', {
+				successRedirect: '/profile',
+				failureRedirect: '/'
+			})(req, res, next);
+		}
+		else {
+			next(new Error(403));
+		}
+	});
 
 	// =====================================
 	// LOGOUT ==============================
