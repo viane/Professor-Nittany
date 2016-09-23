@@ -56,6 +56,12 @@ var userSchema = mongoose.Schema({
         id: String,
         displayName: String,
         avatar:String
+    },
+    amazon:{
+        id: String,
+        displayName: String,
+        avatar:String,
+        email:String
     }
 });
 

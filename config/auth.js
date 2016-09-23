@@ -38,7 +38,14 @@ module.exports = {
 	'redditAuth' : {
 		'clientID' 		: 'yo-BqUiqPXuSXA',
 		'clientSecret' 	: 'vyY0HbuiunObb4eGT-lEkx4CwyM',
-		'callbackURL' 	: 'https://agent-allen-allenz.c9users.io/auth/reddit/callback'
+		'callbackURL' 	: 'https://agent-allen-allenz.c9users.io/auth/reddit/callback',
+		'avatar'		: '/img/reddit-icon.png'
+	},
+	
+	'amazonAuth' : {
+		'clientID' 		: 'amzn1.application-oa2-client.d1e9e34ce1d24f3a9b68e05f56e9ea73',
+		'clientSecret' 	: '75f16bbe34c4f5529a81a0e8df431e8f163ed28ee9b5b2e6083961ad1446cf03',
+		'callbackURL' 	: 'https://agent-allen-allenz.c9users.io/auth/amazon/callback',
+		'avatar'		: '/img/amazon-icon.png'
 	}
-
 };

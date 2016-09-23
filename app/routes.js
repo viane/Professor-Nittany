@@ -18,7 +18,6 @@ module.exports = function(app, passport) {
 	// =====================================
 	// show the login form
 	app.get('/login', function(req, res) {
-
 		// render the page and pass in any flash data if it exists
 		res.render('login.ejs', {
 			message: req.flash('loginMessage')
@@ -162,6 +161,20 @@ module.exports = function(app, passport) {
 	});
 
 	// =====================================
+	// AMAZON ROUTES =====================
+	// =====================================
+	// route for facebook authentication and login
+	app.get('/auth/amazon', passport.authenticate('amazon', {
+		scope: ['profile', 'postal_code']
+	}));
+
+	app.get('/auth/amazon/callback',
+		passport.authenticate('amazon', {
+			successRedirect: '/profile',
+			failureRedirect: '/'
+		}));
+
+	// =====================================
 	// LOGOUT ==============================
 	// =====================================
 	app.get('/logout', function(req, res) {
@@ -178,5 +191,5 @@ function isLoggedIn(req, res, next) {
 		return next();
 
 	// if they aren't redirect them to the home page
-	res.redirect('/');
+	res.redirect('/login');
 }
