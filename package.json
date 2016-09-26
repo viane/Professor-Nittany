@@ -2,6 +2,9 @@
   "name": "intelligent_academic_planner",
   "version": "0.0.3",
   "description": "ibm conversation agent",
+  "engines": {
+    "node": "5.9.1"
+  },
   "main": "server.js",
   "dependencies": {
     "async": "^0.2.10",
