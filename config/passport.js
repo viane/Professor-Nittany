@@ -510,10 +510,13 @@ module.exports = function(passport) {
     // Evernote ================================================================
     // =========================================================================
     passport.use(new EvernoteStrategy({
-        clientID: configAuth.evernoteAuth.clientID,
-        clientSecret: configAuth.evernoteAuth.clientSecret,
-        callbackURL: configAuth.evernoteAuth.callbackURL,
-    }, function(accessToken, refreshToken, profile, done) {
+        requestTokenURL: 'https://sandbox.evernote.com/oauth',
+        accessTokenURL: 'https://sandbox.evernote.com/oauth',
+        userAuthorizationURL: 'https://sandbox.evernote.com/OAuth.action',
+        consumerKey: configAuth.evernoteAuth.clientID,
+        consumerSecret: configAuth.evernoteAuth.clientSecret,
+        callbackURL: configAuth.evernoteAuth.callbackURL
+    }, function(token, tokenSecret, profile, cb) {
         console.log(JSON.stringify(profile));
         // asynchronous
         process.nextTick(function() {
