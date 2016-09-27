@@ -36,8 +36,8 @@ module.exports = {
 	},
 	
 	'redditAuth' : {
-		'clientID' 		: 'yo-BqUiqPXuSXA',
-		'clientSecret' 	: 'vyY0HbuiunObb4eGT-lEkx4CwyM',
+		'clientID' 		: 'R0WwXna7TcDloA',
+		'clientSecret' 	: 'VUxa49opZpymiRrJnMcD5cHwL90',
 		'callbackURL' 	: 'https://intelligent-student-advisor.herokuapp.com/auth/reddit/callback',
 		'avatar'		: '/img/reddit-icon.png'
 	},
