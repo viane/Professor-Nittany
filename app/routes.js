@@ -175,6 +175,34 @@ module.exports = function(app, passport) {
 		}));
 
 	// =====================================
+	// WEIBO ROUTES =====================
+	// =====================================
+	// route for facebook authentication and login
+	app.get('/auth/weibo', passport.authenticate('weibo', {
+		scope: ['profile', 'email']
+	}));
+
+	app.get('/auth/weibo/callback',
+		passport.authenticate('weibo', {
+			successRedirect: '/profile',
+			failureRedirect: '/'
+		}));
+	
+	// =====================================
+	// EVERNOTE ROUTES =====================
+	// =====================================
+	// route for facebook authentication and login
+	app.get('/auth/evernote', passport.authenticate('evernote', {
+		scope: ['profile', 'email']
+	}));
+
+	app.get('/auth/evernote/callback',
+		passport.authenticate('evernote', {
+			successRedirect: '/profile',
+			failureRedirect: '/'
+		}));
+
+	// =====================================
 	// LOGOUT ==============================
 	// =====================================
 	app.get('/logout', function(req, res) {
