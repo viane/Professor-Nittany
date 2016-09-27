@@ -4,8 +4,6 @@
 ### User login system:
 >Weibo
 >
->Amazon
->
 >Evernote
 >
 >Github
