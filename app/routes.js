@@ -187,7 +187,7 @@ module.exports = function(app, passport) {
 			successRedirect: '/profile',
 			failureRedirect: '/'
 		}));
-	
+		
 	// =====================================
 	// EVERNOTE ROUTES =====================
 	// =====================================
