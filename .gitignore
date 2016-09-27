@@ -1,4 +1,5 @@
-
 .DS_Store
 
 app/models/.Rhistory
+
+node_modules

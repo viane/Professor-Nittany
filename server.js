@@ -3,7 +3,6 @@ var http = require('http');
 const https = require('https');
 var path = require('path');
 
-var async = require('async');
 var express = require('express');
 var Str = require('string');
 var fs = require('fs');
@@ -41,17 +40,17 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-	// set up our express application
-	app.use(express.logger('dev')); // log every request to the console
-	app.use(express.cookieParser()); // read cookies (needed for auth)
+  // set up our express application
+  app.use(express.logger('dev')); // log every request to the console
+  app.use(express.cookieParser()); // read cookies (needed for auth)
 
-	app.set('view engine', 'ejs'); // set up ejs for templating
+  app.set('view engine', 'ejs'); // set up ejs for templating
 
-	// required for passport
-	app.use(express.session({ secret: 'intellegent_student_administrtion', maxAge: 360*5 })); // session secret
-	app.use(passport.initialize());
-	app.use(passport.session()); // persistent login sessions
-	app.use(flash()); // use connect-flash for flash messages stored in session
+  // required for passport
+  app.use(express.session({ secret: 'intellegent_student_administrtion', maxAge: 360*5 })); // session secret
+  app.use(passport.initialize());
+  app.use(passport.session()); // persistent login sessions
+  app.use(flash()); // use connect-flash for flash messages stored in session
 
 });
 
@@ -242,6 +241,9 @@ app.post('/checkRecord', function(req, res) {
 
 });
 
+///////////////////////////////////////////////////
+//  Receiving the question                       //
+///////////////////////////////////////////////////
 
 app.get("/query", function(req, res) {
 
