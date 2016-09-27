@@ -62,6 +62,18 @@ var userSchema = mongoose.Schema({
         displayName: String,
         avatar:String,
         email:String
+    },
+    weibo:{
+        id: String,
+        displayName: String,
+        avatar:String,
+        email:String
+    },
+    evernote:{
+        id: String,
+        displayName: String,
+        avatar:String,
+        email:String
     }
 });
 
