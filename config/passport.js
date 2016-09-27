@@ -516,7 +516,7 @@ module.exports = function(passport) {
         consumerKey: configAuth.evernoteAuth.clientID,
         consumerSecret: configAuth.evernoteAuth.clientSecret,
         callbackURL: configAuth.evernoteAuth.callbackURL
-    }, function(token, tokenSecret, profile, cb) {
+    }, function(token, tokenSecret, profile, done) {
         console.log(JSON.stringify(profile));
         // asynchronous
         process.nextTick(function() {
