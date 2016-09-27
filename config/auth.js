@@ -47,5 +47,18 @@ module.exports = {
 		'clientSecret' 	: '75f16bbe34c4f5529a81a0e8df431e8f163ed28ee9b5b2e6083961ad1446cf03',
 		'callbackURL' 	: 'https://intelligent-student-advisor.herokuapp.com/auth/amazon/callback',
 		'avatar'		: '/img/amazon-icon.png'
+	},
+	
+	'weiboAuth' : {
+		'clientID' 		: '1753932813',
+		'clientSecret' 	: 'd3e620ced807abe1ca43c7cea851b196',
+		'callbackURL' 	: 'https://intelligent-student-advisor.herokuapp.com/auth/weibo/callback',
+		'avatar'		: '/img/weibo-icon.png'
+	},
+	'evernoteAuth' : {
+		'clientID' 		: 'viane2222',
+		'clientSecret' 	: 'fada9ec6fa020548',
+		'callbackURL' 	: 'https://intelligent-student-advisor.herokuapp.com/auth/evernote/callback',
+		'avatar'		: '/img/evernote-icon.png'
 	}
 };
