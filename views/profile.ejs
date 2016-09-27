@@ -135,35 +135,7 @@
 		</div>
 		<% } %>
 		
-		<% if (user.weibo.id) { %>
-		<!-- TWITTER INFORMATION -->
-		<div class="col-sm-6">
-			<div class="well">
-				<h3 class="text-primary"><span class="fa fa-amazon"></span> Weibo</h3>
-					<p>
-						<strong>Avatar</strong>: <img src="<%= user.weibo.avatar %>"></img><br>
-						<strong>id</strong>: <%= user.weibo.id %><br>
-						<strong>email</strong>: <%= user.weibo.email %><br>
-						<strong>name</strong>: <%= user.weibo.displayName %><br>
-					</p>
-			</div>
-		</div>
-		<% } %>
 		
-		<% if (user.evernote.id) { %>
-		<!-- TWITTER INFORMATION -->
-		<div class="col-sm-6">
-			<div class="well">
-				<h3 class="text-primary"><span class="fa fa-evernote"></span> Evernote</h3>
-					<p>
-						<strong>Avatar</strong>: <img src="<%= user.evernote.avatar %>"></img><br>
-						<strong>id</strong>: <%= user.evernote.id %><br>
-						<strong>email</strong>: <%= user.evernote.email %><br>
-						<strong>name</strong>: <%= user.evernote.displayName %><br>
-					</p>
-			</div>
-		</div>
-		<% } %>
 	</div>
 
 </div>
