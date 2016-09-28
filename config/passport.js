@@ -488,7 +488,7 @@ module.exports = function(passport) {
                 else {
                     // if there is no user found with that facebook id, create them
                     var newUser = new User();
-                    set all of the facebook information in our user model
+                    //set all of the facebook information in our user model
                     newUser.weibo.id = profile.id; // set the users facebook id                   
                     newUser.weibo.displayName = profile.displayName; // look at the passport user profile to see how names are returned
                     newUser.weibo.avatar = profile._raw.avatar_hd;
