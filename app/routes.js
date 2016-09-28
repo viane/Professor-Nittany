@@ -178,7 +178,7 @@ module.exports = function(app, passport) {
 	// WEIBO ROUTES =====================
 	// =====================================
 	// route for facebook authentication and login
-	app.get('/auth/weibo', passport.authenticate('weibo-token', {
+	app.get('/auth/weibo', passport.authenticate('weibo', {
 		scope: ['profile', 'email']
 	}));
 
@@ -192,7 +192,9 @@ module.exports = function(app, passport) {
 	// EVERNOTE ROUTES =====================
 	// =====================================
 	// route for facebook authentication and login
-	app.get('/auth/evernote', passport.authenticate('evernote'));
+	app.get('/auth/evernote', passport.authenticate('evernote', {
+		scope: ['profile', 'email']
+	}));
 
 	app.get('/auth/evernote/callback',
 		passport.authenticate('evernote', {

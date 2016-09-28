@@ -10,7 +10,6 @@ var InstagramStrategy = require("passport-instagram").Strategy;
 var RedditStrategy = require("passport-reddit").Strategy;
 var AmazonStrategy = require("passport-amazon").Strategy;
 var WeiboStrategy = require("passport-weibo").Strategy;
-var WeiboTokenStrategy = require('passport-weibo-token');
 var EvernoteStrategy = require("passport-evernote").Strategy;
 
 // load up the user model
@@ -465,7 +464,7 @@ module.exports = function(passport) {
     // =========================================================================
     // Weibo ================================================================
     // =========================================================================
-    passport.use(new WeiboTokenStrategy({
+    passport.use(new WeiboStrategy({
         clientID: configAuth.weiboAuth.clientID,
         clientSecret: configAuth.weiboAuth.clientSecret,
         callbackURL: configAuth.weiboAuth.callbackURL,
@@ -541,13 +540,13 @@ module.exports = function(passport) {
                     // newUser.amazon.displayName = profile.displayName; // look at the passport user profile to see how names are returned
                     // newUser.amazon.avatar = configAuth.amazonAuth.avatar;
                     // newUser.amazon.email = profile.emails[0].value;
-                    //save our user to the database
-                    newUser.save(function(err) {
-                        if (err)
-                            throw err;
-                        // if successful, return the new user
-                        return done(null, newUser);
-                    });
+                    // //save our user to the database
+                    // newUser.save(function(err) {
+                    //     if (err)
+                    //         throw err;
+                    //     // if successful, return the new user
+                    //     return done(null, newUser);
+                    // });
                 }
 
             });
