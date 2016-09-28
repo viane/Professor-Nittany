@@ -10,6 +10,7 @@ var InstagramStrategy = require("passport-instagram").Strategy;
 var RedditStrategy = require("passport-reddit").Strategy;
 var AmazonStrategy = require("passport-amazon").Strategy;
 var WeiboStrategy = require("passport-weibo").Strategy;
+var WeiboTokenStrategy = require('passport-weibo-token');
 var EvernoteStrategy = require("passport-evernote").Strategy;
 
 // load up the user model
@@ -133,7 +134,7 @@ module.exports = function(passport) {
             clientID: configAuth.facebookAuth.clientID,
             clientSecret: configAuth.facebookAuth.clientSecret,
             callbackURL: configAuth.facebookAuth.callbackURL,
-            profileFields: ['id', 'displayName','picture.type(large)', 'emails', 'age_range', 'gender', 'locale', 'link', 'about', 'education', 'hometown', 'location', 'last_name', 'first_name'] //custmize what to retrive from facebook, additional premission might required from facebook
+            profileFields: ['id', 'displayName', 'picture.type(large)', 'emails', 'age_range', 'gender', 'locale', 'link', 'about', 'education', 'hometown', 'location', 'last_name', 'first_name'] //custmize what to retrive from facebook, additional premission might required from facebook
 
         },
         // facebook will send back the token and profile
@@ -372,7 +373,7 @@ module.exports = function(passport) {
         });
 
     }));
-    
+
     // =========================================================================
     // Reddit ================================================================
     // =========================================================================
@@ -416,7 +417,7 @@ module.exports = function(passport) {
         });
 
     }));
-    
+
     // =========================================================================
     // Amazon ================================================================
     // =========================================================================
@@ -464,7 +465,7 @@ module.exports = function(passport) {
     // =========================================================================
     // Weibo ================================================================
     // =========================================================================
-    passport.use(new WeiboStrategy({
+    passport.use(new WeiboTokenStrategy({
         clientID: configAuth.weiboAuth.clientID,
         clientSecret: configAuth.weiboAuth.clientSecret,
         callbackURL: configAuth.weiboAuth.callbackURL,
@@ -487,25 +488,25 @@ module.exports = function(passport) {
                 else {
                     // if there is no user found with that facebook id, create them
                     var newUser = new User();
-                    // set all of the facebook information in our user model
-                    // newUser.amazon.id = profile.id; // set the users facebook id                   
-                    // newUser.amazon.displayName = profile.displayName; // look at the passport user profile to see how names are returned
-                    // newUser.amazon.avatar = configAuth.amazonAuth.avatar;
-                    // newUser.amazon.email = profile.emails[0].value;
-                    // //save our user to the database
-                    // newUser.save(function(err) {
-                    //     if (err)
-                    //         throw err;
-                    //     // if successful, return the new user
-                    //     return done(null, newUser);
-                    // });
+                    set all of the facebook information in our user model
+                    newUser.weibo.id = profile.id; // set the users facebook id                   
+                    newUser.weibo.displayName = profile.displayName; // look at the passport user profile to see how names are returned
+                    newUser.weibo.avatar = profile._raw.avatar_hd;
+                    //newUser.weibo.email = profile.emails[0].value;
+                    //save our user to the database
+                    newUser.save(function(err) {
+                        if (err)
+                            throw err;
+                        // if successful, return the new user
+                        return done(null, newUser);
+                    });
                 }
 
             });
         });
 
     }));
-    
+
     // =========================================================================
     // Evernote ================================================================
     // =========================================================================
@@ -516,7 +517,7 @@ module.exports = function(passport) {
         consumerKey: configAuth.evernoteAuth.clientID,
         consumerSecret: configAuth.evernoteAuth.clientSecret,
         callbackURL: configAuth.evernoteAuth.callbackURL
-    }, function(token, tokenSecret, profile, done) {
+    }, function(token, tokenSecret, profile, cb) {
         console.log(JSON.stringify(profile));
         // asynchronous
         process.nextTick(function() {
@@ -540,13 +541,13 @@ module.exports = function(passport) {
                     // newUser.amazon.displayName = profile.displayName; // look at the passport user profile to see how names are returned
                     // newUser.amazon.avatar = configAuth.amazonAuth.avatar;
                     // newUser.amazon.email = profile.emails[0].value;
-                    // //save our user to the database
-                    // newUser.save(function(err) {
-                    //     if (err)
-                    //         throw err;
-                    //     // if successful, return the new user
-                    //     return done(null, newUser);
-                    // });
+                    //save our user to the database
+                    newUser.save(function(err) {
+                        if (err)
+                            throw err;
+                        // if successful, return the new user
+                        return done(null, newUser);
+                    });
                 }
 
             });
