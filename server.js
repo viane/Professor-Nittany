@@ -255,37 +255,15 @@ app.get("/query", function(req, res) {
 
   //user current input
   var currentInput = req.query.input;
+  
+  //query for retrieve and rank
+  var rrquery;
 
-  conversation.message({
-    input: {
-      "text": currentInput
-    },
-    context: {
-      "conversation_id": "1",
-      "system": {
-        "dialog_stack": dialog_stack,
-        "dialog_turn_counter": dialog_turn_counter,
-        "dialog_request_counter": dialog_request_counter
-      }
-    },
-    workspace_id: 'fdbbfec3-49dd-4952-aa14-4dd7fe7cdbc0'
-  }, function(err, response) {
-    if (err) {
-      console.log('error:', err);
-    }
-    else {
-    //handling answer part
-      //prepare retrive and rank query var
-      var rrquery;
-      
-      //this text is the match condition answer from bluemix conversation dialog
-      var conversationResponseText = response.output.text[0]; 
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      //     case 1, user asked a complete question, we can directly pass question to retrive and rank              //
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      if(checkIfStrContains(conversationResponseText, "question:complete") && checkIfStrContains(conversationResponseText, "conversation:end") && checkIfStrContains(conversationResponseText, "goto:rr")){
-        //the string user inputed came back from response as well.
-        rrquestion = response.input.text;
+  //****************************************************
+  //    Tempary use, delete after getting weibo oauth **
+  //****************************************************
+  
+          rrquestion = currentInput;
         //prepare retrive and rank query
          rrquery= qs.stringify({
             q: rrquestion,
@@ -298,75 +276,125 @@ app.get("/query", function(req, res) {
               console.log(err);
             }
             else {
-              //console.log(JSON.stringify(searchResponse.response.docs, null, 2));
               res.send({
                 "status": 'retrive_and_rank',
                 "result": searchResponse
               });
             }
           });
-      }
 
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      //     case 2, user asked a complete question, we can directly pass question to retrive and rank              //
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+  // conversation.message({
+  //   input: {
+  //     "text": currentInput
+  //   },
+  //   context: {
+  //     "conversation_id": "1",
+  //     "system": {
+  //       "dialog_stack": dialog_stack,
+  //       "dialog_turn_counter": dialog_turn_counter,
+  //       "dialog_request_counter": dialog_request_counter
+  //     }
+  //   },
+  //   workspace_id: 'fdbbfec3-49dd-4952-aa14-4dd7fe7cdbc0'
+  // }, function(err, response) {
+  //   if (err) {
+  //     console.log('error:', err);
+  //   }
+  //   else {
+  //   //handling answer part
+  //     //prepare retrive and rank query var
+
+      
+  //     //this text is the match condition answer from bluemix conversation dialog
+  //     var conversationResponseText = response.output.text[0]; 
+  //     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //     //     case 1, user asked a complete question, we can directly pass question to retrive and rank              //
+  //     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //     if(checkIfStrContains(conversationResponseText, "question:complete") && checkIfStrContains(conversationResponseText, "conversation:end") && checkIfStrContains(conversationResponseText, "goto:rr")){
+  //       //the string user inputed came back from response as well.
+  //       rrquestion = response.input.text;
+  //       //prepare retrive and rank query
+  //       rrquery= qs.stringify({
+  //           q: rrquestion,
+  //           ranker_id: ranker_id,
+  //           fl: 'id,answer_id,score,confidence,title,body'
+  //         });
+  //       //ask retrive and rank
+  //         solrClient.get('fcselect', rrquery, function(err, searchResponse) {
+  //           if (err) {
+  //             console.log(err);
+  //           }
+  //           else {
+  //             //console.log(JSON.stringify(searchResponse.response.docs, null, 2));
+  //             res.send({
+  //               "status": 'retrive_and_rank',
+  //               "result": searchResponse
+  //             });
+  //           }
+  //         });
+  //     }
+
+  //     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //     //     case 2, user asked a complete question, we can directly pass question to retrive and rank              //
+  //     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       
       
       
-      // if (checkIfStrContains(conversationResponseText, "question:complete")) { //user asked a complete question
-      //   if (checkIfStrContains(conversationResponseText, "goto:rr")) { //flag for retrive and rank
-      //     //call retrive and rank to get data from computer science ranker with question: response.input.text
+  //     // if (checkIfStrContains(conversationResponseText, "question:complete")) { //user asked a complete question
+  //     //   if (checkIfStrContains(conversationResponseText, "goto:rr")) { //flag for retrive and rank
+  //     //     //call retrive and rank to get data from computer science ranker with question: response.input.text
           
-      //     // get request from r&r
-      //     solrClient.get('fcselect', rrquery, function(err, searchResponse) {
-      //       if (err) {
-      //         console.log(err);
-      //       }
-      //       else {
-      //         //console.log(JSON.stringify(searchResponse.response.docs, null, 2));
-      //         res.send({
-      //           "status": 'retrive_and_rank',
-      //           "result": searchResponse
-      //         });
-      //       }
-      //     });
-      //   }
-      // }
-      // if (checkIfStrContains(conversationResponseText, "conversation:end") && checkIfStrContains(conversationResponseText, "type:unknown")) { //user might asked a question either complex or out of domain
+  //     //     // get request from r&r
+  //     //     solrClient.get('fcselect', rrquery, function(err, searchResponse) {
+  //     //       if (err) {
+  //     //         console.log(err);
+  //     //       }
+  //     //       else {
+  //     //         //console.log(JSON.stringify(searchResponse.response.docs, null, 2));
+  //     //         res.send({
+  //     //           "status": 'retrive_and_rank',
+  //     //           "result": searchResponse
+  //     //         });
+  //     //       }
+  //     //     });
+  //     //   }
+  //     // }
+  //     // if (checkIfStrContains(conversationResponseText, "conversation:end") && checkIfStrContains(conversationResponseText, "type:unknown")) { //user might asked a question either complex or out of domain
       
-      //     //ask retrive and rank or handle the excpetion
+  //     //     //ask retrive and rank or handle the excpetion
           
-      //     //try r&r
-      //     solrClient.get('fcselect', rrquery, function(err, searchResponse) {
-      //       if (err) {
-      //         console.log(err);
-      //       }
-      //       else {
-      //         res.send({
-      //           "status": 'retrive_and_rank',
-      //           "result": searchResponse
-      //         });
-      //       }
-      //     });
-      // }
-      // else { //conversation continues
-      // if(checkIfStrContains(conversationResponseText,"type:intent")){  //if user asked a major or school but maybe wants to add addtional information to the question
-      //   directCompositQuestion.intent = rrquestion;  //forming a compositi question
-        
-      //   }
+  //     //     //try r&r
+  //     //     solrClient.get('fcselect', rrquery, function(err, searchResponse) {
+  //     //       if (err) {
+  //     //         console.log(err);
+  //     //       }
+  //     //       else {
+  //     //         res.send({
+  //     //           "status": 'retrive_and_rank',
+  //     //           "result": searchResponse
+  //     //         });
+  //     //       }
+  //     //     });
+  //     // }
+  //     // else { //conversation continues
+  //     // if(checkIfStrContains(conversationResponseText,"type:intent")){  //if user asked a major or school but maybe wants to add addtional information to the question
+  //     //   directCompositQuestion.intent = rrquestion;  //forming a compositi question
+  //     //   }
       
-      // res.send({
-      //     "status": 'conversation',
-      //     "result": response.output.text
-      //   });
-      // }
-      //update dialog path
-      dialog_stack = response.context.system.dialog_stack;
-      dialog_turn_counter = response.context.system.dialog_turn_counter;
-      dialog_request_counter = response.context.system.dialog_request_counter;
-    }
-  });
+  //     // res.send({
+  //     //     "status": 'conversation',
+  //     //     "result": response.output.text
+  //     //   });
+  //     // }
+  //     //update dialog path
+  //     dialog_stack = response.context.system.dialog_stack;
+  //     dialog_turn_counter = response.context.system.dialog_turn_counter;
+  //     dialog_request_counter = response.context.system.dialog_request_counter;
+  //   }
+  // });
 
 
 });
