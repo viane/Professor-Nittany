@@ -179,7 +179,7 @@ module.exports = function(app, passport) {
 	// =====================================
 	// route for facebook authentication and login
 	app.get('/auth/weibo', passport.authenticate('weibo', {
-		scope: ['profile', 'email']
+		scope: ['email']
 	}));
 
 	app.get('/auth/weibo/callback',
