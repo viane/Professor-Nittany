@@ -510,13 +510,10 @@ module.exports = function(passport) {
     // Evernote ================================================================
     // =========================================================================
     passport.use(new EvernoteStrategy({
-        requestTokenURL: 'https://sandbox.evernote.com/oauth',
-        accessTokenURL: 'https://sandbox.evernote.com/oauth',
-        userAuthorizationURL: 'https://sandbox.evernote.com/OAuth.action',
         consumerKey: configAuth.evernoteAuth.clientID,
         consumerSecret: configAuth.evernoteAuth.clientSecret,
         callbackURL: configAuth.evernoteAuth.callbackURL
-    }, function(token, tokenSecret, profile, done) {
+    }, function(token, tokenSecret, profile, cb) {
         console.log(JSON.stringify(profile));
         // asynchronous
         process.nextTick(function() {
@@ -536,17 +533,17 @@ module.exports = function(passport) {
                     // if there is no user found with that facebook id, create them
                     var newUser = new User();
                     // set all of the facebook information in our user model
-                    newUser.evernote.id = profile.id; // set the users facebook id                   
+                    // newUser.amazon.id = profile.id; // set the users facebook id                   
                     // newUser.amazon.displayName = profile.displayName; // look at the passport user profile to see how names are returned
                     // newUser.amazon.avatar = configAuth.amazonAuth.avatar;
                     // newUser.amazon.email = profile.emails[0].value;
-                    //save our user to the database
-                    newUser.save(function(err) {
-                        if (err)
-                            throw err;
-                        // if successful, return the new user
-                        return done(null, newUser);
-                    });
+                    // //save our user to the database
+                    // newUser.save(function(err) {
+                    //     if (err)
+                    //         throw err;
+                    //     // if successful, return the new user
+                    //     return done(null, newUser);
+                    // });
                 }
 
             });
