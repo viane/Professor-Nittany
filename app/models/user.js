@@ -9,7 +9,8 @@ var userSchema = mongoose.Schema({
     local: {
         email: String,
         password: String,
-        displayName: String
+        displayName: String,
+        interest: Array
     },
     facebook: {
         id: String,
@@ -20,14 +21,16 @@ var userSchema = mongoose.Schema({
         familyName: String,
         givenName: String,
         gender: String,
-        ageMin: Number
+        ageMin: Number,
+        interest: Array
     },
     twitter: {
         id: String,
         token: String,
         email: String,
         name: String,
-        avatar: String
+        avatar: String,
+        interest: Array
     },
     google: {
         id:String,
@@ -37,7 +40,8 @@ var userSchema = mongoose.Schema({
         language:String,
         email:String,
         gender:String,
-        avatar:String
+        avatar:String,
+        interest: Array
     },
     linkedin:{
         id: String,
@@ -45,35 +49,41 @@ var userSchema = mongoose.Schema({
         familyName: String,
         givenName: String,
         email:String,
-        avatar:String
+        avatar:String,
+        interest: Array
     },
     instagram:{
         id: String,
         displayName: String,
-        avatar:String
+        avatar:String,
+        interest: Array
     },
     reddit:{
         id: String,
         displayName: String,
-        avatar:String
+        avatar:String,
+        interest: Array
     },
     amazon:{
         id: String,
         displayName: String,
         avatar:String,
-        email:String
+        email:String,
+        interest: Array
     },
     weibo:{
         id: String,
         displayName: String,
         avatar:String,
-        email:String
+        email:String,
+        interest: Array
     },
     evernote:{
         id: String,
         displayName: String,
         avatar:String,
-        email:String
+        email:String,
+        interest: Array
     }
 });
 
