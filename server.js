@@ -69,8 +69,8 @@ var speech_to_text = watson.speech_to_text({
 
 //for retrive and rank
 var retrieve_and_rank = watson.retrieve_and_rank({
-  username: '2362ec75-54b3-4c8a-8e25-05f83d403c36',
-  password: 'RT6vZ3r58AM7',
+  username: '55076b34-3f2b-48e4-9d6f-9abd9ac92ce2',
+  password: 'DtRHd7eq6Cs6',
   version: 'v1'
 });
 
@@ -260,7 +260,7 @@ app.get("/query", function(req, res) {
   var rrquery;
 
   //****************************************************
-  //    Tempary use, delete after getting weibo oauth **
+  //    testing retrieve and rank only                **
   //****************************************************
   
           rrquestion = currentInput;

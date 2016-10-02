@@ -506,48 +506,48 @@ module.exports = function(passport) {
 
     }));
 
-    // =========================================================================
-    // Evernote ================================================================
-    // =========================================================================
-    passport.use(new EvernoteStrategy({
-        consumerKey: configAuth.evernoteAuth.clientID,
-        consumerSecret: configAuth.evernoteAuth.clientSecret,
-        callbackURL: configAuth.evernoteAuth.callbackURL
-    }, function(token, tokenSecret, profile, cb) {
-        console.log(JSON.stringify(profile));
-        // asynchronous
-        process.nextTick(function() {
-            // find the user in the database based on their twitter id
-            User.findOne({
-                'evernote.id': profile.id
-            }, function(err, user) {
-                // if there is an error, stop everything and return that
-                // ie an error connecting to the database
-                if (err)
-                    return done(err);
-                // if the user is found, then log them in
-                if (user) {
-                    return done(null, user); // user found, return that user
-                }
-                else {
-                    // if there is no user found with that facebook id, create them
-                    var newUser = new User();
-                    // set all of the facebook information in our user model
-                    // newUser.amazon.id = profile.id; // set the users facebook id                   
-                    // newUser.amazon.displayName = profile.displayName; // look at the passport user profile to see how names are returned
-                    // newUser.amazon.avatar = configAuth.amazonAuth.avatar;
-                    // newUser.amazon.email = profile.emails[0].value;
-                    // //save our user to the database
-                    // newUser.save(function(err) {
-                    //     if (err)
-                    //         throw err;
-                    //     // if successful, return the new user
-                    //     return done(null, newUser);
-                    // });
-                }
+    // // =========================================================================
+    // // Evernote ================================================================
+    // // =========================================================================
+    // passport.use(new EvernoteStrategy({
+    //     consumerKey: configAuth.evernoteAuth.clientID,
+    //     consumerSecret: configAuth.evernoteAuth.clientSecret,
+    //     callbackURL: configAuth.evernoteAuth.callbackURL
+    // }, function(token, tokenSecret, profile, cb) {
+    //     console.log(JSON.stringify(profile));
+    //     // asynchronous
+    //     process.nextTick(function() {
+    //         // find the user in the database based on their twitter id
+    //         User.findOne({
+    //             'evernote.id': profile.id
+    //         }, function(err, user) {
+    //             // if there is an error, stop everything and return that
+    //             // ie an error connecting to the database
+    //             if (err)
+    //                 return done(err);
+    //             // if the user is found, then log them in
+    //             if (user) {
+    //                 return done(null, user); // user found, return that user
+    //             }
+    //             else {
+    //                 // if there is no user found with that facebook id, create them
+    //                 var newUser = new User();
+    //                 // set all of the facebook information in our user model
+    //                 // newUser.amazon.id = profile.id; // set the users facebook id                   
+    //                 // newUser.amazon.displayName = profile.displayName; // look at the passport user profile to see how names are returned
+    //                 // newUser.amazon.avatar = configAuth.amazonAuth.avatar;
+    //                 // newUser.amazon.email = profile.emails[0].value;
+    //                 // //save our user to the database
+    //                 // newUser.save(function(err) {
+    //                 //     if (err)
+    //                 //         throw err;
+    //                 //     // if successful, return the new user
+    //                 //     return done(null, newUser);
+    //                 // });
+    //             }
 
-            });
-        });
+    //         });
+    //     });
 
-    }));
+    // }));
 };

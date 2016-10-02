@@ -2,9 +2,7 @@
 ### Clean routes from server.js to router.js
 
 ### User login system:
->Weibo
->
->Evernote
+>Weibo (watting for developer identification)
 >
 >Github
 >

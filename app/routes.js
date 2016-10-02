@@ -179,7 +179,7 @@ module.exports = function(app, passport) {
 	// =====================================
 	// route for facebook authentication and login
 	app.get('/auth/weibo', passport.authenticate('weibo', {
-		scope: ['email']
+		scope: ['profile', 'email']
 	}));
 
 	app.get('/auth/weibo/callback',
@@ -188,19 +188,17 @@ module.exports = function(app, passport) {
 			failureRedirect: '/'
 		}));
 		
-	// =====================================
-	// EVERNOTE ROUTES =====================
-	// =====================================
-	// route for facebook authentication and login
-	app.get('/auth/evernote', passport.authenticate('evernote', {
-		scope: ['profile', 'email']
-	}));
+	// // =====================================
+	// // EVERNOTE ROUTES =====================
+	// // =====================================
+	// // route for facebook authentication and login
+	// app.get('/auth/evernote', passport.authenticate('evernote'));
 
-	app.get('/auth/evernote/callback',
-		passport.authenticate('evernote', {
-			successRedirect: '/profile',
-			failureRedirect: '/'
-		}));
+	// app.get('/auth/evernote/callback',
+	// 	passport.authenticate('evernote', {
+	// 		successRedirect: '/profile',
+	// 		failureRedirect: '/'
+	// 	}));
 
 	// =====================================
 	// LOGOUT ==============================
