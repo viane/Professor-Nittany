@@ -112,7 +112,6 @@ module.exports = function(passport) {
                             newUser.local.email = email; // facebook can return multiple emails so we'll take the first
                             newUser.hashPassword(password); //need-fix password input has to pass BCrypt hash, otherwise login will fail
                             newUser.local.displayName = req.body.name;
-                            newUser.local.interest = null;
                             // save our user to the database
                             newUser.save(function(err) {
                                 if (err) {
