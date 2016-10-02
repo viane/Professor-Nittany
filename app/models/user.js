@@ -10,7 +10,7 @@ var userSchema = mongoose.Schema({
         email: String,
         password: String,
         displayName: String,
-        interest: Array
+        interest: mongoose.Schema.Types.Mixed
     },
     facebook: {
         id: String,
@@ -22,7 +22,7 @@ var userSchema = mongoose.Schema({
         givenName: String,
         gender: String,
         ageMin: Number,
-        interest: Array
+        interest: mongoose.Schema.Types.Mixed
     },
     twitter: {
         id: String,
@@ -30,7 +30,7 @@ var userSchema = mongoose.Schema({
         email: String,
         name: String,
         avatar: String,
-        interest: Array
+        interest: mongoose.Schema.Types.Mixed
     },
     google: {
         id:String,
@@ -41,7 +41,7 @@ var userSchema = mongoose.Schema({
         email:String,
         gender:String,
         avatar:String,
-        interest: Array
+        interest: mongoose.Schema.Types.Mixed
     },
     linkedin:{
         id: String,
@@ -50,40 +50,40 @@ var userSchema = mongoose.Schema({
         givenName: String,
         email:String,
         avatar:String,
-        interest: Array
+        interest: mongoose.Schema.Types.Mixed
     },
     instagram:{
         id: String,
         displayName: String,
         avatar:String,
-        interest: Array
+        interest: mongoose.Schema.Types.Mixed
     },
     reddit:{
         id: String,
         displayName: String,
         avatar:String,
-        interest: Array
+        interest: mongoose.Schema.Types.Mixed
     },
     amazon:{
         id: String,
         displayName: String,
         avatar:String,
         email:String,
-        interest: Array
+        interest: mongoose.Schema.Types.Mixed
     },
     weibo:{
         id: String,
         displayName: String,
         avatar:String,
         email:String,
-        interest: Array
+        interest: mongoose.Schema.Types.Mixed
     },
     evernote:{
         id: String,
         displayName: String,
         avatar:String,
         email:String,
-        interest: Array
+        interest: mongoose.Schema.Types.Mixed
     }
 });
 
