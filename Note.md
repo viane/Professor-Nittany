@@ -18,6 +18,8 @@
 
 - Whenever user is asking a terminology question, display related question such like "what is the difference between A and B", where A is the most recent term was asked and B is the current term, if user havent ask A, find most correlated term to B in our term bank, assign as A.
 
+- use string distance to measure a question with keywords, algorithm  are offered in <b>natural</b> library from npm.
+
 - Keyword and link template:
 
 > If you are interested in this topic, [a]click here[/a]</br>...</br>[link]http://www.computersciencedegreehub.com/faq/professional-changing-technology/[/link]- For extended context, should be trate differently on PC and mobile end. On PC, directly display the extend content, on mobile end, display on a new slide with go back button.
@@ -34,4 +36,4 @@
 
 > any link and video should be warp in [extend][/extend]
 
-- [Cheatsheet](https://github.com/viane/Intelligent-Academic-Planner/blob/master/Common%20notation.md) for common notation and flag that is used in the answer
+- [Cheatsheet](https://github.com/viane/Intelligent-Academic-Planner/blob/master/Common%20notation.md) for common notation and flag that is used in formatting answers.
