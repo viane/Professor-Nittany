@@ -565,6 +565,9 @@ button.ready:after {
 .menu-col1 li a.menu-user-btn:before {
   content: "\f007";
 }
+.menu-col1 li a.menu-admin-btn:before {
+  content: "\f085";
+}
 .menu-col1 li a.home:before {
   content: "\f039";
 }

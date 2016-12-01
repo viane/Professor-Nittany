@@ -1,0 +1,31 @@
+<!-- views/login.ejs -->
+<!doctype html>
+<html>
+<head>
+	<title>Admin Console</title>
+</head>
+<body>
+	<!-- include menu bar -->
+	<%- include header.ejs %>
+	<!-- end of menu bar -->
+<div class="container">
+
+<% var WelcomeStr = locals.user.local.role + ' ' + locals.user.local.displayName %>
+
+<div class="col-sm-6 col-sm-offset-3">
+    <div>
+        <p>Welcome, <%- CapitalizeString(WelcomeStr) %></p>
+    </div>
+	<!-- show any messages that come back with authentication -->
+	<% if (message.length > 0) { %>
+		<div class="alert alert-danger"><%= message %></div>
+	<% } %>
+
+    <!-- Admin function entry points -->
+	<a href="/QuestionAnswerManagement"><i class="fa fa-book" aria-hidden="true"></i>QA Management</a>
+
+</div>
+
+</div>
+</body>
+</html>

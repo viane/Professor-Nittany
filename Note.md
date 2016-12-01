@@ -10,7 +10,7 @@
 
 ##Current Objective
 
-- Host demo on heroku, for public access, and static url for getting 3rd-pty login api authentication.
+- √ Host demo on heroku, for public access, and static url for getting 3rd-pty login api authentication.
 
 ##Implementation Notes
 
@@ -37,3 +37,5 @@
 > any link and video should be warp in [extend][/extend]
 
 - [Cheatsheet](https://github.com/viane/Intelligent-Academic-Planner/blob/master/Common%20notation.md) for common notation and flag that is used in formatting answers.
+
+- When user ask a question like will I do good in [major], analysis his personality and interests to determine what major is more suitable

@@ -9,8 +9,8 @@ var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 var InstagramStrategy = require("passport-instagram").Strategy;
 var RedditStrategy = require("passport-reddit").Strategy;
 var AmazonStrategy = require("passport-amazon").Strategy;
-var WeiboStrategy = require("passport-weibo").Strategy;
-var EvernoteStrategy = require("passport-evernote").Strategy;
+var WechatStrategy = require("passport-wechat").Strategy;
+
 
 // load up the user model
 var User = require('../app/models/user');
@@ -464,21 +464,20 @@ module.exports = function(passport) {
         });
 
     }));
-
+    
     // =========================================================================
-    // Weibo ================================================================
+    // Wechat ================================================================
     // =========================================================================
-    passport.use(new WeiboStrategy({
-        clientID: configAuth.weiboAuth.clientID,
-        clientSecret: configAuth.weiboAuth.clientSecret,
-        callbackURL: configAuth.weiboAuth.callbackURL,
+    passport.use(new WechatStrategy({
+        appID: configAuth.wechatAuth.clientID,
+        appSecret: configAuth.wechatAuth.clientSecret,
+        callbackURL: configAuth.wechatAuth.callbackURL,
     }, function(accessToken, refreshToken, profile, done) {
-        console.log(JSON.stringify(profile));
         // asynchronous
         process.nextTick(function() {
             // find the user in the database based on their twitter id
             User.findOne({
-                'weibo.id': profile.id
+                'wechat.id': profile.id
             }, function(err, user) {
                 // if there is an error, stop everything and return that
                 // ie an error connecting to the database
@@ -491,11 +490,11 @@ module.exports = function(passport) {
                 else {
                     // if there is no user found with that facebook id, create them
                     var newUser = new User();
-                    //set all of the facebook information in our user model
-                    newUser.weibo.id = profile.id; // set the users facebook id                   
-                    newUser.weibo.displayName = profile.displayName; // look at the passport user profile to see how names are returned
-                    newUser.weibo.avatar = profile._raw.avatar_hd;
-                    //newUser.weibo.email = profile.emails[0].value;
+                    // set all of the facebook information in our user model
+                    newUser.wechat.id = profile.id; // set the users facebook id                   
+                    newUser.wechat.displayName = profile.displayName; // look at the passport user profile to see how names are returned
+                    newUser.wechat.avatar = configAuth.wechat.avatar;
+                    newUser.wechat.email = profile.emails[0].value;
                     //save our user to the database
                     newUser.save(function(err) {
                         if (err)
@@ -509,49 +508,4 @@ module.exports = function(passport) {
         });
 
     }));
-
-    // // =========================================================================
-    // // Evernote ================================================================
-    // // =========================================================================
-    // passport.use(new EvernoteStrategy({
-    //     consumerKey: configAuth.evernoteAuth.clientID,
-    //     consumerSecret: configAuth.evernoteAuth.clientSecret,
-    //     callbackURL: configAuth.evernoteAuth.callbackURL
-    // }, function(token, tokenSecret, profile, cb) {
-    //     console.log(JSON.stringify(profile));
-    //     // asynchronous
-    //     process.nextTick(function() {
-    //         // find the user in the database based on their twitter id
-    //         User.findOne({
-    //             'evernote.id': profile.id
-    //         }, function(err, user) {
-    //             // if there is an error, stop everything and return that
-    //             // ie an error connecting to the database
-    //             if (err)
-    //                 return done(err);
-    //             // if the user is found, then log them in
-    //             if (user) {
-    //                 return done(null, user); // user found, return that user
-    //             }
-    //             else {
-    //                 // if there is no user found with that facebook id, create them
-    //                 var newUser = new User();
-    //                 // set all of the facebook information in our user model
-    //                 // newUser.amazon.id = profile.id; // set the users facebook id                   
-    //                 // newUser.amazon.displayName = profile.displayName; // look at the passport user profile to see how names are returned
-    //                 // newUser.amazon.avatar = configAuth.amazonAuth.avatar;
-    //                 // newUser.amazon.email = profile.emails[0].value;
-    //                 // //save our user to the database
-    //                 // newUser.save(function(err) {
-    //                 //     if (err)
-    //                 //         throw err;
-    //                 //     // if successful, return the new user
-    //                 //     return done(null, newUser);
-    //                 // });
-    //             }
-
-    //         });
-    //     });
-
-    // }));
 };

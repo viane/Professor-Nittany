@@ -26,16 +26,96 @@
       <div class="dot dot1 pulse"> </div>
       <div class="dot dot2 pulse"> </div>
       <div class="dot dot3 pulse"> </div>
+<!-- Add user id token in order to id who send input -->
+    <div id="data-user" class="hide">
+      <% if(locals.user) { %>
+      <div id="user-type">
+          <% if (user.local.email) { %>
+            local
+          <% } %>
+        
+          <% if (user.facebook.id) { %>
+            facebook
+          <% } %>
+          
+          <% if (user.twitter.id) { %>
+            twitter
+          <% } %>
+          
+          <% if (user.google.id) { %>
+            google
+          <% } %>
+          
+          <% if (user.linkedin.id) { %>
+            linkedin
+          <% } %>
+          
+          <% if (user.instagram.id) { %>
+            instagram
+          <% } %>
+          
+          <% if (user.reddit.id) { %>
+            reddit
+          <% } %>
+          
+          <% if (user.amazon.id) { %>
+            amazon
+          <% } %>
+          
+          <% if (user.wechat.id) { %>
+            wechat
+          <% } %>
+        </div>
+        <div id="user-id">
+          <% if (user.local.email) { %>
+            <%= user._id %>
+          <% } %>
+        
+          <% if (user.facebook.id) { %>
+          <%= user.facebook.id %>
+          <% } %>
+          
+          <% if (user.twitter.id) { %>
+            <%= user.twitter.id %>
+          <% } %>
+          
+          <% if (user.google.id) { %>
+            <%= user.google.id %>
+          <% } %>
+          
+          <% if (user.linkedin.id) { %>
+            <%= user.linkedin.id %>
+          <% } %>
+          
+          <% if (user.instagram.id) { %>
+            <%= user.instagram.id %>
+          <% } %>
+          
+          <% if (user.reddit.id) { %>
+            <%= user.reddit.id %>
+          <% } %>
+          
+          <% if (user.amazon.id) { %>
+            <%= user.amazon.id %>
+          <% } %>
+          
+          <% if (user.wechat.id) { %>
+            <%= user.weibo.id %>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+    <textarea id="userQueryInput" class="chat-window-message" name="chat-window-message" type="text" autocomplete="off"></textarea>
 
-    <textarea id="userQueryInput" class="chat-window-message" name="chat-window-message" type="text" autocomplete="on"></textarea>
     <button id="querySubmitBtn" type="submit"><i class="fa fa-reply" aria-hidden="true"></i></button>
   </div>
   <div class="notification">
-<span></span>
-    </div>
-
-    <script src="../js/query.js"></script>
-    
+  <span></span>
+  </div>
+  <!-- Socket io, only for input page -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="../js/socket-client.js"></script>
+ <% include footer.ejs %>    
 </body>
 
 </html>

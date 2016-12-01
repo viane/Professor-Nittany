@@ -1,0 +1,20 @@
+<%
+CapitalizeString = function (str){
+    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
+
+ShowDomElement = function (eleNameStr){
+    $(eleNameStr).css("display","block");
+    $( eleNameStr ).animate({
+    opacity: 1
+    }, 2000);
+};
+
+HideDomElement = function (eleNameStr){
+    $( eleNameStr ).animate({
+    opacity: 0
+    }, 2000);
+    $(eleNameStr).css("display","none");
+};
+
+%>

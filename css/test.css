@@ -1,0 +1,184 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,100,900);
+.bg-white {
+    background-color: white;
+}
+
+
+/*Question manage page*/
+
+.question-manage-nav {
+    display: inline-flex;
+    list-style: none;
+    margin: 15px 0 15px 0;
+    padding: 0;
+    width: 100%;
+}
+
+.question-manage-nav li {
+    margin: 0 0 0 15px;
+}
+
+.flat-btn {
+    padding: 7px 20px 7px 20px;
+    box-sizing: inherit;
+    background-color: transparent;
+    -webkit-transition-property: all;
+    transition-property: all;
+    -webkit-transition-duration: .6s;
+    transition-duration: .6s;
+    -webkit-transition-timing-function: ease;
+    transition-timing-function: ease;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 45px;
+    text-decoration: none;
+    text-transform: capitalize;
+    vertical-align: middle;
+    width: 100%;
+    color: white;
+    border: 1px solid white;
+    border-radius: 25px;
+    letter-spacing: 3px;
+    -webkit-transition: all 150ms linear;
+    transition: all 150ms linear;
+}
+
+.flat-btn:active {
+    text-decoration: none;
+    -webkit-transition: all 250ms linear;
+    transition: all 250ms linear;
+    color: white;
+}
+
+.flat-btn:hover {
+    text-decoration: none;
+    color: wheat;
+}
+
+
+/*Add question section*/
+
+.white-container-mid,.white-container-large {
+    min-height: 500px;
+    height: 100%;
+    margin: 0 auto;
+    background: white;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.white-container-mid{
+    width: 500px;
+
+}
+.white-container-large{
+    width: 800px;
+}
+
+input,
+.floating-placeholder {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 20pt;
+    line-height: 2.6em;
+    height: 2.6em;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.floating-placeholder input:focus+label {
+    color: #16abf0;
+}
+
+.floating-placeholder input[value]+label {
+    color: red;
+}
+
+.floating-placeholder {
+    position: relative;
+}
+
+.floating-placeholder input {
+    font-size: 20pt;
+    border: none;
+    outline: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    background: transparent;
+    z-index: 2;
+    border-bottom: 1px solid #ccc;
+    text-indent: 20px;
+}
+
+.floating-placeholder:last-child input {
+    border-bottom: none;
+}
+
+.floating-placeholder label {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 20px;
+    font-size: 20pt;
+    z-index: 1;
+    -moz-transform-origin: 0 0em;
+    -ms-transform-origin: 0 0em;
+    -webkit-transform-origin: 0 0em;
+    transform-origin: 0 0em;
+    -moz-transition: -moz-transform 160ms, color 200ms;
+    -o-transition: -o-transform 160ms, color 200ms;
+    -webkit-transition: -webkit-transform 160ms, color 200ms;
+    transition: transform 160ms, color 200ms;
+    -moz-transform: scale(1, 1) rotateY(0);
+    -ms-transform: scale(1, 1) rotateY(0);
+    -webkit-transform: scale(1, 1) rotateY(0);
+    transform: scale(1, 1) rotateY(0);
+    color: #999;
+}
+
+.floating-placeholder-float label {
+    -moz-transform: scale(0.55, 0.55) rotateY(0);
+    -ms-transform: scale(0.55, 0.55) rotateY(0);
+    -webkit-transform: scale(0.55, 0.55) rotateY(0);
+    transform: scale(0.55, 0.55) rotateY(0);
+}
+
+.floating-placeholder-float input {
+    line-height: 3.4em;
+}
+
+.floating-placeholder textarea {
+    border: none;
+    width: 90%;
+    height: 300px;
+    resize: none;
+    margin: 30px 0 0 0;
+    padding: 10px 0 0 0;
+    line-height: 25px;
+}
+
+.floating-placeholder-3-fix {
+    height: 325px;
+}
+
+.add-questionAnswer-submit-btn{
+    margin:5px 0;
+}
+
+#add-questionAnswer-submit-btn {
+    color: #5342ca;
+    border: 1px solid #5342ca;
+    border-radius: 25px;
+}
+
+#add-questionAnswer-submit-btn:hover{
+    color: #696bd0;
+}
+
+.hide{
+    display: none;
+    opacity: 0;
+}

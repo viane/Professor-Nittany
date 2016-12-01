@@ -167,7 +167,7 @@ function initAudio() {
             "optional": []
         },
     }, gotStream, function(e) {
-        alert('Error getting audio');
+        console.log("Error on getUserMedia \n");
         console.log(e);
     });
 }

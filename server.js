@@ -16,29 +16,43 @@ var userVoiceFileName, userVoiceFilePath = "./audio/";
 var util = require("util");
 var app = express();
 var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+
 var root = __dirname;
 var speech_to_text_params;
 var isVioceFileWritten = true;
-var flash    = require('connect-flash');
+var flash = require('connect-flash');
 
 //libs for user system
 var mongoose = require('mongoose');
 var passport = require('passport');
 var configDB = require('./config/database.js');
 
+//override console.log function to log to /debug.log and console
+var log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
+var log_stdout = process.stdout;
+console.log = function(d) { //
+  log_file.write(util.format(d) + '\n');
+  log_stdout.write(util.format(d) + '\n');
+};
+
+//library for NLP
+var natural = require('natural');
+var tokenizer = new natural.WordTokenizer(); //default tokenizer, ignore special characters
+var domainBank = ["computer science", "software enginerring", "algorithm","security","cyber","programing","coding"];
 
 // configuration ===============================================================
-mongoose.connect(configDB.url); // connect to our database
+mongoose.connect(configDB.userDB_URL); // connect to our database
 
 require('./config/passport')(passport); // pass passport for configuration
 app.configure(function() {
-app.use(bodyParser.json({
-  limit: '50mb'
-}));
-app.use(bodyParser.urlencoded({
-  limit: '50mb',
-  extended: true
-}));
+  app.use(bodyParser.json({
+    limit: '50mb'
+  }));
+  app.use(bodyParser.urlencoded({
+    limit: '50mb',
+    extended: true
+  }));
 
   // set up our express application
   app.use(express.logger('dev')); // log every request to the console
@@ -47,7 +61,10 @@ app.use(bodyParser.urlencoded({
   app.set('view engine', 'ejs'); // set up ejs for templating
 
   // required for passport
-  app.use(express.session({ secret: 'intellegent_student_administrtion', maxAge: 360*5 })); // session secret
+  app.use(express.session({
+    secret: 'intellegent_student_administrtion',
+    maxAge: 360 * 5
+  })); // session secret
   app.use(passport.initialize());
   app.use(passport.session()); // persistent login sessions
   app.use(flash()); // use connect-flash for flash messages stored in session
@@ -82,8 +99,8 @@ var rrparams = {
 
 var solrClient = retrieve_and_rank.createSolrClient(rrparams);
 
-var ranker_id = 'c852c8x19-rank-145', 
-  rrquestion;//store user question string
+var ranker_id = 'c852c8x19-rank-145',
+  rrquestion; //store user question string
 
 //for conversation tracking
 var conversation = watson.conversation({
@@ -96,7 +113,7 @@ var conversation = watson.conversation({
 var dialog_stack = ["root"],
   dialog_turn_counter = 1,
   dialog_request_counter = 1;
-  
+
 var pmt = function(str) {
   console.log(str);
 }
@@ -255,36 +272,36 @@ app.get("/query", function(req, res) {
 
   //user current input
   var currentInput = req.query.input;
-  
+
   //query for retrieve and rank
   var rrquery;
 
   //****************************************************
   //    testing retrieve and rank only                **
   //****************************************************
-  
-          rrquestion = currentInput;
-        //prepare retrive and rank query
-         rrquery= qs.stringify({
-            q: rrquestion,
-            ranker_id: ranker_id,
-            fl: 'id,answer_id,score,confidence,title,body'
-          });
-        //ask retrive and rank
-           solrClient.get('fcselect', rrquery, function(err, searchResponse) {
-            if (err) {
-              console.log(err);
-            }
-            else {
-              res.send({
-                "status": 'retrive_and_rank',
-                "result": searchResponse
-              });
-            }
-          });
 
-  
-  
+  rrquestion = currentInput;
+  //prepare retrive and rank query
+  rrquery = qs.stringify({
+    q: rrquestion,
+    ranker_id: ranker_id,
+    fl: 'id,answer_id,score,confidence,title,body'
+  });
+  //ask retrive and rank
+  solrClient.get('fcselect', rrquery, function(err, searchResponse) {
+    if (err) {
+      console.log(err);
+    }
+    else {
+      res.send({
+        "status": 'retrive_and_rank',
+        "result": searchResponse
+      });
+    }
+  });
+
+
+
   // conversation.message({
   //   input: {
   //     "text": currentInput
@@ -306,7 +323,7 @@ app.get("/query", function(req, res) {
   //   //handling answer part
   //     //prepare retrive and rank query var
 
-      
+
   //     //this text is the match condition answer from bluemix conversation dialog
   //     var conversationResponseText = response.output.text[0]; 
   //     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -340,13 +357,13 @@ app.get("/query", function(req, res) {
   //     //     case 2, user asked a complete question, we can directly pass question to retrive and rank              //
   //     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      
-      
-      
+
+
+
   //     // if (checkIfStrContains(conversationResponseText, "question:complete")) { //user asked a complete question
   //     //   if (checkIfStrContains(conversationResponseText, "goto:rr")) { //flag for retrive and rank
   //     //     //call retrive and rank to get data from computer science ranker with question: response.input.text
-          
+
   //     //     // get request from r&r
   //     //     solrClient.get('fcselect', rrquery, function(err, searchResponse) {
   //     //       if (err) {
@@ -363,9 +380,9 @@ app.get("/query", function(req, res) {
   //     //   }
   //     // }
   //     // if (checkIfStrContains(conversationResponseText, "conversation:end") && checkIfStrContains(conversationResponseText, "type:unknown")) { //user might asked a question either complex or out of domain
-      
+
   //     //     //ask retrive and rank or handle the excpetion
-          
+
   //     //     //try r&r
   //     //     solrClient.get('fcselect', rrquery, function(err, searchResponse) {
   //     //       if (err) {
@@ -383,7 +400,7 @@ app.get("/query", function(req, res) {
   //     // if(checkIfStrContains(conversationResponseText,"type:intent")){  //if user asked a major or school but maybe wants to add addtional information to the question
   //     //   directCompositQuestion.intent = rrquestion;  //forming a compositi question
   //     //   }
-      
+
   //     // res.send({
   //     //     "status": 'conversation',
   //     //     "result": response.output.text
@@ -397,6 +414,71 @@ app.get("/query", function(req, res) {
   // });
 
 
+});
+
+
+//Socket.io handle user's input
+
+io.on('connection', function (socket) {
+  var user={};
+  
+  //when user init a socket from client side, record the suer id and type for security purpose
+  socket.on('load',function(data) {
+      user.id=data.id;
+      user.type=data.type;
+      //console.log("User connected thru a socket: " + JSON.stringify(user));
+  })
+  
+  // when the client emits 'new message', this listens and executes
+  socket.on('new message', function (data) {
+    //if is login user
+    if(user.id && user.type){
+      if(user.id===data.sender.id && user.type === data.sender.type){
+        //analysis and log inputs
+        //console.log("Sender info: " + JSON.stringify(data));
+
+        ///////////////////////////////////////////////////////
+        //check inputs corraltion to our domain's perspectives
+        ///////////////////////////////////////////////////////
+        //natural.PorterStemmer.attach(); //init attaching tokenizeAndStem() and stem() to string
+        var inputTokens = tokenizer.tokenize(JSON.stringify(data.content)); //extrac and only take stem of each word
+        console.log("input tokens are : " + inputTokens);
+        var maxCorrlation = 0, maxInputCorraltionIndex=0,maxDomainCorraltionIndex=0;
+        for (var i = inputTokens.length - 1; i >= 0; i--) {
+          for (var b = domainBank.length - 1; b >= 0; b--) {
+            var tempCorrlation = natural.JaroWinklerDistance(inputTokens[i],domainBank[b]); //measure the distance of each word vs domain bank
+            if(maxCorrlation < tempCorrlation){
+              maxCorrlation = tempCorrlation;
+              maxInputCorraltionIndex = i;
+              maxDomainCorraltionIndex = b;
+            }  
+
+            //Respond by telling the client to execute 'new message'
+            socket.emit('new message', {
+              message: "Checking corraltion with " + inputTokens[i] + " and " + domainBank[b]
+            });
+          }
+        }
+        socket.emit('new message', {
+          message: "The best match of corrlation is : " + inputTokens[maxInputCorraltionIndex] + " and " + domainBank[maxDomainCorraltionIndex] + " with value : " + maxCorrlation
+        });
+
+      }
+    }else{
+      //default method for visitor's input
+      console.log("Visitor sent a message : " + JSON.stringify(data))
+    }
+
+    
+
+
+  });
+
+  // when the user disconnects.. perform this
+  socket.on('disconnect', function () {
+      console.log("A user disconnected socket connection");
+      // echo globally that this client has left
+    });
 });
 
 var checkIfStrContains = function(originalStr, comparedStr) {
@@ -434,5 +516,5 @@ var checkRetiveAndRankStatus = function() {
 server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function() {
   var addr = server.address();
   console.log("Chat server listening at", addr.address + ":" + addr.port);
-  checkRetiveAndRankStatus();  //if error debug this frist
+  checkRetiveAndRankStatus(); //if error debug this frist
 });
