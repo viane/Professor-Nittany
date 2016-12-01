@@ -8,18 +8,18 @@
 	<!-- include menu bar -->
 	<%- include header.ejs %>
 	<!-- end of menu bar -->
-	
+
 	<!-- Start of main page -->
 	<% if(locals.user) { %>
 	<div class="container">
-	
+
 		<div class="page-header text-center">
 			<h1><span class="fa fa-anchor"></span> Profile Page</h1>
 			<a href="/logout" class="btn btn-default btn-sm">Logout</a>
 		</div>
-	
+
 		<div class="row">
-	
+
 			<!-- LOCAL INFORMATION -->
 			<% if (user.local.email) { %>
 			<div class="col-sm-6">
@@ -33,7 +33,7 @@
 				</div>
 			</div>
 			<% } %>
-			
+
 			<% if (user.facebook.id) { %>
 			<!-- FACEBOOK INFORMATION -->
 			<div class="col-sm-6">
@@ -48,7 +48,7 @@
 				</div>
 			</div>
 			<% } %>
-			
+
 			<% if (user.twitter.id) { %>
 			<!-- TWITTER INFORMATION -->
 			<div class="col-sm-6">
@@ -63,7 +63,7 @@
 				</div>
 			</div>
 			<% } %>
-			
+
 			<% if (user.google.id) { %>
 			<!-- TWITTER INFORMATION -->
 			<div class="col-sm-6">
@@ -78,7 +78,7 @@
 				</div>
 			</div>
 			<% } %>
-			
+
 			<% if (user.linkedin.id) { %>
 			<!-- TWITTER INFORMATION -->
 			<div class="col-sm-6">
@@ -93,7 +93,7 @@
 				</div>
 			</div>
 			<% } %>
-			
+
 			<% if (user.instagram.id) { %>
 			<!-- TWITTER INFORMATION -->
 			<div class="col-sm-6">
@@ -107,7 +107,7 @@
 				</div>
 			</div>
 			<% } %>
-			
+
 			<% if (user.reddit.id) { %>
 			<!-- TWITTER INFORMATION -->
 			<div class="col-sm-6">
@@ -121,7 +121,7 @@
 				</div>
 			</div>
 			<% } %>
-			
+
 			<% if (user.amazon.id) { %>
 			<!-- TWITTER INFORMATION -->
 			<div class="col-sm-6">
@@ -136,25 +136,25 @@
 				</div>
 			</div>
 			<% } %>
-			
+
 			<% if (user.wechat.id) { %>
 			<!-- TWITTER INFORMATION -->
 			<div class="col-sm-6">
 				<div class="well">
-					<h3 class="text-primary"><span class="fa fa-weibo"></span> Weibo</h3>
+					<h3 class="text-primary"><span class="fa fa-weibo"></span> wechat</h3>
 						<p>
 							<strong>Avatar</strong>: <img src="<%= user.weibo.avatar %>"></img><br>
-							<strong>id</strong>: <%= user.weibo.id %><br>
-							<strong>email</strong>: <%= user.weibo.email %><br>
-							<strong>name</strong>: <%= user.weibo.displayName %><br>
+							<strong>id</strong>: <%= user.wechat.id %><br>
+							<strong>email</strong>: <%= user.wechat.email %><br>
+							<strong>name</strong>: <%= user.wechat.displayName %><br>
 						</p>
 				</div>
 			</div>
 			<% } %>
 		</div>
-	
+
 	</div>
-	
+
 	<% } %>
 	<!-- End of main page -->
 </body>

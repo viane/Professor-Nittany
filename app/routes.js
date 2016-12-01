@@ -1,6 +1,8 @@
 // app/routes.js
-
 var crypto = require('crypto');
+
+// load up the question answer model
+var questionAnswer = require('../app/models/QA');
 
 module.exports = function(app, passport) {
 
@@ -44,7 +46,6 @@ module.exports = function(app, passport) {
 
 	// process the signup form
 	app.post('/signup',
-
 		//email and password not empty, start local authentication
 		passport.authenticate('local-signup', {
 			successRedirect: '/profile', // redirect to the secure profile section
@@ -176,30 +177,19 @@ module.exports = function(app, passport) {
 		}));
 
 	// =====================================
-	// WEIBO ROUTES =====================
+	// WECHAT ROUTES =====================
 	// =====================================
-	// route for facebook authentication and login
-	app.get('/auth/weibo', passport.authenticate('weibo', {
-		scope: ['profile', 'email']
+	// route for wechat authentication and login
+	app.get('/auth/wechat', passport.authenticate('wechat', {
+		scope: ['profile']
 	}));
 
-	app.get('/auth/weibo/callback',
-		passport.authenticate('weibo', {
+	app.get('/auth/wechat/callback',
+		passport.authenticate('wechat', {
 			successRedirect: '/profile',
 			failureRedirect: '/'
 		}));
-		
-	// // =====================================
-	// // EVERNOTE ROUTES =====================
-	// // =====================================
-	// // route for facebook authentication and login
-	// app.get('/auth/evernote', passport.authenticate('evernote'));
 
-	// app.get('/auth/evernote/callback',
-	// 	passport.authenticate('evernote', {
-	// 		successRedirect: '/profile',
-	// 		failureRedirect: '/'
-	// 	}));
 
 	// =====================================
 	// LOGOUT ==============================
@@ -207,6 +197,80 @@ module.exports = function(app, passport) {
 	app.get('/logout', function(req, res) {
 		req.logout();
 		res.redirect('/');
+	});
+
+	// =====================================
+	// Admin console
+	// =====================================
+	app.get('/admin', isLoggedIn, function(req, res) {
+		res.render('admin.ejs', {
+			message: req.flash('Message'),
+			user: req.user
+		}); // load the index.ejs file
+	});
+
+	// =================================================
+	// Routes for developer manage question and answer
+	// =================================================
+
+	app.get('/QuestionAnswerManagement', isLoggedIn, function(req, res) {
+		res.render('QuestionAnswerManagement.ejs', {
+			message: req.flash('Message'),
+			user: req.user
+		}); // load the index.ejs file
+	});
+
+	app.post('/postQuestionAnswer', function(req, res) {
+		//input check
+		var questionContext = req.body.question;
+		var answerContext = req.body.answer;
+		var tagContext = req.body.tag;
+		console.log(questionContext + questionContext.length);
+		if (questionContext.length == 0) {
+			res.send({
+				user: req.user,
+				status: "0",
+				message: "Question can not be empty"
+			})
+		}
+		else {
+			//create DB object
+			var QA_pair = new questionAnswer();
+
+			//assign values
+			QA_pair.record.question = questionContext;
+			QA_pair.record.answer = answerContext;
+			QA_pair.record.tag = tagContext;
+
+			//Save to DB
+			QA_pair.save(function(err) {
+				if (err) {
+					res.send({
+						user: req.user,
+						status: "-1",
+						message: err + "</br>Save data to other place."
+					})
+					throw err;
+				}
+				// if successful, return the new user
+				res.send({
+					user: req.user,
+					status: "1",
+					message: "Successfully added entry"
+				})
+			});
+		}
+	});
+
+	app.get('/viewQuestionAnswer', function(req, res) {
+		//input parameter
+
+		//create DB connection
+
+		//find entry
+
+		//send to client
+
 	});
 };
 
