@@ -104,8 +104,8 @@ var ranker_id = 'c852c8x19-rank-145',
 
 //for conversation tracking
 var conversation = watson.conversation({
-  username: 'c4aef79a-6610-46f0-b84e-9fb358d28b43',
-  password: 'lIZngYurf0YI',
+  username: '2b2e38a3-e4b9-4602-a9eb-8be58f235fca',
+  password: 'YXyHpjWJXbLf',
   version: 'v1',
   version_date: '2016-07-11'
 });
@@ -280,138 +280,29 @@ app.get("/query", function(req, res) {
   //    testing retrieve and rank only                **
   //****************************************************
 
-  rrquestion = currentInput;
-  //prepare retrive and rank query
-  rrquery = qs.stringify({
-    q: rrquestion,
-    ranker_id: ranker_id,
-    fl: 'id,answer_id,score,confidence,title,body'
-  });
-  //ask retrive and rank
-  solrClient.get('fcselect', rrquery, function(err, searchResponse) {
-    if (err) {
-      console.log(err);
-    }
-    else {
-      res.send({
-        "status": 'retrive_and_rank',
-        "result": searchResponse
-      });
-    }
-  });
-
-
-
-  // conversation.message({
-  //   input: {
-  //     "text": currentInput
-  //   },
-  //   context: {
-  //     "conversation_id": "1",
-  //     "system": {
-  //       "dialog_stack": dialog_stack,
-  //       "dialog_turn_counter": dialog_turn_counter,
-  //       "dialog_request_counter": dialog_request_counter
-  //     }
-  //   },
-  //   workspace_id: 'fdbbfec3-49dd-4952-aa14-4dd7fe7cdbc0'
-  // }, function(err, response) {
+  // rrquestion = currentInput;
+  // //prepare retrive and rank query
+  // rrquery = qs.stringify({
+  //   q: rrquestion,
+  //   ranker_id: ranker_id,
+  //   fl: 'id,answer_id,score,confidence,title,body'
+  // });
+  // //ask retrive and rank
+  // solrClient.get('fcselect', rrquery, function(err, searchResponse) {
   //   if (err) {
-  //     console.log('error:', err);
+  //     console.log(err);
   //   }
   //   else {
-  //   //handling answer part
-  //     //prepare retrive and rank query var
-
-
-  //     //this text is the match condition answer from bluemix conversation dialog
-  //     var conversationResponseText = response.output.text[0]; 
-  //     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //     //     case 1, user asked a complete question, we can directly pass question to retrive and rank              //
-  //     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //     if(checkIfStrContains(conversationResponseText, "question:complete") && checkIfStrContains(conversationResponseText, "conversation:end") && checkIfStrContains(conversationResponseText, "goto:rr")){
-  //       //the string user inputed came back from response as well.
-  //       rrquestion = response.input.text;
-  //       //prepare retrive and rank query
-  //       rrquery= qs.stringify({
-  //           q: rrquestion,
-  //           ranker_id: ranker_id,
-  //           fl: 'id,answer_id,score,confidence,title,body'
-  //         });
-  //       //ask retrive and rank
-  //         solrClient.get('fcselect', rrquery, function(err, searchResponse) {
-  //           if (err) {
-  //             console.log(err);
-  //           }
-  //           else {
-  //             //console.log(JSON.stringify(searchResponse.response.docs, null, 2));
-  //             res.send({
-  //               "status": 'retrive_and_rank',
-  //               "result": searchResponse
-  //             });
-  //           }
-  //         });
-  //     }
-
-  //     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //     //     case 2, user asked a complete question, we can directly pass question to retrive and rank              //
-  //     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-  //     // if (checkIfStrContains(conversationResponseText, "question:complete")) { //user asked a complete question
-  //     //   if (checkIfStrContains(conversationResponseText, "goto:rr")) { //flag for retrive and rank
-  //     //     //call retrive and rank to get data from computer science ranker with question: response.input.text
-
-  //     //     // get request from r&r
-  //     //     solrClient.get('fcselect', rrquery, function(err, searchResponse) {
-  //     //       if (err) {
-  //     //         console.log(err);
-  //     //       }
-  //     //       else {
-  //     //         //console.log(JSON.stringify(searchResponse.response.docs, null, 2));
-  //     //         res.send({
-  //     //           "status": 'retrive_and_rank',
-  //     //           "result": searchResponse
-  //     //         });
-  //     //       }
-  //     //     });
-  //     //   }
-  //     // }
-  //     // if (checkIfStrContains(conversationResponseText, "conversation:end") && checkIfStrContains(conversationResponseText, "type:unknown")) { //user might asked a question either complex or out of domain
-
-  //     //     //ask retrive and rank or handle the excpetion
-
-  //     //     //try r&r
-  //     //     solrClient.get('fcselect', rrquery, function(err, searchResponse) {
-  //     //       if (err) {
-  //     //         console.log(err);
-  //     //       }
-  //     //       else {
-  //     //         res.send({
-  //     //           "status": 'retrive_and_rank',
-  //     //           "result": searchResponse
-  //     //         });
-  //     //       }
-  //     //     });
-  //     // }
-  //     // else { //conversation continues
-  //     // if(checkIfStrContains(conversationResponseText,"type:intent")){  //if user asked a major or school but maybe wants to add addtional information to the question
-  //     //   directCompositQuestion.intent = rrquestion;  //forming a compositi question
-  //     //   }
-
-  //     // res.send({
-  //     //     "status": 'conversation',
-  //     //     "result": response.output.text
-  //     //   });
-  //     // }
-  //     //update dialog path
-  //     dialog_stack = response.context.system.dialog_stack;
-  //     dialog_turn_counter = response.context.system.dialog_turn_counter;
-  //     dialog_request_counter = response.context.system.dialog_request_counter;
+  //     res.send({
+  //       "status": 'retrive_and_rank',
+  //       "result": searchResponse
+  //     });
   //   }
   // });
+
+
+
+
 
 
 });
@@ -421,14 +312,14 @@ app.get("/query", function(req, res) {
 
 io.on('connection', function (socket) {
   var user={};
-  
+
   //when user init a socket from client side, record the suer id and type for security purpose
   socket.on('load',function(data) {
       user.id=data.id;
       user.type=data.type;
       //console.log("User connected thru a socket: " + JSON.stringify(user));
   })
-  
+
   // when the client emits 'new message', this listens and executes
   socket.on('new message', function (data) {
     //if is login user
@@ -451,7 +342,7 @@ io.on('connection', function (socket) {
               maxCorrlation = tempCorrlation;
               maxInputCorraltionIndex = i;
               maxDomainCorraltionIndex = b;
-            }  
+            }
 
             //Respond by telling the client to execute 'new message'
             socket.emit('new message', {
@@ -467,9 +358,40 @@ io.on('connection', function (socket) {
     }else{
       //default method for visitor's input
       console.log("Visitor sent a message : " + JSON.stringify(data))
+
+      var currentInput = JSON.stringify(data);
+
+      conversation.message({
+        input: {
+          "text": currentInput
+        },
+        context: {
+          "conversation_id": "1",
+          "system": {
+            "dialog_stack": dialog_stack,
+            "dialog_turn_counter": dialog_turn_counter,
+            "dialog_request_counter": dialog_request_counter
+          }
+        },
+        workspace_id: '67c7c32c-453d-47b5-b942-2f1ee76ffa77'
+      }, function(err, response) {
+        if (err) {
+          console.log('error:', err);
+        }
+        else {
+        //handling answer part
+        socket.emit('new message', {
+          message: response.output.text
+        });
+          //update dialog path
+          dialog_stack = response.context.system.dialog_stack;
+          dialog_turn_counter = response.context.system.dialog_turn_counter;
+          dialog_request_counter = response.context.system.dialog_request_counter;
+        }
+      });
     }
 
-    
+    //tempare ask conversation
 
 
   });
