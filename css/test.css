@@ -182,3 +182,19 @@ input,
     display: none;
     opacity: 0;
 }
+
+.page-title{
+  color: white;
+}
+
+label{
+  color: white;
+float: left;
+}
+
+.account-footer{
+  color: white;
+}
+.account-footer a{
+    color: rgb(208, 205, 39);
+}

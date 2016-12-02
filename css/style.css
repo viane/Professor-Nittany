@@ -322,13 +322,13 @@ body {
 
 button {
   overflow: hidden;
-  min-width: 60px;
-  width: 7%;
+  min-width: 100px;
+  width: 9%;
   color: #5585ff;
   border: 2px solid #5585ff;
   background-color: transparent;
   cursor: pointer;
-  padding: 7px 0;
+  padding: 1px 0;
   color: wheat;
   border-radius: 1.5rem;
   font-size: 23px;
@@ -523,7 +523,7 @@ button.ready:after {
     margin: 0;
     padding: 0;
     background: #f7f7f7;
-    z-index:10;  
+    z-index:10;
     overflow:hidden;
     box-shadow: 2px 0 18px rgba(0, 0, 0, 0.26);
 }
@@ -590,7 +590,7 @@ button.ready:after {
   line-height: 4em;
   text-align:center;
   color: #72739f;
-  text-decoration:none;  
+  text-decoration:none;
   position: relative;
   font-family:verdana;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -636,7 +636,7 @@ button.ready:after {
     }
     .para{
     padding-left:5px;
-}  
+}
 }
 @media screen and (max-height: 34em){
   .menu-col1 li,
