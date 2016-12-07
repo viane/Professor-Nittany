@@ -11,3 +11,5 @@
 |[html]DOM element[/html]	|Can be directly render into html DOM tree, usually are \<iframe> of youtube video	|
 |[file][/file]|
 |[img][/img]|
+|[google-map-url]https://www.google.com/maps/place/loc...[/google-map-url]| Link in between can be directly visit by broswer, show location information|
+|[GPS]Building Name, Room Number, Time[/GPS]| Information in between will parsed by campus map tool, show GPS direction to destination. (Not implementing in current objective)|
