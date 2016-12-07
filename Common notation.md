@@ -12,3 +12,4 @@
 |[file][/file]|
 |[img][/img]|
 |[GPS]Building Name, Room Number, Time[/GPS]| Information in between will parsed by campus map tool, show GPS direction to destination. (Not implementing in current objective)|
+|[pdf]URL[/pdf]| Parse a online PDF into a div DOM and display on the main page|
