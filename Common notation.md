@@ -15,4 +15,4 @@
 |[show-pdf]URL[/show-pdf]| Parse a online PDF into a div DOM and display on the main page|
 |[download-pdf]URL[/download-pdf]| Directlty download to user client|
 |[ </br>[question-placeholder]Sample question placeholder[/question-placeholder],</br>[question-placeholder]Sample question placeholder[/question-placeholder], </br>... </br>]| Sample string of related questions, if user click it, submit the question that is correspond in the [question] array. |
-|[ </br>[question]Formatted question[/question],</br>[question-placeholder]Formatted question[/question-placeholder], </br>... </br>]| Store the approved question that in order of [question-placeholder] array. |
+|[ </br>[question]Formatted question[/question],</br>[question]Formatted question[/question], </br>... </br>]| Store the approved question that in order of [question-placeholder] array. |
