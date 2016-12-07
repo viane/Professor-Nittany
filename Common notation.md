@@ -8,7 +8,7 @@
 |[ </br>[link] url [/link], </br>[link] url [/link], </br>... </br>]   	|Actual external link array, same order as keyword array  	|
 |[\n]	|New line indicator, equivlent to \</br>	|
 |[extend] More... [/extend]	|Further details that can be toggled to display	|
-|[html]DOM element[/html]	|Can be directly render into html DOM tree, usually are \<iframe> of youtube video	|
+|[html]DOM element[/html]	|Can be directly render into html DOM tree, usually are \<iframe> of embeded video	|
 |[file][/file]|
 |[img][/img]|
 |[GPS]Building Name, Room Number, Time[/GPS]| Information in between will parsed by campus map tool, show GPS direction to destination. (Not implementing in current objective)|
