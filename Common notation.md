@@ -9,7 +9,8 @@
 |[\n]	|New line indicator, equivlent to \</br>	|
 |[extend] More... [/extend]	|Further details that can be toggled to display	|
 |[html]DOM element[/html]	|Can be directly render into html DOM tree, usually are \<iframe> of embeded video	|
-|[file][/file]|
-|[img][/img]|
+|[file][/file]|Not planned|
+|[img][/img]|Regular URL image|
 |[GPS]Building Name, Room Number, Time[/GPS]| Information in between will parsed by campus map tool, show GPS direction to destination. (Not implementing in current objective)|
-|[pdf]URL[/pdf]| Parse a online PDF into a div DOM and display on the main page|
+|[show-pdf]URL[/show-pdf]| Parse a online PDF into a div DOM and display on the main page|
+|[download-pdf]URL[/download-pdf]| Directlty download to user client|
