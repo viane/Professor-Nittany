@@ -14,5 +14,5 @@
 |[GPS]Building Name, Room Number, Time[/GPS]| Information in between will parsed by campus map tool, show GPS direction to destination. (Not implementing in current objective)|
 |[show-pdf]URL[/show-pdf]| Parse a online PDF into a div DOM and display on the main page|
 |[download-pdf]URL[/download-pdf]| Directlty download to user client|
-|[ </br>[question-sample]Sample question[/question-sample],</br>[question-sample]Sample question[/question-sample], </br>... </br>]| Sample string of related questions, if user click it, submit the question that is correspond in the [question] array. |
-|[ </br>[question-actual]Formatted question[/question-actual],</br>[question]Formatted question[/question-actual], </br>... </br>]| Store the approved question that in order of [question-placeholder] array. |
+|[ </br>[question]Sample[/question],</br>[question]Sample[/question], </br>... </br>]| Sample string of related questions, if user click it, submit the question that is correspond in the [question] array. |
+|[ </br>[ask]Formatted question[/ask],</br>[ask]Formatted question[/ask], </br>... </br>]| Store the approved question that in order of [question-placeholder] array. |
