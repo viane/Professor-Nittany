@@ -34,7 +34,7 @@ module.exports = function(passport) {
 
     // used to deserialize the user
     passport.deserializeUser(function(id, done) {
-        User.findByIdAndUpdate(id, function(err, user) {
+        User.findById(id, function(err, user) {
             done(err, user);
         });
     });
@@ -146,7 +146,7 @@ module.exports = function(passport) {
             // asynchronous
             process.nextTick(function() {
                 // find the user in the database based on their facebook id
-                User.findByIdAndUpdate({
+                User.findOne({
                     'facebook.id': profile.id
                 }, function(err, user) {
                     // if there is an error, stop everything and return that
