@@ -11,8 +11,7 @@ var watson = require('watson-developer-cloud');
 var qs = require('qs'); //  Use a querystring parser to encode output.
 var crypto = require('crypto');
 var morgan = require('morgan'); //request logger
-var formidable = require('formidable');
-var userVoiceFileName, userVoiceFilePath = "./audio/";
+
 var util = require("util");
 var cookieParser = require('cookie-parser');
 var app = express();
@@ -21,8 +20,6 @@ var session = require('express-session');
 var multer = require('multer');
 var methodOverride = require('method-override');
 var root = __dirname;
-var speech_to_text_params;
-var isVioceFileWritten = true;
 var flash = require('connect-flash');
 
 //libs for user system
@@ -84,15 +81,6 @@ require('./config/passport')(passport); // pass passport for configuration
 
 // routes ======================================================================
 require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
-
-
-//speech to text
-var speech_to_text = watson.speech_to_text({
-  username: 'b0a5aa64-d4c5-48df-8b9e-384a4296cf40',
-  password: 'EmIhwoPUhMSC',
-  version: 'v1'
-});
-
 
 //for retrive and rank
 var retrieve_and_rank = watson.retrieve_and_rank({
