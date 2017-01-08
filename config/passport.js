@@ -146,7 +146,7 @@ module.exports = function(passport) {
             // asynchronous
             process.nextTick(function() {
                 // find the user in the database based on their facebook id
-                User.findOne({
+                User.findByIdAndUpdate({
                     'facebook.id': profile.id
                 }, function(err, user) {
                     // if there is an error, stop everything and return that
