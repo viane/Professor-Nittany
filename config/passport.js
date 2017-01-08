@@ -34,7 +34,7 @@ module.exports = function(passport) {
 
     // used to deserialize the user
     passport.deserializeUser(function(id, done) {
-        User.findById(id, function(err, user) {
+        User.findByIdAndUpdate(id, function(err, user) {
             done(err, user);
         });
     });
@@ -161,8 +161,8 @@ module.exports = function(passport) {
                         // if there is no user found with that facebook id, create them
                         var newUser = new User();
                         // set all of the facebook information in our user model
-                        newUser.facebook.id = profile.id; // set the users facebook id                   
-                        newUser.facebook.token = token; // we will save the token that facebook provides to the user                    
+                        newUser.facebook.id = profile.id; // set the users facebook id
+                        newUser.facebook.token = token; // we will save the token that facebook provides to the user
                         newUser.facebook.displayName = profile.displayName; // look at the passport user profile to see how names are returned
                         newUser.facebook.familyName = profile.name.familyName;
                         newUser.facebook.givenName = profile.name.givenName;
@@ -215,8 +215,8 @@ module.exports = function(passport) {
                         // if there is no user found with that facebook id, create them
                         var newUser = new User();
                         // set all of the facebook information in our user model
-                        newUser.twitter.id = profile.id; // set the users facebook id                   
-                        //newUser.twitter.token = token; // we will save the token that facebook provides to the user                    
+                        newUser.twitter.id = profile.id; // set the users facebook id
+                        //newUser.twitter.token = token; // we will save the token that facebook provides to the user
                         newUser.twitter.name = profile.username; // look at the passport user profile to see how names are returned
                         newUser.twitter.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
                         newUser.twitter.avatar = profile.photos[0].value;
@@ -263,7 +263,7 @@ module.exports = function(passport) {
                         // if there is no user found with that facebook id, create them
                         var newUser = new User();
                         // set all of the facebook information in our user model
-                        newUser.google.id = profile.id; // set the users facebook id                   
+                        newUser.google.id = profile.id; // set the users facebook id
                         newUser.google.displayName = profile.displayName; // look at the passport user profile to see how names are returned
                         newUser.google.familyName = profile.name.familyName;
                         newUser.google.givenName = profile.name.givenName;
@@ -314,7 +314,7 @@ module.exports = function(passport) {
                     // if there is no user found with that facebook id, create them
                     var newUser = new User();
                     // set all of the facebook information in our user model
-                    newUser.linkedin.id = profile.id; // set the users facebook id                   
+                    newUser.linkedin.id = profile.id; // set the users facebook id
                     newUser.linkedin.displayName = profile.displayName; // look at the passport user profile to see how names are returned
                     newUser.linkedin.familyName = profile.name.familyName;
                     newUser.linkedin.givenName = profile.name.givenName;
@@ -360,7 +360,7 @@ module.exports = function(passport) {
                     // if there is no user found with that facebook id, create them
                     var newUser = new User();
                     // set all of the facebook information in our user model
-                    newUser.instagram.id = profile.id; // set the users facebook id                   
+                    newUser.instagram.id = profile.id; // set the users facebook id
                     newUser.instagram.displayName = profile.displayName; // look at the passport user profile to see how names are returned
                     newUser.instagram.avatar = profile._json.data.profile_picture;
                     //save our user to the database
@@ -404,7 +404,7 @@ module.exports = function(passport) {
                     // if there is no user found with that facebook id, create them
                     var newUser = new User();
                     // set all of the facebook information in our user model
-                    newUser.reddit.id = profile.id; // set the users facebook id                   
+                    newUser.reddit.id = profile.id; // set the users facebook id
                     newUser.reddit.displayName = profile.name; // look at the passport user profile to see how names are returned
                     newUser.reddit.avatar = configAuth.redditAuth.avatar;
                     //save our user to the database
@@ -447,7 +447,7 @@ module.exports = function(passport) {
                     // if there is no user found with that facebook id, create them
                     var newUser = new User();
                     // set all of the facebook information in our user model
-                    newUser.amazon.id = profile.id; // set the users facebook id                   
+                    newUser.amazon.id = profile.id; // set the users facebook id
                     newUser.amazon.displayName = profile.displayName; // look at the passport user profile to see how names are returned
                     newUser.amazon.avatar = configAuth.amazonAuth.avatar;
                     newUser.amazon.email = profile.emails[0].value;
@@ -464,7 +464,7 @@ module.exports = function(passport) {
         });
 
     }));
-    
+
     // =========================================================================
     // Wechat ================================================================
     // =========================================================================
@@ -491,7 +491,7 @@ module.exports = function(passport) {
                     // if there is no user found with that facebook id, create them
                     var newUser = new User();
                     // set all of the facebook information in our user model
-                    newUser.wechat.id = profile.id; // set the users facebook id                   
+                    newUser.wechat.id = profile.id; // set the users facebook id
                     newUser.wechat.displayName = profile.displayName; // look at the passport user profile to see how names are returned
                     newUser.wechat.avatar = configAuth.wechat.avatar;
                     newUser.wechat.email = profile.emails[0].value;
