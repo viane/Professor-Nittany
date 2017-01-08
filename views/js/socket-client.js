@@ -30,9 +30,8 @@ $(function() {
 
   // when server send back a message
   socket.on('new message', function (data) {
-    addChatMessage("server",data.message[0]);
-    console.log("server received your data and sent to you:");
-    console.log(JSON.stringify(data));
+    addChatMessage("server",data.message);
+    console.log("server received your data and sent to you: " +JSON.stringify(data.message));
   });
 
   var chatWindow=$('.chat-thread'); //main chat window
@@ -63,6 +62,7 @@ $(function() {
     }
   });
 
+//update display message function
   var addChatMessage = function(sender,message){
       if(sender==="server"){
         //remove submit btn animation

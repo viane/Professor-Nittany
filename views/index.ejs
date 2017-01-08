@@ -8,8 +8,6 @@
   <meta property="wb:webmaster" content="8d30f821c40292ae" />
   <meta name="author" content="Xiaoyu Zhou">
   <title>Conversation agent</title>
-  <script type="text/javascript" src="../js/recordInit.js"></script>
-  <script type="text/javascript" src="../js/recorder.js"></script>
 </head>
 
 <body>
@@ -33,35 +31,35 @@
           <% if (user.local.email) { %>
             local
           <% } %>
-        
+
           <% if (user.facebook.id) { %>
             facebook
           <% } %>
-          
+
           <% if (user.twitter.id) { %>
             twitter
           <% } %>
-          
+
           <% if (user.google.id) { %>
             google
           <% } %>
-          
+
           <% if (user.linkedin.id) { %>
             linkedin
           <% } %>
-          
+
           <% if (user.instagram.id) { %>
             instagram
           <% } %>
-          
+
           <% if (user.reddit.id) { %>
             reddit
           <% } %>
-          
+
           <% if (user.amazon.id) { %>
             amazon
           <% } %>
-          
+
           <% if (user.wechat.id) { %>
             wechat
           <% } %>
@@ -70,35 +68,35 @@
           <% if (user.local.email) { %>
             <%= user._id %>
           <% } %>
-        
+
           <% if (user.facebook.id) { %>
           <%= user.facebook.id %>
           <% } %>
-          
+
           <% if (user.twitter.id) { %>
             <%= user.twitter.id %>
           <% } %>
-          
+
           <% if (user.google.id) { %>
             <%= user.google.id %>
           <% } %>
-          
+
           <% if (user.linkedin.id) { %>
             <%= user.linkedin.id %>
           <% } %>
-          
+
           <% if (user.instagram.id) { %>
             <%= user.instagram.id %>
           <% } %>
-          
+
           <% if (user.reddit.id) { %>
             <%= user.reddit.id %>
           <% } %>
-          
+
           <% if (user.amazon.id) { %>
             <%= user.amazon.id %>
           <% } %>
-          
+
           <% if (user.wechat.id) { %>
             <%= user.weibo.id %>
           <% } %>
@@ -115,8 +113,7 @@
   <!-- Socket io, only for input page -->
   <script src="/socket.io/socket.io.js"></script>
   <script src="../js/socket-client.js"></script>
- <% include footer.ejs %>    
+ <% include footer.ejs %>
 </body>
 
 </html>
-
