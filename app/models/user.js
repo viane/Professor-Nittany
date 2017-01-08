@@ -13,7 +13,7 @@ var userSchema = mongoose.Schema({
         interest: mongoose.Schema.Types.Mixed
     },
     facebook: {
-      _id: String,
+       _id: String,
         id: String,
         token: String,
         email: String,
@@ -23,7 +23,6 @@ var userSchema = mongoose.Schema({
         givenName: String,
         gender: String,
         ageMin: Number,
-        role: { type: String, default: "student" },
         interest: mongoose.Schema.Types.Mixed
     },
     twitter: {
