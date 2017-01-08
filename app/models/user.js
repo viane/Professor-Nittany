@@ -76,7 +76,7 @@ var userSchema = mongoose.Schema({
         avatar:String,
         interest: mongoose.Schema.Types.Mixed
     }
-});
+},{ strict: true });
 
 // checking if password is valid using bcrypt
 userSchema.methods.validPassword = function(password) {
