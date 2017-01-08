@@ -13,6 +13,7 @@ var userSchema = mongoose.Schema({
         interest: mongoose.Schema.Types.Mixed
     },
     facebook: {
+      _id: String,
         id: String,
         token: String,
         email: String,
