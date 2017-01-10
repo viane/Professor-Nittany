@@ -1,3 +1,5 @@
+/*Dev style sheet, merge style to style.css if final*/
+
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,900);
 .bg-white {
     background-color: white;
@@ -204,4 +206,9 @@ float: left;
 left: 50%;
 top: 50%;
 transform: translate(-50%, -50%);
+}
+
+.title-admin{
+  color: white;
+  font-size: 2em;
 }

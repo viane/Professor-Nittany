@@ -1,5 +1,8 @@
 //Noty lib for global notification
-var generate = function(type, text) {
+var generateNotice = function(type, text, timeout) {
+  if(timeout === undefined){
+    timeout = 2500; //default message out time
+  }
     var n = noty({
         text: text,
         type: type,
@@ -16,7 +19,8 @@ var generate = function(type, text) {
 
         }
     });
-    n.setTimeout(2500);
+    console.log("timeout: ", timeout);
+    n.setTimeout(timeout);
 };
 
 ////////////////////////////////////////////////////////
@@ -34,7 +38,7 @@ var hideShowElementByIDOnClick = function(triger, target) {
         //hide all other elements by exclude this index
         $(targetIDArray).each(function(index,value){
             if(index!=showIndex){
-               $("#"+value).hide(400); 
+               $("#"+value).hide(400);
             }
         })
         //toggle our target

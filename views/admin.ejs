@@ -10,11 +10,12 @@
 	<!-- end of menu bar -->
 <div class="container">
 
-<% var WelcomeStr = locals.user.local.role + ' ' + locals.user.local.displayName %>
+<% var role = locals.user.local.role %>
+<% var name = locals.user.local.displayName %>
 
 <div class="col-sm-6 col-sm-offset-3">
-    <div>
-        <p>Welcome, <%- CapitalizeString(WelcomeStr) %></p>
+    <div class="title-admin">
+        <p>Welcome <%- CapitalizeString(role) %>, <%- CapitalizeString(name) %></p>
     </div>
 	<!-- show any messages that come back with authentication -->
 	<% if (message.length > 0) { %>

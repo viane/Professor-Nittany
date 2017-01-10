@@ -4,6 +4,20 @@ var crypto = require('crypto');
 // load up the question answer model
 var questionAnswer = require('../app/models/QA');
 
+var vcapServices = require('vcap_services'),
+    extend       = require('util')._extend,
+    watson       = require('watson-developer-cloud');
+
+var config = extend({
+  version: 'v1',
+  url: 'https://stream.watsonplatform.net/speech-to-text/api',
+  username: '110115fe-46e5-42cd-a5c3-41a09be09375',
+  password: 'UA8PfTGKRr60'
+}, vcapServices.getCredentials('speech_to_text'));
+
+var authService = watson.authorization(config);
+
+
 module.exports = function(app, passport) {
 
     // =====================================
@@ -291,6 +305,21 @@ module.exports = function(app, passport) {
                 console.log('Sent:', req.path);
             }
         });
+    });
+
+    //stt
+    app.get('/dev/voice', function(req, res) {
+        res.render('dev/voice.ejs', { ct: req._csrfToken });
+    });
+
+    // Get token using your credentials
+    app.post('/api/token', function(req, res, next) {
+      authService.getToken({url: config.url}, function(err, token) {
+        if (err)
+          next(err);
+        else
+          res.send(token);
+      });
     });
 
 };

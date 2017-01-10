@@ -87,7 +87,7 @@ $(document).ready(function() {
             }
             if (questionContext.val().length == 0) {
                 questionContext.focus();
-                generate('error', "<div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Question can't not be empty</div>"); //call Noty with message
+                generateNotice('error', "<div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Question can't not be empty</div>"); //call Noty with message
             }
             else {
                 $.ajax({
@@ -96,7 +96,7 @@ $(document).ready(function() {
                     data: queryData
                 }).done(function(data) {
                     if (data.status === "1") { //call Noty with message for success
-                        generate('success', "<div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> "+data.message+"</div>");
+                        generateNotice('success', "<div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> "+data.message+"</div>");
                         questionContext.val(""); //clear text input
                         answerContext.val("");
                         tagContext.val("");
@@ -104,10 +104,10 @@ $(document).ready(function() {
                     else {
                         //err
                         if (data.status === "0") { //call Noty with message for alert
-                            generate('alert', "<div><i class=\"fa fa-exclamation\" aria-hidden=\"true\"></i> "+data.message+"</div>");
+                            generateNotice('alert', "<div><i class=\"fa fa-exclamation\" aria-hidden=\"true\"></i> "+data.message+"</div>");
                         }
                         if (data.status === "-1") { //call Noty with message for error
-                            generate('error', "<div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> "+data.message+"</div>");
+                            generateNotice('error', "<div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> "+data.message+"</div>");
                         }
                     }
                 });

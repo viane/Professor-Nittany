@@ -8,6 +8,7 @@ var userSchema = mongoose.Schema({
         email: String,
         password: String,
         displayName: String,
+        role: { type: String, default: "student" },
         interest: mongoose.Schema.Types.Mixed
     },
     facebook: {
@@ -48,7 +49,7 @@ var userSchema = mongoose.Schema({
         givenName: String,
         email:String,
         avatar:String,
-        role: { type: String, default: "student" },
+
         interest: mongoose.Schema.Types.Mixed
     },
     instagram:{

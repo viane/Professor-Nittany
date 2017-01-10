@@ -1,4 +1,7 @@
 'use strict';
+
+require('@risingstack/trace'); //for heorku tracking addon
+
 var http = require('http');
 const https = require('https');
 var path = require('path');

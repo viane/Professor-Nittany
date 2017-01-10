@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="ct" content="<%= ct %>">
+    <title>Speech to Text</title>
+    <link href="./watson-bootstrap-style.css" rel="stylesheet">
+    <link href="./style.css" rel="stylesheet">
+    <link rel="shortcut icon" href="images/favicon.ico" />
+  </head>
+  <body>
+
+
+
+
+    <!-- Step 1 Section-->
+    <div class="container">
+      <!-- Step 3 Section-->
+      <!-- First column of inputs -->
+      <div class="row">
+        <div class="row">
+
+        </div><!-- row -->
+
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="audioParent">
+              <audio style="display:none" class="audio" controls>
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          </div>
+        </div><!-- row -->
+
+
+        <div class="row">
+          <nav class="navbar navbar-inverse">
+          <ul class="navbar-text">
+            <li id="recordButton" class="button-row nav-inverse-color">
+            <img id="microphoneIcon" src="images/microphone.svg" class="icon">
+            <span class="nav-label">Record Audio</span>
+            </li>
+          </ul>
+
+          </nav>
+        </div>
+        <!-- Tab panes -->
+        <div class="row" style="  margin: 0;">
+          <div class="col-lg-12 col-md-12 col-sm-12" style="padding: 0;">
+            <div class="well">
+              <form autocomplete="off" class="form-horizontal">
+                <div role="tabpanel">
+                  <!-- Nav tabs -->
+                  <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#home2" aria-controls="home" role="tab" data-toggle="tab">Text</a></li>
+                  </ul>
+                  <div class="hr-tab"></div>
+                  <fieldset>
+                    <div class="row error-row">
+                      <div class="col-lg-12">
+                        <div id="errorAlert" >
+                          <span id="errorMessage"></span>
+                          <a class="pull-right" href="#" id="errorClose">&times;</a>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row notification-row">
+                      <div class="col-lg-12">
+                        <div id="notificationAlert" >
+                          <span id="notificationMessage"></span>
+                          <a class="pull-right" href="#" id="notificationClose">&times;</a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row tabpanel-row">
+                      <div class="col-lg-12">
+                        <div class="tab-content">
+                          <div role="tabpanel" class="tab-pane active" id="home2">
+                            <textarea readonly id="resultsText"></textarea>
+                          </div>
+                        </div>
+                      </div><!-- .col-lg-12 -->
+                    </div>
+                  </fieldset>
+                </div>
+              </form>
+            </div>
+          </div><!-- /.well -->
+        </div><!-- /.tabpanel -->
+
+      </div><!-- /.container -->
+
+      <!-- Place js files at the end of the document, with fallbacks for CDNs -->
+      <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+      <script src="http://www.novasoftware.com/Scripts/jquery.subscribe.js"></script>
+
+      <script src="./voice.js"></script>
+  </body>
+</html>
