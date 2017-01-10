@@ -25,6 +25,7 @@
     "morgan": "^1.7.0",
     "multer": "^1.2.1",
     "natural": "^0.4.0",
+    "nodemon": "^1.11.0",
     "passport": "^0.3.2",
     "passport-amazon": "*",
     "passport-evernote": "*",
