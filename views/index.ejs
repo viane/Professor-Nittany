@@ -17,7 +17,12 @@
 
   </ul>
   <div class="chat-window">
-    <button id="voiceSubmitBtn" style="width: 100px;" value="record"><i class="fa fa-microphone" aria-hidden="true"></i></button>
+    <div class="audioParent">
+      <audio style="display:none" class="audio" controls>
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+    <button id="recordButton" style="width: 100px;" value="record"><i class="fa fa-microphone" aria-hidden="true"></i></button>
 
       <span class="transcripting_loading_span">Recognizing</span>
       <div class="dot dot1 pulse"> </div>
@@ -112,6 +117,8 @@
   <!-- Socket io, only for input page -->
   <script src="/socket.io/socket.io.js"></script>
   <script src="../js/socket-client.js"></script>
+  <script src="http://www.novasoftware.com/Scripts/jquery.subscribe.js"></script>
+  <script src="../js/speech-to-text.js"></script>
  <% include footer.ejs %>
 </body>
 

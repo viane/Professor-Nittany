@@ -335,10 +335,9 @@ var createTokenGenerator = function() {
         callback(null, err);
         return;
       }
-      var url = '/api/token';
+      var url = '/api/speech-to-text/token';
       var tokenRequest = new XMLHttpRequest();
       tokenRequest.open('POST', url, true);
-      tokenRequest.setRequestHeader('csrf-token',$('meta[name="ct"]').attr('content'));
       tokenRequest.onreadystatechange = function() {
         if (tokenRequest.readyState === 4) {
           if (tokenRequest.status === 200) {
@@ -411,11 +410,13 @@ var initSocket = function(options, onopen, onlistening, onmessage, onerror, oncl
     socket.send(JSON.stringify(message));
     onopen(socket);
   };
+
   socket.onmessage = function(evt) {
     var msg = JSON.parse(evt.data);
     if (msg.error) {
-      showError(msg.error);
-      $.publish('hardsocketstop');
+      //session time out due to inactivity, don't thur error
+      //showError(msg.error);
+      $.publish('socketstop');
       return;
     }
     if (msg.state === 'listening') {
@@ -425,7 +426,7 @@ var initSocket = function(options, onopen, onlistening, onmessage, onerror, oncl
         listening = true;
       } else {
         //console.log('MICROPHONE: Closing socket.');
-        socket.close();
+        $.publish('socketstop');
       }
     }
     onmessage(msg, socket);
@@ -444,12 +445,12 @@ var initSocket = function(options, onopen, onlistening, onmessage, onerror, oncl
       // Authentication error, try to reconnect
       //console.log('generator count', tokenGenerator.getCount());
       if (tokenGenerator.getCount() > 1) {
-        $.publish('hardsocketstop');
+        $.publish('socketstop');
         throw new Error('No authorization token is currently available');
       }
       tokenGenerator.getToken(function(err, token) {
         if (err) {
-          $.publish('hardsocketstop');
+          $.publish('socketstop');
           return false;
         }
         //console.log('Fetching additional token...');
@@ -458,17 +459,17 @@ var initSocket = function(options, onopen, onlistening, onmessage, onerror, oncl
       });
       return false;
     }
-    if (evt.code === 1011) {
-      generateNotice("error",'Server error ' + evt.code + ': please refresh your browser and try again', _dayToMillsec(1));
-      return false;
-    }
-    if (evt.code > 1000) {
-      generateNotice("error",'Server error ' + evt.code + ': please refresh your browser and try again', _dayToMillsec(1));
-      return false;
-    }
+    // if (evt.code === 1011) {
+    //   generateNotice("warn",'Server error ' + evt.code + ': please refresh your browser and try again', _secToTimeUnit(3.5));
+    //   return false;
+    // }
+    // if (evt.code > 1000) {
+    //   generateNotice("warn",'Server error ' + evt.code + ': please refresh your browser and try again', _secToTimeUnit(3.5));
+    //   return false;
+    // }
     // Made it through, normal close
     //$.unsubscribe('hardsocketstop');
-    $.unsubscribe('socketstop');
+    //$.unsubscribe('socketstop');
     onclose(evt);
   };
 
@@ -546,7 +547,6 @@ var showResult = function(msg, baseString, model) {
        // Only show alternatives if we're final
        alternativePrototype.showAlternatives(alternatives);
     } else {
-      text = text.replace(/ /g,'');      // remove whitespaces
       text = text.charAt(0).toUpperCase() + text.substring(1);
       $('#resultsText').val(baseString + text);
     }
@@ -587,7 +587,7 @@ var handleMicrophone = function(token, model, mic, callback) {
     'word_confidence': true,
     'timestamps': true,
     'max_alternatives': 3,
-    'inactivity_timeout': 600
+    'inactivity_timeout': 2000
   };
   options.model = model;
 
@@ -623,29 +623,7 @@ var handleMicrophone = function(token, model, mic, callback) {
 };
 
 var showError = function(msg) {
-  generateNotice("error", msg, _secToMillsec(2.5));
-};
-
-var showNotice = function(msg) {
-  //console.log('Notice: ', msg);
-  var noticeAlert = $('.notification-row');
-  noticeAlert.hide();
-  noticeAlert.css('border', '2px solid #ececec');
-  noticeAlert.css('background-color', '#f4f4f4');
-  noticeAlert.css('color', 'black');
-  var noticeMessage = $('#notificationMessage');
-  noticeMessage.text(msg);
-  noticeAlert.show();
-  $('#notificationClose').click(function(e) {
-    e.preventDefault();
-    noticeAlert.hide();
-    return false;
-  });
-};
-
-var hideError = function() {
-  var errorAlert = $('.error-row');
-  errorAlert.hide();
+  generateNotice("error", msg, _secToTimeUnit(3.5));
 };
 
 var initRecordButton = function(ctx) {
@@ -804,11 +782,6 @@ $(document).ready(function() {
 
     $.subscribe('clearscreen', function() {
       $('#resultsText').text('');
-      $('#resultsJSON').text('');
-      $('.error-row').hide();
-      $('.notification-row').hide();
-      $('.hypotheses > ul').empty();
-      $('#metadataTableBody').empty();
     });
 
   });

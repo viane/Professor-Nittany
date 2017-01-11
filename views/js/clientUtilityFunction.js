@@ -1,7 +1,7 @@
 //Noty lib for global notification
 var generateNotice = function(type, text, timeout) {
   if(timeout === undefined){
-    timeout = 2500; //default message out time
+    timeout = _secToTimeUnit(3.5); //default message out time
   }
     var n = noty({
         text: text,
@@ -19,7 +19,6 @@ var generateNotice = function(type, text, timeout) {
 
         }
     });
-    console.log("timeout: ", timeout);
     n.setTimeout(timeout);
 };
 
@@ -73,3 +72,10 @@ $(document).ready(function() {
     hideShowElementByIDOnClick("add_question_btn", "addQuestionSection");
     hideShowElementByIDOnClick("analysis_question_btn", "analysisQuestionSection");
 });
+
+//Time utility functions, convert input time to milliseconds
+let _secToTimeUnit = function(secs){return 1000 * secs};
+let _minToTimeUnit = function(mins){return mins * _secToTimeUnit(60)};
+let _hourToTimeUnit = function(hours){return hours * _minToTimeUnit(60)};
+let _dayToTimeUnit = function(days){return days * _hourToTimeUnit(24)};
+let _yearToTimeUnit = function(years){return years * _dayToTimeUnit(365)};

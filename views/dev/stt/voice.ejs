@@ -4,15 +4,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="ct" content="<%= ct %>">
     <title>Speech to Text</title>
     <link href="./watson-bootstrap-style.css" rel="stylesheet">
     <link href="./style.css" rel="stylesheet">
-    <link rel="shortcut icon" href="images/favicon.ico" />
   </head>
   <body>
 
-
+<%- include ../header.ejs %>
 
 
     <!-- Step 1 Section-->
@@ -39,7 +37,6 @@
           <nav class="navbar navbar-inverse">
           <ul class="navbar-text">
             <li id="recordButton" class="button-row nav-inverse-color">
-            <img id="microphoneIcon" src="images/microphone.svg" class="icon">
             <span class="nav-label">Record Audio</span>
             </li>
           </ul>
@@ -97,7 +94,6 @@
       <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
       <script src="http://www.novasoftware.com/Scripts/jquery.subscribe.js"></script>
-
       <script src="./voice.js"></script>
   </body>
 </html>
