@@ -1,3 +1,5 @@
+const questionAnswer = require('./question-answer');
+
 module.exports = function(server) {
     var io = require('socket.io').listen(server);
     var Promise = require("bluebird");
@@ -33,22 +35,17 @@ module.exports = function(server) {
                     ///////////////////////////////////////////////////////
                     //check inputs corraltion to our domain's perspectives
                     ///////////////////////////////////////////////////////
-                    socket.emit('new message', {
-                        message: "You are a loged in user"
-                    });
+                    socket.emit('new message', {message: "You are a loged in user"});
                 }
             } else {
                 //visitor's input block
 
-                //try conversation
-                conversation.enterMessage(currentInput).then(function(response) {
-                    socket.emit('new message', {
-                        message: response
-                    });
+                //handle by queston and answer
+                questionAnswer.ask(currentInput).then(function(result) {
+                    socket.emit('new message', {message: result});
                 }).catch(function(err) {
                     console.log(err);
                 });
-
             }
         });
         // when the user disconnects.. perform this

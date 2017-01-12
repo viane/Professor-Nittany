@@ -26,7 +26,7 @@
 					<h3><span class="fa fa-user"></span> Local Account</h3>
 						<p>
 							<strong>id</strong>: <%= user._id %><br>
-							<strong>Avatar</strong>: <img class="user-avatar" style="width: 100px;" src="https://scontent.xx.fbcdn.net/v/t1.0-9/12990852_10206445712801710_4553203964392502793_n.jpg?oh=efa17caa0966f668faa53688d8f15dc8&oe=58B6A6C2"></img><br>
+							<strong>Avatar</strong>: <img class="user-avatar" style="width: 100px;" src=<%= user.local.avatar %>></img><br>
 							<strong>email</strong>: <%= user.local.email %><br>
 							<strong>name</strong>: <%= user.local.displayName %>
 						</p>

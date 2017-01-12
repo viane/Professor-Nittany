@@ -1,5 +1,6 @@
 // app/models/QA.js
 var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 var configDB = require.main.require('./config/database.js');
 var conn = mongoose.createConnection(configDB.questionAnswerDB_URL);
 

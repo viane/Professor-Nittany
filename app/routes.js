@@ -5,6 +5,7 @@ var crypto = require('crypto');
 var questionAnswer = require('../app/models/QA');
 
 var watsonToken = require('./watson-token');
+var questionAnswer = require('./question-answer');
 
 module.exports = function(app, passport) {
 
@@ -243,6 +244,9 @@ module.exports = function(app, passport) {
 
     });
 
+    //////
+    // Front end files
+    ///
     app.get('/css/*', function(req, res) {
         res.sendfile(req.path, {
             'root': root
@@ -295,8 +299,12 @@ module.exports = function(app, passport) {
         });
     });
 
+    ///////////////////////////////////////////////////
+    /// API
+    ///////////////////////////////////////////////////
+
     // Get speech to text token route
-    app.use('/api/speech-to-text', watsonToken)
+    app.use('/api/speech-to-text', watsonToken);
 
 };
 

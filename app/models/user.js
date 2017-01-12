@@ -1,5 +1,9 @@
 // app/models/user.js
 var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
+var configDB = require.main.require('./config/database.js');
+var conn = mongoose.createConnection(configDB.userDB_URL);
+
 var bcrypt = require('bcrypt-nodejs');
 
 // define the schema for our user model
@@ -8,6 +12,7 @@ var userSchema = mongoose.Schema({
         email: String,
         password: String,
         displayName: String,
+        avatar: { type: String, default: "./img/user.png" },
         role: { type: String, default: "student" },
         interest: mongoose.Schema.Types.Mixed
     },
@@ -100,4 +105,4 @@ userSchema.methods.hashPassword = function(password) {
 };
 
 // create the model for users and expose it to our app
-module.exports = mongoose.model('User', userSchema);
+module.exports = conn.model('User', userSchema);
