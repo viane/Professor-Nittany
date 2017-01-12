@@ -1,6 +1,7 @@
 'use strict';
 require('@risingstack/trace'); //for heorku tracking addon
 require('./config/console'); //overide global console.log function
+global.Promise = require("bluebird");
 
 const http = require('http');
 const https = require('https');
@@ -23,7 +24,7 @@ const methodOverride = require('method-override');
 
 const flash = require('connect-flash');
 const fetch = require('node-fetch');
-global.Promise = require("bluebird");
+
 //libs for user system
 const passport = require('passport');
 
