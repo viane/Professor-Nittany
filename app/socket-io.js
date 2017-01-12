@@ -6,7 +6,7 @@ module.exports = function(server) {
     //Socket.io handle user's input
 
     io.on('connection', function(socket) {
-        let user = {};
+        var user = {};
 
         //when user init a socket from client side, record the suer id and type for security purpose
         socket.on('load', function(data) {
