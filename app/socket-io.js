@@ -12,7 +12,6 @@ module.exports = function(server) {
         socket.on('load', function(data) {
             user.id = data.id;
             user.type = data.type;
-            console.log("User connected thru a socket: " + JSON.stringify(user));
         });
 
         // when the client emits 'new message', this listens and executes
