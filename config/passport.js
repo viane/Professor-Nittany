@@ -33,12 +33,18 @@ module.exports = function(passport) {
 
     // used to deserialize the user
     passport.deserializeUser(function(id, done) {
-        console.log("Try to deserialize user, user id is ");
+        const mongoose = require('mongoose');
+        console.log("==============================================\nDeserializing User...");
+        console.log("Try to deserialize user ->");
         console.log(id);
-        User.findOne({
-            _id: id
-        }, function(err, user) {
-            done(err, user);
+        console.log("is user id valid? ->");
+        console.log(mongoose.Types.ObjectId.isValid(id.toString()));
+        console.log("==============================================");
+
+        User.findById(id).then(function(user) {
+            done(null, user);
+        }).catch(function(err) {
+            done(err, null);
         });
     });
 
