@@ -43,7 +43,7 @@ module.exports = function(passport) {
         console.log(mongoose.Types.ObjectId.isValid(id.toString()));
         console.log("==============================================");
 
-        User.findById(id).then(function(user) {
+        User.findById(mongoose.Types.ObjectId(id)).then(function(user) {
             done(null, user);
         }).catch(function(err) {
             done(err, null);
