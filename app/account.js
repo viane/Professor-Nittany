@@ -10,16 +10,6 @@ router.post('/apply-admin', function(req, res) {
     const id = req.user._id;
     const activationCode = req.body.code;
     if (validateActivationCode(activationCode)) {
-        // User.find({_id: id}).then(function(doc) {
-        //     console.log(doc);
-        //     User.local.role = "admin";
-        //     User.save().then(function(updatedUser) {
-        //         res.send({type: 'success', information: 'Successfully applied.', newUser: updatedUser});
-        //     }).catch(err) {
-        //         throw err
-        //         res.send({type: 'error', information: err});
-        //     }
-        // })
         User.update({
             _id: id
         }, {
