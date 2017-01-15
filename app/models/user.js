@@ -9,12 +9,34 @@ var bcrypt = require('bcrypt-nodejs');
 // define the schema for our user model
 var userSchema = mongoose.Schema({
     local: {
-        email: String,
+        email: {
+            type: String,
+            index: {
+                unique: true,
+                dropDups: true
+            }
+        },
         password: String,
         displayName: String,
-        avatar: { type: String, default: "./img/user.png" },
-        role: { type: String, default: "student" },
-        interest: mongoose.Schema.Types.Mixed
+        avatar: {
+            type: String,
+            default: "./img/user.png"
+        },
+        role: {
+            type: String,
+            default: "student"
+        },
+        ask_history: [
+            {
+                question_id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'questionAnswer'
+                },
+                favorite: Boolean,
+                ask_time: Date
+            }
+        ],
+        interest: [String]
     },
     facebook: {
         id: String,
@@ -26,7 +48,21 @@ var userSchema = mongoose.Schema({
         givenName: String,
         gender: String,
         ageMin: Number,
-        interest: mongoose.Schema.Types.Mixed
+        role: {
+            type: String,
+            default: "student"
+        },
+        ask_history: [
+            {
+                question_id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'questionAnswer'
+                },
+                favorite: Boolean,
+                ask_time: Date
+            }
+        ],
+        interest: [String]
     },
     twitter: {
         id: String,
@@ -34,61 +70,157 @@ var userSchema = mongoose.Schema({
         email: String,
         name: String,
         avatar: String,
-        interest: mongoose.Schema.Types.Mixed
+        role: {
+            type: String,
+            default: "student"
+        },
+        ask_history: [
+            {
+                question_id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'questionAnswer'
+                },
+                favorite: Boolean,
+                ask_time: Date
+            }
+        ],
+        interest: [String]
     },
     google: {
-        id:String,
-        displayName: String,
-        familyName: String,
-        givenName: String,
-        language:String,
-        email:String,
-        gender:String,
-        avatar:String,
-        interest: mongoose.Schema.Types.Mixed
-    },
-    linkedin:{
         id: String,
         displayName: String,
         familyName: String,
         givenName: String,
-        email:String,
-        avatar:String,
-
-        interest: mongoose.Schema.Types.Mixed
+        language: String,
+        email: String,
+        gender: String,
+        avatar: String,
+        role: {
+            type: String,
+            default: "student"
+        },
+        ask_history: [
+            {
+                question_id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'questionAnswer'
+                },
+                favorite: Boolean,
+                ask_time: Date
+            }
+        ],
+        interest: [String]
     },
-    instagram:{
+    linkedin: {
         id: String,
         displayName: String,
-        avatar:String,
-        interest: mongoose.Schema.Types.Mixed
+        familyName: String,
+        givenName: String,
+        email: String,
+        avatar: String,
+        role: {
+            type: String,
+            default: "student"
+        },
+        ask_history: [
+            {
+                question_id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'questionAnswer'
+                },
+                favorite: Boolean,
+                ask_time: Date
+            }
+        ],
+        interest: [String]
     },
-    reddit:{
+    instagram: {
         id: String,
         displayName: String,
-        avatar:String,
-        interest: mongoose.Schema.Types.Mixed
+        avatar: String,
+        role: {
+            type: String,
+            default: "student"
+        },
+        ask_history: [
+            {
+                question_id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'questionAnswer'
+                },
+                favorite: Boolean,
+                ask_time: Date
+            }
+        ],
+        interest: [String]
     },
-    amazon:{
+    reddit: {
         id: String,
         displayName: String,
-        avatar:String,
-        email:String,
-        interest: mongoose.Schema.Types.Mixed
+        avatar: String,
+        role: {
+            type: String,
+            default: "student"
+        },
+        ask_history: [
+            {
+                question_id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'questionAnswer'
+                },
+                favorite: Boolean,
+                ask_time: Date
+            }
+        ],
+        interest: [String]
     },
-    wechat:{
+    amazon: {
         id: String,
         displayName: String,
-        avatar:String,
-        interest: mongoose.Schema.Types.Mixed
+        avatar: String,
+        email: String,
+        role: {
+            type: String,
+            default: "student"
+        },
+        ask_history: [
+            {
+                question_id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'questionAnswer'
+                },
+                favorite: Boolean,
+                ask_time: Date
+            }
+        ],
+        interest: [String]
+    },
+    wechat: {
+        id: String,
+        displayName: String,
+        avatar: String,
+        role: {
+            type: String,
+            default: "student"
+        },
+        ask_history: [
+            {
+                question_id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'questionAnswer'
+                },
+                favorite: Boolean,
+                ask_time: Date
+            }
+        ],
+        interest: [String]
     }
-},{ strict: true });
+}, {strict: true});
 
 // checking if password is valid using bcrypt
 userSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.local.password);
 };
-
 
 // this method hashes the password and sets the users password
 userSchema.methods.hashPassword = function(password) {

@@ -30,6 +30,9 @@
 							<strong>email</strong>: <%= user.local.email %><br>
 							<strong>name</strong>: <%= user.local.displayName %>
 						</p>
+						<% if (user.local.role != "admin") { %>
+						<div id="apply-admin"><input id="apply-admin-code" type="text" placeholder="Invite code"><div id="apply-admin-submit" class="btn">Apply admin</div></div>
+					<% } %>
 				</div>
 			</div>
 			<% } %>

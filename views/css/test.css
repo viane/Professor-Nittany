@@ -212,3 +212,17 @@ transform: translate(-50%, -50%);
   color: white;
   font-size: 2em;
 }
+
+.btn{
+  border-radius: 4px;
+  border: 1px solid blue;
+  cursor: pointer;
+}
+
+#apply-admin{
+  display: inline;
+}
+
+#apply-admin-code{
+  width: 80%;
+}

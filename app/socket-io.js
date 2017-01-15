@@ -21,7 +21,7 @@ module.exports = function(server) {
             const currentInput = data.content;
 
             if (user.id && user.type) {
-
+                //socket.request.user && socket.request.user.logged_in
                 //login user block
 
                 if (user.id === data.sender.id && user.type === data.sender.type) {

@@ -6,6 +6,7 @@ var questionAnswer = require('../app/models/QA');
 
 var watsonToken = require('./watson-token');
 var questionAnswer = require('./question-answer');
+var accountManage = require('./account')
 
 module.exports = function(app, passport) {
 
@@ -306,6 +307,12 @@ module.exports = function(app, passport) {
     // Get speech to text token route
     app.use('/api/speech-to-text', watsonToken);
 
+    // Local account apply to be admin
+    // app.post('/api/account/apply-admin', function(req, res) {
+    //   console.log(req.user);
+    //   console.log(req.body);
+    // })
+    app.use('/api/account', accountManage);
 };
 
 // route middleware to make sure

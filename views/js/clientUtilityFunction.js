@@ -1,8 +1,11 @@
 //Noty lib for global notification
-var generateNotice = function(type, text, timeout) {
-  if(timeout === undefined){
-    timeout = _secToTimeUnit(3.5); //default message out time
-  }
+var generateNotice = function(type, text, timeout = _secToTimeUnit(3.5)) {
+    if (timeout === undefined) {
+        timeout = _secToTimeUnit(3.5); //default message out time
+    }
+    if (type === undefined || type === "") {
+        type = "success";
+    }
     var n = noty({
         text: text,
         type: type,
@@ -15,8 +18,7 @@ var generateNotice = function(type, text, timeout) {
             open: 'animated bounceInRight',
             close: 'animated bounceOutRight',
             easing: 'swing',
-            speed: 1200,
-
+            speed: 1200
         }
     });
     n.setTimeout(timeout);
@@ -26,18 +28,18 @@ var generateNotice = function(type, text, timeout) {
 //toggle vew section in question manage page
 ////////////////////////////////////////////////////////
 
-var trigerIDArray =["view_question_btn","add_question_btn","analysis_question_btn"];  //need get this dynamically
-var targetIDArray =["viewQuestionSection","addQuestionSection","analysisQuestionSection"]; //need get this dynamically
+var trigerIDArray = ["view_question_btn", "add_question_btn", "analysis_question_btn"]; //need get this dynamically
+var targetIDArray = ["viewQuestionSection", "addQuestionSection", "analysisQuestionSection"]; //need get this dynamically
 
 var hideShowElementByIDOnClick = function(triger, target) {
-    $("#" + target).css("display","none");
+    $("#" + target).css("display", "none");
     $("#" + triger).click(function() {
         //get index of target want to show
         var showIndex = trigerIDArray.indexOf(triger);
         //hide all other elements by exclude this index
-        $(targetIDArray).each(function(index,value){
-            if(index!=showIndex){
-               $("#"+value).hide(400);
+        $(targetIDArray).each(function(index, value) {
+            if (index != showIndex) {
+                $("#" + value).hide(400);
             }
         })
         //toggle our target
@@ -57,7 +59,8 @@ var updateText = function(event) {
             input.parent().addClass("floating-placeholder-float");
         else
             input.parent().removeClass("floating-placeholder-float");
-    }, 1)
+        }
+    , 1)
 }
 
 $(document).ready(function() {
@@ -74,8 +77,52 @@ $(document).ready(function() {
 });
 
 //Time utility functions, convert input time to milliseconds
-let _secToTimeUnit = function(secs){return 1000 * secs};
-let _minToTimeUnit = function(mins){return mins * _secToTimeUnit(60)};
-let _hourToTimeUnit = function(hours){return hours * _minToTimeUnit(60)};
-let _dayToTimeUnit = function(days){return days * _hourToTimeUnit(24)};
-let _yearToTimeUnit = function(years){return years * _dayToTimeUnit(365)};
+let _secToTimeUnit = function(secs) {
+    return 1000 * secs
+};
+let _minToTimeUnit = function(mins) {
+    return mins * _secToTimeUnit(60)
+};
+let _hourToTimeUnit = function(hours) {
+    return hours * _minToTimeUnit(60)
+};
+let _dayToTimeUnit = function(days) {
+    return days * _hourToTimeUnit(24)
+};
+let _yearToTimeUnit = function(years) {
+    return years * _dayToTimeUnit(365)
+};
+
+//User apply admin
+$(document).ready(function() {
+    $('#apply-admin-submit').on('click', function() {
+        const code = $('#apply-admin-code').val().toString();
+        if (code === undefined || code === null || code === "") {
+            generateNotice('warning', 'Empty invitation code.');
+            return;
+        };
+        const url = '/api/account/apply-admin';
+        fetch(url, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: "code=" + encodeURIComponent(code)
+        }).then(function(res) {
+            if (res.status !== 200) {
+                generateNotice('error', "Error, status code: " + res.status);
+                returnl;
+            }
+            res.json().then(function(result) {
+                generateNotice(result.type, result.information);
+                setInterval(function() {
+                    window.location.href = "/admin"
+                }, 2500);
+            })
+        }).catch(function(err) {
+            generateNotice('error', err)
+        });
+    })
+});
