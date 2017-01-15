@@ -21,6 +21,7 @@
     "formidable": "^1.0.17",
     "fs": "^0.0.2",
     "method-override": "^2.3.7",
+    "mongodb": "^2.2.21",
     "mongoose": "^4.7.6",
     "morgan": "^1.7.0",
     "multer": "^1.2.1",
