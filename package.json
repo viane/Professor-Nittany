@@ -1,7 +1,7 @@
 {
   "name": "intelligent_academic_planner",
-  "version": "0.0.3",
-  "description": "ibm conversation agent",
+  "version": "0.0.4",
+  "description": "Cognitive Application",
   "engines": {
     "node": "5.9.1"
   },
@@ -49,7 +49,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm install && nodemon server.js"
+    "start": "npm install && npm update && ncu -a/--upgradeAll && nodemon server.js"
   },
   "keywords": [
     "ibm"
