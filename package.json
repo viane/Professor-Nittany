@@ -49,7 +49,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm -v && npm install --saev && ncu -a/--upgradeAll && node server.js"
+    "start": "npm uninstall && npm install && ncu -a/--upgradeAll && node server.js"
   },
   "keywords": [
     "ibm"
