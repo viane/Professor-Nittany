@@ -1,4 +1,6 @@
 // config/passport.js
+'use strict'
+
 var validator = require("email-validator");
 // load all the things we need
 var LocalStrategy = require('passport-local').Strategy;
