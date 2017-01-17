@@ -7,6 +7,8 @@ const now = moment();
 var log_file = fs.createWriteStream('app/log/console_log.txt', {flags: 'w'});
 var log_stdout = process.stdout;
 console.log = function(d) { //
-    log_file.write(now.format("YYYY-MM-DD HH:mm:ss") + " " + util.format(d) + '\n');
-    log_stdout.write(util.format(d) + '\n');
+
+    //in production, log to DB
+
+    log_stdout.write(now.format("YYYY-MM-DD HH:mm:ss") + " " + util.format(d) + '\n');
 };
