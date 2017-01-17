@@ -1,7 +1,7 @@
 const questionAnswer = require('./question-answer');
 
 module.exports = function(server) {
-    var io = require('socket.io').listen(server);
+    const io = require('socket.io').listen(server);
 
     //Socket.io handle user's input
 
