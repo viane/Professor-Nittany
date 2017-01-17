@@ -1,3 +1,5 @@
+'use strict'
+
 var watson = require('watson-developer-cloud');
 var qs = require('qs'); //  Use a querystring parser to encode output.
 
