@@ -12,7 +12,7 @@ describe("Logout Functionality", function () {
 	var server;
 
 	beforeEach(function (done) {
-		server = require('../server.js');
+		server = require('../server');
     	done();
     });
 
