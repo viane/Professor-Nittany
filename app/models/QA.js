@@ -1,7 +1,9 @@
 // app/models/QA.js
 var mongoose = require('mongoose');
+var appRoot = require('app-root-path');
+
 mongoose.Promise = global.Promise;
-var configDB = require.main.require('./config/database.js');
+var configDB = require(appRoot +'/config/database');
 var conn = mongoose.createConnection(configDB.questionAnswerDB_URL);
 
 // define the schema for our user model
