@@ -1,10 +1,15 @@
-var util = require("util");
-var fs = require('fs');
+const util = require("util");
+const fs = require('fs');
+const moment = require('moment');
+const now = moment();
 
-//override console.log function to log to /debug.log and console
-var log_file = fs.createWriteStream(__dirname + '/debug.log', {flags: 'w'});
-var log_stdout = process.stdout;
-console.log = function(d) { //
-    log_file.write(util.format(d) + '\n');
-    log_stdout.write(util.format(d) + '\n');
+//override console.log function
+
+const log_stdout = process.stdout;
+
+console.log = function(d) {
+
+    //in production, also log to DB
+
+    log_stdout.write(now.format("YYYY-MM-DD HH:mm:ss") + " " + util.format(d) + '\n');
 };

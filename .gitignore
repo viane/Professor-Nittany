@@ -4,3 +4,5 @@ app/models/.Rhistory
 
 node_modules
 debug.log
+
+app/log/console_log.txt
