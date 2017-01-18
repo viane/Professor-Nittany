@@ -8,7 +8,7 @@ module.exports = function(server) {
     io.on('connection', function(socket) {
         var user = {};
 
-        //when user init a socket from client side, record the suer id and type for security purpose
+        //when user init a socket from client side, record the user id and type for security purpose
         socket.on('load', function(data) {
             user.id = data.id;
             user.type = data.type;
@@ -31,7 +31,7 @@ module.exports = function(server) {
                     ///////////////////////////////////////////////////////
                     //check inputs corraltion to our domain's perspectives
                     ///////////////////////////////////////////////////////
-                    socket.emit('new message', {message: "You are a loged in user"});
+                    socket.emit('new message', {message: "You are a logged in user"});
                 }
             } else {
                 //visitor's input block
