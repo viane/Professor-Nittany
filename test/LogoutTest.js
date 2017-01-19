@@ -1,30 +1,40 @@
-// var should = require('chai').should;
-//const expect = require('chai').expect;
-// var request = require('request');
-// var express = require('express');
-// var app = express();
+const should = require('chai').should;
+const expect = require('chai').expect;
+const request = require('request');
+const assert = require('assert');
+const appRoot = require('app-root-path');
+const express = require('express');
+const server = require(appRoot + '/server.js');
 
-// var baseUrl = "localhost:3000";
-
-describe("Logout Functionality", function () {
-	var expect = require('chai').expect;
-	//Suite Name
-	var server;
-
-	beforeEach(function (done) {
-		server = require('../server');
-    	done();
+describe('Basic test', function() {
+    it('should always pass', function(done) {
+        assert.equal(1, 1);
+        done();
     });
+});
 
-	afterEach(function (done) {
-		server.close();
-		done();
-	});
 
-	it ('Responds to /', function testSlash(done) {
-		request(server).get('/').expect(404, done);
-	});
-	it ('should be correct.', function() {
-		expect(2).to.equal(2);
-	});
+describe("Logout Functionality test", function() {
+    //Suite Name
+    // beforeEach(function(done) {
+    //     done();
+    // });
+		//
+    // afterEach(function(done) {
+    //     done();
+    // });
+
+		it('should return 200', function (done) {
+		  var options = {
+		    url: 'http://localhost:3000/',
+		    headers: {
+		      'Content-Type': 'text/plain'
+		    }
+		  };
+
+		  request.get(options, function (err, res, body) {
+		    done();
+		  });
+		});
+
 });

@@ -1,7 +1,8 @@
 // app/models/user.js
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-var configDB = require.main.require('./config/database.js');
+var appRoot = require('app-root-path');
+var configDB = require(appRoot+'/config/database');
 var conn = mongoose.createConnection(configDB.heroku_mlab_db_URL);
 
 var bcrypt = require('bcrypt-nodejs');
