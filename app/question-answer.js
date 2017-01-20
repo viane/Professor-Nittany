@@ -1,13 +1,13 @@
 const conversation = require('./watson-conversation');
 const retrieveRank = require('./watson-retrieve-rank');
 const processAnswer = require('./process-answer');
+const processQuestion = require('./process-question');
 
-const string = require('string');
 
-module.exports.ask = function(input) {
-    const humanizedInput = string(input).humanize().toString();
+module.exports.ask = function(user,input) {
     return new Promise(function(resolve, reject) {
-        conversation.enterMessage(humanizedInput).then(function(resultFromConversation) {
+        let formattedInput = processQuestion.processString(input);
+        conversation.enterMessage(formattedInput).then(function(resultFromConversation) {
             // analysis result from conversation
             if (false) { // no need further ask...
                 resolve(resultFromConversation);

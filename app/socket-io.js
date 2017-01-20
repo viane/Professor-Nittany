@@ -2,9 +2,7 @@ const questionAnswer = require('./question-answer');
 
 module.exports = function(server) {
     const io = require('socket.io').listen(server);
-
     //Socket.io handle user's input
-
     io.on('connection', function(socket) {
         var user = {};
 
@@ -26,18 +24,19 @@ module.exports = function(server) {
 
                 if (user.id === data.sender.id && user.type === data.sender.type) {
                     //analysis and log inputs
-                    console.log("Sender info: " + JSON.stringify(data));
-
-                    ///////////////////////////////////////////////////////
-                    //check inputs corraltion to our domain's perspectives
-                    ///////////////////////////////////////////////////////
-                    socket.emit('new message', {message: "You are a loged in user"});
+                    questionAnswer.ask(user, currentInput).then(function(result) {
+                        socket.emit('new message', {message: result});
+                    }).catch(function(err) {
+                        console.log(err);
+                    });
+                }else{
+                   //maybe exploit
                 }
             } else {
                 //visitor's input block
 
                 //handle by queston and answer
-                questionAnswer.ask(currentInput).then(function(result) {
+                questionAnswer.ask(null, currentInput).then(function(result) {
                     socket.emit('new message', {message: result});
                 }).catch(function(err) {
                     console.log(err);
