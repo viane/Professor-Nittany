@@ -50,3 +50,5 @@
 > react native
 
 > webpack
+
+> Redux
