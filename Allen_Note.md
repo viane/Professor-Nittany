@@ -44,3 +44,9 @@
 - [Cheatsheet](https://github.com/viane/Intelligent-Academic-Planner/blob/master/Common%20notation.md) for common notation and flag that is used in formatting answers.
 
 - When user ask a question like will I do good in [major], analysis his personality and interests to determine what major is more suitable
+
+# Learning topics
+
+> react native
+
+> webpack
