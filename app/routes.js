@@ -89,16 +89,15 @@ module.exports = function(app, passport) {
     // =====================================
     // GOOGLE ROUTES =====================
     // =====================================
-    // route for facebook authentication and login
-    app.get('/auth/google', passport.authenticate('google', {
-        scope: ['https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/plus.me', 'profile']
-    }));
-
-    // handle the callback after facebook has authenticated the user
-    app.get('/auth/google/callback', passport.authenticate('google', {
-        successRedirect: '/profile',
-        failureRedirect: '/'
-    }));
+    // app.get('/auth/google', passport.authenticate('google', {
+    //     scope: ['https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/plus.me', 'profile']
+    // }));
+    //
+    // // handle the callback after facebook has authenticated the user
+    // app.get('/auth/google/callback', passport.authenticate('google', {
+    //     successRedirect: '/profile',
+    //     failureRedirect: '/'
+    // }));
 
     // =====================================
     // LINKEDIN ROUTES =====================
@@ -117,60 +116,60 @@ module.exports = function(app, passport) {
     // INSTAGRAM ROUTES =====================
     // =====================================
     // route for facebook authentication and login
-    app.get('/auth/instagram', passport.authenticate('instagram'));
-
-    app.get('/auth/instagram/callback', passport.authenticate('instagram', {
-        successRedirect: '/profile',
-        failureRedirect: '/'
-    }));
+    // app.get('/auth/instagram', passport.authenticate('instagram'));
+    //
+    // app.get('/auth/instagram/callback', passport.authenticate('instagram', {
+    //     successRedirect: '/profile',
+    //     failureRedirect: '/'
+    // }));
 
     // =====================================
     // REDDIT ROUTES =====================
     // =====================================
     // route for facebook authentication and login
-    app.get('/auth/reddit', function(req, res, next) {
-        req.session.state = crypto.randomBytes(32).toString('hex');
-        passport.authenticate('reddit', {
-            state: req.session.state,
-            duration: 'permanent'
-        })(req, res, next);
-    });
-
-    app.get('/auth/reddit/callback', function(req, res, next) {
-        // Check for origin via state token
-        if (req.query.state == req.session.state) {
-            passport.authenticate('reddit', {
-                successRedirect: '/profile',
-                failureRedirect: '/'
-            })(req, res, next);
-        } else {
-            next(new Error(403));
-        }
-    });
+    // app.get('/auth/reddit', function(req, res, next) {
+    //     req.session.state = crypto.randomBytes(32).toString('hex');
+    //     passport.authenticate('reddit', {
+    //         state: req.session.state,
+    //         duration: 'permanent'
+    //     })(req, res, next);
+    // });
+    //
+    // app.get('/auth/reddit/callback', function(req, res, next) {
+    //     // Check for origin via state token
+    //     if (req.query.state == req.session.state) {
+    //         passport.authenticate('reddit', {
+    //             successRedirect: '/profile',
+    //             failureRedirect: '/'
+    //         })(req, res, next);
+    //     } else {
+    //         next(new Error(403));
+    //     }
+    // });
 
     // =====================================
     // AMAZON ROUTES =====================
     // =====================================
     // route for facebook authentication and login
-    app.get('/auth/amazon', passport.authenticate('amazon', {
-        scope: ['profile', 'postal_code']
-    }));
-
-    app.get('/auth/amazon/callback', passport.authenticate('amazon', {
-        successRedirect: '/profile',
-        failureRedirect: '/'
-    }));
+    // app.get('/auth/amazon', passport.authenticate('amazon', {
+    //     scope: ['profile', 'postal_code']
+    // }));
+    //
+    // app.get('/auth/amazon/callback', passport.authenticate('amazon', {
+    //     successRedirect: '/profile',
+    //     failureRedirect: '/'
+    // }));
 
     // =====================================
     // WECHAT ROUTES =====================
     // =====================================
     // route for wechat authentication and login
-    app.get('/auth/wechat', passport.authenticate('wechat', {scope: ['profile']}));
-
-    app.get('/auth/wechat/callback', passport.authenticate('wechat', {
-        successRedirect: '/profile',
-        failureRedirect: '/'
-    }));
+    // app.get('/auth/wechat', passport.authenticate('wechat', {scope: ['profile']}));
+    //
+    // app.get('/auth/wechat/callback', passport.authenticate('wechat', {
+    //     successRedirect: '/profile',
+    //     failureRedirect: '/'
+    // }));
 
     // =====================================
     // LOGOUT ==============================

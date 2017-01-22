@@ -117,6 +117,7 @@ module.exports = function(passport) {
                         //create new user
                         var newUser = new User();
                         // set all of the facebook information in our user model
+                        newUser.type = "local";
                         newUser.local.email = email; // facebook can return multiple emails so we'll take the first
                         newUser.hashPassword(password); //need-fix password input has to pass BCrypt hash, otherwise login will fail
                         newUser.local.displayName = req.body.name;
@@ -183,6 +184,7 @@ module.exports = function(passport) {
                     // if there is no user found with that facebook id, create them
                     var newUser = new User();
                     // set all of the facebook information in our user model
+                    newUser.type = "facebook";
                     newUser.facebook.id = profile.id; // set the users facebook id
                     newUser.facebook.token = token; // we will save the token that facebook provides to the user
                     newUser.facebook.displayName = profile.displayName; // look at the passport user profile to see how names are returned
@@ -237,6 +239,7 @@ module.exports = function(passport) {
                 } else {
                     // if there is no user found with that facebook id, create them
                     var newUser = new User();
+                    newUser.type = "twitter";
                     // set all of the facebook information in our user model
                     newUser.twitter.id = profile.id; // set the users facebook id
                     //newUser.twitter.token = token; // we will save the token that facebook provides to the user
@@ -339,6 +342,7 @@ module.exports = function(passport) {
                 } else {
                     // if there is no user found with that facebook id, create them
                     var newUser = new User();
+                    newUser.type = "linkedin";
                     // set all of the facebook information in our user model
                     newUser.linkedin.id = profile.id; // set the users facebook id
                     newUser.linkedin.displayName = profile.displayName; // look at the passport user profile to see how names are returned

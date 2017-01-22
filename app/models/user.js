@@ -8,6 +8,7 @@ var bcrypt = require('bcrypt-nodejs');
 
 // define the schema for our user model
 var userSchema = mongoose.Schema({
+    type:String,
     local: {
         email: {
             type: String
@@ -18,21 +19,30 @@ var userSchema = mongoose.Schema({
             type: String,
             default: "./img/user.png"
         },
+        create_date: {
+            type: Date,
+            default: Date.now
+        },
         role: {
             type: String,
             default: "student"
         },
         ask_history: [
             {
+                type: mongoose.Schema.Types.Mixed,
                 question_id: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'questionAnswer'
                 },
-                favorite: Boolean,
-                ask_time: Date
+                favorite: {type: Boolean, default: false},
+                ask_time: {type:Date, default: Date.now}
             }
         ],
-        interest: [String]
+        interest: [
+            {
+                type: String,
+            }
+        ]
     },
     facebook: {
         id: String,
@@ -50,15 +60,20 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
+                type: mongoose.Schema.Types.Mixed,
                 question_id: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'questionAnswer'
                 },
-                favorite: Boolean,
-                ask_time: Date
+                favorite: {type: Boolean, default: false},
+                ask_time: {type:Date, default: Date.now}
             }
         ],
-        interest: [String]
+        interest: [
+            {
+                type: String,
+            }
+        ]
     },
     twitter: {
         id: String,
@@ -72,40 +87,20 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
+                type: mongoose.Schema.Types.Mixed,
                 question_id: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'questionAnswer'
                 },
-                favorite: Boolean,
-                ask_time: Date
+                favorite: {type: Boolean, default: false},
+                ask_time: {type:Date, default: Date.now}
             }
         ],
-        interest: [String]
-    },
-    google: {
-        id: String,
-        displayName: String,
-        familyName: String,
-        givenName: String,
-        language: String,
-        email: String,
-        gender: String,
-        avatar: String,
-        role: {
-            type: String,
-            default: "student"
-        },
-        ask_history: [
+        interest: [
             {
-                question_id: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'questionAnswer'
-                },
-                favorite: Boolean,
-                ask_time: Date
+                type: String,
             }
-        ],
-        interest: [String]
+        ]
     },
     linkedin: {
         id: String,
@@ -113,87 +108,6 @@ var userSchema = mongoose.Schema({
         familyName: String,
         givenName: String,
         email: String,
-        avatar: String,
-        role: {
-            type: String,
-            default: "student"
-        },
-        ask_history: [
-            {
-                question_id: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'questionAnswer'
-                },
-                favorite: Boolean,
-                ask_time: Date
-            }
-        ],
-        interest: [String]
-    },
-    instagram: {
-        id: String,
-        displayName: String,
-        avatar: String,
-        role: {
-            type: String,
-            default: "student"
-        },
-        ask_history: [
-            {
-                question_id: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'questionAnswer'
-                },
-                favorite: Boolean,
-                ask_time: Date
-            }
-        ],
-        interest: [String]
-    },
-    reddit: {
-        id: String,
-        displayName: String,
-        avatar: String,
-        role: {
-            type: String,
-            default: "student"
-        },
-        ask_history: [
-            {
-                question_id: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'questionAnswer'
-                },
-                favorite: Boolean,
-                ask_time: Date
-            }
-        ],
-        interest: [String]
-    },
-    amazon: {
-        id: String,
-        displayName: String,
-        avatar: String,
-        email: String,
-        role: {
-            type: String,
-            default: "student"
-        },
-        ask_history: [
-            {
-                question_id: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'questionAnswer'
-                },
-                favorite: Boolean,
-                ask_time: Date
-            }
-        ],
-        interest: [String]
-    },
-    wechat: {
-        id: String,
-        displayName: String,
         avatar: String,
         role: {
             type: String,
