@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "name": "intelligent_academic_planner",
   "version": "0.0.4",
   "description": "Cognitive Application",
@@ -80,8 +79,7 @@
   "homepage": "https://github.com/viane/Intelligent-Academic-Planner#readme",
   "directories": {
     "test": "test"
-  }
-=======
+  },
     "name": "intelligent_academic_planner",
     "version": "0.0.4",
     "description": "Cognitive Application",
@@ -156,5 +154,4 @@
         "url": "https://github.com/viane/Intelligent-Academic-Planner/issues"
     },
     "homepage": "https://github.com/viane/Intelligent-Academic-Planner#readme"
->>>>>>> refs/remotes/origin/master
 }

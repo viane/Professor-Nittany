@@ -24,14 +24,12 @@ module.exports = function(server) {
 
                 if (user.id === data.sender.id && user.type === data.sender.type) {
                     //analysis and log inputs
-<<<<<<< HEAD
                     console.log("Sender info: " + JSON.stringify(data));
 
                     ///////////////////////////////////////////////////////
                     //check inputs corraltion to our domain's perspectives
                     ///////////////////////////////////////////////////////
                     socket.emit('new message', {message: "You are a logged in user"});
-=======
                     questionAnswer.ask(user, currentInput).then(function(result) {
                         socket.emit('new message', {message: result});
                     }).catch(function(err) {
@@ -39,7 +37,6 @@ module.exports = function(server) {
                     });
                 }else{
                    //maybe exploit
->>>>>>> refs/remotes/origin/master
                 }
             } else {
                 //visitor's input block
