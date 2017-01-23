@@ -10,7 +10,6 @@
 	<!-- end of menu bar -->
 
 	<!-- Start of main page -->
-	<% if(locals.user) { %>
 	<div class="container">
 
 		<div class="page-header text-center">
@@ -20,7 +19,7 @@
 		<div class="row">
 
 			<!-- LOCAL INFORMATION -->
-			<% if (user.local.email) { %>
+			<% if (user.type === "local") { %>
 			<div class="col-sm-6 profile-section">
 				<div class="well">
 					<h3><span class="fa fa-user"></span> Local Account</h3>
@@ -37,7 +36,7 @@
 			</div>
 			<% } %>
 
-			<% if (user.facebook.id) { %>
+			<% if (user.type === "facebook") { %>
 			<!-- FACEBOOK INFORMATION -->
 			<div class="col-sm-6 profile-section">
 				<div class="well">
@@ -52,7 +51,7 @@
 			</div>
 			<% } %>
 
-			<% if (user.twitter.id) { %>
+			<% if (user.type === "twitter") { %>
 			<!-- TWITTER INFORMATION -->
 			<div class="col-sm-6 profile-section">
 				<div class="well">
@@ -67,22 +66,8 @@
 			</div>
 			<% } %>
 
-			<% if (user.google.id) { %>
-			<!-- TWITTER INFORMATION -->
-			<div class="col-sm-6 profile-section">
-				<div class="well">
-					<h3 class="text-primary"><span class="fa fa-google"></span> Google User</h3>
-						<p>
-							<strong>Avatar</strong>: <img src="<%= user.google.avatar %>"></img><br>
-							<strong>id</strong>: <%= user.google.id %><br>
-							<strong>email</strong>: <%= user.google.email %><br>
-							<strong>name</strong>: <%= user.google.displayName %><br>
-						</p>
-				</div>
-			</div>
-			<% } %>
 
-			<% if (user.linkedin.id) { %>
+			<% if (user.type === "linkedin") { %>
 			<!-- TWITTER INFORMATION -->
 			<div class="col-sm-6 profile-section">
 				<div class="well">
@@ -96,69 +81,9 @@
 				</div>
 			</div>
 			<% } %>
-
-			<% if (user.instagram.id) { %>
-			<!-- TWITTER INFORMATION -->
-			<div class="col-sm-6 profile-section">
-				<div class="well">
-					<h3 class="text-primary"><span class="fa fa-instagram"></span> Instagram User</h3>
-						<p>
-							<strong>Avatar</strong>: <img src="<%= user.instagram.avatar %>"></img><br>
-							<strong>id</strong>: <%= user.instagram.id %><br>
-							<strong>name</strong>: <%= user.instagram.displayName %><br>
-						</p>
-				</div>
-			</div>
-			<% } %>
-
-			<% if (user.reddit.id) { %>
-			<!-- TWITTER INFORMATION -->
-			<div class="col-sm-6 profile-section">
-				<div class="well">
-					<h3 class="text-primary"><span class="fa fa-reddit"></span> Reddit User</h3>
-						<p>
-							<strong>Avatar</strong>: <img src="<%= user.reddit.avatar %>"></img><br>
-							<strong>id</strong>: <%= user.reddit.id %><br>
-							<strong>name</strong>: <%= user.reddit.displayName %><br>
-						</p>
-				</div>
-			</div>
-			<% } %>
-
-			<% if (user.amazon.id) { %>
-			<!-- TWITTER INFORMATION -->
-			<div class="col-sm-6 profile-section">
-				<div class="well">
-					<h3 class="text-primary"><span class="fa fa-amazon"></span> Amazon User</h3>
-						<p>
-							<strong>Avatar</strong>: <img src="<%= user.amazon.avatar %>"></img><br>
-							<strong>id</strong>: <%= user.amazon.id %><br>
-							<strong>email</strong>: <%= user.amazon.email %><br>
-							<strong>name</strong>: <%= user.amazon.displayName %><br>
-						</p>
-				</div>
-			</div>
-			<% } %>
-
-			<% if (user.wechat.id) { %>
-			<!-- TWITTER INFORMATION -->
-			<div class="col-sm-6 profile-section">
-				<div class="well">
-					<h3 class="text-primary"><span class="fa fa-weibo"></span> weChat User</h3>
-						<p>
-							<strong>Avatar</strong>: <img src="<%= user.weibo.avatar %>"></img><br>
-							<strong>id</strong>: <%= user.wechat.id %><br>
-							<strong>email</strong>: <%= user.wechat.email %><br>
-							<strong>name</strong>: <%= user.wechat.displayName %><br>
-						</p>
-				</div>
-			</div>
-			<% } %>
 		</div>
 
 	</div>
-
-	<% } %>
 
 	<button class="button"><a href="/logout">Logout</a></button>
 	<!-- End of main page -->

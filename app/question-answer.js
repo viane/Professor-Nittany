@@ -1,3 +1,5 @@
+'use strict'
+
 const conversation = require('./watson-conversation');
 const retrieveRank = require('./watson-retrieve-rank');
 const processAnswer = require('./process-answer');
