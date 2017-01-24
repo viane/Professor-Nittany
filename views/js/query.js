@@ -1,6 +1,4 @@
 /*global $*/
-//This file manage query handlers
-
 
 var checkDOM = function(ElementName) {
     if ($(ElementName)) {
@@ -12,22 +10,6 @@ var checkDOM = function(ElementName) {
     }
 }
 
-var showNotification = function(msg) {
-    $('.notification span').text(msg);
-    $('.notification').css('display', 'block');
-    $('.notification').animate({
-        opacity: 1
-    }, 100);
-}
-
-var hideNotification = function() {
-    $('.notification span').text("");
-    $('.notification').animate({
-        opacity: 0
-    }, 200, function() {
-        $('.notification').css('display', 'none');
-    })
-}
 
 var showAnimateTranscripting = function() {
     var text = $(".transcripting_loading_span");

@@ -2,11 +2,11 @@
 var crypto = require('crypto');
 
 // load up the question answer model
-var questionAnswer = require('../app/models/QA');
+var QuestionAnswerPair = require('../app/models/QuestionAnswerPair');
 
 var watsonToken = require('./watson-token');
-var questionAnswer = require('./question-answer');
-var accountManage = require('./account')
+var accountManage = require('./account');
+var uploadQuestion = require('./file-to-questionDB');
 
 module.exports = function(app, passport) {
 
@@ -194,28 +194,29 @@ module.exports = function(app, passport) {
     // =================================================
 
     app.get('/QuestionAnswerManagement', isLoggedIn, function(req, res) {
-        res.render('QuestionAnswerManagement.ejs', {
+        res.render('question-Answer-Management.ejs', {
             message: req.flash('Message'),
             user: req.user
         }); // load the index.ejs file
     });
 
-    app.post('/postQuestionAnswer', function(req, res) {
+    app.post('/postQuestionAnswer', isLoggedIn, function(req, res) {
         //input check
         var questionContext = req.body.question;
         var answerContext = req.body.answer;
         var tagContext = req.body.tag;
-        console.log(questionContext + questionContext.length);
+
         if (questionContext.length == 0) {
             res.send({user: req.user, status: "0", message: "Question can not be empty"})
         } else {
             //create DB object
-            var QA_pair = new questionAnswer();
+            var QA_pair = new QuestionAnswerPair();
 
             //assign values
             QA_pair.record.question = questionContext;
             QA_pair.record.answer = answerContext;
             QA_pair.record.tag = tagContext;
+            QA_pair.record.asked_user_id = req.user.id;
 
             //Save to DB
             QA_pair.save(function(err) {
@@ -233,7 +234,7 @@ module.exports = function(app, passport) {
         }
     });
 
-    app.get('/viewQuestionAnswer', function(req, res) {
+    app.get('/viewQuestionAnswer', isLoggedIn, function(req, res) {
         //input parameter
 
         //create DB connection
@@ -306,12 +307,11 @@ module.exports = function(app, passport) {
     // Get speech to text token route
     app.use('/api/speech-to-text', watsonToken);
 
-    // Local account apply to be admin
-    // app.post('/api/account/apply-admin', function(req, res) {
-    //   console.log(req.user);
-    //   console.log(req.body);
-    // })
+    // local user apply to be admin
     app.use('/api/account', accountManage);
+
+    // admin upload questions from text file
+    app.use('/api/admin', isLoggedIn, uploadQuestion);
 };
 
 // route middleware to make sure

@@ -1,4 +1,4 @@
-// app/models/QA.js
+// app/models/QuestionAnswerPair.js
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 var configDB = require.main.require('./config/database.js');
@@ -10,9 +10,9 @@ var qaSchema = mongoose.Schema({
         question: String,
         answer: String,
         tag: [String],
-        asked_user_id: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
+        creator: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
     }
 });
 
 // create the model for users and expose it to our app
-module.exports = conn.model('questionAnswer', qaSchema);
+module.exports = conn.model('QuestionAnswerPair', qaSchema);
