@@ -1,7 +1,8 @@
 // app/models/user.js
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-var configDB = require.main.require('./config/database.js');
+const appRoot = require('app-root-path');
+var configDB = require.main.require(appRoot + '/config/database.js');
 var conn = mongoose.createConnection(configDB.userDB_URL);
 
 var bcrypt = require('bcrypt-nodejs');
