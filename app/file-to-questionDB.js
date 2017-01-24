@@ -2,19 +2,21 @@
 // take input text file, batch process questions line by line to question DB
 'use strict'
 
+var appRoot = require('app-root-path');
+
 var express = require('express');
 
 var router = express.Router();
 
-const Question = require('./models/question');
+const Question = require(appRoot+'/app/models/question');
 
 router.post('/upload-question', function (req, res, next) {
   var question = new Question();
   question.body = req.body.text;
 
   question.save()
-  .then(function(saveedQuestion) {
-      res.send({type: 'success', information: 'Successfully saved question.', question: saveedQuestion});
+  .then(function(savedQuestion) {
+      res.send({type: 'success', information: 'Successfully saved question.', question: savedQuestion});
   })
   .catch(function (err) {
       throw err
