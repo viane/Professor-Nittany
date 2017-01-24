@@ -28,8 +28,8 @@ var generateNotice = function(type, text, timeout = _secToTimeUnit(3.5)) {
 //toggle vew section in question manage page
 ////////////////////////////////////////////////////////
 
-var trigerIDArray = ["view_question_btn", "add_question_btn", "analysis_question_btn"]; //need get this dynamically
-var targetIDArray = ["viewQuestionSection", "addQuestionSection", "analysisQuestionSection"]; //need get this dynamically
+var trigerIDArray = ["view_question_btn", "add_question_btn", "analysis_question_btn","upload_question_btn"]; //need get this dynamically
+var targetIDArray = ["viewQuestionSection", "addQuestionSection", "analysisQuestionSection","uploadQuestionFileSection"]; //need get this dynamically
 
 var hideShowElementByIDOnClick = function(triger, target) {
     $("#" + target).css("display", "none");
@@ -39,11 +39,11 @@ var hideShowElementByIDOnClick = function(triger, target) {
         //hide all other elements by exclude this index
         $(targetIDArray).each(function(index, value) {
             if (index != showIndex) {
-                $("#" + value).hide(400);
+                $("#" + value).hide(200);
             }
         })
         //toggle our target
-        $("#" + target).toggle(500);
+        $("#" + target).toggle(200);
     });
 }
 
@@ -63,6 +63,7 @@ var updateText = function(event) {
     , 1)
 }
 
+// question answer manage page tab toggle function and animation
 $(document).ready(function() {
     //assign add question label handler
     $(".floating-placeholder input").keydown(updateText);
@@ -74,6 +75,7 @@ $(document).ready(function() {
     hideShowElementByIDOnClick("view_question_btn", "viewQuestionSection");
     hideShowElementByIDOnClick("add_question_btn", "addQuestionSection");
     hideShowElementByIDOnClick("analysis_question_btn", "analysisQuestionSection");
+    hideShowElementByIDOnClick("upload_question_btn","uploadQuestionFileSection");
 });
 
 //Time utility functions, convert input time to milliseconds
@@ -120,6 +122,32 @@ $(document).ready(function() {
                 setInterval(function() {
                     window.location.href = "/admin"
                 }, 2500);
+            })
+        }).catch(function(err) {
+            generateNotice('error', err)
+        });
+    })
+});
+
+// upload questions by test file
+$(document).ready(function() {
+    $('#uploadQuestionFileSection').on('click', function() {
+        const url = '/api/admin/upload-question';
+        fetch(url, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: "text=" + encodeURIComponent("test content")
+        }).then(function(res) {
+            if (res.status !== 200) {
+                generateNotice('error', "Error, status code: " + res.status);
+                returnl;
+            }
+            res.json().then(function(result) {
+                generateNotice(result.type, result.information);
             })
         }).catch(function(err) {
             generateNotice('error', err)

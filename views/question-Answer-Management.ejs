@@ -1,0 +1,85 @@
+<!-- views/login.ejs -->
+<!doctype html>
+<html>
+
+<head>
+	<title>Admin Console</title>
+</head>
+
+<body>
+	<!-- include menu bar -->
+	<%- include header.ejs %>
+		<!-- end of menu bar -->
+		<div class="container">
+			<!-- Nav btn-->
+			<ul class="question-manage-nav">
+				<li>
+					<div id="view_question_btn" class="function-item-box"><a href="#" class="flat-btn bg-white"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> View and Edit</a></div>
+				</li>
+				<li>
+					<div id="add_question_btn" class="function-item-box"><a href="#" class="flat-btn bg-white"><i class="fa fa-plus" aria-hidden="true"></i> Add New</a></div>
+				</li>
+				<li>
+					<div id="analysis_question_btn" class="function-item-box"><a href="#" class="flat-btn bg-white"><i class="fa fa-pie-chart" aria-hidden="true"></i> Analyze</a></div>
+				</li>
+				<li>
+					<div id="upload_question_btn" class="function-item-box"><a href="#" class="flat-btn bg-white"><i class="fa fa-cloud-upload" aria-hidden="true"></i> Upload</a></div>
+				</li>
+			</ul>
+
+			<div class="col-sm-6 col-sm-offset-3">
+				<!-- show any messages that come back with authentication -->
+				<% if (message.length > 0) { %>
+					<div class="alert alert-danger">
+						<%= message %>
+					</div>
+					<% } %>
+
+						<!-- View questions -->
+						<div id="viewQuestionSection" class="white-container-mid">
+							<!-- View area -->
+						</div>
+
+						<!-- Add question-answer section-->
+						<div id="addQuestionSection" class="white-container-mid">
+							<!-- Input area -->
+
+							<!-- Question input-->
+							<div class="floating-placeholder">
+								<input id="add-questionAnswer-question-input" name="question" type="text" required></input>
+								<label for="question">Question</label>
+							</div>
+
+
+							<!-- Tag input -->
+							<div class="floating-placeholder">
+								<input id="add-questionAnswer-question-tag-input" name="tag" type="text"></input>
+								<label for="tag">Tag(separate by comma)</label>
+							</div>
+
+							<!-- Answer input -->
+							<div class="floating-placeholder floating-placeholder-3-fix">
+								<textarea id="add-questionAnswer-answer-textarea" name="answer" type="text" required></textarea>
+								<label for="answer">Answer</label>
+							</div>
+
+							<div class="add-questionAnswer-submit-btn" name="submit"><a href="#" id="add-questionAnswer-submit-btn" class="flat-btn"><i class="fa fa-share" aria-hidden="true"></i>Submit</a></div>
+
+						</div>
+
+						<!--  -->
+						<div id="uploadQuestionFileSection" class="white-container-mid">
+						</div>
+						<!-- Questions analysis-->
+						<div id="analysisQuestionSection" class="white-container-large">
+							<!-- View area -->
+						</div>
+			</div>
+
+		</div>
+
+		<%- include footer.ejs %>
+
+</body>
+
+</html>
