@@ -21,10 +21,14 @@ var authService = watson.authorization(config);
 
 router.post('/token', function (req, res, next) {
   authService.getToken({url: config.url}, function(err, token) {
-    if (err)
-      next(err);
-    else
+    if (err){
+      throw err;
+      res.status(500).send('Error retrieving token');
+      return;
+    }
+    else{
       res.send(token);
+    }
   });
 })
 

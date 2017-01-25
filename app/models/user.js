@@ -49,6 +49,17 @@ var userSchema = mongoose.Schema({
             {
                 type: String
             }
+        ],
+        personality_assessement: [
+            {
+                document_name: String,
+                submit_time: {
+                    type: Date,
+                    default: Date.now
+                },
+                public: Boolean,
+                evaluation: mongoose.Schema.Types.Mixed
+            }
         ]
     },
     facebook: {
@@ -84,6 +95,17 @@ var userSchema = mongoose.Schema({
             {
                 type: String
             }
+        ],
+        personality_assessement: [
+            {
+                document_name: String,
+                submit_time: {
+                    type: Date,
+                    default: Date.now
+                },
+                public: Boolean,
+                evaluation: mongoose.Schema.Types.Mixed
+            }
         ]
     },
     twitter: {
@@ -115,6 +137,17 @@ var userSchema = mongoose.Schema({
             {
                 type: String
             }
+        ],
+        personality_assessement: [
+            {
+                document_name: String,
+                submit_time: {
+                    type: Date,
+                    default: Date.now
+                },
+                public: Boolean,
+                evaluation: mongoose.Schema.Types.Mixed
+            }
         ]
     },
     linkedin: {
@@ -143,7 +176,18 @@ var userSchema = mongoose.Schema({
                 }
             }
         ],
-        interest: [String]
+        interest: [String],
+        personality_assessement: [
+            {
+                document_name: String,
+                submit_time: {
+                    type: Date,
+                    default: Date.now
+                },
+                public: Boolean,
+                evaluation: mongoose.Schema.Types.Mixed
+            }
+        ]
     }
 }, {strict: true});
 

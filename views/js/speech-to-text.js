@@ -770,7 +770,7 @@ $(document).ready(function() {
             else
                 showError('Server error ' + err.code + ': please refresh your browser and try again');
             }
-
+            
         var viewContext = {
             currentModel: 'en-US_BroadbandModel',
             models: models,

@@ -129,30 +129,39 @@ $(document).ready(function() {
     })
 });
 
-// upload questions by test file
+//////////////////////////////////////////////
+// upload questions by questions by text file
+//////////////////////////////////////////////
+
+//set up dropzone for drop file
+Dropzone.autoDiscover = false;
+$(function(){
+  $("#upload-Question-Text-File").dropzone({ url: "/file/testPost" });
+});
+
 $(document).ready(function() {
-    $('#uploadQuestionFileSection').on('click', function() {
-        const url = '/api/admin/upload-question';
-        fetch(url, {
-            method: "POST",
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-            },
-            body: "text=" + encodeURIComponent("test content")
-        }).then(function(res) {
-            if (res.status !== 200) {
-                generateNotice('error', "Error, status code: " + res.status);
-                returnl;
-            }
-            res.json().then(function(result) {
-                generateNotice(result.type, result.information);
-            })
-        }).catch(function(err) {
-            generateNotice('error', err)
-        });
-    })
+    // $('#uploadQuestionFileSection').on('click', function() {
+    //     const url = '/api/admin/upload-question';
+    //     fetch(url, {
+    //         method: "POST",
+    //         credentials: 'include',
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+    //         },
+    //         body: "text=" + encodeURIComponent("test content")
+    //     }).then(function(res) {
+    //         if (res.status !== 200) {
+    //             generateNotice('error', "Error, status code: " + res.status);
+    //             returnl;
+    //         }
+    //         res.json().then(function(result) {
+    //             generateNotice(result.type, result.information);
+    //         })
+    //     }).catch(function(err) {
+    //         generateNotice('error', err)
+    //     });
+    // })
 });
 
 //answer text flag extraction and formation

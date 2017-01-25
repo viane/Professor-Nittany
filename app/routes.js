@@ -205,7 +205,7 @@ module.exports = function(app, passport) {
         var questionContext = req.body.question;
         var answerContext = req.body.answer;
         var tagContext = req.body.tag;
-
+        console.log(req.user._id);
         if (questionContext.length == 0) {
             res.send({user: req.user, status: "0", message: "Question can not be empty"})
         } else {
@@ -216,7 +216,7 @@ module.exports = function(app, passport) {
             QA_pair.record.question = questionContext;
             QA_pair.record.answer = answerContext;
             QA_pair.record.tag = tagContext;
-            QA_pair.record.asked_user_id = req.user.id;
+            QA_pair.record.creator = req.user._id;
 
             //Save to DB
             QA_pair.save(function(err) {

@@ -16,4 +16,4 @@ var qaSchema = mongoose.Schema({
 });
 
 // create the model for users and expose it to our app
-module.exports = conn.model('QuestionAnswerPair', qaSchema);
+module.exports = conn.model('Question-Answer-Pair', qaSchema);

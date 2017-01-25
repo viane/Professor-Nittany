@@ -13,6 +13,13 @@ const Question = require(appRoot+'/app/models/question');
 router.post('/upload-question', function (req, res, next) {
   var question = new Question();
   question.body = req.body.text;
+  question.inputFileName = req.body.fileName;
+  question.submitter = req.user._id;
+
+  // use alchemyAPI to get rest propreties to record;
+  question.keyword = [{}];
+  question.concept = [{}];
+  question.taxonomy = [{}];
 
   question.save()
   .then(function(savedQuestion) {
