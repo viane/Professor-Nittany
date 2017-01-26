@@ -23,9 +23,9 @@ module.exports = function(server) {
                 //login user block
 
                 if (user.id === data.sender.id && user.type === data.sender.type) {
-                    //analysis and log inputs
+                    // ask system
                     questionAnswer.ask(user, currentInput).then(function(result) {
-                        socket.emit('new message', {message: result});
+                        socket.emit('new message', {message: result.response.docs[0]});
                     }).catch(function(err) {
                         console.log(err);
                     });
@@ -37,7 +37,7 @@ module.exports = function(server) {
 
                 //handle by queston and answer
                 questionAnswer.ask(null, currentInput).then(function(result) {
-                    socket.emit('new message', {message: result});
+                    socket.emit('new message', {message: result.response.docs[0]});
                 }).catch(function(err) {
                     console.log(err);
                 });

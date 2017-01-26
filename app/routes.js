@@ -3,10 +3,12 @@ var crypto = require('crypto');
 
 // load up the question answer model
 var QuestionAnswerPair = require('../app/models/QuestionAnswerPair');
-
+var appRoot = require('app-root-path');
 var watsonToken = require('./watson-token');
 var accountManage = require('./account');
-var uploadQuestion = require('./file-to-questionDB');
+var uploadQuestionByTextFile = require('./file-to-questionDB');
+var User = require(appRoot + "/app/models/user");
+
 
 module.exports = function(app, passport) {
 
@@ -55,11 +57,37 @@ module.exports = function(app, passport) {
     // PROFILE SECTION =========================
     // =====================================
     // we will want this protected so you have to be logged in to visit
-    // we will use route middleware to verify this (the isLoggedIn function)
-    app.get('/profile', isLoggedIn, function(req, res) {
-        res.render('profile.ejs', {
-            user: req.user // get the user out of session and pass to template
-        });
+    // we will use route middleware to verify this (the isLoggedInRedirect function)
+    app.get('/profile', isLoggedInRedirect, function(req, res) {
+
+        let ask_history = [];
+        let path = "";
+
+        switch (req.user.type) {
+            case "local":
+                path = "local";
+                break;
+            case "twitter":
+            path = "twitter";
+                break;
+            case "linkedin":
+            path = "linkedin";
+                break;
+            case "facebook":
+            path = "facebook";
+                break;
+            default:
+                throw new Error("Request user type is unexcepted");
+                break;
+        };
+
+        User.findById(req.user._id, function(err, foundUser){
+          ask_history = foundUser[path].ask_history;
+          res.render('profile.ejs', {
+              user: req.user, // get the user out of session and pass to template
+              ask_history: ask_history
+          });
+        })
     });
 
     // =====================================
@@ -182,7 +210,7 @@ module.exports = function(app, passport) {
     // =====================================
     // Admin console
     // =====================================
-    app.get('/admin', isLoggedIn, function(req, res) {
+    app.get('/admin', isLoggedInRedirect, function(req, res) {
         res.render('admin.ejs', {
             message: req.flash('Message'),
             user: req.user
@@ -193,14 +221,14 @@ module.exports = function(app, passport) {
     // Routes for developer manage question and answer
     // =================================================
 
-    app.get('/QuestionAnswerManagement', isLoggedIn, function(req, res) {
+    app.get('/QuestionAnswerManagement', isLoggedInRedirect, function(req, res) {
         res.render('question-Answer-Management.ejs', {
             message: req.flash('Message'),
             user: req.user
         }); // load the index.ejs file
     });
 
-    app.post('/postQuestionAnswer', isLoggedIn, function(req, res) {
+    app.post('/postQuestionAnswer', isLoggedInRedirect, function(req, res) {
         //input check
         var questionContext = req.body.question;
         var answerContext = req.body.answer;
@@ -234,7 +262,7 @@ module.exports = function(app, passport) {
         }
     });
 
-    app.get('/viewQuestionAnswer', isLoggedIn, function(req, res) {
+    app.get('/viewQuestionAnswer', isLoggedInNotice, function(req, res) {
         //input parameter
 
         //create DB connection
@@ -245,9 +273,9 @@ module.exports = function(app, passport) {
 
     });
 
-    //////
-    // Front end files
-    ///
+    ////////////////////////////////////////////////
+    // Front end files routes
+    ///////////////////////////////////////////////////
     app.get('/css/*', function(req, res) {
         res.sendfile(req.path, {
             'root': root
@@ -308,14 +336,14 @@ module.exports = function(app, passport) {
     app.use('/api/speech-to-text', watsonToken);
 
     // local user apply to be admin
-    app.use('/api/account', accountManage);
+    app.use('/api/account', isLoggedInNotice, accountManage);
 
     // admin upload questions from text file
-    app.use('/api/admin', isLoggedIn, uploadQuestion);
+    app.use('/api/admin/upload/', isLoggedInRedirect, uploadQuestionByTextFile);
 };
 
 // route middleware to make sure
-function isLoggedIn(req, res, next) {
+function isLoggedInRedirect(req, res, next) {
 
     // if user is authenticated in the session, carry on
     if (req.isAuthenticated())
@@ -323,4 +351,14 @@ function isLoggedIn(req, res, next) {
 
     // if they aren't redirect them to the home page
     res.redirect('/login');
+}
+
+function isLoggedInNotice(req, res, next) {
+
+    // if user is authenticated in the session, carry on
+    if (req.isAuthenticated())
+        return next();
+
+    // if they aren't redirect them to the home page
+    res.send({status:"error", information:"Login required"});
 }

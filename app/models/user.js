@@ -32,7 +32,7 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                body: {
+                user_question_body: {
                     type: String
                 },
                 favorite: {
@@ -78,7 +78,7 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                body: {
+                user_question_body: {
                     type: String
                 },
                 favorite: {
@@ -120,7 +120,7 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                body: {
+                user_question_body: {
                     type: String
                 },
                 favorite: {
@@ -163,7 +163,7 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                body: {
+                user_question_body: {
                     type: String
                 },
                 favorite: {

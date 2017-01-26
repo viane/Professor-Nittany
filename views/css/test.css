@@ -202,10 +202,8 @@ float: left;
 }
 
 .profile-section{
-  position: absolute;
-left: 50%;
-top: 50%;
-transform: translate(-50%, -50%);
+  left: 50%;
+  transform: translate(-50%, 0);
 }
 
 .title-admin{
@@ -225,4 +223,8 @@ transform: translate(-50%, -50%);
 
 #apply-admin-code{
   width: 80%;
+}
+
+pre{
+  text-align: left;
 }

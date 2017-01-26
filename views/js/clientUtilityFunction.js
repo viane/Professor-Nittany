@@ -28,8 +28,8 @@ var generateNotice = function(type, text, timeout = _secToTimeUnit(3.5)) {
 //toggle vew section in question manage page
 ////////////////////////////////////////////////////////
 
-var trigerIDArray = ["view_question_btn", "add_question_btn", "analysis_question_btn","upload_question_btn"]; //need get this dynamically
-var targetIDArray = ["viewQuestionSection", "addQuestionSection", "analysisQuestionSection","uploadQuestionFileSection"]; //need get this dynamically
+var trigerIDArray = ["view_question_btn", "add_question_btn", "analysis_question_btn", "upload_question_btn"]; //need get this dynamically
+var targetIDArray = ["viewQuestionSection", "addQuestionSection", "analysisQuestionSection", "uploadQuestionFileSection"]; //need get this dynamically
 
 var hideShowElementByIDOnClick = function(triger, target) {
     $("#" + target).css("display", "none");
@@ -75,7 +75,7 @@ $(document).ready(function() {
     hideShowElementByIDOnClick("view_question_btn", "viewQuestionSection");
     hideShowElementByIDOnClick("add_question_btn", "addQuestionSection");
     hideShowElementByIDOnClick("analysis_question_btn", "analysisQuestionSection");
-    hideShowElementByIDOnClick("upload_question_btn","uploadQuestionFileSection");
+    hideShowElementByIDOnClick("upload_question_btn", "uploadQuestionFileSection");
 });
 
 //Time utility functions, convert input time to milliseconds
@@ -95,7 +95,10 @@ let _yearToTimeUnit = function(years) {
     return years * _dayToTimeUnit(365)
 };
 
-//User apply admin
+//////////////////////////////////////////////////
+// User apply admin
+//////////////////////////////////////////////////
+
 $(document).ready(function() {
     $('#apply-admin-submit').on('click', function() {
         const code = $('#apply-admin-code').val().toString();
@@ -130,41 +133,28 @@ $(document).ready(function() {
 });
 
 //////////////////////////////////////////////
-// upload questions by questions by text file
+// admin upload questions by questions by text file
 //////////////////////////////////////////////
 
 //set up dropzone for drop file
 Dropzone.autoDiscover = false;
-$(function(){
-  $("#upload-Question-Text-File").dropzone({ url: "/file/testPost" });
+$(function() {
+    $("#upload-Question-Text-File").dropzone({url: "/api/admin/upload/upload-by-text-file"});
 });
 
-$(document).ready(function() {
-    // $('#uploadQuestionFileSection').on('click', function() {
-    //     const url = '/api/admin/upload-question';
-    //     fetch(url, {
-    //         method: "POST",
-    //         credentials: 'include',
-    //         headers: {
-    //             'Accept': 'application/json',
-    //             'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-    //         },
-    //         body: "text=" + encodeURIComponent("test content")
-    //     }).then(function(res) {
-    //         if (res.status !== 200) {
-    //             generateNotice('error', "Error, status code: " + res.status);
-    //             returnl;
-    //         }
-    //         res.json().then(function(result) {
-    //             generateNotice(result.type, result.information);
-    //         })
-    //     }).catch(function(err) {
-    //         generateNotice('error', err)
-    //     });
-    // })
-});
+//////////////////////////////////////////////////
+// user like/fav question answer handler functions
+//////////////////////////////////////////////////
+var addLikeBtnHandler = function(answerSequenceNumber){
+    $($('.answer-like-btn')[answerSequenceNumber]).on('click', function() {
+      const targetAnswer = $('[data-answer-seq='+answerSequenceNumber+']').text();
+      console.log(targetAnswer);
+    });
+};
 
-//answer text flag extraction and formation
+//////////////////////////////////////////////////
+// answer text flag extraction and formation
+//////////////////////////////////////////////////
 var formatText = function(inputText) {
 
     //for [html]...[html]
