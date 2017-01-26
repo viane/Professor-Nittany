@@ -17,12 +17,12 @@ const morgan = require('morgan'); //request logger
 const util = require("util");
 const cookieParser = require('cookie-parser');
 
+const appRoot = require('app-root-path');
 
 const session = require('express-session');
 const methodOverride = require('method-override');
 
 const flash = require('connect-flash');
-const fetch = require('node-fetch');
 
 //libs for user system
 const passport = require('passport');
@@ -52,15 +52,15 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 app.set('port', process.env.PORT || 3000);
 app.use(methodOverride());
 
-app.use(express.static(path.join(__dirname, 'views')));
+app.use(express.static('views/FrontEnd'));
 
 const server = http.createServer(app);
 
-require('./config/passport')(passport); // pass passport for configuration
+require(appRoot+'/config/passport')(passport); // pass passport for configuration
 
-require('./app/routes.js')(app, passport); // Routes
+require(appRoot+'/app/routes.js')(app, passport); // Routes
 
-require('./app/socket-io.js')(server); //handle communication between client and server
+require(appRoot+'/app/socket-io.js')(server); //handle communication between client and server
 
 server.listen(app.get('port'), function() {
     console.log('Express server listening on port ' + app.get('port'))

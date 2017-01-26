@@ -4,6 +4,7 @@ var crypto = require('crypto');
 // load up the question answer model
 var QuestionAnswerPair = require('../app/models/QuestionAnswerPair');
 var appRoot = require('app-root-path');
+var frontEndRoot = appRoot + '/views/FrontEnd/';
 var watsonToken = require('./watson-token');
 var accountManage = require('./account');
 var uploadQuestionByTextFile = require('./file-to-questionDB');
@@ -16,7 +17,7 @@ module.exports = function(app, passport) {
     // HOME PAGE (with login links) ========
     // =====================================
     app.get('/', function(req, res) {
-        res.render('index.ejs', {user: req.user}); // load the index.ejs file
+        res.render(frontEndRoot+'index.ejs', {user: req.user}); // load the index.ejs file
     });
 
     // =====================================
@@ -25,7 +26,7 @@ module.exports = function(app, passport) {
     // show the login form
     app.get('/login', function(req, res) {
         // render the page and pass in any flash data if it exists
-        res.render('login.ejs', {message: req.flash('loginMessage')});
+        res.render(frontEndRoot+'login.ejs', {message: req.flash('loginMessage')});
     });
 
     // process the login form
@@ -41,7 +42,7 @@ module.exports = function(app, passport) {
     // show the signup form
     app.get('/signup', function(req, res) {
         // render the page and pass in any flash data if it exists
-        res.render('signup.ejs', {message: req.flash('signupMessage')});
+        res.render(frontEndRoot+'signup.ejs', {message: req.flash('signupMessage')});
     });
 
     // process the signup form
@@ -83,7 +84,7 @@ module.exports = function(app, passport) {
 
         User.findById(req.user._id, function(err, foundUser){
           ask_history = foundUser[path].ask_history;
-          res.render('profile.ejs', {
+          res.render(frontEndRoot+'profile.ejs', {
               user: req.user, // get the user out of session and pass to template
               ask_history: ask_history
           });
@@ -211,7 +212,7 @@ module.exports = function(app, passport) {
     // Admin console
     // =====================================
     app.get('/admin', isLoggedInRedirect, function(req, res) {
-        res.render('admin.ejs', {
+        res.render(frontEndRoot+'admin.ejs', {
             message: req.flash('Message'),
             user: req.user
         }); // load the index.ejs file
@@ -222,7 +223,7 @@ module.exports = function(app, passport) {
     // =================================================
 
     app.get('/QuestionAnswerManagement', isLoggedInRedirect, function(req, res) {
-        res.render('question-Answer-Management.ejs', {
+        res.render(frontEndRoot+'question-Answer-Management.ejs', {
             message: req.flash('Message'),
             user: req.user
         }); // load the index.ejs file

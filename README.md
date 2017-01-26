@@ -11,9 +11,12 @@
 
 ### APIs
 
-# How to use
+### How to use
 
 ```bash
-npm install #to install all dependency
-nodemon #to start the server
+#to install all dependency
+npm install
+
+#to start the server
+nodemon
 ```
