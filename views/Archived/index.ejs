@@ -1,0 +1,86 @@
+<!-- views/index.ejs -->
+<!doctype html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="conversation agent">
+  <meta name="keywords" content="IBM,conversation,retrive and rank">
+  <meta name="author" content="Xiaoyu Zhou">
+  <title>Conversation agent</title>
+</head>
+
+<body>
+	<!-- include menu bar -->
+	<%- include header.ejs %>
+	<!-- end of menu bar -->
+  <ul class="chat-thread">
+
+  </ul>
+  <div class="chat-window">
+    <div class="audioParent">
+      <audio style="display:none" class="audio" controls>
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+    <button id="recordButton" style="width: 100px;" value="record"><i class="fa fa-microphone" aria-hidden="true"></i></button>
+
+      <span class="transcripting_loading_span">Recognizing</span>
+      <div class="dot dot1 pulse"> </div>
+      <div class="dot dot2 pulse"> </div>
+      <div class="dot dot3 pulse"> </div>
+<!-- Add user id token in order to id who send input -->
+    <div id="data-user" class="hide">
+      <% if(locals.user) { %>
+      <div id="user-type">
+          <% if (user.local.email) { %>
+            local
+          <% } %>
+
+          <% if (user.facebook.id) { %>
+            facebook
+          <% } %>
+
+          <% if (user.twitter.id) { %>
+            twitter
+          <% } %>
+
+
+          <% if (user.linkedin.id) { %>
+            linkedin
+          <% } %>
+
+        </div>
+        <div id="user-id">
+          <% if (user.local.email) { %>
+            <%= user._id %>
+          <% } %>
+
+          <% if (user.facebook.id) { %>
+          <%= user.facebook.id %>
+          <% } %>
+
+          <% if (user.twitter.id) { %>
+            <%= user.twitter.id %>
+          <% } %>
+
+          <% if (user.linkedin.id) { %>
+            <%= user.linkedin.id %>
+          <% } %>
+
+        </div>
+      <% } %>
+    </div>
+    <textarea id="userQueryInput" class="chat-window-message" name="chat-window-message" type="text" autocomplete="off"></textarea>
+
+    <button id="querySubmitBtn" type="submit"><i class="fa fa-reply" aria-hidden="true"></i></button>
+  </div>
+  <div class="notification">
+  <span></span>
+  </div>
+
+  <script src="../js/jquery.subscribe.js"></script>
+  <script src="../js/speech-to-text.js"></script>
+ <% include footer.ejs %>
+</body>
+
+</html>

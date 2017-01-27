@@ -21,7 +21,6 @@ var generateNotice = function(type, text, timeout = _secToTimeUnit(3.5)) {
             speed: 1200
         }
     });
-    n.setTimeout(timeout);
 };
 
 ////////////////////////////////////////////////////////

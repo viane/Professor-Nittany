@@ -1,86 +1,51 @@
-<!-- views/index.ejs -->
-<!doctype html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="description" content="conversation agent">
-  <meta name="keywords" content="IBM,conversation,retrive and rank">
-  <meta name="author" content="Xiaoyu Zhou">
-  <title>Conversation agent</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Intelligent Academic Planner - Home</title>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
 </head>
 
 <body>
-	<!-- include menu bar -->
-	<%- include header.ejs %>
-	<!-- end of menu bar -->
-  <ul class="chat-thread">
-
-  </ul>
-  <div class="chat-window">
-    <div class="audioParent">
-      <audio style="display:none" class="audio" controls>
-        Your browser does not support the audio element.
-      </audio>
+  <%- include header.ejs %>
+    <div class="jumbotron">
+        <h2>Ask Away!</h2>
+        <p>Our system is designed to answer all of your questions about Penn State Behrend's CSSE Department.</p>
     </div>
-    <button id="recordButton" style="width: 100px;" value="record"><i class="fa fa-microphone" aria-hidden="true"></i></button>
-
-      <span class="transcripting_loading_span">Recognizing</span>
-      <div class="dot dot1 pulse"> </div>
-      <div class="dot dot2 pulse"> </div>
-      <div class="dot dot3 pulse"> </div>
-<!-- Add user id token in order to id who send input -->
-    <div id="data-user" class="hide">
-      <% if(locals.user) { %>
-      <div id="user-type">
-          <% if (user.local.email) { %>
-            local
-          <% } %>
-
-          <% if (user.facebook.id) { %>
-            facebook
-          <% } %>
-
-          <% if (user.twitter.id) { %>
-            twitter
-          <% } %>
-
-
-          <% if (user.linkedin.id) { %>
-            linkedin
-          <% } %>
-
-        </div>
-        <div id="user-id">
-          <% if (user.local.email) { %>
-            <%= user._id %>
-          <% } %>
-
-          <% if (user.facebook.id) { %>
-          <%= user.facebook.id %>
-          <% } %>
-
-          <% if (user.twitter.id) { %>
-            <%= user.twitter.id %>
-          <% } %>
-
-          <% if (user.linkedin.id) { %>
-            <%= user.linkedin.id %>
-          <% } %>
-
-        </div>
-      <% } %>
     </div>
-    <textarea id="userQueryInput" class="chat-window-message" name="chat-window-message" type="text" autocomplete="off"></textarea>
 
-    <button id="querySubmitBtn" type="submit"><i class="fa fa-reply" aria-hidden="true"></i></button>
-  </div>
-  <div class="notification">
-  <span></span>
-  </div>
+    <div class="container">
+        <h6 align="left"><a href="/login">Register</a> for personalized answers!</h6>
 
-  <script src="../js/jquery.subscribe.js"></script>
-  <script src="../js/speech-to-text.js"></script>
- <% include footer.ejs %>
+        <%- include ask-question-module.ejs %>
+
+
+        <img class="img-responsive" alt="question mark" width="15%" height="15%" src="images/question_mark.png" style="margin: 10px auto">
+    </div>
+    <!-- /.container -->
+
+
+        <%- include footer.ejs %>
+
+
+    <script>
+        window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')
+    </script>
+
 </body>
 
 </html>

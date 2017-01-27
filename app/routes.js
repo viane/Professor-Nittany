@@ -10,14 +10,13 @@ var accountManage = require('./account');
 var uploadQuestionByTextFile = require('./file-to-questionDB');
 var User = require(appRoot + "/app/models/user");
 
-
 module.exports = function(app, passport) {
 
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
     app.get('/', function(req, res) {
-        res.render(frontEndRoot+'index.ejs', {user: req.user}); // load the index.ejs file
+        res.render(frontEndRoot + 'index.ejs', {user: req.user}); // load the index.ejs file
     });
 
     // =====================================
@@ -25,8 +24,11 @@ module.exports = function(app, passport) {
     // =====================================
     // show the login form
     app.get('/login', function(req, res) {
+        if (req.isAuthenticated())
+            res.redirect('/profile');
+
         // render the page and pass in any flash data if it exists
-        res.render(frontEndRoot+'login.ejs', {message: req.flash('loginMessage')});
+        res.render(frontEndRoot + 'login.ejs', {message: req.flash('loginMessage')});
     });
 
     // process the login form
@@ -42,7 +44,7 @@ module.exports = function(app, passport) {
     // show the signup form
     app.get('/signup', function(req, res) {
         // render the page and pass in any flash data if it exists
-        res.render(frontEndRoot+'signup.ejs', {message: req.flash('signupMessage')});
+        res.render(frontEndRoot + 'signup.ejs', {message: req.flash('signupMessage')});
     });
 
     // process the signup form
@@ -69,25 +71,25 @@ module.exports = function(app, passport) {
                 path = "local";
                 break;
             case "twitter":
-            path = "twitter";
+                path = "twitter";
                 break;
             case "linkedin":
-            path = "linkedin";
+                path = "linkedin";
                 break;
             case "facebook":
-            path = "facebook";
+                path = "facebook";
                 break;
             default:
                 throw new Error("Request user type is unexcepted");
                 break;
         };
 
-        User.findById(req.user._id, function(err, foundUser){
-          ask_history = foundUser[path].ask_history;
-          res.render(frontEndRoot+'profile.ejs', {
-              user: req.user, // get the user out of session and pass to template
-              ask_history: ask_history
-          });
+        User.findById(req.user._id, function(err, foundUser) {
+            ask_history = foundUser[path].ask_history;
+            res.render(frontEndRoot + 'profile.ejs', {
+                user: req.user, // get the user out of session and pass to template
+                ask_history: ask_history
+            });
         })
     });
 
@@ -212,7 +214,7 @@ module.exports = function(app, passport) {
     // Admin console
     // =====================================
     app.get('/admin', isLoggedInRedirect, function(req, res) {
-        res.render(frontEndRoot+'admin.ejs', {
+        res.render(frontEndRoot + 'admin.ejs', {
             message: req.flash('Message'),
             user: req.user
         }); // load the index.ejs file
@@ -223,7 +225,7 @@ module.exports = function(app, passport) {
     // =================================================
 
     app.get('/QuestionAnswerManagement', isLoggedInRedirect, function(req, res) {
-        res.render(frontEndRoot+'question-Answer-Management.ejs', {
+        res.render(frontEndRoot + 'question-Answer-Management.ejs', {
             message: req.flash('Message'),
             user: req.user
         }); // load the index.ejs file
@@ -361,5 +363,5 @@ function isLoggedInNotice(req, res, next) {
         return next();
 
     // if they aren't redirect them to the home page
-    res.send({status:"error", information:"Login required"});
+    res.send({status: "error", information: "Login required"});
 }
