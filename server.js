@@ -1,4 +1,7 @@
 'use strict';
+
+const morgan = require('morgan'); //request logger
+
 require('@risingstack/trace'); //for heorku tracking addon
 require('./config/console'); //overide global console.log function
 global.Promise = require("bluebird");
@@ -12,7 +15,6 @@ const app = express();
 
 const bodyParser = require('body-parser');
 
-const morgan = require('morgan'); //request logger
 
 const util = require("util");
 const cookieParser = require('cookie-parser');
