@@ -13,11 +13,13 @@ var RedditStrategy = require("passport-reddit").Strategy;
 var AmazonStrategy = require("passport-amazon").Strategy;
 var WechatStrategy = require("passport-wechat").Strategy;
 
+var appRoot = require('app-root-path');
+
 // load up the user model
-var User = require('../app/models/user');
+var User = require(appRoot+'/app/models/user');
 
 // load the auth variables
-var configAuth = require('./auth');
+var configAuth = require(appRoot+'/config/auth');
 
 // expose this function to our app using module.exports
 module.exports = function(passport) {
@@ -89,7 +91,7 @@ module.exports = function(passport) {
         passwordField: 'password',
         passReqToCallback: true // allows us to pass back the entire request to the callback
     }, function(req, email, password, done) { // callback with email and password from our form
-        if (!req.body.name || req.body.name.length == 0) {
+        if (!req.body.first_name || req.body.first_name.length == 0 || !req.body.last_name || req.body.last_name.length == 0) {
             return done(null, false, req.flash('signupMessage', 'Name can\'t be empty'));
         }
         // find a user whose email is the same as the forms email
@@ -113,7 +115,10 @@ module.exports = function(passport) {
                         newUser.type = "local";
                         newUser.local.email = email; // facebook can return multiple emails so we'll take the first
                         newUser.hashPassword(password); //need-fix password input has to pass BCrypt hash, otherwise login will fail
-                        newUser.local.displayName = req.body.name;
+                        newUser.local.first_name = req.body.first_name;
+                        newUser.local.last_name = req.body.last_name;
+                        newUser.local.displayName = req.body.first_name + " " + req.body.last_name;
+
                         // save our user to the database
                         newUser.save(function(err) {
                             if (err) {
