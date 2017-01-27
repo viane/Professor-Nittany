@@ -1,4 +1,7 @@
 // app/routes.js
+
+'use strict'
+
 var crypto = require('crypto');
 
 // load up the question answer model
