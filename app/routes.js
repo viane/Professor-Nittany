@@ -120,18 +120,18 @@ module.exports = function(app, passport) {
         failureRedirect: '/'
     }));
 
-    // =====================================
-    // GOOGLE ROUTES =====================
-    // =====================================
-    // app.get('/auth/google', passport.authenticate('google', {
-    //     scope: ['https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/plus.me', 'profile']
-    // }));
-    //
-    // // handle the callback after facebook has authenticated the user
-    // app.get('/auth/google/callback', passport.authenticate('google', {
-    //     successRedirect: '/profile',
-    //     failureRedirect: '/'
-    // }));
+    =====================================
+    GOOGLE ROUTES =====================
+    =====================================
+    app.get('/auth/google', passport.authenticate('google', {
+        scope: ['https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/plus.me', 'profile']
+    }));
+
+    // handle the callback after facebook has authenticated the user
+    app.get('/auth/google/callback', passport.authenticate('google', {
+        successRedirect: '/profile',
+        failureRedirect: '/'
+    }));
 
     // =====================================
     // LINKEDIN ROUTES =====================
