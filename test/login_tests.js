@@ -97,7 +97,6 @@ describe('Login, Logout, Register Tests', function() {
 				if (err) {
 					return done(err);
 				} else {
-					console.log(res);
 					expect(res.statusCode).to.equal(302);
 					expect(res.text).to.include('/profile');
 					done();

@@ -4,13 +4,23 @@ const appRoot = require('app-root-path');
 const User = require(appRoot + '/app/models/user.js');
 
 var verifyFunction = function(req, email, password, done) {
-    //console.log("Verifying.");
-     User.findOne({
+    console.log("Verifying.");
+    User.findOne({
         'local.email': email
     }, function(err, user) {
-            if (err) return done(err);
-            if (!user) return done(null, false);
-            if (!user.validPassword(password)) return done(null, false);
+            if (err) {
+                //console.log("error.");
+                return done(err);
+            }
+            if (!user) {
+               // console.log("No user found.");
+                return done(null, false, req.flash('loginMessage', 'No user found.'));
+            }
+            if (!user.validPassword(password)) {
+               // console.log("Wrong password.");
+                return done(null, false, req.flash('loginMessage', 'Wrong password.'));
+            }
+           // console.log("clear");
             return done(null, user);
         });
 };
