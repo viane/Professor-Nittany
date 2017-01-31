@@ -41,11 +41,9 @@ describe('Login, Logout, Register Tests', function() {
 			server.post('/signup')
 			.set('Content-Type','application/x-www-form-urlencoded')
 			.send( {
-				local: {
-					email: "Tester@test.com",
+					email: "tester1@test.com",
 					password: "password",
-					displayName: "Tester"
-				}
+					name: "Tester"
 			})
 			.end( function (err, res) {
 				console.log(res.body);
@@ -86,13 +84,11 @@ describe('Login, Logout, Register Tests', function() {
 				password: 'testing123'
 			});
 
-			server.post('/mock/login')
+			server.post('/login')
 			.set('Content-Type','application/x-www-form-urlencoded')
 			.send({
-				local : {
 					email : "tester@test.com",
 					password: 'testing123'
-				}
 			}).end( function (err, res) {
 				if (err) {
 					return done(err);
