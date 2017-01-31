@@ -12,6 +12,7 @@ var watsonToken = require('./watson-token');
 var accountManage = require('./account');
 var uploadQuestionByTextFile = require('./file-to-questionDB');
 var User = require(appRoot + "/app/models/user");
+const testingAPIModule = require(appRoot + '/app/testing/testAPI');
 
 module.exports = function(app, passport) {
 
@@ -346,6 +347,9 @@ module.exports = function(app, passport) {
 
     // admin upload questions from text file
     app.use('/api/admin/upload/', isLoggedInRedirect, uploadQuestionByTextFile);
+
+    //general server functionality testing api
+    app.use('/api/testing/', testingAPIModule);
 };
 
 // route middleware to make sure

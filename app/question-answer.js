@@ -14,7 +14,12 @@ module.exports.ask = function(user, input) {
     }
 
     return new Promise(function(resolve, reject) {
-        let formattedInput = processQuestion.processString(input);
+        const formattedInput = processQuestion.humanizeString(input);
+
+        const questionTopic = processQuestion.getTopic(formattedInput); //returning an []
+
+        logTopic(questionTopic);
+
         conversation.enterMessage(formattedInput).then(function(resultFromConversation) {
             // analysis result from conversation
             if (false) { // no need further ask...
@@ -23,24 +28,18 @@ module.exports.ask = function(user, input) {
                 // ask retrieve and rank
                 retrieveRank.enterMessage(formattedInput).then(function(resultFromRR) {
                     //analysis result from retrieve and rank, then resolve plain text
-                    processAnswer.doNothing(resultFromRR).then(function(finalAnswerResult) {
+                    processAnswer.final(resultFromRR, questionTopic).then(function(finalAnswerResult) {
                         resolve(finalAnswerResult);
                     })
                 })
             }
         })
     });
-
 };
 
 var logUserQuestion = function(reqUser, input) {
     const user_id = reqUser.id;
     const user_type = reqUser.type;
-
-    const questionObj = {
-        user_question_body: input,
-        favorite: false
-    };
 
     let path = "";
     switch (user_type) {
@@ -75,8 +74,24 @@ var logUserQuestion = function(reqUser, input) {
             }
         }
     }, function(err, doc) {
-        if (err)
+        if (err) {
             throw err; // handle error;
         }
-    );
+    });
+
+}
+
+var logTopic = function(topics) {
+    for (var i in topics) {
+        var row = topics[i];
+        console.log('Topic ' + (parseInt(i) + 1));
+
+        // For each term.
+        for (var j in row) {
+            var term = row[j];
+            console.log(term.term + ' (' + term.probability + '%)');
+        }
+
+        console.log('');
+    }
 }
