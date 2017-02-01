@@ -6,6 +6,7 @@ const retrieveRank = require('./watson-retrieve-rank');
 const processAnswer = require('./process-answer');
 const processQuestion = require('./process-question');
 let User = require(appRoot + '/app/models/user');
+const lda = require(appRoot + '/app/lda');
 
 module.exports.ask = function(user, input) {
 
@@ -16,7 +17,7 @@ module.exports.ask = function(user, input) {
     return new Promise(function(resolve, reject) {
         const formattedInput = processQuestion.humanizeString(input);
 
-        const questionTopic = processQuestion.getTopic(formattedInput); //returning an []
+        const questionTopic = lda.getTopic(formattedInput); //returning an []
 
         logTopic(questionTopic);
 

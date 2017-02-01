@@ -3,9 +3,12 @@
 const morgan = require('morgan'); //request logger
 
 require('@risingstack/trace'); //for heorku tracking addon
+
 require('./config/console'); //overide global console.log function
+
 global.Promise = require("bluebird");
 
+const opbeat = require('opbeat');
 const http = require('http');
 const https = require('https');
 const path = require('path');
@@ -28,6 +31,8 @@ const flash = require('connect-flash');
 
 //libs for user system
 const passport = require('passport');
+
+app.use(opbeat.middleware.express()); // opbeat for heroku monitoring
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
