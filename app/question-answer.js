@@ -23,7 +23,7 @@ module.exports.ask = function(user, input) {
                 resolve(resultFromConversation);
             } else {
                 // analysis the concept, keyword, taxonomy, entities of the question
-                const analysis = processQuestion.alchemyAnalysis(formattedUserInput);
+                const analysis = processQuestion.alchemyAnalysis(userInput);
                 if (analysis) {
                     // now process the question and rephrase to AI readable
                     userInput = processQuestion.final(userInput, analysis);

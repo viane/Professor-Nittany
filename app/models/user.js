@@ -4,8 +4,11 @@
 
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
+
+
 var appRoot = require('app-root-path');
 var configDB = require(appRoot + '/config/database.js');
+
 var conn = mongoose.createConnection(configDB.userDB_URL);
 var bcrypt = require('bcrypt-nodejs');
 
