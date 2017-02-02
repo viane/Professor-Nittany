@@ -28,11 +28,12 @@ module.exports = function(app, passport) {
     // =====================================
     // show the login form
     app.get('/login', function(req, res) {
-        if (req.isAuthenticated())
+        if (req.isAuthenticated()) {
             res.redirect('/profile');
-
-        // render the page and pass in any flash data if it exists
-        res.render(frontEndRoot + 'login.ejs', {message: req.flash('loginMessage')});
+        } else {
+            // render the page and pass in any flash data if it exists
+            res.render(frontEndRoot + 'login.ejs', {message: req.flash('loginMessage')});
+        }
     });
 
     // process the login form
