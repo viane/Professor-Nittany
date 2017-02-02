@@ -117,7 +117,7 @@ $(document).ready(function() {
         }).then(function(res) {
             if (res.status !== 200) {
                 generateNotice('error', "Error, status code: " + res.status);
-                returnl;
+                return;
             }
             res.json().then(function(result) {
                 generateNotice(result.type, result.information);

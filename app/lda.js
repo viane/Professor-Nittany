@@ -1,3 +1,5 @@
+// app/lda.js
+// use to give topics of short string
 'use strict'
 
 const lda = require('lda');
