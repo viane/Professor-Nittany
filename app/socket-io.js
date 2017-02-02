@@ -6,7 +6,7 @@ module.exports = function(server) {
     io.on('connection', function(socket) {
         var user = {};
 
-        //when user init a socket from client side, record the suer id and type for security purpose
+        //when user init a socket from client side, record the user id and type for security purpose
         socket.on('load', function(data) {
             user.id = data.id;
             user.type = data.type;
@@ -23,9 +23,9 @@ module.exports = function(server) {
                 //login user block
 
                 if (user.id === data.sender.id && user.type === data.sender.type) {
-                    //analysis and log inputs
+                    // ask system
                     questionAnswer.ask(user, currentInput).then(function(result) {
-                        socket.emit('new message', {message: result});
+                        socket.emit('new message', {message: result.response.docs[0]});
                     }).catch(function(err) {
                         console.log(err);
                     });
@@ -37,7 +37,7 @@ module.exports = function(server) {
 
                 //handle by queston and answer
                 questionAnswer.ask(null, currentInput).then(function(result) {
-                    socket.emit('new message', {message: result});
+                    socket.emit('new message', {message: result.response.docs[0]});
                 }).catch(function(err) {
                     console.log(err);
                 });

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Intelligent Academic Planner - Home</title>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+  <%- include header.ejs %>
+    <div class="jumbotron">
+        <h2>Ask Away!</h2>
+        <p>Our system is designed to answer all of your questions about Penn State Behrend's CSSE Department.</p>
+    </div>
+    </div>
+
+    <div class="container">
+        <h6 align="left"><a href="/login">Register</a> for personalized answers!</h6>
+
+        <%- include ask-question-module.ejs %>
+
+
+        <img class="img-responsive" alt="question mark" width="15%" height="15%" src="images/question_mark.png" style="margin: 10px auto">
+    </div>
+    <!-- /.container -->
+
+
+        <%- include footer.ejs %>
+
+
+    <script>
+        window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')
+    </script>
+
+</body>
+
+</html>

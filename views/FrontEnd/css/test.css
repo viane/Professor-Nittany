@@ -1,0 +1,37 @@
+
+#add-questionAnswer-submit-btn {
+    color: #5342ca;
+    border: 1px solid #5342ca;
+    border-radius: 25px;
+}
+
+#add-questionAnswer-submit-btn:hover{
+    color: #696bd0;
+}
+
+
+.account-footer{
+  color: white;
+}
+.account-footer a{
+    color: rgb(208, 205, 39);
+}
+
+.profile-section{
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.title-admin{
+  color: white;
+  font-size: 2em;
+}
+
+
+#apply-admin{
+  display: inline;
+}
+
+#apply-admin-code{
+  width: 80%;
+}

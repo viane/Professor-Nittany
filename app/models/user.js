@@ -1,19 +1,27 @@
 // app/models/user.js
+
+'use strict'
+
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-var configDB = require.main.require('./config/database.js');
-var conn = mongoose.createConnection(configDB.userDB_URL);
 
+
+var appRoot = require('app-root-path');
+var configDB = require(appRoot + '/config/database.js');
+
+var conn = mongoose.createConnection(configDB.userDB_URL);
 var bcrypt = require('bcrypt-nodejs');
 
 // define the schema for our user model
 var userSchema = mongoose.Schema({
-    type:String,
+    type: String,
     local: {
         email: {
             type: String
         },
         password: String,
+        frist_name: String,
+        last_name: String,
         displayName: String,
         avatar: {
             type: String,
@@ -29,18 +37,33 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                type: mongoose.Schema.Types.Mixed,
-                question_id: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'questionAnswer'
+                user_question_body: {
+                    type: String
                 },
-                favorite: {type: Boolean, default: false},
-                ask_time: {type:Date, default: Date.now}
+                favorite: {
+                    type: Boolean,
+                    default: false
+                },
+                ask_time: {
+                    type: Date,
+                    default: Date.now
+                }
             }
         ],
         interest: [
             {
-                type: String,
+                type: String
+            }
+        ],
+        personality_assessement: [
+            {
+                document_name: String,
+                submit_time: {
+                    type: Date,
+                    default: Date.now
+                },
+                public: Boolean,
+                evaluation: mongoose.Schema.Types.Mixed
             }
         ]
     },
@@ -60,18 +83,33 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                type: mongoose.Schema.Types.Mixed,
-                question_id: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'questionAnswer'
+                user_question_body: {
+                    type: String
                 },
-                favorite: {type: Boolean, default: false},
-                ask_time: {type:Date, default: Date.now}
+                favorite: {
+                    type: Boolean,
+                    default: false
+                },
+                ask_time: {
+                    type: Date,
+                    default: Date.now
+                }
             }
         ],
         interest: [
             {
-                type: String,
+                type: String
+            }
+        ],
+        personality_assessement: [
+            {
+                document_name: String,
+                submit_time: {
+                    type: Date,
+                    default: Date.now
+                },
+                public: Boolean,
+                evaluation: mongoose.Schema.Types.Mixed
             }
         ]
     },
@@ -87,18 +125,33 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                type: mongoose.Schema.Types.Mixed,
-                question_id: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'questionAnswer'
+                user_question_body: {
+                    type: String
                 },
-                favorite: {type: Boolean, default: false},
-                ask_time: {type:Date, default: Date.now}
+                favorite: {
+                    type: Boolean,
+                    default: false
+                },
+                ask_time: {
+                    type: Date,
+                    default: Date.now
+                }
             }
         ],
         interest: [
             {
-                type: String,
+                type: String
+            }
+        ],
+        personality_assessement: [
+            {
+                document_name: String,
+                submit_time: {
+                    type: Date,
+                    default: Date.now
+                },
+                public: Boolean,
+                evaluation: mongoose.Schema.Types.Mixed
             }
         ]
     },
@@ -115,15 +168,31 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                question_id: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'questionAnswer'
+                user_question_body: {
+                    type: String
                 },
-                favorite: Boolean,
-                ask_time: Date
+                favorite: {
+                    type: Boolean,
+                    default: false
+                },
+                ask_time: {
+                    type: Date,
+                    default: Date.now
+                }
             }
         ],
-        interest: [String]
+        interest: [String],
+        personality_assessement: [
+            {
+                document_name: String,
+                submit_time: {
+                    type: Date,
+                    default: Date.now
+                },
+                public: Boolean,
+                evaluation: mongoose.Schema.Types.Mixed
+            }
+        ]
     }
 }, {strict: true});
 

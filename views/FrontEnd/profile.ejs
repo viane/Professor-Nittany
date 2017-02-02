@@ -1,0 +1,94 @@
+<!-- views/profile.ejs -->
+<!doctype html>
+<html>
+<head>
+	<title>Node Authentication</title>
+</head>
+<body>
+	<!-- include menu bar -->
+	<%- include header.ejs %>
+	<!-- end of menu bar -->
+
+	<!-- Start of main page -->
+	<div class="container">
+
+		<div class="page-header text-center">
+			<h1 class="page-title"><span class="fa fa-anchor"></span> Profile Page</h1>
+		</div>
+
+		<div class="row">
+
+			<!-- LOCAL INFORMATION -->
+			<% if (user.type === "local") { %>
+			<div class="col-sm-6 profile-section">
+				<div class="well">
+					<h3><span class="fa fa-user"></span> Local Account</h3>
+						<p>
+							<strong>id</strong>: <%= user._id %><br>
+							<strong>Avatar</strong>: <img class="user-avatar" style="width: 100px;" src=<%= user.local.avatar %>></img><br>
+							<strong>email</strong>: <%= user.local.email %><br>
+							<strong>name</strong>: <%= user.local.displayName %>
+						</p>
+						<% if (user.local.role != "admin") { %>
+						<div id="apply-admin"><input id="apply-admin-code" type="text" placeholder="Invite code"><div id="apply-admin-submit" class="btn">Apply admin</div></div>
+					<% } %>
+				</div>
+			</div>
+			<% } %>
+
+			<% if (user.type === "facebook") { %>
+			<!-- FACEBOOK INFORMATION -->
+			<div class="col-sm-6 profile-section">
+				<div class="well">
+					<h3 class="text-primary"><span class="fa fa-facebook"></span> Facebook User</h3>
+						<p>
+							<strong>Avatar</strong>: <img class="user-avatar" src="<%= user.facebook.avatar %>"></img><br>
+							<strong>id</strong>: <%= user.facebook.id %><br>
+							<strong>email</strong>: <%= user.facebook.email %><br>
+							<strong>name</strong>: <%= user.facebook.displayName %><br>
+						</p>
+				</div>
+			</div>
+			<% } %>
+ 
+			<% if (user.type === "twitter") { %>
+			<!-- TWITTER INFORMATION -->
+			<div class="col-sm-6 profile-section">
+				<div class="well">
+					<h3 class="text-primary"><span class="fa fa-twitter"></span> Twitter User</h3>
+						<p>
+							<strong>Avatar</strong>: <img src="<%= user.twitter.avatar %>"></img><br>
+							<strong>id</strong>: <%= user.twitter.id %><br>
+							<strong>email</strong>: <%= user.twitter.email %><br>
+							<strong>name</strong>: <%= user.twitter.name %><br>
+						</p>
+				</div>
+			</div>
+			<% } %>
+
+
+			<% if (user.type === "linkedin") { %>
+			<!-- TWITTER INFORMATION -->
+			<div class="col-sm-6 profile-section">
+				<div class="well">
+					<h3 class="text-primary"><span class="fa fa-linkedin"></span> LinkedIn User</h3>
+						<p>
+							<strong>Avatar</strong>: <img src="<%= user.linkedin.avatar %>"></img><br>
+							<strong>id</strong>: <%= user.linkedin.id %><br>
+							<strong>email</strong>: <%= user.linkedin.email %><br>
+							<strong>name</strong>: <%= user.linkedin.displayName %><br>
+						</p>
+				</div>
+			</div>
+			<% } %>
+		</div>
+
+			<button class="button"><a href="/logout">Logout</a></button>
+
+			<div class="asked-question-list"><pre><%- JSON.stringify(ask_history, '\n', 2) %></pre></div>
+
+	</div>
+
+	<!-- End of main page -->
+</body>
+</html>
