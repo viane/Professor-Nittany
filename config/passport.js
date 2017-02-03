@@ -289,7 +289,7 @@ module.exports = function(passport) {
                     var newUser = new User();
                     newUser.type = "google";
                     // set all of the facebook information in our user model
-                    newUser.google.id = profile.id; // set the users facebook id
+                    newUser.google.id = profile.id; // set the users google id
                     newUser.google.displayName = profile.displayName; // look at the passport user profile to see how names are returned
                     newUser.google.familyName = profile.name.familyName;
                     newUser.google.givenName = profile.name.givenName;
