@@ -287,6 +287,7 @@ module.exports = function(passport) {
                 } else {
                     // if there is no user found with that facebook id, create them
                     var newUser = new User();
+                    newUser.type = "google";
                     // set all of the facebook information in our user model
                     newUser.google.id = profile.id; // set the users facebook id
                     newUser.google.displayName = profile.displayName; // look at the passport user profile to see how names are returned
