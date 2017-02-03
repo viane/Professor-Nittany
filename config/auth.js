@@ -18,8 +18,8 @@ module.exports = {
 	},
 
 	'googleAuth' : {
-		'clientID' 		: '291186601308-3im5rnno66cnohquivm4sh97taip4rlj.apps.googleusercontent.com',
-		'clientSecret' 	: 'k_mV3vd3qLJGaSe4qVzB0rF1',
+		'clientID' 		: '424735770376-ili546ebj6c07kaqnd3h6hbuutj8qc96.apps.googleusercontent.com',
+		'clientSecret' 	: '_5C4tFW8VswkdPSF1RY8NZQe',
 		'callbackURL' 	: 'https://intelligent-student-advisor.herokuapp.com/auth/google/callback'
 	},
 
