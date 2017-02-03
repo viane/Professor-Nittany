@@ -50,7 +50,7 @@
 				</div>
 			</div>
 			<% } %>
- 
+
 			<% if (user.type === "twitter") { %>
 			<!-- TWITTER INFORMATION -->
 			<div class="col-sm-6 profile-section">
@@ -77,6 +77,21 @@
 							<strong>id</strong>: <%= user.linkedin.id %><br>
 							<strong>email</strong>: <%= user.linkedin.email %><br>
 							<strong>name</strong>: <%= user.linkedin.displayName %><br>
+						</p>
+				</div>
+			</div>
+			<% } %>
+
+			<% if (user.type === "google") { %>
+			<!-- TWITTER INFORMATION -->
+			<div class="col-sm-6 profile-section">
+				<div class="well">
+					<h3 class="text-primary"><span class="fa fa-google"></span> Google User</h3>
+						<p>
+							<strong>Avatar</strong>: <img src="<%= user.google.avatar %>"></img><br>
+							<strong>id</strong>: <%= user.google.id %><br>
+							<strong>email</strong>: <%= user.google.email %><br>
+							<strong>name</strong>: <%= user.google.displayName %><br>
 						</p>
 				</div>
 			</div>
