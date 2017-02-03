@@ -193,7 +193,9 @@ var userSchema = mongoose.Schema({
                 evaluation: mongoose.Schema.Types.Mixed
             }
         ]
-    }
+    },
+    account_status: String,
+    account_actvition_code: String
 }, {strict: true});
 
 // checking if password is valid using bcrypt

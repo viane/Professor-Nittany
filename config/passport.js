@@ -285,6 +285,7 @@ module.exports = function(passport) {
                 if (user) {
                     return done(null, user); // user found, return that user
                 } else {
+                  console.log(profile);
                     // if there is no user found with that facebook id, create them
                     var newUser = new User();
                     // set all of the facebook information in our user model
