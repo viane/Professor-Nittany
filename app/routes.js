@@ -84,6 +84,9 @@ module.exports = function(app, passport) {
             case "facebook":
                 path = "facebook";
                 break;
+            case "google":
+                path = "google";
+                break;
             default:
                 throw new Error("Request user type is unexcepted");
                 break;
