@@ -105,7 +105,7 @@
                                     </div>
                                 </div>
                                 <div class="form-bottom">
-                                    <form role="form" action="/signup" method="post" class="registration-form">
+                                    <form role="form" action="" method="" class="registration-form" id="signup-form">
                                         <div class="form-group">
                                             <label class="sr-only" for="form-first-name">First name</label>
                                             <input type="text" name="first_name" placeholder="First name" class="form-first-name form-control" id="form-first-name">
@@ -126,21 +126,6 @@
                                             <label class="sr-only" for="form-password">Re-Password</label>
                                             <input type="password" placeholder="Password" class="form-email form-control" id="form-password" data-signup-password>
                                         </div>
-                                        <script>
-                                        $('input[type=password]').each(function(){$(this).on('focus',function(){
-                                                this.type = "text";
-                                            }).on('focusout',function() {
-                                              this.type = "password";
-                                            })})
-
-                                            // simple checking function, do not use in product
-                                            $($('[data-signup-password]')[1]).on('focusout',function() {
-                                              if ($(this).val() !== $($('[data-signup-password]')[0]).val()) {
-                                                generateNotice('error','Password doesn\'t match!');
-                                              }
-                                              this.type = "password";
-                                            })
-                                        </script>
                                         <div class="form-group">
                                             <label for="form-acct-type">Account Type</label>
                                             <select class="form-control" id="sel1" name="account_role">

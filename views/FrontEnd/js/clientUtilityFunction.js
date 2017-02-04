@@ -9,10 +9,12 @@ var generateNotice = function(type, text, timeout = _secToTimeUnit(3.5)) {
     var n = noty({
         text: text,
         type: type,
-        dismissQueue: false,
+        dismissQueue: true,
+        force: true,
         layout: 'topRight',
         closeWith: ['click'],
         theme: 'relax',
+        killer: true,
         maxVisible: 2,
         animation: {
             open: 'animated bounceInRight',
@@ -144,10 +146,10 @@ $(function() {
 //////////////////////////////////////////////////
 // user like/fav question answer handler functions
 //////////////////////////////////////////////////
-var addLikeBtnHandler = function(answerSequenceNumber){
+var addLikeBtnHandler = function(answerSequenceNumber) {
     $($('.answer-like-btn')[answerSequenceNumber]).on('click', function() {
-      const targetAnswer = $('[data-answer-seq='+answerSequenceNumber+']').text();
-      console.log(targetAnswer);
+        const targetAnswer = $('[data-answer-seq=' + answerSequenceNumber + ']').text();
+        console.log(targetAnswer);
     });
 };
 
@@ -272,6 +274,71 @@ var formatText = function(inputText) {
     //return formatted text
     return inputText;
 }
+
+//////////////////////////////////////////////
+// User sign up action
+//////////////////////////////////////////////
+
+$(document).ready(function() {
+    $("#signup-form").on("submit", function(e) {
+        e.preventDefault();
+        // check if both password input are same
+        if ($($('[data-signup-password]')[1]).val() !== $($('[data-signup-password]')[0]).val()) {
+            generateNotice('error', 'Password doesn\'t match!');
+        } else {
+            // post signup request to server
+            const url = '/signup';
+            const $form = $(this),
+                $formId = $form.attr('id');
+            const query = $("#" + $formId).serialize();
+            console.log(query);
+            fetch(url, {
+                method: "POST",
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+                },
+                body: query
+            }).then(function(res) {
+                res.json().then(function(res) {
+                    console.log(res);
+                    if (res.status !== 200) {
+                        generateNotice(res.type, "Error, " + res.information);
+                        return;
+                    } else {
+                        generateNotice(res.type, res.information);
+                        setTimeout(function() {
+                            window.location.href = '/profile';
+                        }, 2500);
+                    }
+                })
+            }).catch(function(err) {
+                generateNotice('error', err)
+            });
+
+        }
+
+    });
+});
+
+//////////////////////////////////////////////
+// Input password overwrite view
+//////////////////////////////////////////////
+
+$(function() {
+    $('input[type=password]').each(function() {
+        $(this).on('focus', function() {
+            this.type = "text";
+        }).on('focusout', function() {
+            this.type = "password";
+        })
+    })
+})
+
+//////////////////////////////////////////////
+// String utility
+//////////////////////////////////////////////
 
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);

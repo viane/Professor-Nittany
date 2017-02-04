@@ -53,13 +53,22 @@ module.exports = function(app, passport) {
     });
 
     // process the signup form
-    app.post('/signup',
-    //email and password not empty, start local authentication
-    passport.authenticate('local-signup', {
-        successRedirect: '/profile', // redirect to the secure profile section
-        failureRedirect: '/signup', // redirect back to the signup page if there is an error
-        failureFlash: true // allow flash messages
-    }));
+    app.post('/signup', function(req, res, next) {
+        //email and password not empty, start local authentication
+        passport.authenticate('local-signup', function(err, user, info) {
+            if (err) {
+                return res.send({status: 302, type: 'error', information: err});;
+            } else {
+                // req / res held in closure
+                req.logIn(user, function(err) {
+                    if (err) {
+                        return res.send({status: 302, type: 'error', information: err});
+                    }
+                    return res.send({status: 200, type: 'success', information: "Successfully registered"});
+                });
+            }
+        })(req, res, next)
+    });
 
     // =====================================
     // PROFILE SECTION =========================
