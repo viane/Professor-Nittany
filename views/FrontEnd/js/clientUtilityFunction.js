@@ -9,10 +9,12 @@ var generateNotice = function(type, text, timeout = _secToTimeUnit(3.5)) {
     var n = noty({
         text: text,
         type: type,
-        dismissQueue: false,
+        dismissQueue: true,
+        force: true,
         layout: 'topRight',
         closeWith: ['click'],
         theme: 'relax',
+        killer: true,
         maxVisible: 2,
         animation: {
             open: 'animated bounceInRight',
@@ -286,7 +288,8 @@ $(document).ready(function() {
         } else {
             // post signup request to server
             const url = '/signup';
-            const $form = $(this), $formId = $form.attr('id');
+            const $form = $(this),
+                $formId = $form.attr('id');
             const query = $("#" + $formId).serialize();
             console.log(query);
             fetch(url, {
@@ -298,12 +301,18 @@ $(document).ready(function() {
                 },
                 body: query
             }).then(function(res) {
-                if (res.status !== 200) {
-                    generateNotice('error', "Error, status code: " + res.status);
-                    return;
-                }else{
-                    generateNotice('success', "post success")
-                }
+                res.json().then(function(res) {
+                    console.log(res);
+                    if (res.status !== 200) {
+                        generateNotice(res.type, "Error, " + res.information);
+                        return;
+                    } else {
+                        generateNotice(res.type, res.information);
+                        setTimeout(function() {
+                            window.location.href = '/profile';
+                        }, 2500);
+                    }
+                })
             }).catch(function(err) {
                 generateNotice('error', err)
             });
