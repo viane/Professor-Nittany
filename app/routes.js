@@ -5,7 +5,7 @@
 var crypto = require('crypto');
 
 // load up the question answer model
-var QuestionAnswerPair = require('../app/models/QuestionAnswerPair');
+var question = require('../app/models/question');
 var appRoot = require('app-root-path');
 var frontEndRoot = appRoot + '/views/FrontEnd/';
 var watsonToken = require('./watson-token');
@@ -255,29 +255,31 @@ module.exports = function(app, passport) {
         var tagContext = req.body.tag;
         console.log(req.user._id);
         if (questionContext.length == 0) {
-            res.send({user: req.user, status: "0", message: "Question can not be empty"})
+            res.send({user: req.user, status: "302", type:'warning', message: "Question can not be empty"})
         } else {
             //create DB object
-            var QA_pair = new QuestionAnswerPair();
+            var QA_pair = new question();
 
             //assign values
-            QA_pair.record.question = questionContext;
-            QA_pair.record.answer = answerContext;
-            QA_pair.record.tag = tagContext;
-            QA_pair.record.creator = req.user._id;
-
+            QA_pair.question_body = questionContext;
+            QA_pair.question_answer = answerContext;
+            QA_pair.question_tag = tagContext;
+            QA_pair.question_submitter = req.user._id;
+            QA_pair.question_upload_mothod = "mannual";
+            
             //Save to DB
             QA_pair.save(function(err) {
                 if (err) {
                     res.send({
                         user: req.user,
-                        status: "-1",
+                        status: "302",
+                        type:'error',
                         message: err + "</br>Save data to other place."
                     })
                     throw err;
                 }
                 // if successful, return the new user
-                res.send({user: req.user, status: "1", message: "Successfully added entry"})
+                res.send({user: req.user, status: "200", type:'success', message: "Successfully added entry"})
             });
         }
     });
