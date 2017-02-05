@@ -1,3 +1,5 @@
+'use strict'
+
 var watson = require('watson-developer-cloud');
 var qs = require('qs'); //  Use a querystring parser to encode output.
 
@@ -12,7 +14,7 @@ var solrClient = retrieve_and_rank.createSolrClient(rrparams);
 
 var ranker_id = '766366x22-rank-2623';
 
-exports.enterMessage = function(inputText) {
+exports.enterMessage = function(inputText, questionTopic) {
     return new Promise(function(resolve, reject) {
         var rrquery = qs.stringify({q: inputText, ranker_id: ranker_id, fl: 'id,answer_id,score,confidence,title,body'});
         //ask retrive and rank

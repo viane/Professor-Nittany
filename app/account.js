@@ -1,10 +1,12 @@
 'use strict'
 
+const appRoot = require('app-root-path');
+
 var express = require('express');
 
 var router = express.Router();
 
-var User = require('../app/models/user');
+let User = require(appRoot + '/app/models/user');
 
 router.post('/apply-admin', function(req, res) {
     const id = req.user._id;
@@ -28,6 +30,18 @@ router.post('/apply-admin', function(req, res) {
     } else {
         res.send({type: 'error', information: 'Wrong invitation code.'}); // req.flash is the way to set flashdata using connect-flash
     }
+});
+
+router.post('/favorite-question',function(req,res){
+  const id = req.user._id;
+  console.log(req.user);
+  res.send({status:"success", information:"done!"});
+});
+
+router.post('/like-question',function(req,res){
+  const id = req.user._id;
+  console.log(req.user);
+  res.send({status:"success", information:"done!"});
 });
 
 const validateActivationCode = function(code) {
