@@ -37,7 +37,7 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                user_question_body: {
+                question_body: {
                     type: String
                 },
                 favorite: {
@@ -47,7 +47,27 @@ var userSchema = mongoose.Schema({
                 ask_time: {
                     type: Date,
                     default: Date.now
-                }
+                },
+                question_concept: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_entitie: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_taxonomy: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_keyword: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ]
             }
         ],
         interest: [
@@ -83,7 +103,7 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                user_question_body: {
+                question_body: {
                     type: String
                 },
                 favorite: {
@@ -93,7 +113,28 @@ var userSchema = mongoose.Schema({
                 ask_time: {
                     type: Date,
                     default: Date.now
-                }
+                },
+                ask_count: {type: Number, default: 1},
+                question_concept: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_entitie: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_taxonomy: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_keyword: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ]
             }
         ],
         interest: [
@@ -125,7 +166,7 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                user_question_body: {
+                question_body: {
                     type: String
                 },
                 favorite: {
@@ -135,7 +176,28 @@ var userSchema = mongoose.Schema({
                 ask_time: {
                     type: Date,
                     default: Date.now
-                }
+                },
+                ask_count: {type: Number, default: 1},
+                question_concept: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_entitie: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_taxonomy: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_keyword: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ]
             }
         ],
         interest: [
@@ -168,7 +230,7 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                user_question_body: {
+                question_body: {
                     type: String
                 },
                 favorite: {
@@ -178,7 +240,28 @@ var userSchema = mongoose.Schema({
                 ask_time: {
                     type: Date,
                     default: Date.now
-                }
+                },
+                ask_count: {type: Number, default: 1},
+                question_concept: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_entitie: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_taxonomy: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_keyword: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ]
             }
         ],
         interest: [String],
@@ -209,7 +292,7 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                user_question_body: {
+                question_body: {
                     type: String
                 },
                 favorite: {
@@ -219,7 +302,28 @@ var userSchema = mongoose.Schema({
                 ask_time: {
                     type: Date,
                     default: Date.now
-                }
+                },
+                ask_count: {type: Number, default: 1},
+                question_concept: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_entitie: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_taxonomy: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_keyword: [
+                    {
+                        type:mongoose.Schema.Types.Mixed
+                    }
+                ]
             }
         ],
         interest: [String],
