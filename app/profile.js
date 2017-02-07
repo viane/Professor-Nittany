@@ -13,8 +13,67 @@ const stream = require('stream'),
     es = require('event-stream');
 
 const user = require(appRoot + '/app/models/user');
-const textract = require('textract');
+
 const del = require('delete');
+
+const watson = require('watson-developer-cloud');
+
+const document_conversion = watson.document_conversion({username: 'd1f406ed-2958-472b-80d6-f1f5a8f176f1', password: 'hiJHDXkxq16o', version: 'v1', version_date: '2015-12-15'});
+
+const config = {
+    "word": {
+        "heading": {
+            "fonts": [
+                {
+                    "level": 1,
+                    "bold": true,
+                    "italic": true
+                }, {
+                    "level": 2,
+                    "bold": true,
+                    "italic": true
+                }, {
+                    "level": 3,
+                    "bold": true,
+                    "italic": true
+                }, {
+                    "level": 4,
+                    "bold": true,
+                    "italic": true
+                }, {
+                    "level": 5,
+                    "bold": true,
+                    "italic": true
+                }, {
+                    "level": 6,
+                    "bold": true,
+                    "italic": true
+                }
+            ],
+            "styles": [
+                {
+                    "level": 1,
+                    "names": ["pullout heading", "pulloutheading", "heading", "subtitle"]
+                }, {
+                    "level": 2,
+                    "names": ["pullout heading", "pulloutheading", "heading", "subtitle"]
+                }, {
+                    "level": 3,
+                    "names": ["pullout heading", "pulloutheading", "heading", "subtitle"]
+                }, {
+                    "level": 4,
+                    "names": ["pullout heading", "pulloutheading", "heading", "subtitle"]
+                }, {
+                    "level": 5,
+                    "names": ["pullout heading", "pulloutheading", "heading", "subtitle"]
+                }, {
+                    "level": 6,
+                    "names": ["pullout heading", "pulloutheading", "heading", "subtitle"]
+                }
+            ]
+        }
+    }
+}
 
 router.post('/upload/upload-description-text-file', busboy({
     limits: {
@@ -28,7 +87,7 @@ router.post('/upload/upload-description-text-file', busboy({
     let fstream;
     req.pipe(req.busboy);
     req.busboy.on('file', function(fieldname, file, filename) {
-        id = req.user._id;
+        const id = req.user._id;
         const updatePath = getUserDataPath(req.user.type);
 
         if (path.extname(filename) === ".txt") {
@@ -57,20 +116,50 @@ router.post('/upload/upload-description-text-file', busboy({
             // write file to temp folder
             file.pipe(fstream);
             fstream.on('close', function() {
-                textract.fromFileWithPath(filePath, function(error, text) {
-                    if (error) {
-                        throw error;
-                        res.sendStatus(300);
+
+                document_conversion.convert({
+                    file: fs.createReadStream(filePath), conversion_target: 'ANSWER_UNITS',
+                    // Use a custom configuration.
+                    config: config
+                }, function(err, response) {
+                    if (err) {
+                        throw err;
                     } else {
-                        console.log(text);
-                        res.sendStatus(200);
+                        let fullDoc = "";
+                        for (const docIndex in response.answer_units) {
+                            if (response.answer_units[docIndex].hasOwnProperty("title")) {
+                                fullDoc += response.answer_units[docIndex].title + ". ";
+                            }
+                            for (const textIndex in response.answer_units[docIndex].content) {
+                                if (response.answer_units[docIndex].content[textIndex].hasOwnProperty("text")) {
+                                    fullDoc += response.answer_units[docIndex].content[textIndex].text;
+                                }
+                            }
+                        }
+
+                        user.update({
+                            _id: id
+                        }, {
+                            $set: {
+                                [updatePath]: {
+                                    last_upload_time: new Date().toISOString(),
+                                    description_content: fullDoc,
+                                    evaluation: ""
+                                }
+                            }
+                        }).exec().then(function() {
+                            res.sendStatus(200);
+                        }).catch(function(err) {
+                            throw err
+                            res.sendStatus(300);
+                        });
+
                         // delete file
                         del.promise([filePath]).then(function() {}).catch(function(err) {
                             throw err;
                         });
                     }
-
-                })
+                });
 
             });
 

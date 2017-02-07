@@ -50,7 +50,6 @@
     "qs": "^6.2.1",
     "socket.io": "^1.5.1",
     "string": "^3.3.3",
-    "textract": "^2.1.1",
     "util": "^0.10.3",
     "validator": "^6.2.1",
     "watson-developer-cloud": "*"
