@@ -139,8 +139,15 @@ $(document).ready(function() {
 
 //set up dropzone for drop file
 Dropzone.autoDiscover = false;
+
+// for upload question file at /QuestionAnswerManagement
 $(function() {
     $("#upload-Question-Text-File").dropzone({url: "/api/admin/upload/upload-by-text-file"});
+});
+
+// for upload self description at /uploadPersonal
+$(function() {
+    $("#upload-description-Text-File").dropzone({url: "/api/profile/upload/upload-description-text-file"});
 });
 
 //////////////////////////////////////////////////

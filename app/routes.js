@@ -13,6 +13,7 @@ var accountManage = require('./account');
 var uploadQuestionByTextFile = require('./file-to-questionDB');
 var User = require(appRoot + "/app/models/user");
 const testingAPIModule = require(appRoot + '/app/testing/testAPI');
+const profileAPI = require(appRoot + '/app/profile');
 
 module.exports = function(app, passport) {
 
@@ -76,8 +77,6 @@ module.exports = function(app, passport) {
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedInRedirect function)
     app.get('/profile', isLoggedInRedirect, function(req, res) {
-
-        let ask_history = [];
         let path = "";
 
         switch (req.user.type) {
@@ -102,10 +101,10 @@ module.exports = function(app, passport) {
         };
 
         User.findById(req.user._id, function(err, foundUser) {
-            ask_history = foundUser[path].ask_history;
             res.render(frontEndRoot + 'profile.ejs', {
                 user: req.user, // get the user out of session and pass to template
-                ask_history: ask_history
+                ask_history: foundUser[path].ask_history,
+                privacy: foundUser.privacy
             });
         })
     });
@@ -266,7 +265,7 @@ module.exports = function(app, passport) {
             QA_pair.question_tag = tagContext;
             QA_pair.question_submitter = req.user._id;
             QA_pair.question_upload_mothod = "mannual";
-            
+
             //Save to DB
             QA_pair.save(function(err) {
                 if (err) {
@@ -363,8 +362,11 @@ module.exports = function(app, passport) {
     // admin upload questions from text file
     app.use('/api/admin/upload/', isLoggedInRedirect, uploadQuestionByTextFile);
 
-    //general server functionality testing api
+    // General server functionality testing api
     app.use('/api/testing/', testingAPIModule);
+
+    //  Profile APIs
+    app.use('/api/profile', isLoggedInRedirect, profileAPI);
 };
 
 // route middleware to make sure

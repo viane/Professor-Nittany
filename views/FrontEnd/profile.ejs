@@ -98,7 +98,14 @@
 			<% } %>
 		</div>
 
+			<div><pre><%- JSON.stringify(privacy, '\n', 2) %></pre></div>
+
 			<button class="button"><a href="/logout">Logout</a></button>
+
+			<!-- Submit questions by text file -->
+			<div id="uploadFileSection" class="white-container-mid">
+				<form class="dropzone" id="upload-description-Text-File" name="upload-file"></form>
+			</div>
 
 			<div class="asked-question-list"><pre><%- JSON.stringify(ask_history, '\n', 2) %></pre></div>
 
