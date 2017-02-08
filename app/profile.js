@@ -12,7 +12,7 @@ const path = require('path');
 const stream = require('stream'),
     es = require('event-stream');
 
-const user = require(appRoot + '/app/models/user');
+const User = require(appRoot + '/app/models/user');
 
 const del = require('delete');
 
@@ -87,36 +87,23 @@ router.post('/upload/upload-description-text-file', busboy({
     let fstream;
     req.pipe(req.busboy);
     req.busboy.on('file', function(fieldname, file, filename) {
-        const id = req.user._id;
-        const updatePath = getUserDataPath(req.user.type);
-
         if (path.extname(filename) === ".txt") {
-
             file.on('data', function(data) {
-                user.update({
-                    _id: id
-                }, {
-                    $set: {
-                        [updatePath]: {
-                            last_upload_time: new Date().toISOString(),
-                            description_content: data,
-                            evaluation: ""
-                        }
-                    }
-                }).exec().then(function() {
+                updateUserSelfDescription(req.user, data).then(function(query_report) {
                     res.sendStatus(200);
                 }).catch(function(err) {
-                    throw err
+                    throw err;
                     res.sendStatus(300);
                 })
             });
         } else if (path.extname(filename) === ".doc" || path.extname(filename) === ".docx") {
-            const filePath = appRoot + '/app/word-file-temp-folder/' + id + path.extname(filename);
+            // if user upload a word file, write to temp folder and named by it's id, then parse and upload to DB
+            const filePath = appRoot + '/app/word-file-temp-folder/' + req.user.id + path.extname(filename);
             fstream = fs.createWriteStream(filePath);
             // write file to temp folder
             file.pipe(fstream);
             fstream.on('close', function() {
-
+                // using watson documention conversion
                 document_conversion.convert({
                     file: fs.createReadStream(filePath), conversion_target: 'ANSWER_UNITS',
                     // Use a custom configuration.
@@ -125,7 +112,9 @@ router.post('/upload/upload-description-text-file', busboy({
                     if (err) {
                         throw err;
                     } else {
-                        let fullDoc = "";
+                        let fullDoc = ""; // will store all content in the word file as plain text
+
+                        // fill up the fullDoc
                         for (const docIndex in response.answer_units) {
                             if (response.answer_units[docIndex].hasOwnProperty("title")) {
                                 fullDoc += response.answer_units[docIndex].title + ". ";
@@ -137,27 +126,17 @@ router.post('/upload/upload-description-text-file', busboy({
                             }
                         }
 
-                        user.update({
-                            _id: id
-                        }, {
-                            $set: {
-                                [updatePath]: {
-                                    last_upload_time: new Date().toISOString(),
-                                    description_content: fullDoc,
-                                    evaluation: ""
-                                }
-                            }
-                        }).exec().then(function() {
+                        updateUserSelfDescription(req.user, fullDoc).then(function() {
+                            // done write to DB, delete file
+                            del.promise([filePath]).then(function() {}).catch(function(err) {
+                                throw err;
+                            });
                             res.sendStatus(200);
                         }).catch(function(err) {
-                            throw err
-                            res.sendStatus(300);
-                        });
-
-                        // delete file
-                        del.promise([filePath]).then(function() {}).catch(function(err) {
+                            // if error on write to DB, leave the file in the folder for further examnaton
                             throw err;
-                        });
+                            res.sendStatus(300);
+                        })
                     }
                 });
 
@@ -189,4 +168,29 @@ const getUserDataPath = function(userType) {
             break;
     }
     return path;
+}
+
+const updateUserSelfDescription = function(user, description) {
+    const id = user._id;
+    const updatePath = getUserDataPath(user.type);
+
+    return new Promise(function(resolve, reject) {
+        User.update({
+            _id: id
+        }, {
+            $set: {
+                [updatePath]: {
+                    last_upload_time: new Date().toISOString(),
+                    description_content: description.toString('utf8'),
+                    evaluation: ""
+                }
+            }
+        }).exec().then(function(query_report) {
+            resolve(query_report);
+        }).catch(function(err) {
+            throw err
+            reject(err);
+        });
+    });
+
 }
