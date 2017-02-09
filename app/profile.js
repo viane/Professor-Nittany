@@ -52,7 +52,6 @@ router.post('/upload/upload-description-text-file', busboy({
             file.pipe(fstream);
             fstream.on('close', function() {
               loadJsonFile(appRoot + '/config/api-configuration.json').then(json => {
-
                 // using watson documention conversion
                 document_conversion.convert({
                     file: fs.createReadStream(filePath), conversion_target: 'ANSWER_UNITS',
