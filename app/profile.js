@@ -20,60 +20,8 @@ const watson = require('watson-developer-cloud');
 
 const document_conversion = watson.document_conversion({username: 'd1f406ed-2958-472b-80d6-f1f5a8f176f1', password: 'hiJHDXkxq16o', version: 'v1', version_date: '2015-12-15'});
 
-const config = {
-    "word": {
-        "heading": {
-            "fonts": [
-                {
-                    "level": 1,
-                    "bold": true,
-                    "italic": true
-                }, {
-                    "level": 2,
-                    "bold": true,
-                    "italic": true
-                }, {
-                    "level": 3,
-                    "bold": true,
-                    "italic": true
-                }, {
-                    "level": 4,
-                    "bold": true,
-                    "italic": true
-                }, {
-                    "level": 5,
-                    "bold": true,
-                    "italic": true
-                }, {
-                    "level": 6,
-                    "bold": true,
-                    "italic": true
-                }
-            ],
-            "styles": [
-                {
-                    "level": 1,
-                    "names": ["pullout heading", "pulloutheading", "heading", "subtitle"]
-                }, {
-                    "level": 2,
-                    "names": ["pullout heading", "pulloutheading", "heading", "subtitle"]
-                }, {
-                    "level": 3,
-                    "names": ["pullout heading", "pulloutheading", "heading", "subtitle"]
-                }, {
-                    "level": 4,
-                    "names": ["pullout heading", "pulloutheading", "heading", "subtitle"]
-                }, {
-                    "level": 5,
-                    "names": ["pullout heading", "pulloutheading", "heading", "subtitle"]
-                }, {
-                    "level": 6,
-                    "names": ["pullout heading", "pulloutheading", "heading", "subtitle"]
-                }
-            ]
-        }
-    }
-}
+const loadJsonFile = require('load-json-file');
+
 
 router.post('/upload/upload-description-text-file', busboy({
     limits: {
@@ -103,11 +51,13 @@ router.post('/upload/upload-description-text-file', busboy({
             // write file to temp folder
             file.pipe(fstream);
             fstream.on('close', function() {
+              loadJsonFile(appRoot + '/config/api-configuration.json').then(json => {
+
                 // using watson documention conversion
                 document_conversion.convert({
                     file: fs.createReadStream(filePath), conversion_target: 'ANSWER_UNITS',
                     // Use a custom configuration.
-                    config: config
+                    config: json.document_conversion_config
                 }, function(err, response) {
                     if (err) {
                         throw err;
@@ -139,7 +89,7 @@ router.post('/upload/upload-description-text-file', busboy({
                         })
                     }
                 });
-
+                  });
             });
 
         }
