@@ -5,7 +5,6 @@
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-
 var appRoot = require('app-root-path');
 var configDB = require(appRoot + '/config/database.js');
 
@@ -15,6 +14,12 @@ var bcrypt = require('bcrypt-nodejs');
 // define the schema for our user model
 var userSchema = mongoose.Schema({
     type: String,
+    privacy:{
+      baisc_information: {type: Boolean, default: false},
+      personality_assessement : {type: Boolean, default: false},
+      stats_and_analysis: {type: Boolean, default: false},
+      question_log: {type: Boolean, default: false}
+    },
     local: {
         email: {
             type: String
@@ -37,7 +42,7 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                user_question_body: {
+                question_body: {
                     type: String
                 },
                 favorite: {
@@ -47,7 +52,31 @@ var userSchema = mongoose.Schema({
                 ask_time: {
                     type: Date,
                     default: Date.now
-                }
+                },
+                ask_count: {
+                    type: Number,
+                    default: 1
+                },
+                question_concept: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_entitie: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_taxonomy: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_keyword: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ]
             }
         ],
         interest: [
@@ -55,17 +84,14 @@ var userSchema = mongoose.Schema({
                 type: String
             }
         ],
-        personality_assessement: [
-            {
-                document_name: String,
-                submit_time: {
-                    type: Date,
-                    default: Date.now
-                },
-                public: Boolean,
-                evaluation: mongoose.Schema.Types.Mixed
-            }
-        ]
+        personality_assessement: {
+            last_upload_time: {
+                type: Date,
+                default: Date.now
+            },
+            description_content: String,
+            evaluation: mongoose.Schema.Types.Mixed
+        }
     },
     facebook: {
         id: String,
@@ -83,7 +109,7 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                user_question_body: {
+                question_body: {
                     type: String
                 },
                 favorite: {
@@ -93,7 +119,31 @@ var userSchema = mongoose.Schema({
                 ask_time: {
                     type: Date,
                     default: Date.now
-                }
+                },
+                ask_count: {
+                    type: Number,
+                    default: 1
+                },
+                question_concept: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_entitie: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_taxonomy: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_keyword: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ]
             }
         ],
         interest: [
@@ -101,17 +151,14 @@ var userSchema = mongoose.Schema({
                 type: String
             }
         ],
-        personality_assessement: [
-            {
-                document_name: String,
-                submit_time: {
-                    type: Date,
-                    default: Date.now
-                },
-                public: Boolean,
-                evaluation: mongoose.Schema.Types.Mixed
-            }
-        ]
+        personality_assessement: {
+            last_upload_time: {
+                type: Date,
+                default: Date.now
+            },
+            description_content: String,
+            evaluation: mongoose.Schema.Types.Mixed
+        }
     },
     twitter: {
         id: String,
@@ -125,7 +172,7 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                user_question_body: {
+                question_body: {
                     type: String
                 },
                 favorite: {
@@ -135,7 +182,31 @@ var userSchema = mongoose.Schema({
                 ask_time: {
                     type: Date,
                     default: Date.now
-                }
+                },
+                ask_count: {
+                    type: Number,
+                    default: 1
+                },
+                question_concept: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_entitie: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_taxonomy: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_keyword: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ]
             }
         ],
         interest: [
@@ -143,17 +214,14 @@ var userSchema = mongoose.Schema({
                 type: String
             }
         ],
-        personality_assessement: [
-            {
-                document_name: String,
-                submit_time: {
-                    type: Date,
-                    default: Date.now
-                },
-                public: Boolean,
-                evaluation: mongoose.Schema.Types.Mixed
-            }
-        ]
+        personality_assessement: {
+            last_upload_time: {
+                type: Date,
+                default: Date.now
+            },
+            description_content: String,
+            evaluation: mongoose.Schema.Types.Mixed
+        }
     },
     linkedin: {
         id: String,
@@ -168,7 +236,7 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                user_question_body: {
+                question_body: {
                     type: String
                 },
                 favorite: {
@@ -178,21 +246,42 @@ var userSchema = mongoose.Schema({
                 ask_time: {
                     type: Date,
                     default: Date.now
-                }
+                },
+                ask_count: {
+                    type: Number,
+                    default: 1
+                },
+                question_concept: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_entitie: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_taxonomy: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_keyword: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ]
             }
         ],
         interest: [String],
-        personality_assessement: [
-            {
-                document_name: String,
-                submit_time: {
-                    type: Date,
-                    default: Date.now
-                },
-                public: Boolean,
-                evaluation: mongoose.Schema.Types.Mixed
-            }
-        ]
+        personality_assessement: {
+            last_upload_time: {
+                type: Date,
+                default: Date.now
+            },
+            description_content: String,
+            evaluation: mongoose.Schema.Types.Mixed
+        }
     },
     google: {
         id: String,
@@ -209,7 +298,7 @@ var userSchema = mongoose.Schema({
         },
         ask_history: [
             {
-                user_question_body: {
+                question_body: {
                     type: String
                 },
                 favorite: {
@@ -219,21 +308,42 @@ var userSchema = mongoose.Schema({
                 ask_time: {
                     type: Date,
                     default: Date.now
-                }
+                },
+                ask_count: {
+                    type: Number,
+                    default: 1
+                },
+                question_concept: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_entitie: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_taxonomy: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ],
+                question_keyword: [
+                    {
+                        type: mongoose.Schema.Types.Mixed
+                    }
+                ]
             }
         ],
         interest: [String],
-        personality_assessement: [
-            {
-                document_name: String,
-                submit_time: {
-                    type: Date,
-                    default: Date.now
-                },
-                public: Boolean,
-                evaluation: mongoose.Schema.Types.Mixed
-            }
-        ]
+        personality_assessement: {
+            last_upload_time: {
+                type: Date,
+                default: Date.now
+            },
+            description_content: String,
+            evaluation: mongoose.Schema.Types.Mixed
+        }
     },
     account_status: String,
     account_actvition_code: String

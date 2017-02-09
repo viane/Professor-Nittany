@@ -90,10 +90,7 @@ module.exports = function(passport) {
         usernameField: 'email',
         passwordField: 'password',
         passReqToCallback: true // allows us to pass back the entire request to the callback
-    }, function(req, email, password, done) { // callback with email and password from our form
-        if (!req.body.first_name || req.body.first_name.length == 0 || !req.body.last_name || req.body.last_name.length == 0) {
-            return done('Name can\'t be empty', false, req.flash('signupMessage', 'Name can\'t be empty'));
-        }
+    }, function(req, email, password, done) { 
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
         User.findOne({
