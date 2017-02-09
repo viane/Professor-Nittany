@@ -139,7 +139,7 @@ img { max-width: 100%; }
 }
 
 .form-bottom form .input-error {
-	border-color: #19b9e7;
+	border-color: #d9534f;
 }
 
 .social-login {

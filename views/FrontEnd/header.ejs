@@ -29,6 +29,7 @@
 
 <!-- Client utility functions -->
 <script src="../js/clientUtilityFunction.js"></script>
+<script src="../js/test.js"></script>
 
 <!-- Bootstrap Javascript -->
 <script src="css/form3/assets/bootstrap/js/bootstrap.min.js"></script>
@@ -38,22 +39,45 @@
 
 <!-- NAVBAR -->
 <nav class="navbar navbar-inverse navbar-static-top" style="margin-bottom: 0">
-<div class="container">
+	<div class="container-fluid">
 
-<div class="navbar-header">
-  <a class="navbar-brand" href="/">Intelligent Academic Planner</a>
-</div>
+		<div class="navbar-header">
+          <a class="navbar-brand" href="/" style="display:inline-block;vertical-align:middle;"><img class="responsive" src="images/IAP_logo_wh.png" height="100%" style="display:inline-block;vertical-align:middle;"><span>Intelligent Academic Planner</span></a>
+        </div>
 
-<ul class="nav navbar-nav navbar-right">
-      <li class="active"><a href="/login"><span class="glyphicon glyphicon-user"></span> Login/Register</a></li>
-      <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-</ul>
-</div>
+		<ul class="nav navbar-nav navbar-right">
+
+			<% if (locals.user) { %>
+			<li class="active">
+				<a href="#" class="dropdown" data-toggle="dropdown">
+					<span class="user-avatar pull-left" style="margin-right:8px; margin-top:-5px;">
+						<img class="img-responsive img-circle" title="<%= user.local.email %>" alt="<%= user.local.email %>" src="<%= user.local.avatar %>" width="30px" height="30px"></img>
+					</span><span style="color:#19b9e7"><%= user.local.displayName %></span>
+					<b class="caret"></b>
+				</a>
+				<ul class="dropdown-menu">
+					<li><a href="/profile" class="btn form-control"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+					<li><a href="/settings" class="btn form-control"><i class="fa fa-cogs" aria-hidden="true"></i> Settings</a></li>
+					<li><a href="/logout" class="btn form-control"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+				</ul>
+			</li>
+			<% } %>
+
+			<% if (locals.user && user.local.role == "admin") { %>   
+			<li title="about"><a href="/admin" class="menu-admin-btn">Console</a></li>
+			<% } %>
+
+			<% if (!locals.user) { %>  
+			<li class="active">
+				<a href="/login"><span class="glyphicon glyphicon-user"></span> Login/Register</a>
+			</li>
+			<% } %>
+		</ul>
+	</div>
 </nav>
-
 <!--If user is an admin-->
 <% if(locals.user){ %>
-    <% if(user.local.role == "admin"){ %>
-        <li title="about"><a href="/admin" class="menu-admin-btn">Console</a></li>
-    <% } %>
+<% if(user.local.role == "admin"){ %>
+<li title="about"><a href="/admin" class="menu-admin-btn">Console</a></li>
+<% } %>
 <% } %>

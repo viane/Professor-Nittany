@@ -278,3 +278,14 @@ String.prototype.capitalize = function() {
 }
 
 String.prototype.formatAnswerByTag = function() {}
+
+// This function adds and removes the hidden class from the developer token input
+$(function(){
+    $("#form-register-role").change(function(){
+        if($("#form-register-role option:selected").text() === "Developer"){
+            $("#form-developer-token").removeClass("hidden");
+        } else {
+            $("#form-developer-token").addClass("hidden");
+        }
+    })
+})
