@@ -2,39 +2,44 @@
 
 const PersonalityInsightsV3 = require('watson-developer-cloud/personality-insights/v3');
 const loadJsonFile = require('load-json-file');
+const appRoot = require('app-root-path');
 
-loadJsonFile(appRoot + '/config/credential.json').then(credential => {
-    const personality_insights = new PersonalityInsightsV3({
-        username: credential.personality_insights_credential.username,
-        password: credential.personality_insights_credential.password,
-        version_date: '2016-10-20',
-        headers: {
-            'X-Watson-Learning-Opt-Out': 'false'
-        }
-    })
+const initPersonalityAPI = () => {
+    return new Promise(function(resolve, reject) {
+        loadJsonFile(appRoot + '/config/credential.json').then(credential => {
+            resolve(new PersonalityInsightsV3({
+                username: credential.personality_insights_credential.username,
+                password: credential.personality_insights_credential.password,
+                version_date: '2016-10-20',
+                headers: {
+                    'X-Watson-Learning-Opt-Out': 'false'
+                }
+            }));
+        });
+    });
+
 }
 
-module.exports.getAnalysis = function(input) {
-
-    const params = {
-        // Get the content items from the JSON file.
-        test: input,
-        raw_scores: true,
-        headers: {
-            'accept-language': 'en',
-            'accept': 'text/plain'
-        }
-    };
-
+module.exports.getAnalysis = input => {
     return new Promise(function(resolve, reject) {
-        personality_insights.profile(params, (err, response) => {
-            if (err) {
-                throw err;
-                reject(err);
-            } else {
-                console.log(JSON.stringify(response, null, 2));
-                resolve(response);
-            }
+        initPersonalityAPI().then(personality_insights => {
+            const params = {
+                // Get the content items from the JSON file.
+                text: input,
+                raw_scores: true
+            };
+
+            personality_insights.profile(params, (err, response) => {
+                if (err) {
+                    throw err;
+                    reject(err);
+                } else {
+                    resolve(response);
+                }
+            });
+
+        }).catch(err => {
+            throw err;
         });
     });
 

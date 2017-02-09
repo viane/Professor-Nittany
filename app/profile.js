@@ -22,7 +22,6 @@ const document_conversion = watson.document_conversion({username: 'd1f406ed-2958
 
 const loadJsonFile = require('load-json-file');
 
-
 router.post('/upload/upload-description-text-file', busboy({
     limits: {
         fileSize: 4 * 1024 * 1024
@@ -51,44 +50,44 @@ router.post('/upload/upload-description-text-file', busboy({
             // write file to temp folder
             file.pipe(fstream);
             fstream.on('close', function() {
-              loadJsonFile(appRoot + '/config/api-configuration.json').then(json => {
-                // using watson documention conversion
-                document_conversion.convert({
-                    file: fs.createReadStream(filePath), conversion_target: 'ANSWER_UNITS',
-                    // Use a custom configuration.
-                    config: json.document_conversion_config
-                }, function(err, response) {
-                    if (err) {
-                        throw err;
-                    } else {
-                        let fullDoc = ""; // will store all content in the word file as plain text
+                loadJsonFile(appRoot + '/config/api-configuration.json').then(json => {
+                    // using watson documention conversion
+                    document_conversion.convert({
+                        file: fs.createReadStream(filePath), conversion_target: 'ANSWER_UNITS',
+                        // Use a custom configuration.
+                        config: json.document_conversion_config
+                    }, function(err, response) {
+                        if (err) {
+                            throw err;
+                        } else {
+                            let fullDoc = ""; // will store all content in the word file as plain text
 
-                        // fill up the fullDoc
-                        for (const docIndex in response.answer_units) {
-                            if (response.answer_units[docIndex].hasOwnProperty("title")) {
-                                fullDoc += response.answer_units[docIndex].title + ". ";
-                            }
-                            for (const textIndex in response.answer_units[docIndex].content) {
-                                if (response.answer_units[docIndex].content[textIndex].hasOwnProperty("text")) {
-                                    fullDoc += response.answer_units[docIndex].content[textIndex].text;
+                            // fill up the fullDoc
+                            for (const docIndex in response.answer_units) {
+                                if (response.answer_units[docIndex].hasOwnProperty("title")) {
+                                    fullDoc += response.answer_units[docIndex].title + ". ";
+                                }
+                                for (const textIndex in response.answer_units[docIndex].content) {
+                                    if (response.answer_units[docIndex].content[textIndex].hasOwnProperty("text")) {
+                                        fullDoc += response.answer_units[docIndex].content[textIndex].text;
+                                    }
                                 }
                             }
-                        }
 
-                        updateUserSelfDescription(req.user, fullDoc).then(function() {
-                            // done write to DB, delete file
-                            del.promise([filePath]).then(function() {}).catch(function(err) {
+                            updateUserSelfDescription(req.user, fullDoc).then(function() {
+                                // done write to DB, delete file
+                                del.promise([filePath]).then(function() {}).catch(function(err) {
+                                    throw err;
+                                });
+                                res.sendStatus(200);
+                            }).catch(function(err) {
+                                // if error on write to DB, leave the file in the folder for further examnaton
                                 throw err;
-                            });
-                            res.sendStatus(200);
-                        }).catch(function(err) {
-                            // if error on write to DB, leave the file in the folder for further examnaton
-                            throw err;
-                            res.sendStatus(300);
-                        })
-                    }
+                                res.sendStatus(300);
+                            })
+                        }
+                    });
                 });
-                  });
             });
 
         }
@@ -119,7 +118,7 @@ const getUserDataPath = function(userType) {
     return path;
 }
 
-const updateUserSelfDescription = function(user, description) {
+const updateUserSelfDescription = (user, description) => {
     const id = user._id;
     const updatePath = getUserDataPath(user.type);
 
@@ -141,5 +140,10 @@ const updateUserSelfDescription = function(user, description) {
             reject(err);
         });
     });
+}
 
+const updateUserPersonalityAssessment = (user, assessment) => {}
+
+const getPersonalityAssessment = (user, description) => {
+    personality.getAnalysis(description).then(assessment => updateUserPersonalityAssessment(user, assessment).then().catch(err => {throw err}))
 }
