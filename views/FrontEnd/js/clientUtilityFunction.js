@@ -289,16 +289,12 @@ var formatText = function(inputText) {
 $(document).ready(function() {
     $("#signup-form").on("submit", function(e) {
         e.preventDefault();
-        // check if both password input are same
-        if ($($('[data-signup-password]')[1]).val() !== $($('[data-signup-password]')[0]).val()) {
-            generateNotice('error', 'Password doesn\'t match!');
-        } else {
+
             // post signup request to server
             const url = '/signup';
             const $form = $(this),
                 $formId = $form.attr('id');
             const query = $("#" + $formId).serialize();
-            console.log(query);
             fetch(url, {
                 method: "POST",
                 credentials: 'include',
@@ -309,7 +305,6 @@ $(document).ready(function() {
                 body: query
             }).then(function(res) {
                 res.json().then(function(res) {
-                    console.log(res);
                     if (res.status !== 200) {
                         generateNotice(res.type, "Error, " + res.information);
                         return;
@@ -323,8 +318,6 @@ $(document).ready(function() {
             }).catch(function(err) {
                 generateNotice('error', err)
             });
-
-        }
 
     });
 });
@@ -352,3 +345,14 @@ String.prototype.capitalize = function() {
 }
 
 String.prototype.formatAnswerByTag = function() {}
+
+// This function adds and removes the hidden class from the developer token input
+$(function(){
+    $("#form-register-role").change(function(){
+        if($("#form-register-role option:selected").text() === "Developer"){
+            $("#form-developer-token").removeClass("hidden");
+        } else {
+            $("#form-developer-token").addClass("hidden");
+        }
+    })
+})

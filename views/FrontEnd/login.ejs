@@ -14,14 +14,15 @@
     <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
             <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+            <![endif]-->
 
-</head>
+        </head>
 
-<body>
-    <%- include header.ejs %>
+        <body>
+            <%- include header.ejs %>
 
         <%- include ask-question-module.ejs %>
+
 
             <!-- Top content -->
             <div class="top-content">
@@ -41,7 +42,9 @@
                                 <div class="form-top">
                                     <div class="form-top-left">
                                         <h3>Login to our site</h3>
-                                        <p>Enter username and password to log on:</p>
+
+                                        <p>Enter email and password to log on:</p>
+
                                     </div>
                                     <div class="form-top-right">
                                         <i class="fa fa-key"></i>
@@ -50,12 +53,13 @@
                                 <div class="form-bottom">
                                     <form role="form" action="/login" method="post" class="login-form">
                                         <div class="form-group">
-                                            <label class="sr-only" for="form-username">Username</label>
-                                            <input type="text" name="email" placeholder="Enter login email here" class="form-username form-control" id="form-username">
+
+                                            <label class="sr-only" for="form-username">Email</label>
+                                            <input type="text" name="email" placeholder="Email" class="form-username form-control" id="form-username">
                                         </div>
                                         <div class="form-group">
                                             <label class="sr-only" for="form-password">Password</label>
-                                            <input type="password" name="password" placeholder="Enter password here" class="form-password form-control" id="form-password">
+                                            <input type="password" name="password" placeholder="Password" class="form-password form-control" id="form-password">
                                         </div>
                                         <div class="checkbox">
                                             <label><input type="checkbox"> Remember me</label>
@@ -73,7 +77,8 @@
                                     <a href="/auth/linkedin" class=""><i class="fa fa-linkedin" style="font-size:24px; padding: 0px 5px"></i></a>
                                     <a href="/auth/twitter" class=""><i class="fa fa-twitter" style="font-size:24px; padding: 0px 5px"></i></a>
                                     <a href="/auth/google" class=""><i class="fa fa-google" style="font-size:24px; padding: 0px 5px"></i></a>
-                                    <!-- <i class="fa fa-amazon" style="font-size:24px; padding: 0px 5px"></i>
+
+                            <!-- <i class="fa fa-amazon" style="font-size:24px; padding: 0px 5px"></i>
                                     <i class="fa fa-instagram" style="font-size:24px; padding: 0px 5px"></i>
                                     <i class="fa fa-weibo" style="font-size:24px; padding: 0px 5px"></i> -->
                                 </div>
@@ -103,9 +108,10 @@
                                     <div class="form-top-right">
                                         <i class="fa fa-pencil"></i>
                                     </div>
+
                                 </div>
                                 <div class="form-bottom">
-                                    <form role="form" action="" method="" class="registration-form" id="signup-form">
+                                    <form role="form" action="/" method="post" class="registration-form" id="signup-form">
                                         <div class="form-group">
                                             <label class="sr-only" for="form-first-name">First name</label>
                                             <input type="text" name="first_name" placeholder="First name" class="form-first-name form-control" id="form-first-name">
@@ -119,37 +125,40 @@
                                             <input type="text" name="email" placeholder="Email" class="form-email form-control" id="form-email">
                                         </div>
                                         <div class="form-group">
+                                        <!-- k* https://github.com/wenzhixin/bootstrap-show-password-->
                                             <label class="sr-only" for="form-password">Password</label>
-                                            <input type="password" name="password" placeholder="Password" class="form-email form-control" id="form-password" data-signup-password>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="sr-only" for="form-password">Re-Password</label>
-                                            <input type="password" placeholder="Password" class="form-email form-control" id="form-password" data-signup-password>
+                                            <input type="password" name="password" placeholder="Password" class="form-password form-control" id="form-password" data-signup-password>
                                         </div>
                                         <div class="form-group">
                                             <label for="form-acct-type">Account Type</label>
-                                            <select class="form-control" id="sel1" name="account_role">
-                                                    <option>Student</option>
-                                                    <option>Advisor</option>
-                                                    <option>Developer</option>
-                                                  </select>
-                                            <!-- for krystal : add input field for developer token -->
+                                            <select class="form-control" id="form-register-role" name="account_role">
+                                                <option>Student</option>
+                                                <option>Advisor</option>
+                                                <option>Developer</option>
+                                            </select>
                                         </div>
-                                        <button type="submit" class="btn">Sign up!</button>
-                                    </form>
-                                </div>
+                                        <div class="form-group hidden" id="form-developer-token">
+                                            <label class="sr-only" for="developer_token">Token</label>
+                                            <input type="text" name="developer-token" placeholder="Developer Token" class="form-developer-token form-control">
+                                        </div>
+                                    <button type="submit" class="btn">Sign up!</button>
+                                    </div>
+                                </form>
                             </div>
 
                         </div>
+
                     </div>
-
                 </div>
-
 
             </div>
 
-            <%- include footer.ejs %>
 
-</body>
+        </div>
 
-</html>
+        <%- include footer.ejs %>
+
+
+    </body>
+
+    </html>

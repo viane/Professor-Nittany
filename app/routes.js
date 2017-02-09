@@ -56,10 +56,25 @@ module.exports = function(app, passport) {
 
     // process the signup form
     app.post('/signup', function(req, res, next) {
+      // precondition checking
+      // callback with email and password from our form
+          if (!req.body.first_name || req.body.first_name.length == 0 || !req.body.last_name || req.body.last_name.length == 0) {
+              res.send({status: 302, type: 'error', information: 'Name can\'t be empty'});
+              return;
+          }
+          if (!req.body.email || req.body.email.length == 0) {
+              res.send({status: 302, type: 'error', information: 'Email can\'t be empty'});
+              return;
+          }
+          if (!req.body.password || req.body.password.length == 0) {
+              res.send({status: 302, type: 'error', information: 'Password can\'t be empty'});
+              return;
+          }
+
         //email and password not empty, start local authentication
         passport.authenticate('local-signup', function(err, user, info) {
             if (err) {
-                return res.send({status: 302, type: 'error', information: err});;
+                return res.send({status: 302, type: 'error', information: err});
             } else {
                 // req / res held in closure
                 req.logIn(user, function(err) {
