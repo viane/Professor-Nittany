@@ -2,17 +2,17 @@
 // take input text file, batch process questions line by line to question DB
 'use strict'
 
-var appRoot = require('app-root-path');
+const appRoot = require('app-root-path');
 
-var express = require('express');
+const express = require('express');
 
-var router = express.Router();
+const router = express.Router();
 
-var busboy = require('connect-busboy');
+const busboy = require('connect-busboy');
 
 const fs = require('fs');
 
-var stream = require('stream'),
+const stream = require('stream'),
     es = require('event-stream');
 
 const Question = require(appRoot + '/app/models/question');
@@ -46,7 +46,7 @@ router.post('/upload-by-text-file', busboy({
     if (!req.busboy)
         return next('route');
 
-    var fstream;
+    let fstream;
     req.pipe(req.busboy);
     req.busboy.on('file', function(fieldname, file, filename) {
         fstream = fs.createWriteStream(appRoot + '/app/question-file/' + filename);
@@ -64,7 +64,7 @@ router.post('/upload-by-text-file', busboy({
                 throw err;
                 console.log('Error while reading file.');
             }).on('end', function() {
-                res.send().status(200);
+                res.sendStatus(200);
             }));
         });
     });

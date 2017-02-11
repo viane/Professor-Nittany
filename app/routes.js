@@ -5,7 +5,7 @@
 var crypto = require('crypto');
 
 // load up the question answer model
-var QuestionAnswerPair = require('../app/models/QuestionAnswerPair');
+var question = require('../app/models/question');
 var appRoot = require('app-root-path');
 var frontEndRoot = appRoot + '/views/FrontEnd/';
 var watsonToken = require('./watson-token');
@@ -13,6 +13,8 @@ var accountManage = require('./account');
 var uploadQuestionByTextFile = require('./file-to-questionDB');
 var User = require(appRoot + "/app/models/user");
 const testingAPIModule = require(appRoot + '/app/testing/testAPI');
+const profileAPI = require(appRoot + '/app/profile');
+
 
 module.exports = function(app, passport) {
 
@@ -53,13 +55,37 @@ module.exports = function(app, passport) {
     });
 
     // process the signup form
-    app.post('/signup',
-    //email and password not empty, start local authentication
-    passport.authenticate('local-signup', {
-        successRedirect: '/profile', // redirect to the secure profile section
-        failureRedirect: '/signup', // redirect back to the signup page if there is an error
-        failureFlash: true // allow flash messages
-    }));
+    app.post('/signup', function(req, res, next) {
+      // precondition checking
+      // callback with email and password from our form
+          if (!req.body.first_name || req.body.first_name.length == 0 || !req.body.last_name || req.body.last_name.length == 0) {
+              res.send({status: 302, type: 'error', information: 'Name can\'t be empty'});
+              return;
+          }
+          if (!req.body.email || req.body.email.length == 0) {
+              res.send({status: 302, type: 'error', information: 'Email can\'t be empty'});
+              return;
+          }
+          if (!req.body.password || req.body.password.length == 0) {
+              res.send({status: 302, type: 'error', information: 'Password can\'t be empty'});
+              return;
+          }
+
+        //email and password not empty, start local authentication
+        passport.authenticate('local-signup', function(err, user, info) {
+            if (err) {
+                return res.send({status: 302, type: 'error', information: err});
+            } else {
+                // req / res held in closure
+                req.logIn(user, function(err) {
+                    if (err) {
+                        return res.send({status: 302, type: 'error', information: err});
+                    }
+                    return res.send({status: 200, type: 'success', information: "Successfully registered"});
+                });
+            }
+        })(req, res, next)
+    });
 
     // =====================================
     // PROFILE SECTION =========================
@@ -67,8 +93,6 @@ module.exports = function(app, passport) {
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedInRedirect function)
     app.get('/profile', isLoggedInRedirect, function(req, res) {
-
-        let ask_history = [];
         let path = "";
 
         switch (req.user.type) {
@@ -84,16 +108,19 @@ module.exports = function(app, passport) {
             case "facebook":
                 path = "facebook";
                 break;
+            case "google":
+                path = "google";
+                break;
             default:
                 throw new Error("Request user type is unexcepted");
                 break;
         };
 
         User.findById(req.user._id, function(err, foundUser) {
-            ask_history = foundUser[path].ask_history;
             res.render(frontEndRoot + 'profile.ejs', {
                 user: req.user, // get the user out of session and pass to template
-                ask_history: ask_history
+                ask_history: foundUser[path].ask_history,
+                privacy: foundUser.privacy
             });
         })
     });
@@ -243,29 +270,31 @@ module.exports = function(app, passport) {
         var tagContext = req.body.tag;
         console.log(req.user._id);
         if (questionContext.length == 0) {
-            res.send({user: req.user, status: "0", message: "Question can not be empty"})
+            res.send({user: req.user, status: "302", type:'warning', message: "Question can not be empty"})
         } else {
             //create DB object
-            var QA_pair = new QuestionAnswerPair();
+            var QA_pair = new question();
 
             //assign values
-            QA_pair.record.question = questionContext;
-            QA_pair.record.answer = answerContext;
-            QA_pair.record.tag = tagContext;
-            QA_pair.record.creator = req.user._id;
+            QA_pair.question_body = questionContext;
+            QA_pair.question_answer = answerContext;
+            QA_pair.question_tag = tagContext;
+            QA_pair.question_submitter = req.user._id;
+            QA_pair.question_upload_mothod = "mannual";
 
             //Save to DB
             QA_pair.save(function(err) {
                 if (err) {
                     res.send({
                         user: req.user,
-                        status: "-1",
+                        status: "302",
+                        type:'error',
                         message: err + "</br>Save data to other place."
                     })
                     throw err;
                 }
                 // if successful, return the new user
-                res.send({user: req.user, status: "1", message: "Successfully added entry"})
+                res.send({user: req.user, status: "200", type:'success', message: "Successfully added entry"})
             });
         }
     });
@@ -349,8 +378,11 @@ module.exports = function(app, passport) {
     // admin upload questions from text file
     app.use('/api/admin/upload/', isLoggedInRedirect, uploadQuestionByTextFile);
 
-    //general server functionality testing api
+    // General server functionality testing api
     app.use('/api/testing/', testingAPIModule);
+
+    //  Profile APIs
+    app.use('/api/profile', isLoggedInRedirect, profileAPI);
 };
 
 // route middleware to make sure

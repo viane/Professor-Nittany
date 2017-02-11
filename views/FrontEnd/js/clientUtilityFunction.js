@@ -9,10 +9,12 @@ var generateNotice = function(type, text, timeout = _secToTimeUnit(3.5)) {
     var n = noty({
         text: text,
         type: type,
-        dismissQueue: false,
+        dismissQueue: true,
+        force: true,
         layout: 'topRight',
         closeWith: ['click'],
         theme: 'relax',
+        killer: true,
         maxVisible: 2,
         animation: {
             open: 'animated bounceInRight',
@@ -137,17 +139,24 @@ $(document).ready(function() {
 
 //set up dropzone for drop file
 Dropzone.autoDiscover = false;
+
+// for upload question file at /QuestionAnswerManagement
 $(function() {
     $("#upload-Question-Text-File").dropzone({url: "/api/admin/upload/upload-by-text-file"});
+});
+
+// for upload self description at /uploadPersonal
+$(function() {
+    $("#upload-description-Text-File").dropzone({url: "/api/profile/upload/upload-description-text-file"});
 });
 
 //////////////////////////////////////////////////
 // user like/fav question answer handler functions
 //////////////////////////////////////////////////
-var addLikeBtnHandler = function(answerSequenceNumber){
+var addLikeBtnHandler = function(answerSequenceNumber) {
     $($('.answer-like-btn')[answerSequenceNumber]).on('click', function() {
-      const targetAnswer = $('[data-answer-seq='+answerSequenceNumber+']').text();
-      console.log(targetAnswer);
+        const targetAnswer = $('[data-answer-seq=' + answerSequenceNumber + ']').text();
+        console.log(targetAnswer);
     });
 };
 
@@ -273,8 +282,77 @@ var formatText = function(inputText) {
     return inputText;
 }
 
+//////////////////////////////////////////////
+// User sign up action
+//////////////////////////////////////////////
+
+$(document).ready(function() {
+    $("#signup-form").on("submit", function(e) {
+        e.preventDefault();
+
+            // post signup request to server
+            const url = '/signup';
+            const $form = $(this),
+                $formId = $form.attr('id');
+            const query = $("#" + $formId).serialize();
+            fetch(url, {
+                method: "POST",
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+                },
+                body: query
+            }).then(function(res) {
+                res.json().then(function(res) {
+                    if (res.status !== 200) {
+                        generateNotice(res.type, "Error, " + res.information);
+                        return;
+                    } else {
+                        generateNotice(res.type, res.information);
+                        setTimeout(function() {
+                            window.location.href = '/profile';
+                        }, 2500);
+                    }
+                })
+            }).catch(function(err) {
+                generateNotice('error', err)
+            });
+
+    });
+});
+
+//////////////////////////////////////////////
+// Input password overwrite view
+//////////////////////////////////////////////
+
+$(function() {
+    $('input[type=password]').each(function() {
+        $(this).on('focus', function() {
+            this.type = "text";
+        }).on('focusout', function() {
+            this.type = "password";
+        })
+    })
+})
+
+//////////////////////////////////////////////
+// String utility
+//////////////////////////////////////////////
+
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
 String.prototype.formatAnswerByTag = function() {}
+
+// This function adds and removes the hidden class from the developer token input
+$(function(){
+    $("#form-register-role").change(function(){
+        if($("#form-register-role option:selected").text() === "Developer"){
+            $("#form-developer-token").removeClass("hidden");
+        } else {
+            $("#form-developer-token").addClass("hidden");
+        }
+    })
+})

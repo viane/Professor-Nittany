@@ -10,15 +10,18 @@ module.exports.humanizeString = function(inputQuestionString) {
 };
 
 module.exports.alchemyAnalysis = function(inputString) {
+  return new Promise(function(resolve, reject) {
     alchemyAPI.getAnalysis(inputString).then(function(analysis) {
-        return analysis;
+        resolve(analysis);
     }).catch(function(err) {
         throw err;
-        return null;
+        reject(err);
     });
+  });
+
 };
 
-module.exports.final = function(input, analysis) {
+module.exports.parseQuestionObj = function(input, analysis) {
     let question = {};
     // each componment is an array of objects
     question.body = input;
@@ -27,10 +30,10 @@ module.exports.final = function(input, analysis) {
     question.taxonomy = analysis.taxonomy;
     question.keyword = analysis.keywords;
 
-    return input;
+    return question;
 };
 
-module.exports.logUserQuestion = function(reqUser, input) {
+module.exports.logUserQuestion = function(reqUser, questionObj) {
     const user_id = reqUser.id;
     const user_type = reqUser.type;
 
@@ -58,12 +61,16 @@ module.exports.logUserQuestion = function(reqUser, input) {
     User.findOneAndUpdate({
         "_id": user_id,
         [path.user_question_body]: {
-            $ne: input
+            $ne: questionObj.body
         }
     }, {
         "$addToSet": {
             [path]: {
-                user_question_body: input
+                "question_body": questionObj.body,
+                "question_concept":questionObj.concept,
+                "question_keyword":questionObj.keyword,
+                "question_taxonomy":questionObj.taxonomy,
+                "question_entitie":questionObj.entitie
             }
         }
     }, function(err, doc) {

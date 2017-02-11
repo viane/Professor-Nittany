@@ -74,3 +74,6 @@ server.listen(app.get('port'), function() {
 });
 
 module.exports = app;
+
+
+const personality = require('./app/personality-insights');
