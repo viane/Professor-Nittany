@@ -371,14 +371,6 @@ $(document).ready(function() {
 //////////////////////////////////////////////
 
 $(function() {
-    // $('input[type=password]').each(function() {
-    //     $(this).on('focus', function() {
-    //         this.type = "text";
-    //     }).on('focusout', function() {
-    //         this.type = "password";
-    //     })
-    // })
-
     $('.show-password-btn').each(function(){
       $(this).on('mousedown', ()=>{
         $(this).prev()[0].type = "text";
@@ -387,20 +379,8 @@ $(function() {
       $(this).on('mouseup', ()=>{
         $(this).prev()[0].type = "password";
         $(this).html('<i class="fa fa-eye" aria-hidden="true"></i>')
-
       })
     })
-
-// $($('.show-password-btn')[0]).on('mousedown', ()=>{
-//
-//     $($('.show-password-btn')[0]).prev()[0].type = "text";
-//   })
-//
-//   $($('.show-password-btn')[0]).on('mouseup', ()=>{
-//
-//       $($('.show-password-btn')[0]).prev()[0].type = "password";
-//     })
-
 })
 
 //////////////////////////////////////////////
