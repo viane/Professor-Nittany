@@ -14,7 +14,7 @@ var uploadQuestionByTextFile = require('./file-to-questionDB');
 var User = require(appRoot + "/app/models/user");
 const testingAPIModule = require(appRoot + '/app/testing/testAPI');
 const profileAPI = require(appRoot + '/app/profile');
-
+var validator = require("email-validator");
 
 module.exports = function(app, passport) {
 
@@ -39,11 +39,35 @@ module.exports = function(app, passport) {
     });
 
     // process the login form
-    app.post('/login', passport.authenticate('local-login', {
-        successRedirect: '/profile', // redirect to the secure profile section
-        failureRedirect: '/login', // redirect back to the signup page if there is an error
-        failureFlash: true // allow flash messages
-    }));
+    app.post('/login', (req, res, next) => {
+        // precondition checking
+        // callback with email and password
+        if (!req.body.email || req.body.email.length == 0) {
+            res.send({status: 302, type: 'error', information: 'Email can\'t be empty'});
+            return;
+        }
+        if (!req.body.password || req.body.password.length == 0) {
+            res.send({status: 302, type: 'error', information: 'Password can\'t be empty'});
+            return;
+        }
+        if (!validator.validate(req.body.email)) {
+            res.send({status: 302, type: 'error', information: 'Invaild email'});
+            return;
+        }
+        passport.authenticate('local-login', (err, user, info) => {
+            if (err) {
+                return res.send({status: 302, type: 'error', information: err});
+            } else {
+                // req / res held in closure
+                req.logIn(user, function(err) {
+                    if (err) {
+                        return res.send({status: 302, type: 'error', information: err});
+                    }
+                    return res.send({status: 200, type: 'success', information: "Login success"});
+                });
+            }
+        })(req, res, next);
+    });
 
     // =====================================
     // SIGNUP ==============================
@@ -55,36 +79,26 @@ module.exports = function(app, passport) {
     });
 
     // process the signup form
-    app.post('/signup', function(req, res, next) {
-      // precondition checking
-      // callback with email and password from our form
-          if (!req.body.first_name || req.body.first_name.length == 0 || !req.body.last_name || req.body.last_name.length == 0) {
-              res.send({status: 302, type: 'error', information: 'Name can\'t be empty'});
-              return;
-          }
-          if (!req.body.email || req.body.email.length == 0) {
-              res.send({status: 302, type: 'error', information: 'Email can\'t be empty'});
-              return;
-          }
-          if (!req.body.password || req.body.password.length == 0) {
-              res.send({status: 302, type: 'error', information: 'Password can\'t be empty'});
-              return;
-          }
-
-        //email and password not empty, start local authentication
-        passport.authenticate('local-signup', function(err, user, info) {
-            if (err) {
-                return res.send({status: 302, type: 'error', information: err});
-            } else {
-                // req / res held in closure
-                req.logIn(user, function(err) {
-                    if (err) {
-                        return res.send({status: 302, type: 'error', information: err});
-                    }
-                    return res.send({status: 200, type: 'success', information: "Successfully registered"});
-                });
-            }
-        })(req, res, next)
+    app.post('/signup', (req, res, next) => {
+        // precondition checking
+        if (checkSignUpParameter(req, res)) {
+            //email and password not empty, start local authentication
+            passport.authenticate('local-signup', function(err, user, info) {
+                if (err) {
+                    return res.send({status: 302, type: 'error', information: err});
+                } else {
+                    // req / res held in closure
+                    req.logIn(user, function(err) {
+                        if (err) {
+                            return res.send({status: 302, type: 'error', information: err});
+                        }
+                        return res.send({status: 200, type: 'success', information: "Successfully registered"});
+                    });
+                }
+            })(req, res, next)
+        }else{
+           res.send({status: 300, type: 'error', information: "Unexcepted error, contact our support team please"});
+        }
     });
 
     // =====================================
@@ -270,7 +284,7 @@ module.exports = function(app, passport) {
         var tagContext = req.body.tag;
         console.log(req.user._id);
         if (questionContext.length == 0) {
-            res.send({user: req.user, status: "302", type:'warning', message: "Question can not be empty"})
+            res.send({user: req.user, status: "302", type: 'warning', message: "Question can not be empty"})
         } else {
             //create DB object
             var QA_pair = new question();
@@ -288,13 +302,13 @@ module.exports = function(app, passport) {
                     res.send({
                         user: req.user,
                         status: "302",
-                        type:'error',
+                        type: 'error',
                         message: err + "</br>Save data to other place."
                     })
                     throw err;
                 }
                 // if successful, return the new user
-                res.send({user: req.user, status: "200", type:'success', message: "Successfully added entry"})
+                res.send({user: req.user, status: "200", type: 'success', message: "Successfully added entry"})
             });
         }
     });
@@ -404,4 +418,22 @@ function isLoggedInNotice(req, res, next) {
 
     // if they aren't redirect them to the home page
     res.send({status: "error", information: "Login required"});
+}
+
+function checkSignUpParameter(req, res) {
+    // callback with email and password from our form
+    if (!req.body.first_name || req.body.first_name.length == 0 || !req.body.last_name || req.body.last_name.length == 0) {
+        res.send({status: 302, type: 'error', information: 'Name can\'t be empty'});
+        return false;
+    }
+    if (!req.body.email || req.body.email.length == 0) {
+        res.send({status: 302, type: 'error', information: 'Email can\'t be empty'});
+        return false;
+    }
+    if (!req.body.password || req.body.password.length == 0) {
+        res.send({status: 302, type: 'error', information: 'Password can\'t be empty'});
+        return false;
+    }
+
+    return true;
 }

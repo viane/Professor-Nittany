@@ -290,34 +290,77 @@ $(document).ready(function() {
     $("#signup-form").on("submit", function(e) {
         e.preventDefault();
 
-            // post signup request to server
-            const url = '/signup';
-            const $form = $(this),
-                $formId = $form.attr('id');
-            const query = $("#" + $formId).serialize();
-            fetch(url, {
-                method: "POST",
-                credentials: 'include',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-                },
-                body: query
-            }).then(function(res) {
-                res.json().then(function(res) {
-                    if (res.status !== 200) {
-                        generateNotice(res.type, "Error, " + res.information);
-                        return;
-                    } else {
-                        generateNotice(res.type, res.information);
-                        setTimeout(function() {
-                            window.location.href = '/profile';
-                        }, 2500);
-                    }
-                })
-            }).catch(function(err) {
-                generateNotice('error', err)
-            });
+        // post signup request to server
+        const url = '/signup';
+        const $form = $(this),
+            $formId = $form.attr('id');
+        const query = $("#" + $formId).serialize();
+
+        console.log(query);
+        // fetch(url, {
+        //     method: "POST",
+        //     credentials: 'include',
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+        //     },
+        //     body: query
+        // }).then(function(res) {
+        //     res.json().then(function(res) {
+        //         if (res.status !== 200) {
+        //             generateNotice(res.type, "Error, " + res.information);
+        //             return;
+        //         } else {
+        //             generateNotice(res.type, res.information);
+        //             setTimeout(function() {
+        //                 window.location.href = '/profile';
+        //             }, 2500);
+        //         }
+        //     })
+        // }).catch(function(err) {
+        //     generateNotice('error', err)
+        // });
+
+    });
+});
+
+//////////////////////////////////////////////
+// User login action
+//////////////////////////////////////////////
+
+$(document).ready(function() {
+    $("#login-form").on("submit", function(e) {
+        e.preventDefault();
+
+        // post signup request to server
+        const url = '/login';
+        const $form = $(this),
+            $formId = $form.attr('id');
+        const query = $("#" + $formId).serialize();
+        fetch(url, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: query
+        }).then(function(res) {
+            res.json().then(function(res) {
+                if (res.status !== 200) {
+                    generateNotice(res.type, "Error, " + res.information);
+                    return;
+                } else {
+                    generateNotice(res.type, res.information);
+                    setTimeout(function() {
+                        window.location.href = '/profile';
+                    }, 1000);
+                }
+            })
+
+        }).catch(function(err) {
+            generateNotice('error', err)
+        });
 
     });
 });
@@ -347,9 +390,15 @@ String.prototype.capitalize = function() {
 String.prototype.formatAnswerByTag = function() {}
 
 // This function adds and removes the hidden class from the developer token input
-$(function(){
-    $("#form-register-role").change(function(){
-        if($("#form-register-role option:selected").text() === "Developer"){
+$(function() {
+    $("#form-register-role").change(function() {
+        if ($("#form-register-role option:selected").text() === "Advisor") {
+            $("#form-advisor-psuid").removeClass("hidden");
+        } else {
+            $("#form-advisor-psuid").addClass("hidden");
+        }
+
+        if ($("#form-register-role option:selected").text() === "Developer") {
             $("#form-developer-token").removeClass("hidden");
         } else {
             $("#form-developer-token").addClass("hidden");

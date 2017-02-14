@@ -46,9 +46,10 @@ app.set('view engine', 'ejs'); // set up ejs for templating
 
 // required for passport
 app.use(session({
-    secret: 'intellegent_student_administrtion',
-    maxAge: 360 * 1000,
+    secret: 'intellegent student planner',
+    maxAge: 3600000,
     resave: true,
+    cookie: { maxAge: 3600000 },
     saveUninitialized: true
 }));
 // session secret
