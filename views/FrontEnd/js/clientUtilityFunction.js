@@ -297,29 +297,30 @@ $(document).ready(function() {
         const query = $("#" + $formId).serialize();
 
         console.log(query);
-        // fetch(url, {
-        //     method: "POST",
-        //     credentials: 'include',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-        //     },
-        //     body: query
-        // }).then(function(res) {
-        //     res.json().then(function(res) {
-        //         if (res.status !== 200) {
-        //             generateNotice(res.type, "Error, " + res.information);
-        //             return;
-        //         } else {
-        //             generateNotice(res.type, res.information);
-        //             setTimeout(function() {
-        //                 window.location.href = '/profile';
-        //             }, 2500);
-        //         }
-        //     })
-        // }).catch(function(err) {
-        //     generateNotice('error', err)
-        // });
+
+        fetch(url, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: query
+        }).then(function(res) {
+            res.json().then(function(res) {
+                if (res.status !== 200) {
+                    generateNotice(res.type, "Error, " + res.information);
+                    return;
+                } else {
+                    generateNotice(res.type, res.information);
+                    setTimeout(function() {
+                        window.location.href = '/profile';
+                    }, 2500);
+                }
+            })
+        }).catch(function(err) {
+            generateNotice('error', err)
+        });
 
     });
 });
@@ -370,13 +371,36 @@ $(document).ready(function() {
 //////////////////////////////////////////////
 
 $(function() {
-    $('input[type=password]').each(function() {
-        $(this).on('focus', function() {
-            this.type = "text";
-        }).on('focusout', function() {
-            this.type = "password";
-        })
+    // $('input[type=password]').each(function() {
+    //     $(this).on('focus', function() {
+    //         this.type = "text";
+    //     }).on('focusout', function() {
+    //         this.type = "password";
+    //     })
+    // })
+
+    $('.show-password-btn').each(function(){
+      $(this).on('mousedown', ()=>{
+        $(this).prev()[0].type = "text";
+        $(this).html('<i class="fa fa-eye-slash" aria-hidden="true"></i>')
+      })
+      $(this).on('mouseup', ()=>{
+        $(this).prev()[0].type = "password";
+        $(this).html('<i class="fa fa-eye" aria-hidden="true"></i>')
+
+      })
     })
+
+// $($('.show-password-btn')[0]).on('mousedown', ()=>{
+//
+//     $($('.show-password-btn')[0]).prev()[0].type = "text";
+//   })
+//
+//   $($('.show-password-btn')[0]).on('mouseup', ()=>{
+//
+//       $($('.show-password-btn')[0]).prev()[0].type = "password";
+//     })
+
 })
 
 //////////////////////////////////////////////
@@ -392,16 +416,11 @@ String.prototype.formatAnswerByTag = function() {}
 // This function adds and removes the hidden class from the developer token input
 $(function() {
     $("#form-register-role").change(function() {
-        if ($("#form-register-role option:selected").text() === "Advisor") {
-            $("#form-advisor-psuid").removeClass("hidden");
-        } else {
-            $("#form-advisor-psuid").addClass("hidden");
-        }
 
-        if ($("#form-register-role option:selected").text() === "Developer") {
-            $("#form-developer-token").removeClass("hidden");
+        if ($("#form-register-role option:selected").text() === "Admin") {
+            $("#form-admin-token").removeClass("hidden");
         } else {
-            $("#form-developer-token").addClass("hidden");
+            $("#form-admin-token").addClass("hidden");
         }
     })
 })

@@ -96,8 +96,6 @@ module.exports = function(app, passport) {
                     });
                 }
             })(req, res, next)
-        }else{
-           res.send({status: 300, type: 'error', information: "Unexcepted error, contact our support team please"});
         }
     });
 
@@ -434,6 +432,28 @@ function checkSignUpParameter(req, res) {
         res.send({status: 302, type: 'error', information: 'Password can\'t be empty'});
         return false;
     }
+    if (!req.body.account_role) {
+        res.send({status: 302, type: 'error', information: 'Invaild account role'});
+        return false;
+    }
 
+    if (req.body.account_role === "Admin" && (!req.body['admin-token'] || req.body['admin-token'] == 0)) {
+        res.send({status: 302, type: 'error', information: 'Missing developer token for registering as developer'});
+        return false;
+    }
+
+    if (req.body.account_role === "Admin" && !validateAdminToken(req.body['admin-token'])) {
+        res.send({status: 302, type: 'error', information: 'Invaild admin token'});
+        return false;
+    }
     return true;
+}
+
+const validateAdminToken = function(code) {
+    const correctSecret = "bwqlrEfvDofy7nZC8NLDXFlbh92rbL2moCxBSrXv8stqPcZjeGJCpbJ2QF2yh2iTBnWpEorY5ll2KTfl91FBEc5IEqnQboOfV319Js8fan6gRKHXSBwqbNPy3oRcKENfHQbTBPPCZSz2VaG4pLIB2K7VzL4AD93w7iKrDMfYeggwUGKJf0tX6xAAUyQwZQO5Wswn00aYtPYwst19WlKoFl3eEUQRQ05qFrLP5WwbG7ALmZSLztCnysBKGtUWyFa2";
+    if (code === correctSecret) {
+        return true;
+    } else {
+        return false;
+    }
 }

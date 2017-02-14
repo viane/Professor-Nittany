@@ -109,8 +109,20 @@ module.exports = function(passport) {
                     } else {
                         //create new user
                         var newUser = new User();
-                        // set all of the facebook information in our user model
-                        newUser.type = "local";
+
+                        // set up account information
+                        if (req.body.account_role === "Student") {
+                          newUser.type = "local";
+                        }
+
+                        if (req.body.account_role === "Advisor") {
+                          newUser.type = "advisor";
+                        }
+
+                        if (req.body.account_role === "Admin") {
+                          newUser.type = "admin";
+                        }
+
                         newUser.local.email = req.body.email; // facebook can return multiple emails so we'll take the first
                         newUser.hashPassword(password); //need-fix password input has to pass BCrypt hash, otherwise login will fail
                         newUser.local.first_name = req.body.first_name;
