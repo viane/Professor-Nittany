@@ -27,7 +27,11 @@ module.exports.ask = function(user, input) {
                     const questionObj = processQuestion.parseQuestionObj(userInput, analysis);
 
                     if (user) {
+                        // log question to user DB
                         processQuestion.logUserQuestion(user, questionObj);
+
+                        // update server question feeds
+                        processQuestion.updateQuestionToServerFeeds(questionObj.body);
                     }
 
                     serverStatus.updateStatsFromQuestionObj(questionObj);

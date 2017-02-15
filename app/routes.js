@@ -5,16 +5,17 @@
 var crypto = require('crypto');
 
 // load up the question answer model
-var question = require('../app/models/question');
-var appRoot = require('app-root-path');
-var frontEndRoot = appRoot + '/views/FrontEnd/';
-var watsonToken = require('./watson-token');
-var accountManage = require('./account');
-var uploadQuestionByTextFile = require('./file-to-questionDB');
-var User = require(appRoot + "/app/models/user");
+const question = require('../app/models/question');
+const appRoot = require('app-root-path');
+const frontEndRoot = appRoot + '/views/FrontEnd/';
+const watsonToken = require('./watson-token');
+const accountManage = require('./account');
+const uploadQuestionByTextFile = require('./file-to-questionDB');
+const User = require(appRoot + "/app/models/user");
 const testingAPIModule = require(appRoot + '/app/testing/testAPI');
 const profileAPI = require(appRoot + '/app/profile');
-var validator = require("email-validator");
+const validator = require("email-validator");
+const serverStatusAPI = require(appRoot + '/app/api/server-status');
 
 module.exports = function(app, passport) {
 
@@ -22,9 +23,6 @@ module.exports = function(app, passport) {
     // HOME PAGE (with login links) ========
     // =====================================
     app.get('/', function(req, res) {
-
-        const serverStatus = require(appRoot + "/app/server-status");
-        console.log(serverStatus.getFeedOfCurrentQuestions());
         res.render(frontEndRoot + 'index.ejs', {user: req.user}); // load the index.ejs file
     });
 
@@ -137,7 +135,7 @@ module.exports = function(app, passport) {
                 ask_history: foundUser[path].ask_history,
                 privacy: foundUser.privacy
             });
-        })
+        });
     });
 
     // =====================================
@@ -398,6 +396,9 @@ module.exports = function(app, passport) {
 
     //  Profile APIs
     app.use('/api/profile', isLoggedInRedirect, profileAPI);
+
+    // Server status APIs
+    app.use('/api/server-status', serverStatusAPI);
 };
 
 // route middleware to make sure

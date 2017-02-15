@@ -161,7 +161,7 @@ var addLikeBtnHandler = function(answerSequenceNumber) {
 };
 
 //////////////////////////////////////////////////
-// answer text flag extraction and formation
+// answer text flag(tag) extraction and formation
 //////////////////////////////////////////////////
 var formatText = function(inputText) {
 
@@ -365,20 +365,59 @@ $(document).ready(function() {
 });
 
 //////////////////////////////////////////////
-// Input password overwrite view
+// Input password view toggle handler
 //////////////////////////////////////////////
 
 $(function() {
-    $('.show-password-btn').each(function(){
-      $(this).on('mousedown', ()=>{
-        $(this).prev()[0].type = "text";
-        $(this).html('<i class="fa fa-eye-slash" aria-hidden="true"></i>')
-      })
-      $(this).on('mouseup', ()=>{
-        $(this).prev()[0].type = "password";
-        $(this).html('<i class="fa fa-eye" aria-hidden="true"></i>')
-      })
+    $('.show-password-btn').each(function() {
+        $(this).on('mousedown', () => {
+            $(this).prev()[0].type = "text";
+            $(this).html('<i class="fa fa-eye-slash" aria-hidden="true"></i>')
+        })
+        $(this).on('mouseup', () => {
+            $(this).prev()[0].type = "password";
+            $(this).html('<i class="fa fa-eye" aria-hidden="true"></i>')
+        })
     })
+})
+
+//////////////////////////////////////////////
+// This function adds and removes the hidden class from the developer token input
+//////////////////////////////////////////////
+$(function() {
+    $("#form-register-role").change(function() {
+
+        if ($("#form-register-role option:selected").text() === "Admin") {
+            $("#form-admin-token").removeClass("hidden");
+        } else {
+            $("#form-admin-token").addClass("hidden");
+        }
+    })
+})
+
+//////////////////////////////////////////////
+// Get request for question feed from server
+//////////////////////////////////////////////
+
+$(() => {
+    const url = '/api/server-status/get-question-feeds';
+    fetch(url, {
+        method: "GET",
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+        }
+    }).then(function(res) {
+        res.json().then((result) => {
+            result.feeds.map((feed) => {
+                const feedHtmlListElement = "<li><a href=\"#\">" + feed + "</a></li>";
+                $('#question-feed-list').append(feedHtmlListElement);
+            })
+        })
+    }).catch(function(err) {
+        generateNotice('error', err)
+    });
 })
 
 //////////////////////////////////////////////
@@ -390,15 +429,3 @@ String.prototype.capitalize = function() {
 }
 
 String.prototype.formatAnswerByTag = function() {}
-
-// This function adds and removes the hidden class from the developer token input
-$(function() {
-    $("#form-register-role").change(function() {
-
-        if ($("#form-register-role option:selected").text() === "Admin") {
-            $("#form-admin-token").removeClass("hidden");
-        } else {
-            $("#form-admin-token").addClass("hidden");
-        }
-    })
-})

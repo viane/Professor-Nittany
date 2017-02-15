@@ -71,22 +71,26 @@ $(function() {
                 $('#querySubmitBtn').removeClass('loading');
             }, 125);
 
-            //form new DOM respond element
-            let respond = "<li class='agent'>";
+            // display 10 answers from server in order of confidence
 
-            //add answer body and
-            respond += "<div class=\"answer\"><p class=\"answer-body\" data-answer-seq="+currentQuestionAnswerSequence+">" + message.body + "</p></div>";
+            message.map((answer)=>{
+              //form new DOM respond element
+              let respond = "<li class='agent'>";
 
-            //add rating system to answer
-            respond += "<div class=\"answer-feedback-section\">";
-            respond += "<a class=\"answer-like-btn\" href=\"#\"><i class=\"fa fa-thumbs-up\" aria-hidden=\"true\"></i></a>";
-            respond += "<a class=\"answer-fav-btn\" href=\"#\"><i class=\"fa fa-gratipay\" aria-hidden=\"true\"></i></a>";
-            respond += "</div>";
+              //add answer body and
+              respond += "<div class=\"answer\"><p class=\"answer-body\" data-answer-seq="+currentQuestionAnswerSequence+">" + answer.body + "</p></div>";
 
-            //end adding, wrap up whole section
-            respond += "</li>";
+              //add rating system to answer
+              respond += "<div class=\"answer-feedback-section\">";
+              respond += "<a class=\"answer-like-btn\" href=\"#\"><i class=\"fa fa-thumbs-up\" aria-hidden=\"true\"></i></a>";
+              respond += "<a class=\"answer-fav-btn\" href=\"#\"><i class=\"fa fa-gratipay\" aria-hidden=\"true\"></i></a>";
+              respond += "</div>";
 
-            chatWindow.append(respond);
+              //end adding, wrap up whole section
+              respond += "</li>";
+
+              chatWindow.append(respond);
+            })
 
             //add handler
             addLikeBtnHandler(currentQuestionAnswerSequence);

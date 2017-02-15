@@ -96,7 +96,7 @@ router.post('/upload/upload-description-text-file', busboy({
 
 module.exports = router;
 
-const combineResult = response => {
+const combineResult = (response)=> {
     let fullDoc = ""; // will store all content in the word file as plain text
 
     // fill up the fullDoc
@@ -192,7 +192,7 @@ const getAndUpdatePersonalityAssessment = (user, description) => {
     }))
 }
 
-var countWords = s => {
+var countWords = (s) => {
     s = s.replace(/(^\s*)|(\s*$)/gi, "");
     s = s.replace(/[ ]{2,}/gi, " ");
     s = s.replace(/\n /, "\n");

@@ -5,57 +5,56 @@ const writeJsonFile = require('write-json-file');
 const appRoot = require('app-root-path');
 const serverStatusPath = '/config/server-status.json';
 
+let questionFeeds = [];
 
 module.exports.updateStatsFromQuestionObj = function(questionObj) {
     return null;
 };
 
+// get recent questionFeeds
 module.exports.getRecentAskedQuestions = () => {
+    return questionFeeds;
+};
+
+// load question to server when server is starting
+// return a promise
+module.exports.initQuestionFeeds = () => {
     return new Promise((resolve, reject) => {
         loadJsonFile(appRoot + serverStatusPath).then(json => {
-            resolve(json.recent_asked_question);
+            questionFeeds = json.recent_asked_question;
+            resolve();
         }).catch((err) => {
             throw err;
             reject(err);
         })
-    })
+    });
 };
 
+// update questionFeeds
 module.exports.updateRecentAskedQuestions = (Question) => {
-  return new Promise((resolve, reject) => {
-    loadJsonFile(appRoot + serverStatusPath).then(json => {
-        // 3 cases, the question is new, already in the list but still asked recently, already asked but long time ago
-        if(!json.recent_asked_question.include(Question)){
-          // server only store max 50 of recently asked questions
-          if (json.recent_asked_question.length >= 50) {
-            json.recent_asked_question.shift();
-          }
-        }else{
-          // swap the oldone with newer one
-          const oldIndex = json.recent_asked_question.indexOf(Question);
-          json.recent_asked_question.slice(oldIndex,1);
+    // 3 cases, the question is new, already in the list but still asked recently, already asked but long time ago
+    if (!questionFeeds.includes(Question)) {
+        // server only store max 50 of recently asked questions
+        if (questionFeeds.length >= 50) {
+            questionFeeds.shift();
         }
-        json.recent_asked_question.push(Question);
+    } else {
+        // delete old question in feed
+        const oldIndex = questionFeeds.indexOf(Question);
+        questionFeeds.slice(oldIndex, 1);
+    }
+    questionFeeds.unshift(Question);
+};
 
-        writeJsonFile(appRoot + serverStatusPath, json).then(()=>{
+// write current questionFeeds to disk for maintianess etc
+// return a promise
+module.exports.writeQuestionFeeds = function() {
+    return new Promise((resolve, reject) => {
+        writeJsonFile(appRoot + serverStatusPath, json).then(() => {
             resolve(json);
         }).catch((err) => {
             throw err;
             reject(err);
         })
-    }).catch((err) => {
-        throw err;
-        reject(err);
     })
-  })
-
-
 };
-
-module.exports.getCurrentOnlineUser = () => {
-    loadJsonFile(appRoot + serverStatusPath).then(json => {
-        return json.current_online_user;
-    }).catch((err) => {
-        throw err;
-    })
-}
