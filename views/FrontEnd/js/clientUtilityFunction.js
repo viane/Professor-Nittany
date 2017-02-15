@@ -296,8 +296,6 @@ $(document).ready(function() {
             $formId = $form.attr('id');
         const query = $("#" + $formId).serialize();
 
-        console.log(query);
-
         fetch(url, {
             method: "POST",
             credentials: 'include',

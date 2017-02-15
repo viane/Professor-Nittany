@@ -22,6 +22,9 @@ module.exports = function(app, passport) {
     // HOME PAGE (with login links) ========
     // =====================================
     app.get('/', function(req, res) {
+
+        const serverStatus = require(appRoot + "/app/server-status");
+        console.log(serverStatus.getFeedOfCurrentQuestions());
         res.render(frontEndRoot + 'index.ejs', {user: req.user}); // load the index.ejs file
     });
 
