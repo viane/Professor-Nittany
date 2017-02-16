@@ -425,11 +425,11 @@ $(() => {
 //////////////////////////////////////////////
 
 $(function() {
+  if ($('#external_question').length) {
     const external_question = $('#external_question').text();
-    if (external_question.length > 0) {
         $('#userQueryInput').val(external_question);
         $('#querySubmitBtn').click();
-    }
+  }
 })
 
 // $(()=>{

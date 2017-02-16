@@ -1,0 +1,77 @@
+<div class="col-sm-3">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+          <% if (user.type === "local") { %>
+            <h4><%= user.local.displayName %></h4>
+            <p>
+              <%= user.local.email %>
+            </p>
+          <% } %>
+          <% if (user.type === "facebook") { %>
+            <h4><%= user.facebook.displayName %></h4>
+            <p>
+              <%= user.facebook.email %>
+            </p>
+          <% } %>
+          <% if (user.type === "twitter") { %>
+            <h4><%= user.twitter.displayName %></h4>
+            <p>
+              <%= user.twitter.email %>
+            </p>
+          <% } %>
+          <% if (user.type === "linkedin") { %>
+            <h4><%= user.linkedin.displayName %></h4>
+            <p>
+              <%= user.linkedin.email %>
+            </p>
+          <% } %>
+          <% if (user.type === "google") { %>
+            <h4><%= user.google.displayName %></h4>
+            <p>
+              <%= user.google.email %>
+            </p>
+          <% } %>
+        </div>
+        <div class="panel-body">
+            <ul class="nav nav-pills nav-stacked nav-email shadow mb-20">
+                <li>
+                    <figure>
+                        <% if (user.type === "local") { %>
+                          <img class="image-thumbnail" style="width: 100%; padding:10px" src=<%=user.local.avatar %>></img>
+                        <% } %>
+                        <% if (user.type === "facebook") { %>
+                          <img class="image-thumbnail" style="width: 100%; padding:10px" src=<%=user.facebook.avatar %>></img>
+                        <% } %>
+                        <% if (user.type === "twitter") { %>
+                          <img class="image-thumbnail" style="width: 100%; padding:10px" src=<%=user.twitter.avatar %>></img>
+                        <% } %>
+                        <% if (user.type === "linkedin") { %>
+                          <img class="image-thumbnail" style="width: 100%; padding:10px" src=<%=user.linkedin.avatar %>></img>
+                        <% } %>
+                        <% if (user.type === "google") { %>
+                          <img class="image-thumbnail" style="width: 100%; padding:10px" src=<%=user.google.avatar %>></img>
+                        <% } %>
+                    </figure>
+                </li>
+                <li>
+                    <a class="sb-links" href="#mail-inbox.html">
+                        <i class="fa fa-inbox"></i> Inbox<span class="label pull-right">*</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="sb-links" href="#"><i class="fa fa-file-text-o"></i> Generate Assessment</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>Question Feed</h4>
+        </div>
+        <div class="panel-body">
+            <ul class="nav nav-pills nav-stacked shadow mb-20" id="question-feed-list">
+            </ul>
+        </div>
+    </div>
+</div>

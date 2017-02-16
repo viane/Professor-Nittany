@@ -13,6 +13,7 @@ module.exports.updateStatsFromQuestionObj = function(questionObj) {
 
 // get recent questionFeeds
 module.exports.getRecentAskedQuestions = () => {
+  console.log("Client requesting question feeds from server, current question feeds is ", questionFeeds);
     return questionFeeds;
 };
 
@@ -32,6 +33,7 @@ module.exports.initQuestionFeeds = () => {
 
 // update questionFeeds
 module.exports.updateRecentAskedQuestions = (Question) => {
+   console.log("adding " , Question , " to server question feeds");
     // 3 cases, the question is new, already in the list but still asked recently, already asked but long time ago
     if (!questionFeeds.includes(Question)) {
         // server only store max 50 of recently asked questions

@@ -382,8 +382,8 @@ module.exports = function(app, passport) {
     app.get('/external-ask', (req,res)=>{
       const question = req.query.question;
       console.log(req.query.question);
-      req.external_question = question.toString();
-      res.render(frontEndRoot + 'index.ejs', { external_question: req.external_question});
+      req.external_question = question;
+      res.render(frontEndRoot + 'index.ejs', { external_question: req.external_question, user: req.user});
     })
 
     ///////////////////////////////////////////////////

@@ -56,7 +56,7 @@ $(function() {
 
         // if there is a non-empty message and a socket connection
         if (message.content) {
-            $inputMessage.val('');
+            
             // tell server to execute 'new message' and send along one parameter
             socket.emit('new message', message);
             addChatMessage("client", message.content);
@@ -71,7 +71,7 @@ $(function() {
                 $('#querySubmitBtn').removeClass('loading');
             }, 125);
 
-            // display 10 answers from server in order of confidence            
+            // display 10 answers from server in order of confidence
             message.map((answer)=>{
               //form new DOM respond element
               let respond = "<li class='agent'>";
