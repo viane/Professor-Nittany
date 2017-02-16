@@ -38,7 +38,7 @@ module.exports = function(server) {
 
                 //handle by queston and answer
                 questionAnswer.ask(null, currentInput).then(function(result) {
-                    socket.emit('new message', {message: result.response.docs[0]});
+                    socket.emit('new message', {message: result.response.docs});
                 }).catch(function(err) {
                     console.log(err);
                 });

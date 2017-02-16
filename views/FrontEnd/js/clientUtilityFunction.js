@@ -421,6 +421,36 @@ $(() => {
 })
 
 //////////////////////////////////////////////
+// ask-question-module function
+//////////////////////////////////////////////
+
+$(function() {
+    const external_question = $('#external_question').text();
+    if (external_question.length > 0) {
+        $('#userQueryInput').val(external_question);
+        $('#querySubmitBtn').click();
+    }
+})
+
+// $(()=>{
+//   $('#external-ask-bar-btn').on('click',()=>{
+//     const question = $('#external-ask-bar-input').val();
+//     const url = '/external-ask/'+question;
+//     fetch(url, {
+//         method: "GET",
+//         credentials: 'include',
+//          redirect: 'follow',
+//         headers: {
+//             'Accept': 'application/json',
+//             'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+//         }
+//     }).catch((err)=>{
+//       generateNotice('error', err);
+//     })
+//   })
+// })
+
+//////////////////////////////////////////////
 // String utility
 //////////////////////////////////////////////
 

@@ -71,8 +71,7 @@ $(function() {
                 $('#querySubmitBtn').removeClass('loading');
             }, 125);
 
-            // display 10 answers from server in order of confidence
-
+            // display 10 answers from server in order of confidence            
             message.map((answer)=>{
               //form new DOM respond element
               let respond = "<li class='agent'>";

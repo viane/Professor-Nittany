@@ -70,13 +70,17 @@
         </div>
       <% } %>
     </div>
-    <textarea id="userQueryInput" class="chat-window-message" name="chat-window-message" type="text" autocomplete="off"></textarea>
 
+    <% if(locals.external_question) { %>
+      <div class="hidden" id="external_question"><%= external_question %></div>
+    <% } %>
+    <textarea id="userQueryInput" class="chat-window-message" name="chat-window-message" type="text" autocomplete="off"></textarea>
     <button id="querySubmitBtn" type="submit"><i class="fa fa-reply" aria-hidden="true"></i></button>
   </div>
   <div class="notification">
   <span></span>
-  </div>
+</div>
+
 
   <script src="../js/jquery.subscribe.js"></script>
   <script src="../js/speech-to-text.js"></script>
