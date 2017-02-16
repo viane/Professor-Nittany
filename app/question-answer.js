@@ -5,7 +5,7 @@ const conversation = require('./watson-conversation');
 const retrieveRank = require('./watson-retrieve-rank');
 const processAnswer = require('./process-answer');
 const processQuestion = require('./process-question');
-const serverStats = require('./server-stats');
+const serverStatus = require('./server-status');
 
 module.exports.ask = function(user, input) {
 
@@ -27,10 +27,14 @@ module.exports.ask = function(user, input) {
                     const questionObj = processQuestion.parseQuestionObj(userInput, analysis);
 
                     if (user) {
+                        // log question to user DB
                         processQuestion.logUserQuestion(user, questionObj);
+
+                        // update server question feeds
+                        processQuestion.updateQuestionToServerFeeds(questionObj.body);
                     }
 
-                    serverStats.updateStatsFromQuestionObj(questionObj);
+                    serverStatus.updateStatsFromQuestionObj(questionObj);
 
                     // ask retrieve and rank
                     retrieveRank.enterMessage(questionObj.body).then(function(resultFromRR) {

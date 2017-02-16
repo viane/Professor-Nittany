@@ -56,7 +56,7 @@ $(function() {
 
         // if there is a non-empty message and a socket connection
         if (message.content) {
-            $inputMessage.val('');
+            
             // tell server to execute 'new message' and send along one parameter
             socket.emit('new message', message);
             addChatMessage("client", message.content);
@@ -71,22 +71,25 @@ $(function() {
                 $('#querySubmitBtn').removeClass('loading');
             }, 125);
 
-            //form new DOM respond element
-            let respond = "<li class='agent'>";
+            // display 10 answers from server in order of confidence
+            message.map((answer)=>{
+              //form new DOM respond element
+              let respond = "<li class='agent'>";
 
-            //add answer body and
-            respond += "<div class=\"answer\"><p class=\"answer-body\" data-answer-seq="+currentQuestionAnswerSequence+">" + message.body + "</p></div>";
+              //add answer body and
+              respond += "<div class=\"answer\"><p class=\"answer-body\" data-answer-seq="+currentQuestionAnswerSequence+">" + answer.body + "</p></div>";
 
-            //add rating system to answer
-            respond += "<div class=\"answer-feedback-section\">";
-            respond += "<a class=\"answer-like-btn\" href=\"#\"><i class=\"fa fa-thumbs-up\" aria-hidden=\"true\"></i></a>";
-            respond += "<a class=\"answer-fav-btn\" href=\"#\"><i class=\"fa fa-gratipay\" aria-hidden=\"true\"></i></a>";
-            respond += "</div>";
+              //add rating system to answer
+              respond += "<div class=\"answer-feedback-section\">";
+              respond += "<a class=\"answer-like-btn\" href=\"#\"><i class=\"fa fa-thumbs-up\" aria-hidden=\"true\"></i></a>";
+              respond += "<a class=\"answer-fav-btn\" href=\"#\"><i class=\"fa fa-gratipay\" aria-hidden=\"true\"></i></a>";
+              respond += "</div>";
 
-            //end adding, wrap up whole section
-            respond += "</li>";
+              //end adding, wrap up whole section
+              respond += "</li>";
 
-            chatWindow.append(respond);
+              chatWindow.append(respond);
+            })
 
             //add handler
             addLikeBtnHandler(currentQuestionAnswerSequence);

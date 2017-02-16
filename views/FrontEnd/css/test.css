@@ -542,6 +542,7 @@ pre {
     color: white;
 }
 
+
 .dropzone .dz-preview .dz-error-message:after {
     content: '';
     position: absolute;
@@ -552,4 +553,8 @@ pre {
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
     border-bottom: 6px solid #be2626;
+}
+
+#apply-admin-code{
+  width: 80%;
 }

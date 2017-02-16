@@ -2,6 +2,7 @@
 const appRoot = require('app-root-path');
 const string = require('string');
 const alchemyAPI = require(appRoot + '/app/alchemyAPI');
+const serverStatus = require(appRoot + '/app/server-status');
 let User = require(appRoot + '/app/models/user');
 
 module.exports.humanizeString = function(inputQuestionString) {
@@ -29,8 +30,11 @@ module.exports.parseQuestionObj = function(input, analysis) {
     question.entitie = analysis.entities;
     question.taxonomy = analysis.taxonomy;
     question.keyword = analysis.keywords;
-
     return question;
+};
+
+module.exports.updateQuestionToServerFeeds =  (question) => {
+  serverStatus.updateRecentAskedQuestions(question);
 };
 
 module.exports.logUserQuestion = function(reqUser, questionObj) {

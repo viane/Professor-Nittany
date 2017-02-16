@@ -25,19 +25,20 @@ module.exports = function(server) {
                 if (user.id === data.sender.id && user.type === data.sender.type) {
                     // ask system
                     questionAnswer.ask(user, currentInput).then(function(result) {
-                        socket.emit('new message', {message: result.response.docs[0]});
+                        socket.emit('new message', {message: result.response.docs});
                     }).catch(function(err) {
                         console.log(err);
                     });
                 }else{
                    //maybe exploit
+                   console.error("A undetected user is send messages thru socket-io to server");
                 }
             } else {
                 //visitor's input block
 
                 //handle by queston and answer
                 questionAnswer.ask(null, currentInput).then(function(result) {
-                    socket.emit('new message', {message: result.response.docs[0]});
+                    socket.emit('new message', {message: result.response.docs});
                 }).catch(function(err) {
                     console.log(err);
                 });

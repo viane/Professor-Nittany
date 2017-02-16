@@ -14,11 +14,23 @@ var bcrypt = require('bcrypt-nodejs');
 // define the schema for our user model
 var userSchema = mongoose.Schema({
     type: String,
-    privacy:{
-      baisc_information: {type: Boolean, default: false},
-      personality_assessement : {type: Boolean, default: false},
-      stats_and_analysis: {type: Boolean, default: false},
-      question_log: {type: Boolean, default: false}
+    privacy: {
+        basic_information: {
+            type: Boolean,
+            default: false
+        },
+        personality_assessement: {
+            type: Boolean,
+            default: false
+        },
+        stats_and_analysis: {
+            type: Boolean,
+            default: false
+        },
+        question_log: {
+            type: Boolean,
+            default: false
+        }
     },
     local: {
         email: {
@@ -80,9 +92,7 @@ var userSchema = mongoose.Schema({
             }
         ],
         interest: [
-            {
-                type: String
-            }
+            mongoose.Schema.Types.Mixed
         ],
         personality_assessement: {
             last_upload_time: {
@@ -147,9 +157,7 @@ var userSchema = mongoose.Schema({
             }
         ],
         interest: [
-            {
-                type: String
-            }
+            mongoose.Schema.Types.Mixed
         ],
         personality_assessement: {
             last_upload_time: {
@@ -210,9 +218,7 @@ var userSchema = mongoose.Schema({
             }
         ],
         interest: [
-            {
-                type: String
-            }
+            mongoose.Schema.Types.Mixed
         ],
         personality_assessement: {
             last_upload_time: {
@@ -273,7 +279,9 @@ var userSchema = mongoose.Schema({
                 ]
             }
         ],
-        interest: [String],
+        interest: [
+            mongoose.Schema.Types.Mixed
+        ],
         personality_assessement: {
             last_upload_time: {
                 type: Date,
@@ -335,7 +343,9 @@ var userSchema = mongoose.Schema({
                 ]
             }
         ],
-        interest: [String],
+        interest: [
+            mongoose.Schema.Types.Mixed
+        ],
         personality_assessement: {
             last_upload_time: {
                 type: Date,

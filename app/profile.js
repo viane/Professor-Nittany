@@ -22,6 +22,8 @@ const document_conversion = watson.document_conversion({username: 'd1f406ed-2958
 
 const loadJsonFile = require('load-json-file');
 
+const personality = require(appRoot + '/app/personality-insights');
+
 router.post('/upload/upload-description-text-file', busboy({
     limits: {
         fileSize: 4 * 1024 * 1024
@@ -41,7 +43,12 @@ router.post('/upload/upload-description-text-file', busboy({
                 }).catch(function(err) {
                     throw err;
                     res.sendStatus(300);
-                })
+                });
+
+                // personality analysis only takes input that is more than 100 words
+                if (countWords(data) > 105) {
+                    getAndUpdatePersonalityAssessment(req.user, data.toString().replace(/(\n)+/g, ""));
+                }
             });
         } else if (path.extname(filename) === ".doc" || path.extname(filename) === ".docx") {
             // if user upload a word file, write to temp folder and named by it's id, then parse and upload to DB
@@ -60,19 +67,8 @@ router.post('/upload/upload-description-text-file', busboy({
                         if (err) {
                             throw err;
                         } else {
-                            let fullDoc = ""; // will store all content in the word file as plain text
 
-                            // fill up the fullDoc
-                            for (const docIndex in response.answer_units) {
-                                if (response.answer_units[docIndex].hasOwnProperty("title")) {
-                                    fullDoc += response.answer_units[docIndex].title + ". ";
-                                }
-                                for (const textIndex in response.answer_units[docIndex].content) {
-                                    if (response.answer_units[docIndex].content[textIndex].hasOwnProperty("text")) {
-                                        fullDoc += response.answer_units[docIndex].content[textIndex].text;
-                                    }
-                                }
-                            }
+                            const fullDoc = combineResult(response);
 
                             updateUserSelfDescription(req.user, fullDoc).then(function() {
                                 // done write to DB, delete file
@@ -84,7 +80,11 @@ router.post('/upload/upload-description-text-file', busboy({
                                 // if error on write to DB, leave the file in the folder for further examnaton
                                 throw err;
                                 res.sendStatus(300);
-                            })
+                            });
+                            // personality analysis only takes input that is more than 100 words
+                            if (countWords(fullDoc) > 105) {
+                                getAndUpdatePersonalityAssessment(req.user, fullDoc);
+                            }
                         }
                     });
                 });
@@ -95,6 +95,28 @@ router.post('/upload/upload-description-text-file', busboy({
 })
 
 module.exports = router;
+
+const combineResult = (response)=> {
+    let fullDoc = ""; // will store all content in the word file as plain text
+
+    // fill up the fullDoc
+    for (const docIndex in response.answer_units) {
+        if (response.answer_units[docIndex].hasOwnProperty("title")) {
+            fullDoc += response.answer_units[docIndex].title + ". ";
+        }
+        for (const textIndex in response.answer_units[docIndex].content) {
+            if (response.answer_units[docIndex].content[textIndex].hasOwnProperty("text")) {
+                fullDoc += response.answer_units[docIndex].content[textIndex].text;
+            }
+        }
+    }
+
+    if (fullDoc.length == 0) {
+        fullDoc = "Document not acceptable, try a different document.";
+    }
+
+    return fullDoc;
+}
 
 const getUserDataPath = function(userType) {
     let path = "";
@@ -142,8 +164,37 @@ const updateUserSelfDescription = (user, description) => {
     });
 }
 
-const updateUserPersonalityAssessment = (user, assessment) => {}
+const updateUserPersonalityAssessment = (user, assessment) => {
+    const id = user._id;
+    const updatePath = getUserDataPath(user.type) + ".evaluation";
 
-const getPersonalityAssessment = (user, description) => {
-    personality.getAnalysis(description).then(assessment => updateUserPersonalityAssessment(user, assessment).then().catch(err => {throw err}))
+    return new Promise(function(resolve, reject) {
+
+        User.update({
+            _id: id
+        }, {
+            "$set": {
+                [updatePath]: assessment
+            }
+        }).exec().then(function(query_report) {
+            resolve(query_report);
+        }).catch(function(err) {
+            throw err
+            reject(err);
+        });
+    });
+
+}
+
+const getAndUpdatePersonalityAssessment = (user, description) => {
+    personality.getAnalysis(description).then(assessment => updateUserPersonalityAssessment(user, assessment).then().catch(err => {
+        throw err
+    }))
+}
+
+var countWords = (s) => {
+    s = s.replace(/(^\s*)|(\s*$)/gi, "");
+    s = s.replace(/[ ]{2,}/gi, " ");
+    s = s.replace(/\n /, "\n");
+    return s.split(' ').length;
 }

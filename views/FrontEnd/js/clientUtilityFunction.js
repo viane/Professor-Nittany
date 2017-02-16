@@ -161,7 +161,7 @@ var addLikeBtnHandler = function(answerSequenceNumber) {
 };
 
 //////////////////////////////////////////////////
-// answer text flag extraction and formation
+// answer text flag(tag) extraction and formation
 //////////////////////////////////////////////////
 var formatText = function(inputText) {
 
@@ -290,51 +290,165 @@ $(document).ready(function() {
     $("#signup-form").on("submit", function(e) {
         e.preventDefault();
 
-            // post signup request to server
-            const url = '/signup';
-            const $form = $(this),
-                $formId = $form.attr('id');
-            const query = $("#" + $formId).serialize();
-            fetch(url, {
-                method: "POST",
-                credentials: 'include',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-                },
-                body: query
-            }).then(function(res) {
-                res.json().then(function(res) {
-                    if (res.status !== 200) {
-                        generateNotice(res.type, "Error, " + res.information);
-                        return;
-                    } else {
-                        generateNotice(res.type, res.information);
-                        setTimeout(function() {
-                            window.location.href = '/profile';
-                        }, 2500);
-                    }
-                })
-            }).catch(function(err) {
-                generateNotice('error', err)
-            });
+        // post signup request to server
+        const url = '/signup';
+        const $form = $(this),
+            $formId = $form.attr('id');
+        const query = $("#" + $formId).serialize();
+
+        fetch(url, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: query
+        }).then(function(res) {
+            res.json().then(function(res) {
+                if (res.status !== 200) {
+                    generateNotice(res.type, "Error, " + res.information);
+                    return;
+                } else {
+                    generateNotice(res.type, res.information);
+                    setTimeout(function() {
+                        window.location.href = '/profile';
+                    }, 2500);
+                }
+            })
+        }).catch(function(err) {
+            generateNotice('error', err)
+        });
 
     });
 });
 
 //////////////////////////////////////////////
-// Input password overwrite view
+// User login action
+//////////////////////////////////////////////
+
+$(document).ready(function() {
+    $("#login-form").on("submit", function(e) {
+        e.preventDefault();
+
+        // post signup request to server
+        const url = '/login';
+        const $form = $(this),
+            $formId = $form.attr('id');
+        const query = $("#" + $formId).serialize();
+        fetch(url, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: query
+        }).then(function(res) {
+            res.json().then(function(res) {
+                if (res.status !== 200) {
+                    generateNotice(res.type, "Error, " + res.information);
+                    return;
+                } else {
+                    generateNotice(res.type, res.information);
+                    setTimeout(function() {
+                        window.location.href = '/profile';
+                    }, 1000);
+                }
+            })
+
+        }).catch(function(err) {
+            generateNotice('error', err)
+        });
+
+    });
+});
+
+//////////////////////////////////////////////
+// Input password view toggle handler
 //////////////////////////////////////////////
 
 $(function() {
-    $('input[type=password]').each(function() {
-        $(this).on('focus', function() {
-            this.type = "text";
-        }).on('focusout', function() {
-            this.type = "password";
+    $('.show-password-btn').each(function() {
+        $(this).on('mousedown', () => {
+            $(this).prev()[0].type = "text";
+            $(this).html('<i class="fa fa-eye-slash" aria-hidden="true"></i>')
+        })
+        $(this).on('mouseup', () => {
+            $(this).prev()[0].type = "password";
+            $(this).html('<i class="fa fa-eye" aria-hidden="true"></i>')
         })
     })
 })
+
+//////////////////////////////////////////////
+// This function adds and removes the hidden class from the developer token input
+//////////////////////////////////////////////
+$(function() {
+    $("#form-register-role").change(function() {
+
+        if ($("#form-register-role option:selected").text() === "Admin") {
+            $("#form-admin-token").removeClass("hidden");
+        } else {
+            $("#form-admin-token").addClass("hidden");
+        }
+    })
+})
+
+//////////////////////////////////////////////
+// Get request for question feed from server
+//////////////////////////////////////////////
+
+$(() => {
+    const url = '/api/server-status/get-question-feeds';
+    fetch(url, {
+        method: "GET",
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+        }
+    }).then(function(res) {
+        res.json().then((result) => {
+            result.feeds.map((feed) => {
+                const feedHtmlListElement = "<li><a href=\"#\">" + feed + "</a></li>";
+                $('#question-feed-list').append(feedHtmlListElement);
+            })
+        })
+    }).catch(function(err) {
+        generateNotice('error', err)
+    });
+})
+
+//////////////////////////////////////////////
+// ask-question-module function
+//////////////////////////////////////////////
+
+$(function() {
+  if ($('#external_question').length) {
+    const external_question = $('#external_question').text();
+        $('#userQueryInput').val(external_question);
+        $('#querySubmitBtn').click();
+  }
+})
+
+// $(()=>{
+//   $('#external-ask-bar-btn').on('click',()=>{
+//     const question = $('#external-ask-bar-input').val();
+//     const url = '/external-ask/'+question;
+//     fetch(url, {
+//         method: "GET",
+//         credentials: 'include',
+//          redirect: 'follow',
+//         headers: {
+//             'Accept': 'application/json',
+//             'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+//         }
+//     }).catch((err)=>{
+//       generateNotice('error', err);
+//     })
+//   })
+// })
 
 //////////////////////////////////////////////
 // String utility
@@ -345,14 +459,3 @@ String.prototype.capitalize = function() {
 }
 
 String.prototype.formatAnswerByTag = function() {}
-
-// This function adds and removes the hidden class from the developer token input
-$(function(){
-    $("#form-register-role").change(function(){
-        if($("#form-register-role option:selected").text() === "Developer"){
-            $("#form-developer-token").removeClass("hidden");
-        } else {
-            $("#form-developer-token").addClass("hidden");
-        }
-    })
-})
