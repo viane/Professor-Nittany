@@ -1,0 +1,83 @@
+<!-- search bar module -->
+<style>
+    .affix {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, 20%);
+        z-index: 1;
+    }
+    .affix + .container-fluid {
+        padding-top: 70px;
+    }
+
+    form {
+        padding-top: 20px;
+    }
+</style>
+
+<!-- Add user id token in order to id who send input -->
+<div id="data-user" class="hide">
+    <% if(locals.user) { %>
+    <div id="user-type">
+        <% if (user.local.email) { %>
+        local
+        <% } %>
+
+        <% if (user.facebook.id) { %>
+        facebook
+        <% } %>
+
+        <% if (user.twitter.id) { %>
+        twitter
+        <% } %>
+
+
+        <% if (user.linkedin.id) { %>
+        linkedin
+        <% } %>
+
+    </div>
+    <div id="user-id">
+        <% if (user.local.email) { %>
+        <%= user._id %>
+        <% } %>
+
+        <% if (user.facebook.id) { %>
+        <%= user.facebook.id %>
+        <% } %>
+
+        <% if (user.twitter.id) { %>
+        <%= user.twitter.id %>
+        <% } %>
+
+        <% if (user.linkedin.id) { %>
+        <%= user.linkedin.id %>
+        <% } %>
+    </div>
+    <% } %>
+</div>
+
+<form>
+    <div class="container-fluid form-group input-group" data-spy="affix" data-offset-top="59">
+        <div class="audioParent">
+            <audio style="display:none" class="audio" controls>
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+        <span class="input-group-btn">
+            <button class="btn btn-default" id="recordButton" style="width: 100px;" value="record">         
+            <span class="glyphicon glyphicon-bullhorn" data-toggle="tooltip" data-container="body" data-placement="bottom" title="Voice-to-Text!"></span>
+            </button>
+        </span>
+        <input id="userQueryInput" name="chat-window-message" type="text" class="form-control" placeholder="Eg. 'What is Computer Science?'">
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="button" id="querySubmitBtn" type="submit">
+                <span class="glyphicon glyphicon-search"></span>
+            </button>
+        </span>      
+    </div>
+</form>
+
+<script src="../js/jquery.subscribe.js"></script>
+<script src="../js/speech-to-text.js"></script>
