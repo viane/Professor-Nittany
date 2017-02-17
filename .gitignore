@@ -8,3 +8,4 @@ debug.log
 app/log/console_log.txt
 
 views/img/Thumbs.db
+*.log
