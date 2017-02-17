@@ -33,10 +33,14 @@ $(function() {
         //console.log("server received your data and sent to you: " +JSON.stringify(data.message));
     });
 
-    var chatWindow = $('.chat-thread'); //main chat window
+    var chatWindow = $('#answer-list'); //main chat window
 
     // send message to server by use emit api form socket io
     $('#querySubmitBtn').click(function() {
+
+        // clear previous results
+        $('#answer-list').empty();
+
         //add loading animation to submit button
         setTimeout(function() {
             $('#querySubmitBtn').addClass('loading');
@@ -72,7 +76,7 @@ $(function() {
             }, 125);
 
             // display 10 answers from server in order of confidence
-            message.map((answer) => {
+            message.map((answer,index) => {
 
                 //form new DOM respond element
                 let respond = "<li class=\"list-group-item list-group-item-info text-left\">"
@@ -104,8 +108,9 @@ $(function() {
         }
 
         if (sender === "client") {
+            // display user input question
             let askDomElement = "<li class='user'>";
-            //add question body
+            // add question body
             askDomElement += "<div class=\"question\"><p class=\"question-body\" data-question-seq=" + currentQuestionAnswerSequence + ">" + message + "</p></div>";
             askDomElement += "</li>";
             chatWindow.append(askDomElement);

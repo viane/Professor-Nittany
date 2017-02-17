@@ -104,14 +104,15 @@
             </span>
           </div>
         </form>
+        <div class="row">
+          <%- include result-module.ejs %>
+        </div>
       </div>
-      <div class="row">
-        <%- include result-module.ejs %>
+      <div class="col-sm-3">
+        <%- include question-feed-module.ejs %>
       </div>
     </div>
-    <div class="col-sm-3">
-      <%- include question-feed-module.ejs %>
-    </div>
+
   </div>
 
   <script src="../js/jquery.subscribe.js"></script>

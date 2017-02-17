@@ -29,7 +29,7 @@ router.post('/apply-admin', function(req, res) {
     }
 });
 
-// /profile get user interests
+// /profile.ejs get user interests
 router.get('/get-interest', (req, res) => {
     User.findById(req.user._id).exec().then(function(foundUser) {
         const interestPath = getInterestPathFromUser(foundUser);
