@@ -5,14 +5,17 @@
 var crypto = require('crypto');
 
 // load up the question answer model
-var QuestionAnswerPair = require('../app/models/QuestionAnswerPair');
-var appRoot = require('app-root-path');
-var frontEndRoot = appRoot + '/views/FrontEnd/';
-var watsonToken = require('./watson-token');
-var accountManage = require('./account');
-var uploadQuestionByTextFile = require('./file-to-questionDB');
-var User = require(appRoot + "/app/models/user");
+const question = require('../app/models/question');
+const appRoot = require('app-root-path');
+const frontEndRoot = appRoot + '/views/FrontEnd/';
+const watsonToken = require('./watson-token');
+const accountManage = require('./account');
+const uploadQuestionByTextFile = require('./file-to-questionDB');
+const User = require(appRoot + "/app/models/user");
 const testingAPIModule = require(appRoot + '/app/testing/testAPI');
+const profileAPI = require(appRoot + '/app/profile');
+const validator = require("email-validator");
+const serverStatusAPI = require(appRoot + '/app/api/server-status');
 
 module.exports = function(app, passport) {
 
@@ -37,11 +40,35 @@ module.exports = function(app, passport) {
     });
 
     // process the login form
-    app.post('/login', passport.authenticate('local-login', {
-        successRedirect: '/profile', // redirect to the secure profile section
-        failureRedirect: '/login', // redirect back to the signup page if there is an error
-        failureFlash: true // allow flash messages
-    }));
+    app.post('/login', (req, res, next) => {
+        // precondition checking
+        // callback with email and password
+        if (!req.body.email || req.body.email.length == 0) {
+            res.send({status: 302, type: 'error', information: 'Email can\'t be empty'});
+            return;
+        }
+        if (!req.body.password || req.body.password.length == 0) {
+            res.send({status: 302, type: 'error', information: 'Password can\'t be empty'});
+            return;
+        }
+        if (!validator.validate(req.body.email)) {
+            res.send({status: 302, type: 'error', information: 'Invaild email'});
+            return;
+        }
+        passport.authenticate('local-login', (err, user, info) => {
+            if (err) {
+                return res.send({status: 302, type: 'error', information: err});
+            } else {
+                // req / res held in closure
+                req.logIn(user, function(err) {
+                    if (err) {
+                        return res.send({status: 302, type: 'error', information: err});
+                    }
+                    return res.send({status: 200, type: 'success', information: "Login success"});
+                });
+            }
+        })(req, res, next);
+    });
 
     // =====================================
     // SIGNUP ==============================
@@ -53,13 +80,25 @@ module.exports = function(app, passport) {
     });
 
     // process the signup form
-    app.post('/signup',
-    //email and password not empty, start local authentication
-    passport.authenticate('local-signup', {
-        successRedirect: '/profile', // redirect to the secure profile section
-        failureRedirect: '/signup', // redirect back to the signup page if there is an error
-        failureFlash: true // allow flash messages
-    }));
+    app.post('/signup', (req, res, next) => {
+        // precondition checking
+        if (checkSignUpParameter(req, res)) {
+            //email and password not empty, start local authentication
+            passport.authenticate('local-signup', function(err, user, info) {
+                if (err) {
+                    return res.send({status: 302, type: 'error', information: err});
+                } else {
+                    // req / res held in closure
+                    req.logIn(user, function(err) {
+                        if (err) {
+                            return res.send({status: 302, type: 'error', information: err});
+                        }
+                        return res.send({status: 200, type: 'success', information: "Successfully registered"});
+                    });
+                }
+            })(req, res, next)
+        }
+    });
 
     // =====================================
     // PROFILE SECTION =========================
@@ -67,8 +106,6 @@ module.exports = function(app, passport) {
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedInRedirect function)
     app.get('/profile', isLoggedInRedirect, function(req, res) {
-
-        let ask_history = [];
         let path = "";
 
         switch (req.user.type) {
@@ -84,18 +121,21 @@ module.exports = function(app, passport) {
             case "facebook":
                 path = "facebook";
                 break;
+            case "google":
+                path = "google";
+                break;
             default:
                 throw new Error("Request user type is unexcepted");
                 break;
         };
 
         User.findById(req.user._id, function(err, foundUser) {
-            ask_history = foundUser[path].ask_history;
             res.render(frontEndRoot + 'profile.ejs', {
                 user: req.user, // get the user out of session and pass to template
-                ask_history: ask_history
+                ask_history: foundUser[path].ask_history,
+                privacy: foundUser.privacy
             });
-        })
+        });
     });
 
     // =====================================
@@ -243,29 +283,31 @@ module.exports = function(app, passport) {
         var tagContext = req.body.tag;
         console.log(req.user._id);
         if (questionContext.length == 0) {
-            res.send({user: req.user, status: "0", message: "Question can not be empty"})
+            res.send({user: req.user, status: "302", type: 'warning', message: "Question can not be empty"})
         } else {
             //create DB object
-            var QA_pair = new QuestionAnswerPair();
+            var QA_pair = new question();
 
             //assign values
-            QA_pair.record.question = questionContext;
-            QA_pair.record.answer = answerContext;
-            QA_pair.record.tag = tagContext;
-            QA_pair.record.creator = req.user._id;
+            QA_pair.question_body = questionContext;
+            QA_pair.question_answer = answerContext;
+            QA_pair.question_tag = tagContext;
+            QA_pair.question_submitter = req.user._id;
+            QA_pair.question_upload_mothod = "mannual";
 
             //Save to DB
             QA_pair.save(function(err) {
                 if (err) {
                     res.send({
                         user: req.user,
-                        status: "-1",
+                        status: "302",
+                        type: 'error',
                         message: err + "</br>Save data to other place."
                     })
                     throw err;
                 }
                 // if successful, return the new user
-                res.send({user: req.user, status: "1", message: "Successfully added entry"})
+                res.send({user: req.user, status: "200", type: 'success', message: "Successfully added entry"})
             });
         }
     });
@@ -336,6 +378,14 @@ module.exports = function(app, passport) {
         });
     });
 
+    // router for user ask questionn not on index page
+    app.get('/external-ask', (req,res)=>{
+      const question = req.query.question;
+      console.log(req.query.question);
+      req.external_question = question;
+      res.render(frontEndRoot + 'index.ejs', { external_question: req.external_question, user: req.user});
+    })
+
     ///////////////////////////////////////////////////
     /// API
     ///////////////////////////////////////////////////
@@ -349,8 +399,14 @@ module.exports = function(app, passport) {
     // admin upload questions from text file
     app.use('/api/admin/upload/', isLoggedInRedirect, uploadQuestionByTextFile);
 
-    //general server functionality testing api
+    // General server functionality testing api
     app.use('/api/testing/', testingAPIModule);
+
+    //  Profile APIs
+    app.use('/api/profile', isLoggedInRedirect, profileAPI);
+
+    // Server status APIs
+    app.use('/api/server-status', serverStatusAPI);
 };
 
 // route middleware to make sure
@@ -372,4 +428,44 @@ function isLoggedInNotice(req, res, next) {
 
     // if they aren't redirect them to the home page
     res.send({status: "error", information: "Login required"});
+}
+
+function checkSignUpParameter(req, res) {
+    // callback with email and password from our form
+    if (!req.body.first_name || req.body.first_name.length == 0 || !req.body.last_name || req.body.last_name.length == 0) {
+        res.send({status: 302, type: 'error', information: 'Name can\'t be empty'});
+        return false;
+    }
+    if (!req.body.email || req.body.email.length == 0) {
+        res.send({status: 302, type: 'error', information: 'Email can\'t be empty'});
+        return false;
+    }
+    if (!req.body.password || req.body.password.length == 0) {
+        res.send({status: 302, type: 'error', information: 'Password can\'t be empty'});
+        return false;
+    }
+    if (!req.body.account_role) {
+        res.send({status: 302, type: 'error', information: 'Invaild account role'});
+        return false;
+    }
+
+    if (req.body.account_role === "Admin" && (!req.body['admin-token'] || req.body['admin-token'] == 0)) {
+        res.send({status: 302, type: 'error', information: 'Missing developer token for registering as developer'});
+        return false;
+    }
+
+    if (req.body.account_role === "Admin" && !validateAdminToken(req.body['admin-token'])) {
+        res.send({status: 302, type: 'error', information: 'Invaild admin token'});
+        return false;
+    }
+    return true;
+}
+
+const validateAdminToken = function(code) {
+    const correctSecret = "bwqlrEfvDofy7nZC8NLDXFlbh92rbL2moCxBSrXv8stqPcZjeGJCpbJ2QF2yh2iTBnWpEorY5ll2KTfl91FBEc5IEqnQboOfV319Js8fan6gRKHXSBwqbNPy3oRcKENfHQbTBPPCZSz2VaG4pLIB2K7VzL4AD93w7iKrDMfYeggwUGKJf0tX6xAAUyQwZQO5Wswn00aYtPYwst19WlKoFl3eEUQRQ05qFrLP5WwbG7ALmZSLztCnysBKGtUWyFa2";
+    if (code === correctSecret) {
+        return true;
+    } else {
+        return false;
+    }
 }

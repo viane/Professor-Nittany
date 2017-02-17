@@ -84,30 +84,39 @@
               </audio>
             </div>
             <span class="input-group-btn">
-              <button class="btn btn-default" id="recordButton" style="width: 100px;" value="record">         
+              <button class="btn btn-default" id="recordButton" style="width: 100px;" value="record">
               <span class="glyphicon glyphicon-bullhorn" data-toggle="tooltip" data-container="body" data-placement="bottom" title="Voice-to-Text!"></span>
               </button>
             </span>
-            <input type="text" id="userQueryInput" class="form-control" placeholder="Eg. 'What is Computer Science?'"> 
+
+            <% if(locals.external_question) { %>
+              <div class="hidden" id="external_question"><%= external_question %></div>
+            <% } %>
+
+            <input type="text" id="userQueryInput" class="form-control chat-window-message" name="chat-window-message" placeholder="Eg. 'What is Computer Science?'">
             <span class="input-group-btn">
-              <button class="btn btn-default" id="querySubmitBtn" type="submit">
+              <button class="btn btn-default" id="querySubmitBtn" type="button">
                 <span class="glyphicon glyphicon-search"></span>
               </button>
-            </span>     
+            </div>
+            <div class="notification"><span></span></div>
+
+            </span>
           </div>
         </form>
+        <div class="row">
+          <%- include result-module.ejs %>
+        </div>
       </div>
-      <div class="row">
-        <%- include result-module.ejs %>
+      <div class="col-sm-3">
+        <%- include question-feed-module.ejs %>
       </div>
     </div>
-    <div class="col-sm-3">
-      <%- include question-feed-module.ejs %>
-    </div>
-  </div> 
+
+  </div>
 
   <script src="../js/jquery.subscribe.js"></script>
-  <script src="../js/speech-to-text.js"></script>   
+  <script src="../js/speech-to-text.js"></script>
   <%- include footer.ejs %>
 </body>
 

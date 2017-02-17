@@ -9,10 +9,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Intelligent Academic Planner - Profile</title>
     <style>
-    .editable:hover { 
+    .editable:hover {
         text-decoration: underline;
     }
-    #borderimg2 { 
+    #borderimg2 {
         border: 15px solid transparent;
         padding: 15px;
         border-image-source: url(images/edit-border.png);
@@ -22,10 +22,12 @@
     </style>
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
+	<!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
+
+	<script src="/js/wordcloud2.js"></script>
     </head>
     <!-- if user acct-type = student .... teacher .... dev ... -->
     <body>
@@ -38,6 +40,21 @@
     			<div class="col-sm-9">
     				<!-- resumt -->
     				<div class="panel panel-primary">
+							<div class="bs-callout bs-callout-primary text-left">
+								<h4>Your words</h4>
+								<canvas id="interest-canvas" width="600" height="420"></canvas>
+							</div>
+
+							<div class="bs-callout bs-callout-primary text-left">
+    						<div class="checkbox" id="interests-checkbox">
+									<label><input type="checkbox" value=""><h4>Introduction</h4></label>
+								</div>
+							<div id="uploadFileSection" class="white-container-mid bs-callout bs-callout-info text-left">
+								<h4>Upload self-description</h4>
+								<form class="dropzone" id="upload-description-Text-File" name="upload-file"></form>
+							</div>
+    					</div>
+
     					<div class="bs-callout bs-callout-primary text-left">
     						<div class="checkbox" id="interests-checkbox">
                                 <label><input type="checkbox" value=""><h4>Interests</h4></label>

@@ -2,9 +2,9 @@
 
 const appRoot = require('app-root-path');
 
-var express = require('express');
+const express = require('express');
 
-var router = express.Router();
+const router = express.Router();
 
 let User = require(appRoot + '/app/models/user');
 
@@ -18,12 +18,9 @@ router.post('/apply-admin', function(req, res) {
             $set: {
                 "local.role": "admin"
             }
-        })
-        .exec()
-        .then(function(updatedUser) {
+        }).exec().then(function(updatedUser) {
             res.send({type: 'success', information: 'Successfully applied.', newUser: updatedUser});
-        })
-        .catch(function (err) {
+        }).catch(function(err) {
             throw err
             res.send({type: 'error', information: err});
         })
@@ -32,16 +29,27 @@ router.post('/apply-admin', function(req, res) {
     }
 });
 
-router.post('/favorite-question',function(req,res){
-  const id = req.user._id;
-  console.log(req.user);
-  res.send({status:"success", information:"done!"});
+// /profile.ejs get user interests
+router.get('/get-interest', (req, res) => {
+    User.findById(req.user._id).exec().then(function(foundUser) {
+        const interestPath = getInterestPathFromUser(foundUser);
+        res.send({status: "success", information: "good", interest: foundUser[interestPath].interest});
+    }).catch(function(err) {
+        throw err;
+        res.send({type: 'error', information: err});
+    })
+})
+
+router.post('/favorite-question', function(req, res) {
+    const id = req.user._id;
+    console.log(req.user);
+    res.send({status: "success", information: "done!"});
 });
 
-router.post('/like-question',function(req,res){
-  const id = req.user._id;
-  console.log(req.user);
-  res.send({status:"success", information:"done!"});
+router.post('/like-question', function(req, res) {
+    const id = req.user._id;
+    console.log(req.user);
+    res.send({status: "success", information: "done!"});
 });
 
 const validateActivationCode = function(code) {
@@ -54,3 +62,28 @@ const validateActivationCode = function(code) {
 }
 
 module.exports = router;
+
+const getInterestPathFromUser = user => {
+    const userType = user.type;
+    let returnPath = "";
+    switch (userType) {
+        case "local":
+            returnPath = "local"
+            break;
+        case "facebook":
+            returnPath = "facebook"
+            break;
+        case "twitter":
+            returnPath = "twitter"
+            break;
+        case "linkedin":
+            returnPath = "linkedin"
+            break;
+        case "google":
+            returnPath = "google"
+            break;
+        default:
+            throw new Error("Failed on get login user type for getting user interest");
+    }
+    return returnPath;
+}

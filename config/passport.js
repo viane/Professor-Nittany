@@ -16,10 +16,10 @@ var WechatStrategy = require("passport-wechat").Strategy;
 var appRoot = require('app-root-path');
 
 // load up the user model
-var User = require(appRoot+'/app/models/user');
+var User = require(appRoot + '/app/models/user');
 
 // load the auth variables
-var configAuth = require(appRoot+'/config/auth');
+var configAuth = require(appRoot + '/config/auth');
 
 // expose this function to our app using module.exports
 module.exports = function(passport) {
@@ -63,17 +63,18 @@ module.exports = function(passport) {
             'local.email': email.toLowerCase()
         }, function(err, user) {
             // if there are any errors, return the error before anything else
-            if (err)
-                return done(err);
+            if (err) {
+                return done(err, false, req.flash('signupMessage', err))
+            }
 
             // if no user is found, return the message
-            if (!user)
-                return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
-
+            if (!user) {
+                return done("Cant find any user with this email", false, req.flash('signupMessage', 'Cant find any user with this email')); // req.flash is the way to set flashdata using connect-flash
+            }
             // if the user is found but the password is wrong
-            if (!user.validPassword(password))
-                return done(null, false, req.flash('loginMessage', 'Wrong password.')); // create the loginMessage and save it to session as flashdata
-
+            if (!user.validPassword(password)) {
+                return done("Passowrd incorrect", false, req.flash('signupMessage', 'Passowrd incorrect')); // req.flash is the way to set flashdata using connect-flash
+            }
             // all is well, return successful user
             return done(null, user);
         });
@@ -90,30 +91,39 @@ module.exports = function(passport) {
         usernameField: 'email',
         passwordField: 'password',
         passReqToCallback: true // allows us to pass back the entire request to the callback
-    }, function(req, email, password, done) { // callback with email and password from our form
-        if (!req.body.first_name || req.body.first_name.length == 0 || !req.body.last_name || req.body.last_name.length == 0) {
-            return done(null, false, req.flash('signupMessage', 'Name can\'t be empty'));
-        }
+    }, function(req, email, password, done) {
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
         User.findOne({
-            'local.email': email
+            'local.email': req.body.email
         }, function(err, user) {
             // if there are any errors, return the error before anything else
             if (err) {
-                return done(null, false, req.flash('signupMessage', 'Error: ' + err));
+                return done(err, false, req.flash('signupMessage', err));
             } else {
                 //check if email is vaild
-                if (validator.validate(email)) {
+                if (validator.validate(req.body.email)) {
                     // if user record is found, return the message
                     if (user) {
-                        return done(null, false, req.flash('signupMessage', 'Email already registered.')); // req.flash is the way to set flashdata using connect-flash
+                        return done("Email already registered", false, req.flash('signupMessage', 'Email already registered')); // req.flash is the way to set flashdata using connect-flash
                     } else {
                         //create new user
                         var newUser = new User();
-                        // set all of the facebook information in our user model
-                        newUser.type = "local";
-                        newUser.local.email = email; // facebook can return multiple emails so we'll take the first
+
+                        // set up account information
+                        if (req.body.account_role === "Student") {
+                          newUser.type = "local";
+                        }
+
+                        if (req.body.account_role === "Advisor") {
+                          newUser.type = "advisor";
+                        }
+
+                        if (req.body.account_role === "Admin") {
+                          newUser.type = "admin";
+                        }
+
+                        newUser.local.email = req.body.email; // facebook can return multiple emails so we'll take the first
                         newUser.hashPassword(password); //need-fix password input has to pass BCrypt hash, otherwise login will fail
                         newUser.local.first_name = req.body.first_name;
                         newUser.local.last_name = req.body.last_name;
@@ -123,13 +133,14 @@ module.exports = function(passport) {
                         newUser.save(function(err) {
                             if (err) {
                                 throw err;
+                                return done(err, false, req.flash('signupMessage', err));
                             }
                             // if successful, return the new user
                             return done(null, newUser);
                         });
                     }
                 } else {
-                    return done(null, false, req.flash('signupMessage', 'Email not vaild'));
+                    return done("Email not vaild", false, req.flash('signupMessage', 'Email not vaild'));
                 }
             }
         });
@@ -287,8 +298,9 @@ module.exports = function(passport) {
                 } else {
                     // if there is no user found with that facebook id, create them
                     var newUser = new User();
+                    newUser.type = "google";
                     // set all of the facebook information in our user model
-                    newUser.google.id = profile.id; // set the users facebook id
+                    newUser.google.id = profile.id; // set the users google id
                     newUser.google.displayName = profile.displayName; // look at the passport user profile to see how names are returned
                     newUser.google.familyName = profile.name.familyName;
                     newUser.google.givenName = profile.name.givenName;
