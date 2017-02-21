@@ -36,8 +36,19 @@ const serverStatus = require(appRoot + '/app/server-status');
 
 app.use(opbeat.middleware.express()); // opbeat for heroku monitoring
 
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json({
+    limit: '50mb',
+    parameterLimit: 10000,
+    limit: 1024 * 1024 * 10,
+    extended: true
+}));
+
+app.use(bodyParser.urlencoded({
+    limit: '50mb',
+    extended: true,
+    parameterLimit: 10000,
+    limit: 1024 * 1024 * 10
+}));
 
 // set up our express application
 // all environments

@@ -327,51 +327,67 @@ module.exports = function(app, passport) {
     // Front end files routes
     ///////////////////////////////////////////////////
     app.get('/css/*', function(req, res) {
-        res.sendfile(req.path, {
-            'root': root
-        }, function(err) {
-            if (err) {
-                console.log(err);
-                res.status(err.status).end();
-            } else {
-                console.log('Sent:', req.path);
-            }
-        });
+      var options = {
+          root: appRoot + '/views/FrontEnd',
+          headers: {
+              'x-timestamp': Date.now(),
+              'x-sent': true
+          }
+      };
+      res.sendFile(req.path, options, function(err) {
+          if (err) {
+              console.error(err);
+          } else {
+              console.log('Sent:', req.path);
+          }
+      });
     });
 
     app.get('/fonts/*', function(req, res) {
-        res.sendfile(req.path, {
-            'root': root
-        }, function(err) {
-            if (err) {
-                console.log(err);
-                res.status(err.status).end();
-            } else {
-                console.log('Sent:', req.path);
-            }
-        });
+      var options = {
+          root: appRoot + '/views/FrontEnd',
+          headers: {
+              'x-timestamp': Date.now(),
+              'x-sent': true
+          }
+      };
+      res.sendFile(req.path, options, function(err) {
+          if (err) {
+              console.error(err);
+          } else {
+              console.log('Sent:', req.path);
+          }
+      });
     });
 
     app.get('/js/*', function(req, res) {
-        res.sendfile(req.path, {
-            'root': root
-        }, function(err) {
-            if (err) {
-                console.log(err);
-                res.status(err.status).end();
-            } else {
-                console.log('Sent:', req.path);
-            }
-        });
+      var options = {
+          root: appRoot + '/views/FrontEnd',
+          headers: {
+              'x-timestamp': Date.now(),
+              'x-sent': true
+          }
+      };
+      res.sendFile(req.path, options, function(err) {
+          if (err) {
+              console.error(err);
+          } else {
+              console.log('Sent:', req.path);
+          }
+      });
     });
 
-    app.get('/img/*', function(req, res) {
-        res.sendfile(req.path, {
-            'root': root
-        }, function(err) {
+    app.get('/avatar/*', function(req, res) {
+        var options = {
+            root: appRoot + '/views/FrontEnd',
+            headers: {
+                'x-timestamp': Date.now(),
+                'x-sent': true
+            }
+        };
+        res.sendFile(req.path, options, function(err) {
             if (err) {
-                pmt(err);
-                res.status(err.status).end();
+                console.error(err);
             } else {
                 console.log('Sent:', req.path);
             }
@@ -379,11 +395,14 @@ module.exports = function(app, passport) {
     });
 
     // router for user ask questionn not on index page
-    app.get('/external-ask', (req,res)=>{
-      const question = req.query.question;
-      console.log(req.query.question);
-      req.external_question = question;
-      res.render(frontEndRoot + 'index.ejs', { external_question: req.external_question, user: req.user});
+    app.get('/external-ask', (req, res) => {
+        const question = req.query.question;
+        console.log(req.query.question);
+        req.external_question = question;
+        res.render(frontEndRoot + 'index.ejs', {
+            external_question: req.external_question,
+            user: req.user
+        });
     })
 
     ///////////////////////////////////////////////////

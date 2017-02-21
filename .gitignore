@@ -5,6 +5,7 @@ app/models/.Rhistory
 node_modules
 debug.log
 
+views/FrontEnd/avatar
 app/log/console_log.txt
 config/server-status.json
 
