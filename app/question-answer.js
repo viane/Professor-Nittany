@@ -27,17 +27,21 @@ module.exports.ask = function(user, input) {
                     const questionObj = processQuestion.parseQuestionObj(userInput, analysis);
 
                     if (user) {
-                        // log question to user DB
+                        // log question object to user DB
                         processQuestion.logUserQuestion(user, questionObj);
 
-                        // update server question feeds
+                        // update server question feeds with only user question string
                         processQuestion.updateQuestionToServerFeeds(questionObj.body);
                     }
 
                     serverStatus.updateStatsFromQuestionObj(questionObj);
 
                     // ask retrieve and rank
-                    retrieveRank.enterMessage(questionObj.body).then(function(resultFromRR) {
+                    // testing answer accuracy with 3 input mode:
+                    //                            question.body => user's original input
+                    //                            question.AI_Read_Body => AI weight based readable string
+                    //                            question.body + question.AI_Read_Body => hyper
+                    retrieveRank.enterMessage(questionObj.AI_Read_Body).then(function(resultFromRR) {
                         if (resultFromRR.response.numFound === 0) {
                             // no answer was found in retrieve and rank
                             resolve({
