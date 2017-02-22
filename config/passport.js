@@ -110,17 +110,19 @@ module.exports = function(passport) {
                         //create new user
                         var newUser = new User();
 
+                        newUser.type = "local";
+
                         // set up account information
                         if (req.body.account_role === "Student") {
-                          newUser.type = "local";
+                          newUser.local.role = "student";
                         }
 
                         if (req.body.account_role === "Advisor") {
-                          newUser.type = "advisor";
+                          newUser.local.role  = "advisor";
                         }
 
                         if (req.body.account_role === "Admin") {
-                          newUser.type = "admin";
+                          newUser.local.role  = "admin";
                         }
 
                         newUser.local.email = req.body.email; // facebook can return multiple emails so we'll take the first

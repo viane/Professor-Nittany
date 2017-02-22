@@ -38,7 +38,16 @@ module.exports.ask = function(user, input) {
 
                     // ask retrieve and rank
                     retrieveRank.enterMessage(questionObj.body).then(function(resultFromRR) {
-                        resolve(resultFromRR);
+                        if (resultFromRR.response.numFound === 0) {
+                            // no answer was found in retrieve and rank
+                            resolve({
+                                response: {
+                                    docs: [{title:"No answer found", body:"Sorry I can't find any answer for this specific question, please ask a different question."}]
+                                }
+                            })
+                        } else {
+                            resolve(resultFromRR);
+                        }
                     }).catch(function(err) {
                         throw err;
                         reject(err);
