@@ -111,25 +111,25 @@ const convertPerspectsToAIReadable = (perspect_type, content) => {
                 for (let i = 0; i < weight; i++) {
                     AI_Read_String = AI_Read_String.concat(perspect.text + " ");
                 }
-            })
+            });
             break;
 
         case "keyword":
-          content.map((perspect) => {
+            content.map((perspect) => {
 
-              // concept.relevance is between 0 ~ 1
-              // scale it to 10
-              const weight = Math.round(perspect.relevance * 10);
+                // concept.relevance is between 0 ~ 1
+                // scale it to 10
+                const weight = Math.round(perspect.relevance * 10);
 
-              // multiple this concept to the weight ( make this concept repeat wright times)
+                // multiple this concept to the weight ( make this concept repeat wright times)
 
-              for (let i = 0; i < weight; i++) {
-                  AI_Read_String = AI_Read_String.concat(perspect.text + " ");
-              }
-          })
-          break;
+                for (let i = 0; i < weight; i++) {
+                    AI_Read_String = AI_Read_String.concat(perspect.text + " ");
+                }
+            });
+            break;
 
-          case "entity":
+        case "entity":
             content.map((perspect) => {
 
                 // concept.relevance is between 0 ~ 1
@@ -141,28 +141,27 @@ const convertPerspectsToAIReadable = (perspect_type, content) => {
                 for (let i = 0; i < weight; i++) {
                     AI_Read_String = AI_Read_String.concat(perspect.text + " ");
                 }
-            })
+            });
             break;
 
-            case "taxonomy":
-              content.map((perspect) => {
+        case "taxonomy":
+            content.map((perspect) => {
 
-                  // concept.relevance is between 0 ~ 1
-                  // scale it to 10
-                  const weight = perspect.count;
+                // concept.relevance is between 0 ~ 1
+                // scale it to 10
+                const weight = perspect.count;
 
-                  // multiple this concept to the weight ( make this concept repeat wright times)
+                // multiple this concept to the weight ( make this concept repeat wright times)
 
-                  const wordSplitBySplash = perspect.label.split("/");
-                  const taxonomy = wordSplitBySplash.pop();
+                const wordSplitBySplash = perspect.label.split("/");
+                const taxonomy = wordSplitBySplash.pop();
 
-                  for (let i = 0; i < weight; i++) {
-                      AI_Read_String = AI_Read_String.concat(taxonomy + " ");
-                  }
-              })
-              break;
+                for (let i = 0; i < weight; i++) {
+                    AI_Read_String = AI_Read_String.concat(taxonomy + " ");
+                }
+            });
+            break;
     }
-
 
     return AI_Read_String;
 }

@@ -41,12 +41,17 @@ module.exports.ask = function(user, input) {
                     //                            question.body => user's original input
                     //                            question.AI_Read_Body => AI weight based readable string
                     //                            question.body + question.AI_Read_Body => hyper
-                    retrieveRank.enterMessage(questionObj.AI_Read_Body).then(function(resultFromRR) {
+                    retrieveRank.enterMessage(question.body + questionObj.AI_Read_Body).then(function(resultFromRR) {
                         if (resultFromRR.response.numFound === 0) {
                             // no answer was found in retrieve and rank
                             resolve({
                                 response: {
-                                    docs: [{title:"No answer found", body:"Sorry I can't find any answer for this specific question, please ask a different question."}]
+                                    docs: [
+                                        {
+                                            title: "No answer found",
+                                            body: "Sorry I can't find any answer for this specific question, please ask a different question."
+                                        }
+                                    ]
                                 }
                             })
                         } else {
