@@ -77,10 +77,15 @@ $(function() {
 
             // display 10 answers from server in order of confidence
             message.map((answer,index) => {
-
-                //form new DOM respond element
-                let respond = "<li class=\"list-group-item list-group-item-info text-left\">"
-
+                let respond;
+                if(index == 0){
+                    //form new DOM respond element
+                    respond = "<li class=\"list-group-item list-group-item-info text-left\">" 
+                } else {
+                    //form new DOM respond element
+                    respond = "<li class=\"list-group-item text-left\">"
+                }
+                
                 //add favorite btn to answer
                 respond += "<div id=\"hearts-existing\" class=\"hearrrt\" data-toggle=\"tooltip\" data-container=\"body\" data-placement=\"right\" title=\"Favorite!\"></div>"
 
@@ -96,8 +101,10 @@ $(function() {
                 chatWindow.append(respond);
             })
 
-            // enable heart layout on each answer
-            $(".hearrrt").hearrrt();
+            if ($("#user-id").text()) {
+                // enable heart layout on each answer
+                $(".hearrrt").hearrrt();
+            }
 
             // enable star layout on each answer
             $(".starrr").starrr();
@@ -108,12 +115,14 @@ $(function() {
         }
 
         if (sender === "client") {
-            // display user input question
-            let askDomElement = "<li class='user'>";
-            // add question body
-            askDomElement += "<div class=\"question\"><p class=\"question-body\" data-question-seq=" + currentQuestionAnswerSequence + ">" + message + "</p></div>";
-            askDomElement += "</li>";
-            chatWindow.append(askDomElement);
+        //     // display user input question
+        //     let askDomElement = "<li class='user'>";
+        //     // add question body
+        //     askDomElement += "<div class=\"question\"><p class=\"question-body\" data-question-seq=" + currentQuestionAnswerSequence + ">" + message + "</p></div>";
+        //     askDomElement += "</li>";
+        //     //chatWindow.append(askDomElement);
+            $("#user-question").text(message);
+            $("#sys-tip").remove(); 
         }
     }
 
