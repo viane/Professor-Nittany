@@ -41,7 +41,7 @@ module.exports.ask = function(user, input) {
                     //                            question.body => user's original input
                     //                            question.AI_Read_Body => AI weight based readable string
                     //                            question.body + question.AI_Read_Body => hyper
-                    retrieveRank.enterMessage(question.body + questionObj.AI_Read_Body).then(function(resultFromRR) {
+                    retrieveRank.enterMessage(questionObj.body + questionObj.AI_Read_Body).then(function(resultFromRR) {
                         if (resultFromRR.response.numFound === 0) {
                             // no answer was found in retrieve and rank
                             resolve({
