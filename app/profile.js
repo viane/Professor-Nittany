@@ -3,7 +3,6 @@
 const express = require('express');
 const router = express.Router();
 const busboy = require('connect-busboy');
-
 const fs = require('fs');
 const appRoot = require('app-root-path');
 const readFile = Promise.promisify(require("fs").readFile);
@@ -23,6 +22,10 @@ const document_conversion = watson.document_conversion({username: 'd1f406ed-2958
 const loadJsonFile = require('load-json-file');
 
 const personality = require(appRoot + '/app/personality-insights');
+
+const formidable = require('formidable');
+
+const loginChecking = require(appRoot + '/app/utility-function/login-checking');
 
 router.post('/upload/upload-description-text-file', busboy({
     limits: {
@@ -94,9 +97,92 @@ router.post('/upload/upload-description-text-file', busboy({
     });
 })
 
+// Get user interests
+router.get('/get-interest', (req, res) => {
+    User.findById(req.user._id).exec().then(function(foundUser) {
+        const interestPath = getInterestPathFromUser(foundUser);
+        res.send({status: "success", information: "good", interest: foundUser[interestPath].interest});
+    }).catch(function(err) {
+        throw err;
+        res.send({type: 'error', information: err});
+    })
+});
+
+// Post user avatar
+router.post('/update-avatar', loginChecking.isLoggedInRedirect, (req, res) => {
+    const form = new formidable.IncomingForm();
+    form.uploadDir = appRoot + '/views/FrontEnd/avatar/';
+
+    form.maxFieldsSize = 1024 * 1024;
+
+    form.parse(req, function(err, fields, files) {
+
+        const file = files.file;
+
+        if (file.type != "image/jpeg" && file.type != "image/png" && file.type != "image/jpg") {
+            res.send({type: 'error', information: "Unexcepted image type"});
+            del.promise([file.path]).then(function() {}).catch(function(err) {
+                throw err;
+            });
+        } else {
+            let ext = "";
+            switch (file.type) {
+                case "image/jpeg":
+                    ext = ".jpeg"
+                    break;
+                case "image/png":
+                    ext = ".png"
+                    break;
+                case "image/jpg":
+                    ext = ".jpg"
+                    break;
+            }
+            const newPath = form.uploadDir + req.user.id + ext;
+            fs.rename(file.path, newPath, (err) => {
+                if (err) {
+                    throw err;
+                    res.send({type: 'error', information: err});
+                } else {
+                    const updatePath = "/avatar/" + req.user.id + ext;
+                    User.findOneAndUpdate({
+                        '_id': req.user.id
+                    }, {
+                        "local.avatar": updatePath
+                    }, {new: true}).exec().then(function(foundUser) {
+                        if (!foundUser || foundUser.type != "local") {
+                            res.send({type: 'error', information: "Unknow failure"})
+                            throw new Error("User updating avatar with suspicious user type");
+                        } else {
+                            res.send({type: 'success', information: "Success upload avatar", avatarPath: updatePath});
+                        }
+                    }).catch(function(err) {
+                        throw err;
+                        res.send({type: 'error', information: err});
+                    })
+                }
+            });
+
+        }
+
+    });
+
+})
+
+router.post('/favorite-question', function(req, res) {
+    const id = req.user._id;
+    console.log(req.user);
+    res.send({status: "success", information: "done!"});
+});
+
+router.post('/like-question', function(req, res) {
+    const id = req.user._id;
+    console.log(req.user);
+    res.send({status: "success", information: "done!"});
+});
+
 module.exports = router;
 
-const combineResult = (response)=> {
+const combineResult = (response) => {
     let fullDoc = ""; // will store all content in the word file as plain text
 
     // fill up the fullDoc
@@ -197,4 +283,29 @@ var countWords = (s) => {
     s = s.replace(/[ ]{2,}/gi, " ");
     s = s.replace(/\n /, "\n");
     return s.split(' ').length;
+}
+
+const getInterestPathFromUser = user => {
+    const userType = user.type;
+    let returnPath = "";
+    switch (userType) {
+        case "local":
+            returnPath = "local"
+            break;
+        case "facebook":
+            returnPath = "facebook"
+            break;
+        case "twitter":
+            returnPath = "twitter"
+            break;
+        case "linkedin":
+            returnPath = "linkedin"
+            break;
+        case "google":
+            returnPath = "google"
+            break;
+        default:
+            throw new Error("Failed on get login user type for getting user interest");
+    }
+    return returnPath;
 }

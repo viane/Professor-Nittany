@@ -13,7 +13,6 @@ module.exports.updateStatsFromQuestionObj = function(questionObj) {
 
 // get recent questionFeeds
 module.exports.getRecentAskedQuestions = () => {
-  console.log("Client requesting question feeds from server, current question feeds is ", questionFeeds);
     return questionFeeds;
 };
 
@@ -23,6 +22,12 @@ module.exports.initQuestionFeeds = () => {
     return new Promise((resolve, reject) => {
         loadJsonFile(appRoot + serverStatusPath).then(json => {
             questionFeeds = json.recent_asked_question;
+            // write the question feeds to disk every 1 hour
+            setInterval(() => {
+                writeQuestionFeeds().catch((err) => {
+                    throw err
+                })
+            }, 3600000);
             resolve();
         }).catch((err) => {
             throw err;
@@ -33,7 +38,6 @@ module.exports.initQuestionFeeds = () => {
 
 // update questionFeeds
 module.exports.updateRecentAskedQuestions = (Question) => {
-   console.log("adding " , Question , " to server question feeds");
     // 3 cases, the question is new, already in the list but still asked recently, already asked but long time ago
     if (!questionFeeds.includes(Question)) {
         // server only store max 50 of recently asked questions
@@ -50,10 +54,17 @@ module.exports.updateRecentAskedQuestions = (Question) => {
 
 // write current questionFeeds to disk for maintianess etc
 // return a promise
-module.exports.writeQuestionFeeds = function() {
+const writeQuestionFeeds = () => {
     return new Promise((resolve, reject) => {
-        writeJsonFile(appRoot + serverStatusPath, json).then(() => {
-            resolve(json);
+        // read last copy from disk
+        loadJsonFile(appRoot + serverStatusPath).then(json => {
+            json.recent_asked_question = questionFeeds;
+            writeJsonFile(appRoot + serverStatusPath, json).then(() => {
+                resolve();
+            }).catch((err) => {
+                throw err;
+                reject(err);
+            })
         }).catch((err) => {
             throw err;
             reject(err);
