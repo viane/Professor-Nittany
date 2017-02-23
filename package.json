@@ -23,6 +23,7 @@
     "express": "^4.14.0",
     "express-session": "^1.14.2",
     "file-type": "^4.1.0",
+    "formidable": "^1.1.1",
     "fs": "^0.0.2",
     "lda": "^0.1.9",
     "load-json-file": "^2.0.0",

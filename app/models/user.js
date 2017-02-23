@@ -42,7 +42,7 @@ var userSchema = mongoose.Schema({
         displayName: String,
         avatar: {
             type: String,
-            default: "./img/user.png"
+            default: "./avatar/user.png"
         },
         create_date: {
             type: Date,

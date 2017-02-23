@@ -2,7 +2,7 @@
 $(() => {
     if (window.location.href === "http://localhost:3000/profile" || window.location.href === "https://intelligent-student-advisor.herokuapp.com/profile") {
         if (WordCloud.isSupported) {
-            const url = '/api/account/get-interest';
+            const url = '/api/profile/get-interest';
             fetch(url, {
                 method: "GET",
                 credentials: 'include',
@@ -55,7 +55,6 @@ $(() => {
 })
 
 // test only, delete before productlize
-
 $(() => {
     if (window.location.href === "http://localhost:3000/login") {
         $('#form-username').val("test@test.com");
@@ -347,29 +346,30 @@ $(document).ready(function() {
 });
 
 //code to change avatar
-$(document).ready(function() {
-    $("#avatar-fileid").on('change', function() {
-        $("#user-avatar").attr('src', jQuery(this).val());
+$(() => {
+    $("#submit-avatar-input").on('change', function() {
+        const url = '/api/profile/update-avatar';
+
+        const data = new FormData();
+        data.append("file",$('#submit-avatar-input')[0].files[0]);
+
+        fetch(url, {
+            method: "POST",
+            credentials: 'include',
+            body: data
+        }).then(function(res) {
+            if (res.status !== 200) {
+                generateNotice('error', "Error, status code: " + res.status);
+                return;
+            }else{
+              res.json().then(function(result) {
+                generateNotice(result.type, result.information);
+                $('#user-avatar').prop("src",result.avatarPath+ '?' + Math.random());
+              })
+            }
+
+        }).catch(function(err) {
+            generateNotice('error', err)
+        });
     });
 });
-
-// //update content on profile
-// http://mycodingtricks.com/html5/html5-inline-edit-with-mysql-php-jquery-and-ajax/
-// $(document).ready(function(){
-//            $("p[contenteditable=true]").blur(function(){
-//                var msg = $(".alert");
-//                var newvalue = $(this).text();
-//                var field = $(this).attr("id");
-//                $.post("update.php",field+"="+newvalue,function(d){
-//                    var data = JSON.parse(d);
-//                    msg.removeClass("hide");
-//                     if(data.status == '200'){
-//                         msg.addClass("alert-success").removeClass("alert-danger");
-//                     }else{
-//                         msg.addClass("alert-danger").removeClass("alert-success");
-//                     }
-//                    msg.text(data.response);
-//                    setTimeout(function(){msg.addClass("hide");},3000);//It will add hide class after 3 seconds
-//                });
-//            });
-//         });
