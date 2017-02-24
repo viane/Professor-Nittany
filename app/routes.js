@@ -52,7 +52,7 @@ module.exports = function(app, passport) {
             return;
         }
         if (!validator.validate(req.body.email)) {
-            res.send({status: 302, type: 'error', information: 'Invaild email'});
+            res.send({status: 302, type: 'error', information: 'Invalid email'});
             return;
         }
         passport.authenticate('local-login', (err, user, info) => {
@@ -464,7 +464,7 @@ function checkSignUpParameter(req, res) {
         return false;
     }
     if (!req.body.account_role) {
-        res.send({status: 302, type: 'error', information: 'Invaild account role'});
+        res.send({status: 302, type: 'error', information: 'Invalid account role'});
         return false;
     }
 
@@ -474,7 +474,7 @@ function checkSignUpParameter(req, res) {
     }
 
     if (req.body.account_role === "Admin" && !validateAdminToken(req.body['admin-token'])) {
-        res.send({status: 302, type: 'error', information: 'Invaild admin token'});
+        res.send({status: 302, type: 'error', information: 'Invalid admin token'});
         return false;
     }
     return true;

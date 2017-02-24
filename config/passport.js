@@ -69,11 +69,11 @@ module.exports = function(passport) {
 
             // if no user is found, return the message
             if (!user) {
-                return done("Cant find any user with this email", false, req.flash('signupMessage', 'Cant find any user with this email')); // req.flash is the way to set flashdata using connect-flash
+                return done("Can't find any user with this email", false, req.flash('signupMessage', 'Cant find any user with this email')); // req.flash is the way to set flashdata using connect-flash
             }
             // if the user is found but the password is wrong
             if (!user.validPassword(password)) {
-                return done("Passowrd incorrect", false, req.flash('signupMessage', 'Passowrd incorrect')); // req.flash is the way to set flashdata using connect-flash
+                return done("Password incorrect", false, req.flash('signupMessage', 'Password incorrect')); // req.flash is the way to set flashdata using connect-flash
             }
             // all is well, return successful user
             return done(null, user);
