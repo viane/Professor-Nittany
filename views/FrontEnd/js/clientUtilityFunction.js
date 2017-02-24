@@ -411,9 +411,12 @@ $(() => {
     }).then(function(res) {
         res.json().then((result) => {
             result.feeds.map((feed) => {
-                const feedHtmlListElement = "<li><a href=\"#\">" + feed + "</a></li>";
+                const feedHtmlListElement = "<li><a href=\"#\" id=\"question-feed-content\">" + feed + "</a></li>";
                 $('#question-feed-list').append(feedHtmlListElement);
             })
+
+            // add click handler to each feed question
+            addQuestionFeedClickEventHanlder();
         })
     }).catch(function(err) {
         generateNotice('error', err)
@@ -547,6 +550,23 @@ $(document).ready(function() {
     }
 
 })
+
+//////////////////////////////////////////////
+// Question feeds click event handler
+//////////////////////////////////////////////
+
+const addQuestionFeedClickEventHanlder = ()=>{
+    $('#question-feed-list li a').each(function(){
+      $(this).on('click',function(evt){
+        evt.preventDefault();
+        // grab question text and put in to search bar
+        $('#userQueryInput').val($(this).text())
+
+        // mannual fire search event by click the submit button
+        $('#querySubmitBtn').click();
+      })
+    })
+};
 
 //////////////////////////////////////////////
 // String utility
