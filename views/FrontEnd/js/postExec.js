@@ -5,7 +5,7 @@
 // Display question history on profile page
 //////////////////////////////////////////////
 $(() => {
-    if (location.href === "http://localhost:3000/profile" || location.href === "intelligent-student-advisor.herokuapp.com/profile") {
+    if (location.href === "http://localhost:3000/profile" || location.href === "https://intelligent-student-advisor.herokuapp.com/profile") {
       questionHistory.map((logedQuestionObj) => {
         // display user favorited question
         if(logedQuestionObj.favorite){
