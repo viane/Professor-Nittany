@@ -61,11 +61,19 @@ module.exports = function(server) {
 
             ////////////////////////////////////////////////////////////
             // used in demo, feed client analysis of last asked question
+            ////////////////////////////////////////////////////////////
             if (data.sender.id === "58927ed26d256512009d6b64") {
-              const alchemyAPI = require(appRoot + '/app/alchemyAPI');
-              socket.emit('question-analysis', {message: "hi"});
-            }
+                console.log("test user asked a question");
+                const alchemyAPI = require(appRoot + '/app/alchemyAPI');
+                alchemyAPI.getAnalysis(currentInput).then(function(analysis) {
+                    socket.broadcast.emit('question-analysis', {analysis: analysis});
+                }).catch((err) => {
+                    throw err;
+                })
 
+            }
+            ////////////////////////////////////////////////////////////
+            // End of demo function
             ////////////////////////////////////////////////////////////
         });
         // when the user disconnects.. perform this

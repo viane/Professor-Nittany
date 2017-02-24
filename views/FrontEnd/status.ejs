@@ -33,7 +33,7 @@
                         </div>
                     </div>
 
-                                        <div class="row">
+                                        <div class="row" id="last-question-analysis">
                                         </div>
 
                 </div>
@@ -45,32 +45,6 @@
 
         <%- include footer.ejs %>
 
-        <script>
-        $(function() {
-
-            var user = {};
-            user.id = $("#user-id").text().trim(); //assgin user id
-            user.type = $("#user-type").text().trim(); //assgin user type
-
-            var socket = io();
-
-            // Socket events
-
-            // on page load, send server the user info of init the socket
-            socket.emit('load', user);
-
-            // when server send back a message
-            socket.on('question-analysis', function(data) {
-              console.log(data);
-                displayAnalysis(data);
-            });
-
-            const displayAnalysis = (data)=>{
-
-            };
-        });
-
-        </script>
     </body>
 
     </html>
