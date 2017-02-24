@@ -51,6 +51,9 @@
 		<ul class="nav navbar-nav navbar-right">
 
 			<% if (locals.user) { %>
+			<div style="display:none"><p id="user-id"><%= user._id %></p></div>
+			<div style="display:none"><p id="user-type"><%= user.type %></p></div>
+
 			<li class="active">
 				<a href="#" class="dropdown" data-toggle="dropdown">
 					<span class="user-avatar pull-left" style="margin-right:8px; margin-top:-5px;">

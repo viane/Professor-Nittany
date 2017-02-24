@@ -1,0 +1,76 @@
+<!-- frontend -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Intelligent Academic Planner - Server Status</title>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+            <![endif]-->
+
+        </head>
+
+        <body>
+            <%- include header.ejs %>
+
+            <!-- Top content -->
+            <div class="top-content">
+
+
+                <div class="container" style="padding-bottom: 50px">
+
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2" style="padding-top: 20px">
+                            <h1>Analysis of last question</h1>
+                        </div>
+                    </div>
+
+                                        <div class="row">
+                                        </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <%- include footer.ejs %>
+
+        <script>
+        $(function() {
+
+            var user = {};
+            user.id = $("#user-id").text().trim(); //assgin user id
+            user.type = $("#user-type").text().trim(); //assgin user type
+
+            var socket = io();
+
+            // Socket events
+
+            // on page load, send server the user info of init the socket
+            socket.emit('load', user);
+
+            // when server send back a message
+            socket.on('question-analysis', function(data) {
+              console.log(data);
+                displayAnalysis(data);
+            });
+
+            const displayAnalysis = (data)=>{
+
+            };
+        });
+
+        </script>
+    </body>
+
+    </html>

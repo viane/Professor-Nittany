@@ -4,7 +4,7 @@ module.exports = function(server) {
     const io = require('socket.io').listen(server);
     //Socket.io handle user's input
     io.on('connection', function(socket) {
-        var user = {};
+        let user = {};
 
         //when user init a socket from client side, record the user id and type for security purpose
         socket.on('load', function(data) {
@@ -56,7 +56,16 @@ module.exports = function(server) {
                 }).catch(function(err) {
                     console.log(err);
                 });
+            };
+
+            ////////////////////////////////////////////////////////////
+            // used in demo, feed client analysis of last asked question
+            if (data.sender.id === "58927ed26d256512009d6b64") {
+              const alchemyAPI = require(appRoot + '/app/alchemyAPI');
+              socket.emit('question-analysis', {message: "hi"});
             }
+
+            ////////////////////////////////////////////////////////////
         });
         // when the user disconnects.. perform this
         socket.on('disconnect', function() {
