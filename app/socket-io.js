@@ -1,3 +1,4 @@
+const appRoot = require('app-root-path');
 const questionAnswer = require('./question-answer');
 const stringChecking = require('./utility-function/string-checking');
 module.exports = function(server) {
