@@ -1,0 +1,41 @@
+<!-- search bar module -->
+<style>
+    .affix {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, 20%);
+        z-index: 1;
+    }
+    .affix + .container-fluid {
+        padding-top: 70px;
+    }
+
+    form {
+        padding-top: 20px;
+    }
+</style>
+
+<form action="/external-ask" method="GET">
+    <div class="container-fluid form-group input-group" data-spy="affix" data-offset-top="59">
+        <div class="audioParent">
+            <audio style="display:none" class="audio" controls>
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+        <span class="input-group-btn">
+            <button class="btn btn-default" id="recordButton" style="width: 100px;" value="record">
+            <span class="glyphicon glyphicon-bullhorn" data-toggle="tooltip" data-container="body" data-placement="bottom" title="Voice-to-Text!"></span>
+            </button>
+        </span>
+        <input id="userQueryInput" name="question" type="text" class="form-control" placeholder="Eg. 'What is Computer Science?'">
+        <span class="input-group-btn">
+            <button class="btn btn-default" id="querySubmitBtn" type="submit">
+                <span class="glyphicon glyphicon-search"></span>
+            </button>
+        </span>
+    </div>
+</form>
+
+<script src="../js/jquery.subscribe.js"></script>
+<script src="../js/speech-to-text.js"></script>

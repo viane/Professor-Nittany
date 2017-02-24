@@ -16,10 +16,10 @@ var WechatStrategy = require("passport-wechat").Strategy;
 var appRoot = require('app-root-path');
 
 // load up the user model
-var User = require(appRoot+'/app/models/user');
+var User = require(appRoot + '/app/models/user');
 
 // load the auth variables
-var configAuth = require(appRoot+'/config/auth');
+var configAuth = require(appRoot + '/config/auth');
 
 // expose this function to our app using module.exports
 module.exports = function(passport) {
@@ -63,17 +63,18 @@ module.exports = function(passport) {
             'local.email': email.toLowerCase()
         }, function(err, user) {
             // if there are any errors, return the error before anything else
-            if (err)
-                return done(err);
+            if (err) {
+                return done(err, false, req.flash('signupMessage', err))
+            }
 
             // if no user is found, return the message
-            if (!user)
-                return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
-
+            if (!user) {
+                return done("Cant find any user with this email", false, req.flash('signupMessage', 'Cant find any user with this email')); // req.flash is the way to set flashdata using connect-flash
+            }
             // if the user is found but the password is wrong
-            if (!user.validPassword(password))
-                return done(null, false, req.flash('loginMessage', 'Wrong password.')); // create the loginMessage and save it to session as flashdata
-
+            if (!user.validPassword(password)) {
+                return done("Passowrd incorrect", false, req.flash('signupMessage', 'Passowrd incorrect')); // req.flash is the way to set flashdata using connect-flash
+            }
             // all is well, return successful user
             return done(null, user);
         });
@@ -90,7 +91,7 @@ module.exports = function(passport) {
         usernameField: 'email',
         passwordField: 'password',
         passReqToCallback: true // allows us to pass back the entire request to the callback
-    }, function(req, email, password, done) { 
+    }, function(req, email, password, done) {
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
         User.findOne({
@@ -108,8 +109,22 @@ module.exports = function(passport) {
                     } else {
                         //create new user
                         var newUser = new User();
-                        // set all of the facebook information in our user model
+
                         newUser.type = "local";
+
+                        // set up account information
+                        if (req.body.account_role === "Student") {
+                          newUser.local.role = "student";
+                        }
+
+                        if (req.body.account_role === "Advisor") {
+                          newUser.local.role  = "advisor";
+                        }
+
+                        if (req.body.account_role === "Admin") {
+                          newUser.local.role  = "admin";
+                        }
+
                         newUser.local.email = req.body.email; // facebook can return multiple emails so we'll take the first
                         newUser.hashPassword(password); //need-fix password input has to pass BCrypt hash, otherwise login will fail
                         newUser.local.first_name = req.body.first_name;

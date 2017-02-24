@@ -12,6 +12,7 @@
     "bcrypt-nodejs": "latest",
     "bluebird": "^3.4.7",
     "body-parser": "^1.15.2",
+    "chai": "^3.5.0",
     "connect-busboy": "0.0.2",
     "connect-flash": "~0.1.1",
     "cookie-parser": "^1.4.3",
@@ -22,6 +23,7 @@
     "express": "^4.14.0",
     "express-session": "^1.14.2",
     "file-type": "^4.1.0",
+    "formidable": "^1.1.1",
     "fs": "^0.0.2",
     "lda": "^0.1.9",
     "load-json-file": "^2.0.0",
@@ -51,9 +53,12 @@
     "qs": "^6.2.1",
     "socket.io": "^1.5.1",
     "string": "^3.3.3",
+    "superagent": "^3.5.0",
+    "supertest": "^3.0.0",
     "util": "^0.10.3",
     "validator": "^6.2.1",
-    "watson-developer-cloud": "*"
+    "watson-developer-cloud": "*",
+    "write-json-file": "^2.0.0"
   },
   "devDependencies": {},
   "scripts": {

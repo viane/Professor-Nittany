@@ -20,7 +20,7 @@ exports.enterMessage = function(inputText, questionTopic) {
         //ask retrive and rank
         solrClient.get('fcselect', rrquery, function(err, searchResponse) {
             if (err) {
-                console.log(err)
+                console.error(err);
                 reject(err);
             } else {
                 resolve(searchResponse);
@@ -28,3 +28,9 @@ exports.enterMessage = function(inputText, questionTopic) {
         });
     });
 }
+
+// add credential check function
+
+// add cluster check function
+
+// add rankserStatus check function

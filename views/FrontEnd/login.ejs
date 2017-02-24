@@ -21,8 +21,8 @@
         <body>
             <%- include header.ejs %>
 
-        <%- include ask-question-module.ejs %>
 
+            <%- include search-bar-module.ejs %>
 
             <!-- Top content -->
             <div class="top-content">
@@ -51,7 +51,7 @@
                                     </div>
                                 </div>
                                 <div class="form-bottom">
-                                    <form role="form" action="/login" method="post" class="login-form">
+                                    <form role="form" action="/login" method="post" class="login-form" id="login-form">
                                         <div class="form-group">
 
                                             <label class="sr-only" for="form-username">Email</label>
@@ -60,12 +60,13 @@
                                         <div class="form-group">
                                             <label class="sr-only" for="form-password">Password</label>
                                             <input type="password" name="password" placeholder="Password" class="form-password form-control" id="form-password">
+                                            <span class="show-password-btn"><i class="fa fa-eye" aria-hidden="true"></i></span>
                                         </div>
-                                        <div class="checkbox">
+                                        <!-- k* <div class="checkbox">
                                             <label><input type="checkbox"> Remember me</label>
-                                        </div>
+                                        </div> -->
                                         <button type="submit" class="btn">Sign in!</button>
-                                        <a href="resetpw.html">Forgot Password?</a>
+                                        <!-- k* <a href="resetpw.html">Forgot Password?</a> -->
                                     </form>
                                 </div>
                             </div>
@@ -128,18 +129,19 @@
                                         <!-- k* https://github.com/wenzhixin/bootstrap-show-password-->
                                             <label class="sr-only" for="form-password">Password</label>
                                             <input type="password" name="password" placeholder="Password" class="form-password form-control" id="form-password" data-signup-password>
+                                            <span class="show-password-btn"><i class="fa fa-eye" aria-hidden="true"></i></span>
                                         </div>
                                         <div class="form-group">
                                             <label for="form-acct-type">Account Type</label>
                                             <select class="form-control" id="form-register-role" name="account_role">
                                                 <option>Student</option>
                                                 <option>Advisor</option>
-                                                <option>Developer</option>
+                                                <option>Admin</option>
                                             </select>
                                         </div>
-                                        <div class="form-group hidden" id="form-developer-token">
-                                            <label class="sr-only" for="developer_token">Token</label>
-                                            <input type="text" name="developer-token" placeholder="Developer Token" class="form-developer-token form-control">
+                                        <div class="form-group hidden" id="form-admin-token">
+                                            <label class="sr-only" for="admin_token">Token</label>
+                                            <input type="text" name="admin-token" placeholder="Admin Token" class="form-admin-token form-control">
                                         </div>
                                     <button type="submit" class="btn">Sign up!</button>
                                     </div>

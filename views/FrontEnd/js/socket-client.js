@@ -33,10 +33,14 @@ $(function() {
         //console.log("server received your data and sent to you: " +JSON.stringify(data.message));
     });
 
-    var chatWindow = $('.chat-thread'); //main chat window
+    var chatWindow = $('#answer-list'); //main chat window
 
     // send message to server by use emit api form socket io
     $('#querySubmitBtn').click(function() {
+
+        // clear previous results
+        $('#answer-list').empty();
+
         //add loading animation to submit button
         setTimeout(function() {
             $('#querySubmitBtn').addClass('loading');
@@ -56,7 +60,7 @@ $(function() {
 
         // if there is a non-empty message and a socket connection
         if (message.content) {
-            $inputMessage.val('');
+
             // tell server to execute 'new message' and send along one parameter
             socket.emit('new message', message);
             addChatMessage("client", message.content);
@@ -71,35 +75,54 @@ $(function() {
                 $('#querySubmitBtn').removeClass('loading');
             }, 125);
 
-            //form new DOM respond element
-            let respond = "<li class='agent'>";
+            // display 10 answers from server in order of confidence
+            message.map((answer,index) => {
+                let respond;
+                if(index == 0){
+                    //form new DOM respond element
+                    respond = "<li class=\"list-group-item list-group-item-info text-left\">" 
+                } else {
+                    //form new DOM respond element
+                    respond = "<li class=\"list-group-item text-left\">"
+                }
+                
+                //add favorite btn to answer
+                respond += "<div id=\"hearts-existing\" class=\"hearrrt\" data-toggle=\"tooltip\" data-container=\"body\" data-placement=\"right\" title=\"Favorite!\"></div>"
 
-            //add answer body and
-            respond += "<div class=\"answer\"><p class=\"answer-body\" data-answer-seq="+currentQuestionAnswerSequence+">" + message.body + "</p></div>";
+                //add answer body and
+                respond += "<div class=\"answer\"><p class=\"answer-body\" data-answer-seq=" + currentQuestionAnswerSequence + ">" + answer.body + "</p></div>";
 
-            //add rating system to answer
-            respond += "<div class=\"answer-feedback-section\">";
-            respond += "<a class=\"answer-like-btn\" href=\"#\"><i class=\"fa fa-thumbs-up\" aria-hidden=\"true\"></i></a>";
-            respond += "<a class=\"answer-fav-btn\" href=\"#\"><i class=\"fa fa-gratipay\" aria-hidden=\"true\"></i></a>";
-            respond += "</div>";
+                //add rating btn
+                respond += "<span id=\"stars-existing\" class=\"starrr\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Rate!\"></span>"
 
-            //end adding, wrap up whole section
-            respond += "</li>";
+                //end adding, wrap up whole section
+                respond += "</li>"
 
-            chatWindow.append(respond);
+                chatWindow.append(respond);
+            })
+
+            if ($("#user-id").text()) {
+                // enable heart layout on each answer
+                $(".hearrrt").hearrrt();
+            }
+
+            // enable star layout on each answer
+            $(".starrr").starrr();
 
             //add handler
             addLikeBtnHandler(currentQuestionAnswerSequence);
             currentQuestionAnswerSequence++;
-            $('#userQueryInput').focus();
         }
 
         if (sender === "client") {
-            let askDomElement = "<li class='user'>";
-            //add question body
-            askDomElement += "<div class=\"question\"><p class=\"question-body\" data-question-seq="+currentQuestionAnswerSequence+">" + message + "</p></div>";
-            askDomElement += "</li>";
-            chatWindow.append(askDomElement);
+        //     // display user input question
+        //     let askDomElement = "<li class='user'>";
+        //     // add question body
+        //     askDomElement += "<div class=\"question\"><p class=\"question-body\" data-question-seq=" + currentQuestionAnswerSequence + ">" + message + "</p></div>";
+        //     askDomElement += "</li>";
+        //     //chatWindow.append(askDomElement);
+            $("#user-question").text(message);
+            $("#sys-tip").remove(); 
         }
     }
 

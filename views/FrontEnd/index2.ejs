@@ -26,22 +26,19 @@
         <h2>Ask Away!</h2>
         <p>Our system is designed to answer all of your questions about Penn State Behrend's CSSE Department.</p>
     </div>
-    </div>
+    <row>
+        <div class="container">
+            <div class="col-sm-9">
+                <h6 align="left"><a href="/login">Register</a> for personalized answers!</h6>
 
-    <div class="container">
-        <h6 align="left"><a href="/login">Register</a> for personalized answers!</h6>
-
-        <%- include ask-question-module.ejs %>
-
-
-        <img class="img-responsive" alt="question mark" width="15%" height="15%" src="images/question_mark.png" style="margin: 10px auto">
-    </div>
-    <!-- /.container -->
-
-
-        <%- include footer.ejs %>
+                <%- include ask-question-module.ejs %>
+            </div>
+            <%- include question-feed-module.ejs %>
+        </div>
+    </row>  
 
 
+    <%- include footer.ejs %>
     <script>
         window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')
     </script>

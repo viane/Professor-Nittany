@@ -1,3 +1,5 @@
+#views/FrontEnd/avatar
+
 .DS_Store
 
 app/models/.Rhistory
@@ -6,5 +8,7 @@ node_modules
 debug.log
 
 app/log/console_log.txt
+config/server-status.json
 
 views/img/Thumbs.db
+*.log

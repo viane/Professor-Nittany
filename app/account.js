@@ -2,10 +2,11 @@
 
 const appRoot = require('app-root-path');
 
-var express = require('express');
+const express = require('express');
 
-var router = express.Router();
-
+const router = express.Router();
+const busboy = require('connect-busboy');
+const path = require('path');
 let User = require(appRoot + '/app/models/user');
 
 router.post('/apply-admin', function(req, res) {
@@ -18,12 +19,9 @@ router.post('/apply-admin', function(req, res) {
             $set: {
                 "local.role": "admin"
             }
-        })
-        .exec()
-        .then(function(updatedUser) {
+        }).exec().then(function(updatedUser) {
             res.send({type: 'success', information: 'Successfully applied.', newUser: updatedUser});
-        })
-        .catch(function (err) {
+        }).catch(function(err) {
             throw err
             res.send({type: 'error', information: err});
         })
@@ -32,17 +30,7 @@ router.post('/apply-admin', function(req, res) {
     }
 });
 
-router.post('/favorite-question',function(req,res){
-  const id = req.user._id;
-  console.log(req.user);
-  res.send({status:"success", information:"done!"});
-});
 
-router.post('/like-question',function(req,res){
-  const id = req.user._id;
-  console.log(req.user);
-  res.send({status:"success", information:"done!"});
-});
 
 const validateActivationCode = function(code) {
     const correctSecret = "bwqlrEfvDofy7nZC8NLDXFlbh92rbL2moCxBSrXv8stqPcZjeGJCpbJ2QF2yh2iTBnWpEorY5ll2KTfl91FBEc5IEqnQboOfV319Js8fan6gRKHXSBwqbNPy3oRcKENfHQbTBPPCZSz2VaG4pLIB2K7VzL4AD93w7iKrDMfYeggwUGKJf0tX6xAAUyQwZQO5Wswn00aYtPYwst19WlKoFl3eEUQRQ05qFrLP5WwbG7ALmZSLztCnysBKGtUWyFa2";

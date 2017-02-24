@@ -1,0 +1,103 @@
+<style type="text/css">
+    .img-avatar {
+        width: 75%;
+        padding:10px
+    }
+    a.sb-links-sm {
+        border: 2px outset;
+        border-radius: 10px;
+        margin: 5px;
+        padding: 0;
+    }
+
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-file input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 100%;
+        min-height: 100%;
+        font-size: 100px;
+        text-align: right;
+        filter: alpha(opacity=0);
+        opacity: 0;
+        outline: none;
+        background: white;
+        cursor: inherit;
+        display: block;
+    }
+</style>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <% if (user.type === "local") { %>
+          <h4><%= user.local.displayName %></h4>
+          <p>
+            <%= user.local.email %>
+          </p>
+        <% } %>
+        <% if (user.type === "facebook") { %>
+          <h4><%= user.facebook.displayName %></h4>
+          <p>
+            <%= user.facebook.email %>
+          </p>
+        <% } %>
+        <% if (user.type === "twitter") { %>
+          <h4><%= user.twitter.displayName %></h4>
+          <p>
+            <%= user.twitter.email %>
+          </p>
+        <% } %>
+        <% if (user.type === "linkedin") { %>
+          <h4><%= user.linkedin.displayName %></h4>
+          <p>
+            <%= user.linkedin.email %>
+          </p>
+        <% } %>
+        <% if (user.type === "google") { %>
+          <h4><%= user.google.displayName %></h4>
+          <p>
+            <%= user.google.email %>
+          </p>
+        <% } %>
+    </div>
+    <div class="panel-body">
+        <ul class="nav nav-pills nav-stacked nav-email shadow mb-20">
+            <li>
+                <figure>
+                  <% if (user.type === "local") { %>
+                    <img class="img-avatar" id="user-avatar" src="<%= user.local.avatar %>"></img>
+                    <form id="update-avatar-form">
+                      <span class="btn btn-default btn-file">
+                        Change Avatar<!--glyphicon glyphicon-picture--> <input type="file" id="submit-avatar-input" accept=".jpg, .png, .jpeg" name="file">
+                      </span>
+                    </form>
+                    <% } %>
+                    <% if (user.type === "facebook") { %>
+                      <img class="img-avatar" id="user-avatar" src="<%= user.facebook.avatar %>"></img>
+                    <% } %>
+                    <% if (user.type === "twitter") { %>
+                      <img class="img-avatar" id="user-avatar" src="<%= user.twitter.avatar %>"></img>
+                    <% } %>
+                    <% if (user.type === "linkedin") { %>
+                      <img class="img-avatar" id="user-avatar" src="<%= user.linkedin.avatar %>"></img>
+                    <% } %>
+                    <% if (user.type === "google") { %>
+                      <img class="img-avatar" id="user-avatar" src="<%= user.google.avatar %>"></img>
+                    <% } %>
+                </figure>
+            </li>
+            <li>
+                <a class="sb-links-sm" href="#">
+                    <i class="fa fa-inbox"></i> Inbox<span class="label pull-right">*</span>
+                </a>
+            </li>
+            <li>
+                <a class="sb-links-sm" href="#"><i class="fa fa-file-text-o"></i> Generate Assessment</a>
+            </li>
+        </ul>
+    </div>
+</div>
