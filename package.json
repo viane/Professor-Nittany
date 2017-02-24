@@ -3,7 +3,7 @@
   "version": "0.0.5",
   "description": "Cognitive Application",
   "engines": {
-    "node": "5.9.1"
+    "node": "6.10.0"
   },
   "main": "server.js",
   "dependencies": {
