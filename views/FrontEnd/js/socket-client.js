@@ -34,7 +34,7 @@ $(function() {
     });
 
     // when server send back analysis of last asked question from test user
-    // currently only used in demo
+    // currently only used in demo /status
     socket.on('question-analysis', function(data) {
         displayAnalysis(data);
     });
