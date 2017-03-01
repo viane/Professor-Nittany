@@ -48,9 +48,11 @@ router.post('/upload/upload-description-text-file', busboy({
                     res.sendStatus(300);
                 });
 
+                const dataText = data.toString();
+
                 // personality analysis only takes input that is more than 100 words
-                if (countWords(data) > 105) {
-                    getAndUpdatePersonalityAssessment(req.user, data.toString().replace(/(\n)+/g, ""));
+                if (countWords(dataText) > 105) {
+                    getAndUpdatePersonalityAssessment(req.user, dataText);
                 }
             });
         } else if (path.extname(filename) === ".doc" || path.extname(filename) === ".docx") {
