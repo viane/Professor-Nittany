@@ -153,7 +153,7 @@ $(function() {
 //////////////////////////////////////////////////
 // user like/fav question answer handler functions
 //////////////////////////////////////////////////
-var addLikeBtnHandler = function(answerSequenceNumber) {
+const addLikeBtnHandler = function(answerSequenceNumber) {
     $($('.answer-like-btn')[answerSequenceNumber]).on('click', function() {
         const targetAnswer = $('[data-answer-seq=' + answerSequenceNumber + ']').text();
         console.log(targetAnswer);
@@ -161,125 +161,20 @@ var addLikeBtnHandler = function(answerSequenceNumber) {
 };
 
 //////////////////////////////////////////////////
-// answer text flag(tag) extraction and formation
+// read more click handler to expand answer
 //////////////////////////////////////////////////
-var formatText = function(inputText) {
-
-    //for [html]...[html]
-    if (inputText.match("\\[\\n\\]") || inputText.match("\\[\\\\n\\]")) {
-        //replace original link segment with DOM rendable element
-        inputText = inputText.replace(new RegExp("\\[\\n\\]", "g"), "</br>");
-        inputText = inputText.replace(new RegExp("\\[\\\\n\\]", "g"), "</br>");
-    }
-
-    //for [html]...[html]
-    if (inputText.match("\\[html\\].*?\\[html\\]")) { //if we find something like [html]...[html]
-
-        //extract link
-        var linkText = inputText.match("\\[html\\].*?\\[html\\]").toString(); //Now linkText will look like this [html]www.abc.com[/html]
-
-        //trim [html] out of [html]www.abc.com[/html]
-        linkText = linkText.replace(new RegExp("\\[html\\]", "g"), "");
-
-        //trim [/html] out of www.abc.com[/html]
-        linkText = linkText.replace(new RegExp("\\[html\\]", "g"), "");
-
-        console.log("Extracted link : " + linkText);
-
-        //replace original link segment with DOM rendable element
-        inputText = inputText.replace(new RegExp("\\[html\\].*?\\[html\\]", "g"), "<p><a href='" + linkText + "' target='_blank'>Click me</a></p>");
-    } else {
-        console.log("No [html]...[html] in the text");
-    }
-
-    //for [link]...[link]
-    if (inputText.match("\\[link\\].*?\\[link\\]")) { //if we find something like [html]...[/html]
-
-        //extract link
-        var linkText = inputText.match("\\[link\\].*?\\[link\\]").toString(); //Now linkText will look like this [html]www.abc.com[link]
-
-        //trim [link] out of [link]www.abc.com[link]
-        linkText = linkText.replace(new RegExp("\\[link\\]", "g"), "");
-
-        console.log("Extracted link : " + linkText);
-
-        //replace original link segment with DOM rendable element
-        inputText = inputText.replace(new RegExp("\\[link\\].*?\\[link\\]", "g"), "<p><a href='" + linkText + "' target='_blank'>Click me</a></p>");
-    } else {
-        console.log("No [link]...[link] in the text");
-    }
-
-    //for [link]...[/link]
-    if (inputText.match("\\[link\\].*?\\[/link\\]")) { //if we find something like [html]...[/html]
-
-        //extract link
-        var linkText = inputText.match("\\[link\\].*?\\[/link\\]").toString(); //Now linkText will look like this [html]www.abc.com[link]
-
-        //trim [link] out of [link]www.abc.com[/link]
-        linkText = linkText.replace(new RegExp("\\[link\\]", "g"), "");
-
-        //trim [/link] out of www.abc.com[/link]
-        linkText = linkText.replace(new RegExp("\\[/link\\]", "g"), "");
-        console.log("Extracted link : " + linkText);
-
-        //replace original link segment with DOM rendable element
-        inputText = inputText.replace(new RegExp("\\[link\\].*?\\[/link\\]", "g"), "<p><a href='" + linkText + "' target='_blank'>Click me</a></p>");
-    } else {
-        console.log("No [link]...[/link] in the text");
-    }
-
-    //for [tip]...[/tip] same step above but replace to
-    //<span class="tip">...</span>
-    if (inputText.match("\\[tip\\].*?\\[/tip\\]")) { //if we find something like [tip]...[/tip]
-
-        var tipText = inputText.match("\\[tip\\].*?\\[/tip\\]").toString(); //Now linkText will look like this
-
-        tipText = tipText.replace(new RegExp("\\[tip\\]", "g"), "");
-
-        tipText = tipText.replace(new RegExp("\\[/tip\\]", "g"), "");
-
-        console.log("Extracted tip : " + tipText);
-
-        inputText = inputText.replace(new RegExp("\\[tip\\].*?\\[/tip\\]", "g"), "<span class=\"tip\">" + tipText + "</span>");
-    } else {
-        console.log("No [tip]...[/tip] in the text");
-    }
-
-    //for [keyword]...[keyword] same step above but replace to
-    //<span class="tip">...</span>
-    if (inputText.match("\\[keyword\\].*?\\[keyword\\]")) { //if we find something like [tip]...[/tip]
-
-        var keywordText = inputText.match("\\[keyword\\].*?\\[keyword\\]").toString(); //Now linkText will look like this
-
-        keywordText = keywordText.replace(new RegExp("\\[keyword\\]", "g"), "");
-
-        console.log("Extracted tip : " + keywordText);
-
-        inputText = inputText.replace(new RegExp("\\[keyword\\].*?\\[keyword\\]", "g"), "<p><span class=\"tip\">Suggest: " + keywordText.capitalize() + " Service</span></p>");
-    } else {
-        console.log("No [keyword]...[keyword] in the text");
-    }
-
-    //for [extend]...[/extend] same step above but replace to
-    //<span class="extend-btn">Read More</span><div class="extend-hide">...<div>
-    if (inputText.match("\\[extend\\].*?\\[/extend\\]")) { //if we find something like [extend]...[/extend]
-
-        var extendText = inputText.match("\\[extend\\].*?\\[/extend\\]").toString(); //Now linkText will look like this
-
-        extendText = extendText.replace(new RegExp("\\[extend\\]", "g"), "");
-
-        extendText = extendText.replace(new RegExp("\\[/extend\\]", "g"), "");
-
-        console.log("Extracted extend : " + extendText);
-
-        inputText = inputText.replace(new RegExp("\\[extend\\].*?\\[/extend\\]", "g"), "<div class=\"read-more\">Read More</div><div class=\"extend-hide\"><p class=\"answer\">" + extendText + "</p></div>");
-    } else {
-        console.log("No [extend]...[/extend] in the text");
-    }
-
-    console.log("Formatted text: " + inputText);
-    //return formatted text
-    return inputText;
+const addReadmoreHandler = () => {
+    $('.read-more').each(function() {
+        $(this).on('click', function() {
+            if ($(this).find("span").text() === "Read More") {
+                $(this).find("span").text("Collapse")
+                $(this).find(".hide").removeClass("hide");
+            } else {
+                $(this).find("span").text("Read More")
+                $(this).find(".answer-body").addClass("hide");
+            }
+        })
+    })
 }
 
 //////////////////////////////////////////////
@@ -428,11 +323,11 @@ $(() => {
 //////////////////////////////////////////////
 
 $(function() {
-  if ($('#external_question').length) {
-    const external_question = $('#external_question').text();
+    if ($('#external_question').length) {
+        const external_question = $('#external_question').text();
         $('#userQueryInput').val(external_question);
         $('#querySubmitBtn').click();
-  }
+    }
 })
 
 // $(()=>{
@@ -456,13 +351,11 @@ $(function() {
 var checkDOM = function(ElementName) {
     if ($(ElementName)) {
         return true;
-    }
-    else {
+    } else {
         console.log("DOM element : " + ElementName + "does not exists.");
         return false;
     }
 }
-
 
 var showAnimateTranscripting = function() {
     var text = $(".transcripting_loading_span");
@@ -522,26 +415,20 @@ $(document).ready(function() {
             if (questionContext.val().length == 0) {
                 questionContext.focus();
                 generateNotice('error', "<div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Question can't not be empty</div>"); //call Noty with message
-            }
-            else {
-                $.ajax({
-                    url: '/postQuestionAnswer',
-                    type: 'post',
-                    data: queryData
-                }).done(function(data) {
+            } else {
+                $.ajax({url: '/postQuestionAnswer', type: 'post', data: queryData}).done(function(data) {
                     if (data.status === "1") { //call Noty with message for success
-                        generateNotice('success', "<div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> "+data.message+"</div>");
+                        generateNotice('success', "<div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> " + data.message + "</div>");
                         questionContext.val(""); //clear text input
                         answerContext.val("");
                         tagContext.val("");
-                    }
-                    else {
+                    } else {
                         //err
                         if (data.status === "0") { //call Noty with message for alert
-                            generateNotice('alert', "<div><i class=\"fa fa-exclamation\" aria-hidden=\"true\"></i> "+data.message+"</div>");
+                            generateNotice('alert', "<div><i class=\"fa fa-exclamation\" aria-hidden=\"true\"></i> " + data.message + "</div>");
                         }
                         if (data.status === "-1") { //call Noty with message for error
-                            generateNotice('error', "<div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> "+data.message+"</div>");
+                            generateNotice('error', "<div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> " + data.message + "</div>");
                         }
                     }
                 });
@@ -555,16 +442,16 @@ $(document).ready(function() {
 // Question feeds click event handler
 //////////////////////////////////////////////
 
-const addQuestionFeedClickEventHanlder = ()=>{
-    $('#question-feed-list li a').each(function(){
-      $(this).on('click',function(evt){
-        evt.preventDefault();
-        // grab question text and put in to search bar
-        $('#userQueryInput').val($(this).text())
+const addQuestionFeedClickEventHanlder = () => {
+    $('#question-feed-list li a').each(function() {
+        $(this).on('click', function(evt) {
+            evt.preventDefault();
+            // grab question text and put in to search bar
+            $('#userQueryInput').val($(this).text())
 
-        // mannual fire search event by click the submit button
-        $('#querySubmitBtn').click();
-      })
+            // mannual fire search event by click the submit button
+            $('#querySubmitBtn').click();
+        })
     })
 };
 
@@ -576,4 +463,121 @@ String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
-String.prototype.formatAnswerByTag = function() {}
+//////////////////////////////////////////////////
+// answer text flag(tag) extraction and formation
+//////////////////////////////////////////////////
+
+const formatAnswerByTag = (input) => {
+
+    //for [\n]
+    const endLineRegularExpression = /(\[\\n\])/g;
+
+    input = input.replace(endLineRegularExpression, '</br>');
+
+    //for [html]...[/html]
+    if (input.match("\\[html\\].*?\\[/html\\]")) {
+
+        //[html] to <div class="answerHTMLDOM">
+        input = input.replace(new RegExp("\\[html\\]", "g"), "<div class=\"answerHTMLDOM\">");
+
+        //[/html] to </div>
+        input = input.replace(new RegExp("\\[/html\\]", "g"), "</div><p class=\"answer-body\">");
+
+    } else {
+        console.log("No [html]...[html] in the text");
+    }
+
+    //for [extend]...[/extend] same step above but replace to
+    //<span class="extend-btn">Read More</span><div class="extend-hide">...<div>
+    if (input.match("\\[extend\\].*?\\[/extend\\]")) {
+
+        let extendText = input.match("\\[extend\\].*?\\[/extend\\]").toString();
+
+        extendText = extendText.replace(new RegExp("\\[extend\\]", "g"), "");
+
+        extendText = extendText.replace(new RegExp("\\[/extend\\]", "g"), "");
+
+        input = input.replace(new RegExp("\\[extend\\].*?\\[/extend\\]", "g"), "<div class=\"read-more\"><span>Read More</span><p class=\"answer-body hide\">" + extendText + "</p></div>");
+    } else {
+        console.log("No [extend]...[/extend] in the text");
+    }
+
+    // hide [ask]...[/ask]
+
+    if (input.match("\\[ask\\].*?\\[/ask\\]")) {
+
+        input = input.replace(new RegExp("\\[ask\\].*?\\[/ask\\]", "g"), "");
+    }
+
+    //
+    // //for [link]...[link]
+    // if (inputText.match("\\[link\\].*?\\[link\\]")) { //if we find something like [html]...[/html]
+    //
+    //     //extract link
+    //     var linkText = inputText.match("\\[link\\].*?\\[link\\]").toString(); //Now linkText will look like this [html]www.abc.com[link]
+    //
+    //     //trim [link] out of [link]www.abc.com[link]
+    //     linkText = linkText.replace(new RegExp("\\[link\\]", "g"), "");
+    //
+    //     console.log("Extracted link : " + linkText);
+    //
+    //     //replace original link segment with DOM rendable element
+    //     inputText = inputText.replace(new RegExp("\\[link\\].*?\\[link\\]", "g"), "<p><a href='" + linkText + "' target='_blank'>Click me</a></p>");
+    // } else {
+    //     console.log("No [link]...[link] in the text");
+    // }
+    //
+    // //for [link]...[/link]
+    // if (inputText.match("\\[link\\].*?\\[/link\\]")) { //if we find something like [html]...[/html]
+    //
+    //     //extract link
+    //     var linkText = inputText.match("\\[link\\].*?\\[/link\\]").toString(); //Now linkText will look like this [html]www.abc.com[link]
+    //
+    //     //trim [link] out of [link]www.abc.com[/link]
+    //     linkText = linkText.replace(new RegExp("\\[link\\]", "g"), "");
+    //
+    //     //trim [/link] out of www.abc.com[/link]
+    //     linkText = linkText.replace(new RegExp("\\[/link\\]", "g"), "");
+    //     console.log("Extracted link : " + linkText);
+    //
+    //     //replace original link segment with DOM rendable element
+    //     inputText = inputText.replace(new RegExp("\\[link\\].*?\\[/link\\]", "g"), "<p><a href='" + linkText + "' target='_blank'>Click me</a></p>");
+    // } else {
+    //     console.log("No [link]...[/link] in the text");
+    // }
+    //
+    // //for [tip]...[/tip] same step above but replace to
+    // //<span class="tip">...</span>
+    // if (inputText.match("\\[tip\\].*?\\[/tip\\]")) { //if we find something like [tip]...[/tip]
+    //
+    //     var tipText = inputText.match("\\[tip\\].*?\\[/tip\\]").toString(); //Now linkText will look like this
+    //
+    //     tipText = tipText.replace(new RegExp("\\[tip\\]", "g"), "");
+    //
+    //     tipText = tipText.replace(new RegExp("\\[/tip\\]", "g"), "");
+    //
+    //     console.log("Extracted tip : " + tipText);
+    //
+    //     inputText = inputText.replace(new RegExp("\\[tip\\].*?\\[/tip\\]", "g"), "<span class=\"tip\">" + tipText + "</span>");
+    // } else {
+    //     console.log("No [tip]...[/tip] in the text");
+    // }
+    //
+    // //for [keyword]...[keyword] same step above but replace to
+    // //<span class="tip">...</span>
+    // if (inputText.match("\\[keyword\\].*?\\[keyword\\]")) { //if we find something like [tip]...[/tip]
+    //
+    //     var keywordText = inputText.match("\\[keyword\\].*?\\[keyword\\]").toString(); //Now linkText will look like this
+    //
+    //     keywordText = keywordText.replace(new RegExp("\\[keyword\\]", "g"), "");
+    //
+    //     console.log("Extracted tip : " + keywordText);
+    //
+    //     inputText = inputText.replace(new RegExp("\\[keyword\\].*?\\[keyword\\]", "g"), "<p><span class=\"tip\">Suggest: " + keywordText.capitalize() + " Service</span></p>");
+    // } else {
+    //     console.log("No [keyword]...[keyword] in the text");
+    // }
+    //
+
+    return input;
+}

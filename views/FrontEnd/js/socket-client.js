@@ -110,6 +110,7 @@ $(function() {
                 if (index == 0) {
                     //form new DOM respond element
                     respond = "<li class=\"list-group-item list-group-item-info text-left\">"
+
                 } else {
                     //form new DOM respond element
                     respond = "<li class=\"list-group-item text-left\">"
@@ -119,7 +120,7 @@ $(function() {
                 respond += "<div id=\"hearts-existing\" class=\"hearrrt\" data-toggle=\"tooltip\" data-container=\"body\" data-placement=\"right\" title=\"Favorite!\"></div>"
 
                 //add answer body and
-                respond += "<div class=\"answer\"><p class=\"answer-body\" data-answer-seq=" + currentQuestionAnswerSequence + ">" + answer.body + "</p></div>";
+                respond += "<div class=\"answer\"><p class=\"answer-body\" data-answer-seq=" + currentQuestionAnswerSequence + ">" + formatAnswerByTag(answer.body) + "</p></div>";
 
                 //add rating btn
                 respond += "<span id=\"stars-existing\" class=\"starrr\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Rate!\"></span>"
@@ -128,6 +129,12 @@ $(function() {
                 respond += "</li>"
 
                 chatWindow.append(respond);
+
+                currentQuestionAnswerSequence++;
+
+                //add like btn handler
+                addLikeBtnHandler(currentQuestionAnswerSequence);
+
             })
 
             if ($("#user-id").text()) {
@@ -138,9 +145,8 @@ $(function() {
             // enable star layout on each answer
             $(".starrr").starrr();
 
-            //add handler
-            addLikeBtnHandler(currentQuestionAnswerSequence);
-            currentQuestionAnswerSequence++;
+            //add read more handler
+            addReadmoreHandler()
         }
 
         if (sender === "client") {
