@@ -33,10 +33,8 @@ describe('Login, Logout, Register Tests', function() {
     });
 
     afterEach(function(done) {
-        console.log("!!!!Removing user!!!!");
         //Removes users with email unittest@test.com
         user.find({'local.email': 'unittest@test.com'}).remove().exec(done);
-
     });
 
     /* !!!!!!!!!!!!!!!!! REGISTER TESTS !!!!!!!!!!!!!!!!!!!!!!
@@ -51,36 +49,54 @@ Included are:
     describe('Register Tests', function(done) {
 
         it('A user can register with a proper username, password, and displayName', function(done) {
-            server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send({first_name: "noProblems", last_name: "registerTest", email: "unittest@test.com", password: "password"}).end(function(err, res) {
+            server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
+                    {first_name: "noProblems",
+                    last_name: "registerTest",
+                    email: "unittest@test.com",
+                    password: "password",
+                    account_role: "Student"}).end(function(err, res) {
                 if (err) {
                     return done(err);
                 } else {
-                    expect(res.statusCode).to.equal(302);
-                    expect(res.text).to.include('/profile');
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.text).to.include('\"type\":\"success\"');
+                    expect(res.text).to.include("\"information\":\"Successfully registered\"");
                     done();
                 }
             });
         });
 
         it('A user cannot register with a blank displayName', function(done) {
-            server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send({first_name: "", last_name: "", email: "unittest@test.com", password: "password"}).end(function(err, res) {
+            server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
+                {first_name: "",
+                last_name: "",
+                email: "unittest@test.com",
+                password: "password",
+                account_role: "Student"}).end(function(err, res) {
                 if (err) {
                     return done(err);
                 } else {
-                    expect(res.statusCode).to.equal(302);
-                    expect(res.text).to.include('/signup');
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.text).to.include('\"type\":\"error\"');
+                    expect(res.text).to.include('\"information\":\"Name can\'t be empty\"');
                     done();
                 }
             });
         });
 
         it('A user cannot register with an incorrect password', function(done) {
-            server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send({first_name: "incorrectPassword", last_name: "registerTest", email: "unittest@test.com", password: ""}).end(function(err, res) {
+            server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
+                {first_name: "incorrectPassword",
+                last_name: "registerTest",
+                email: "unittest@test.com",
+                password: "",
+               account_role: "Student"}).end(function(err, res) {
                 if (err) {
                     return done(err);
                 } else {
-                    expect(res.statusCode).to.equal(302);
-                    expect(res.text).to.include('/signup');
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.text).to.include('\"type\":\"error\"');
+                    expect(res.text).to.include('\"information\":\"Password can\'t be empty\"');
                     done();
                 }
             });
@@ -96,12 +112,18 @@ Included are:
             newUser.save();
             /* Done creating user */
 
-            server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send({first_name: "takenEmail", last_name: "registerTest", email: "unittest@test.com", password: "testing123"}).end(function(err, res) {
+            server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
+                {first_name: "takenEmail",
+                last_name: "registerTest",
+                email: "unittest@test.com",
+                password: "testing123",
+                account_role: "Student"}).end(function(err, res) {
                 if (err) {
                     return done(err);
                 } else {
-                    expect(res.statusCode).to.equal(302);
-                    expect(res.text).to.include('/signup');
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.text).to.include('\"type\":\"error\"');
+                    expect(res.text).to.include('\"information\":\"Email already registered\"');
                     done();
                 }
             });
@@ -109,7 +131,13 @@ Included are:
 
         it('A user should login within 5 seconds', function(done) {
             var startTime = Date.now(); //Get time that the function started.
-            server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send({first_name: "LoginWithinTimeLimit", last_name: "registerTest", email: "unittest@test.com", password: "password"}).end(function(err, res) {
+            server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
+                {first_name: "LoginWithinTimeLimit",
+                last_name: "registerTest",
+                email: "unittest@test.com",
+                password: "password",
+                account_role: "Student"
+               }).end(function(err, res) {
                 if (err) {
                     return done(err);
                 } else {
@@ -135,6 +163,7 @@ Included are:
             newUser.local.email = "unittest@test.com";
             newUser.hashPassword("testing123");
             newUser.local.displayName = "Tester";
+            newUser.local.account_role = "Student";
             newUser.save();
             done();
         });
@@ -146,32 +175,39 @@ Included are:
                 if (err) {
                     return done(err);
                 } else {
-                    expect(res.statusCode).to.equal(302);
-                    expect(res.text).to.include('/profile');
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.text).to.include('\"type\":\"success\"');
+                    expect(res.text).to.include('\"information\":\"Login success\"');
                     done();
                 }
             });
         });
 
         it('A user cannot login with an incorrect password', function(done) {
-            server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "unittest@test.com", password: 'incorrectPassword'}).end(function(err, res) {
+            server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({
+                email: "unittest@test.com",
+                password: 'incorrectPassword'}).end(function(err, res) {
                 if (err) {
                     return done(err);
                 } else {
-                    expect(res.statusCode).to.equal(302);
-                    expect(res.text).to.include('/login');
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.text).to.include('\"type\":\"error\"');
+                    expect(res.text).to.include('\"information\":\"Password incorrect\"');
                     done();
                 }
             });
         });
 
         it('A user cannot login with an incorrect email', function(done) {
-            server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "foo@test.com", password: 'testing123'}).end(function(err, res) {
+            server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({
+                email: "foo@test.com",
+                password: 'testing123'}).end(function(err, res) {
                 if (err) {
                     return done(err);
                 } else {
-                    expect(res.statusCode).to.equal(302);
-                    expect(res.text).to.include('/login');
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.text).to.include('\"type\":\"error\"');
+                    expect(res.text).to.include('\"information\":\"Can\'t find any user with this email\"');
                     done();
                 }
             });
@@ -203,6 +239,7 @@ Included are:
             newUser.local.email = "unittest@test.com";
             newUser.hashPassword("testing123");
             newUser.local.displayName = "Tester";
+            newUser.local.account_role = "Student";
             newUser.save();
             /* Done creating user*/
 
@@ -218,12 +255,11 @@ Included are:
         });
 
         it('A user can log out properly', function(done) {
-            // server.get('/logout').end( function (err, res) {
-            // 	console.log(res.headers);
-            // 	expect(res.statusCode).to.equal(302);
-            // 	expect(res.headers['location']).to.equal('/');
-            done();
-            //});
+             server.get('/logout').end( function (err, res) {
+             	expect(res.statusCode).to.equal(302);
+             	expect(res.headers['location']).to.equal('/');
+                done();
+            });
         });
     });
 });
