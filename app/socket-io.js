@@ -1,6 +1,6 @@
 const appRoot = require('app-root-path');
 const questionAnswer = require('./question-answer');
-const stringChecking = require('./utility-function/string-checking');
+
 module.exports = function(server) {
     const io = require('socket.io').listen(server);
     //Socket.io handle user's input
@@ -17,19 +17,6 @@ module.exports = function(server) {
         socket.on('new message', function(data) {
 
             const currentInput = data.content;
-
-            // if user input is less than 3 words
-            if (stringChecking.countWords(currentInput) <= 2) {
-                socket.emit('new message', {
-                    message: [
-                        {
-                            title: "Minimum input restriction",
-                            body: "Sorry your question is too short to be answered, please type more about your question."
-                        }
-                    ]
-                });
-                return;
-            }
 
             console.log("Client sent a message : " + JSON.stringify(data));
 

@@ -145,8 +145,11 @@ $(function() {
             // enable star layout on each answer
             $(".starrr").starrr();
 
-            //add read more handler
-            addReadmoreHandler()
+            // add read more handler
+            addReadmoreHandler();
+
+            // add ask answer related question handler
+            addAnswerRelatedQuestionHandler();
         }
 
         if (sender === "client") {

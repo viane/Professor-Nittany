@@ -6,11 +6,27 @@ const retrieveRank = require('./watson-retrieve-rank');
 const processAnswer = require('./process-answer');
 const processQuestion = require('./process-question');
 const serverStatus = require('./server-status');
+const stringChecking = require('./utility-function/string-checking');
 
 module.exports.ask = function(user, input) {
 
     return new Promise(function(resolve, reject) {
-        // transform question to human readable
+
+        // if user input is less than 3 words
+        if (stringChecking.countWords(input) <= 2) {
+            resolve({
+                response: {
+                    docs: [
+                        {
+                            title: "Minimum input restriction",
+                            body: "Hi, your question is little bit short for me to give you a good answer, try be more specific (add few more words)."
+                        }
+                    ]
+                }
+            })
+        }
+
+        // mannual preprocessing
         const userInput = processQuestion.humanizeString(input);
 
         // handled by conversation
