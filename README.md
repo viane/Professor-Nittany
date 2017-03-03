@@ -20,3 +20,5 @@ npm install
 #to start the server
 nodemon server.js
 ```
+### Demo
+[Demo](https://intelligent-student-advisor.herokuapp.com/)

@@ -256,6 +256,15 @@ module.exports = function(app, passport) {
     });
 
     // =====================================
+    // Server status
+    // =====================================
+    app.get('/status', function(req, res) {
+        res.render(frontEndRoot + 'status.ejs', {
+
+        }); 
+    });
+
+    // =====================================
     // Admin console
     // =====================================
     app.get('/admin', isLoggedInRedirect, function(req, res) {

@@ -3,7 +3,7 @@
   "version": "0.0.5",
   "description": "Cognitive Application",
   "engines": {
-    "node": "5.9.1"
+    "node": "6.10.0"
   },
   "main": "server.js",
   "dependencies": {
@@ -63,7 +63,8 @@
   "devDependencies": {},
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
-    "start": "node server.js"
+    "start": "node server.js",
+    "nodemon" : "nodemon --ignore views/FrontEnd/js/"
   },
   "keywords": [
     "ibm"

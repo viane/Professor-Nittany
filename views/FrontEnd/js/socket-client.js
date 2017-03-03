@@ -33,6 +33,35 @@ $(function() {
         //console.log("server received your data and sent to you: " +JSON.stringify(data.message));
     });
 
+    // when server send back analysis of last asked question from test user
+    // currently only used in demo /status
+    socket.on('question-analysis', function(data) {
+        displayAnalysis(data);
+    });
+
+    const displayAnalysis = (data) => {
+        //clear previous result
+        $('#last-question-analysis').html("");
+
+        // output concept with confidence
+        data.analysis.concepts.map((concept) => {
+            $('#last-question-analysis').append("<div class=\"col-md-4\"><h1>Concepts</h1><p>" + concept.text + " " + parseFloat(concept.relevance).toPrecision(3) * 100 + "%</p></div>");
+        });
+
+        data.analysis.entities.map((entity) => {
+            $('#last-question-analysis').append("<div class=\"col-md-4\"><h1>Entities</h1><p>" + entity.type + " " + entity.text + " " + parseFloat(entity.relevance).toPrecision(3) * 100 + "% " + "</p></div>");
+        });
+
+        data.analysis.taxonomy.map((taxonomy) => {
+            $('#last-question-analysis').append("<div class=\"col-md-4\"><h1>Taxonomies</h1><p>" + taxonomy.label + " " + parseFloat(taxonomy.score).toPrecision(3) * 100 + "%</p></div>");
+        });
+
+        data.analysis.keywords.map((keyword) => {
+            $('#last-question-analysis').append("<div class=\"col-md-4\"><h1>Keywords</h1><p>" + keyword.text + " " + parseFloat(keyword.relevance).toPrecision(3) * 100 + "%</p></div>");
+        });
+
+    };
+
     var chatWindow = $('#answer-list'); //main chat window
 
     // send message to server by use emit api form socket io
@@ -76,21 +105,22 @@ $(function() {
             }, 125);
 
             // display 10 answers from server in order of confidence
-            message.map((answer,index) => {
+            message.map((answer, index) => {
                 let respond;
-                if(index == 0){
+                if (index == 0) {
                     //form new DOM respond element
-                    respond = "<li class=\"list-group-item list-group-item-info text-left\">" 
+                    respond = "<li class=\"list-group-item list-group-item-info text-left\">"
+
                 } else {
                     //form new DOM respond element
                     respond = "<li class=\"list-group-item text-left\">"
                 }
-                
+
                 //add favorite btn to answer
                 respond += "<div id=\"hearts-existing\" class=\"hearrrt\" data-toggle=\"tooltip\" data-container=\"body\" data-placement=\"right\" title=\"Favorite!\"></div>"
 
                 //add answer body and
-                respond += "<div class=\"answer\"><p class=\"answer-body\" data-answer-seq=" + currentQuestionAnswerSequence + ">" + answer.body + "</p></div>";
+                respond += "<div class=\"answer\"><p class=\"answer-body\" data-answer-seq=" + currentQuestionAnswerSequence + ">" + formatAnswerByTag(answer.body) + "</p></div>";
 
                 //add rating btn
                 respond += "<span id=\"stars-existing\" class=\"starrr\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Rate!\"></span>"
@@ -99,6 +129,12 @@ $(function() {
                 respond += "</li>"
 
                 chatWindow.append(respond);
+
+                currentQuestionAnswerSequence++;
+
+                //add like btn handler
+                addLikeBtnHandler(currentQuestionAnswerSequence);
+
             })
 
             if ($("#user-id").text()) {
@@ -109,20 +145,22 @@ $(function() {
             // enable star layout on each answer
             $(".starrr").starrr();
 
-            //add handler
-            addLikeBtnHandler(currentQuestionAnswerSequence);
-            currentQuestionAnswerSequence++;
+            // add read more handler
+            addReadmoreHandler();
+
+            // add ask answer related question handler
+            addAnswerRelatedQuestionHandler();
         }
 
         if (sender === "client") {
-        //     // display user input question
-        //     let askDomElement = "<li class='user'>";
-        //     // add question body
-        //     askDomElement += "<div class=\"question\"><p class=\"question-body\" data-question-seq=" + currentQuestionAnswerSequence + ">" + message + "</p></div>";
-        //     askDomElement += "</li>";
-        //     //chatWindow.append(askDomElement);
+            //     // display user input question
+            //     let askDomElement = "<li class='user'>";
+            //     // add question body
+            //     askDomElement += "<div class=\"question\"><p class=\"question-body\" data-question-seq=" + currentQuestionAnswerSequence + ">" + message + "</p></div>";
+            //     askDomElement += "</li>";
+            //     //chatWindow.append(askDomElement);
             $("#user-question").text(message);
-            $("#sys-tip").remove(); 
+            $("#sys-tip").remove();
         }
     }
 

@@ -24,7 +24,6 @@ module.exports.getAnalysis = function(inputString) {
     return new Promise(function(resolve, reject) {
         alchemy_language.combined(parameters, function(err, response) {
             if (err) {
-                throw err;
                 reject(err);
             } else {
                 resolve(response);

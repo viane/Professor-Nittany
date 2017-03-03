@@ -153,7 +153,7 @@ $(function() {
 //////////////////////////////////////////////////
 // user like/fav question answer handler functions
 //////////////////////////////////////////////////
-var addLikeBtnHandler = function(answerSequenceNumber) {
+const addLikeBtnHandler = function(answerSequenceNumber) {
     $($('.answer-like-btn')[answerSequenceNumber]).on('click', function() {
         const targetAnswer = $('[data-answer-seq=' + answerSequenceNumber + ']').text();
         console.log(targetAnswer);
@@ -161,125 +161,20 @@ var addLikeBtnHandler = function(answerSequenceNumber) {
 };
 
 //////////////////////////////////////////////////
-// answer text flag(tag) extraction and formation
+// read more click handler to expand answer
 //////////////////////////////////////////////////
-var formatText = function(inputText) {
-
-    //for [html]...[html]
-    if (inputText.match("\\[\\n\\]") || inputText.match("\\[\\\\n\\]")) {
-        //replace original link segment with DOM rendable element
-        inputText = inputText.replace(new RegExp("\\[\\n\\]", "g"), "</br>");
-        inputText = inputText.replace(new RegExp("\\[\\\\n\\]", "g"), "</br>");
-    }
-
-    //for [html]...[html]
-    if (inputText.match("\\[html\\].*?\\[html\\]")) { //if we find something like [html]...[html]
-
-        //extract link
-        var linkText = inputText.match("\\[html\\].*?\\[html\\]").toString(); //Now linkText will look like this [html]www.abc.com[/html]
-
-        //trim [html] out of [html]www.abc.com[/html]
-        linkText = linkText.replace(new RegExp("\\[html\\]", "g"), "");
-
-        //trim [/html] out of www.abc.com[/html]
-        linkText = linkText.replace(new RegExp("\\[html\\]", "g"), "");
-
-        console.log("Extracted link : " + linkText);
-
-        //replace original link segment with DOM rendable element
-        inputText = inputText.replace(new RegExp("\\[html\\].*?\\[html\\]", "g"), "<p><a href='" + linkText + "' target='_blank'>Click me</a></p>");
-    } else {
-        console.log("No [html]...[html] in the text");
-    }
-
-    //for [link]...[link]
-    if (inputText.match("\\[link\\].*?\\[link\\]")) { //if we find something like [html]...[/html]
-
-        //extract link
-        var linkText = inputText.match("\\[link\\].*?\\[link\\]").toString(); //Now linkText will look like this [html]www.abc.com[link]
-
-        //trim [link] out of [link]www.abc.com[link]
-        linkText = linkText.replace(new RegExp("\\[link\\]", "g"), "");
-
-        console.log("Extracted link : " + linkText);
-
-        //replace original link segment with DOM rendable element
-        inputText = inputText.replace(new RegExp("\\[link\\].*?\\[link\\]", "g"), "<p><a href='" + linkText + "' target='_blank'>Click me</a></p>");
-    } else {
-        console.log("No [link]...[link] in the text");
-    }
-
-    //for [link]...[/link]
-    if (inputText.match("\\[link\\].*?\\[/link\\]")) { //if we find something like [html]...[/html]
-
-        //extract link
-        var linkText = inputText.match("\\[link\\].*?\\[/link\\]").toString(); //Now linkText will look like this [html]www.abc.com[link]
-
-        //trim [link] out of [link]www.abc.com[/link]
-        linkText = linkText.replace(new RegExp("\\[link\\]", "g"), "");
-
-        //trim [/link] out of www.abc.com[/link]
-        linkText = linkText.replace(new RegExp("\\[/link\\]", "g"), "");
-        console.log("Extracted link : " + linkText);
-
-        //replace original link segment with DOM rendable element
-        inputText = inputText.replace(new RegExp("\\[link\\].*?\\[/link\\]", "g"), "<p><a href='" + linkText + "' target='_blank'>Click me</a></p>");
-    } else {
-        console.log("No [link]...[/link] in the text");
-    }
-
-    //for [tip]...[/tip] same step above but replace to
-    //<span class="tip">...</span>
-    if (inputText.match("\\[tip\\].*?\\[/tip\\]")) { //if we find something like [tip]...[/tip]
-
-        var tipText = inputText.match("\\[tip\\].*?\\[/tip\\]").toString(); //Now linkText will look like this
-
-        tipText = tipText.replace(new RegExp("\\[tip\\]", "g"), "");
-
-        tipText = tipText.replace(new RegExp("\\[/tip\\]", "g"), "");
-
-        console.log("Extracted tip : " + tipText);
-
-        inputText = inputText.replace(new RegExp("\\[tip\\].*?\\[/tip\\]", "g"), "<span class=\"tip\">" + tipText + "</span>");
-    } else {
-        console.log("No [tip]...[/tip] in the text");
-    }
-
-    //for [keyword]...[keyword] same step above but replace to
-    //<span class="tip">...</span>
-    if (inputText.match("\\[keyword\\].*?\\[keyword\\]")) { //if we find something like [tip]...[/tip]
-
-        var keywordText = inputText.match("\\[keyword\\].*?\\[keyword\\]").toString(); //Now linkText will look like this
-
-        keywordText = keywordText.replace(new RegExp("\\[keyword\\]", "g"), "");
-
-        console.log("Extracted tip : " + keywordText);
-
-        inputText = inputText.replace(new RegExp("\\[keyword\\].*?\\[keyword\\]", "g"), "<p><span class=\"tip\">Suggest: " + keywordText.capitalize() + " Service</span></p>");
-    } else {
-        console.log("No [keyword]...[keyword] in the text");
-    }
-
-    //for [extend]...[/extend] same step above but replace to
-    //<span class="extend-btn">Read More</span><div class="extend-hide">...<div>
-    if (inputText.match("\\[extend\\].*?\\[/extend\\]")) { //if we find something like [extend]...[/extend]
-
-        var extendText = inputText.match("\\[extend\\].*?\\[/extend\\]").toString(); //Now linkText will look like this
-
-        extendText = extendText.replace(new RegExp("\\[extend\\]", "g"), "");
-
-        extendText = extendText.replace(new RegExp("\\[/extend\\]", "g"), "");
-
-        console.log("Extracted extend : " + extendText);
-
-        inputText = inputText.replace(new RegExp("\\[extend\\].*?\\[/extend\\]", "g"), "<div class=\"read-more\">Read More</div><div class=\"extend-hide\"><p class=\"answer\">" + extendText + "</p></div>");
-    } else {
-        console.log("No [extend]...[/extend] in the text");
-    }
-
-    console.log("Formatted text: " + inputText);
-    //return formatted text
-    return inputText;
+const addReadmoreHandler = () => {
+    $('.read-more').each(function() {
+        $(this).on('click', function() {
+            if ($(this).text() === "Read More") {
+                $(this).text("Collapse")
+                $(this).next().removeClass("hide");
+            } else {
+                $(this).text("Read More")
+                $(this).next().addClass("hide");
+            }
+        })
+    })
 }
 
 //////////////////////////////////////////////
@@ -411,9 +306,12 @@ $(() => {
     }).then(function(res) {
         res.json().then((result) => {
             result.feeds.map((feed) => {
-                const feedHtmlListElement = "<li><a href=\"#\">" + feed + "</a></li>";
+                const feedHtmlListElement = "<li><a href=\"#\" id=\"question-feed-content\">" + feed + "</a></li>";
                 $('#question-feed-list').append(feedHtmlListElement);
             })
+
+            // add click handler to each feed question
+            addQuestionFeedClickEventHanlder();
         })
     }).catch(function(err) {
         generateNotice('error', err)
@@ -425,11 +323,11 @@ $(() => {
 //////////////////////////////////////////////
 
 $(function() {
-  if ($('#external_question').length) {
-    const external_question = $('#external_question').text();
+    if ($('#external_question').length) {
+        const external_question = $('#external_question').text();
         $('#userQueryInput').val(external_question);
         $('#querySubmitBtn').click();
-  }
+    }
 })
 
 // $(()=>{
@@ -453,13 +351,11 @@ $(function() {
 var checkDOM = function(ElementName) {
     if ($(ElementName)) {
         return true;
-    }
-    else {
+    } else {
         console.log("DOM element : " + ElementName + "does not exists.");
         return false;
     }
 }
-
 
 var showAnimateTranscripting = function() {
     var text = $(".transcripting_loading_span");
@@ -519,26 +415,20 @@ $(document).ready(function() {
             if (questionContext.val().length == 0) {
                 questionContext.focus();
                 generateNotice('error', "<div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Question can't not be empty</div>"); //call Noty with message
-            }
-            else {
-                $.ajax({
-                    url: '/postQuestionAnswer',
-                    type: 'post',
-                    data: queryData
-                }).done(function(data) {
+            } else {
+                $.ajax({url: '/postQuestionAnswer', type: 'post', data: queryData}).done(function(data) {
                     if (data.status === "1") { //call Noty with message for success
-                        generateNotice('success', "<div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> "+data.message+"</div>");
+                        generateNotice('success', "<div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> " + data.message + "</div>");
                         questionContext.val(""); //clear text input
                         answerContext.val("");
                         tagContext.val("");
-                    }
-                    else {
+                    } else {
                         //err
                         if (data.status === "0") { //call Noty with message for alert
-                            generateNotice('alert', "<div><i class=\"fa fa-exclamation\" aria-hidden=\"true\"></i> "+data.message+"</div>");
+                            generateNotice('alert', "<div><i class=\"fa fa-exclamation\" aria-hidden=\"true\"></i> " + data.message + "</div>");
                         }
                         if (data.status === "-1") { //call Noty with message for error
-                            generateNotice('error', "<div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> "+data.message+"</div>");
+                            generateNotice('error', "<div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> " + data.message + "</div>");
                         }
                     }
                 });
@@ -549,6 +439,40 @@ $(document).ready(function() {
 })
 
 //////////////////////////////////////////////
+// Question feeds click event handler
+//////////////////////////////////////////////
+
+const addQuestionFeedClickEventHanlder = () => {
+    $('#question-feed-list li a').each(function() {
+        $(this).on('click', function(evt) {
+            evt.preventDefault();
+            // grab question text and put in to search bar
+            $('#userQueryInput').val($(this).text())
+
+            // mannual fire search event by click the submit button
+            $('#querySubmitBtn').click();
+        })
+    })
+};
+
+//////////////////////////////////////////////
+// Answer related question ask event handler
+//////////////////////////////////////////////
+
+const addAnswerRelatedQuestionHandler = ()=>{
+  $('.answer-relate-question').each(function() {
+      $(this).on('click', function(evt) {
+          evt.preventDefault();
+          // grab question text and put in to search bar
+          $('#userQueryInput').val($(this).text())
+
+          // mannual fire search event by click the submit button
+          $('#querySubmitBtn').click();
+      })
+  })
+}
+
+//////////////////////////////////////////////
 // String utility
 //////////////////////////////////////////////
 
@@ -556,4 +480,99 @@ String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
-String.prototype.formatAnswerByTag = function() {}
+//////////////////////////////////////////////////
+// answer text flag(tag) extraction and formation
+//////////////////////////////////////////////////
+
+const formatAnswerByTag = (input) => {
+
+    //for [\n]
+    const endLineRegularExpression = /(\[\\n\])/g;
+
+    input = input.replace(endLineRegularExpression, '</br>');
+
+    //for [html]...[/html]
+    if (input.match("\\[html\\].*?\\[/html\\]")) {
+
+        //[html] to <div class="answerHTMLDOM">
+        input = input.replace(new RegExp("\\[html\\]", "g"), "<div class=\"answerHTMLDOM\">");
+
+        //[/html] to </div>
+        input = input.replace(new RegExp("\\[/html\\]", "g"), "</div><p class=\"answer-body\">");
+
+    }
+
+    // hide [ask]...[/ask]
+
+    if (input.match("\\[ask\\].*?\\[/ask\\]")) {
+
+        input = input.replace(new RegExp("\\[ask\\].*?\\[/ask\\]", "g"), "");
+    }
+
+    // for [a]...[/a] and [link]...[/link] pair
+
+    const linkRegularExpression = /(\[link\].*?\[\/link\])/gi; // reg pattern for [link]...[/link]
+
+    let linkAry = input.match(linkRegularExpression); // search answer if there is any [link]...[/link], if there is one or more, each segement will be assign to an array
+
+    if (linkAry && linkAry.length > 0) { // if array contains any [link]...[/link]
+        input = input.replace(linkRegularExpression, "") // trim [link]...[/link] from original answer
+
+        // trim [link] and [/link] from each segement in array
+        linkAry = linkAry.map((link) => {
+            link = link.replace(new RegExp("\\[link\\]"), "");
+            link = link.replace(new RegExp("\\[\/link\\]"), "");
+            link = link.replace(new RegExp("\\s", "g"), "");
+            return link;
+        })
+
+        let anchorCount = 0;
+        const anchorRegularExpression = /\[a\].*?\[\/a\]/; // reg pattern for [a]...[/a]
+        while (input.match(anchorRegularExpression) && input.match(anchorRegularExpression).length > 0) { // check each [a]...[/a] in the original answer
+
+            // convert to <a target="_blank" href="...">...</a>
+            input = input.replace(new RegExp("\\[a\\]"), "<a target=\"_blank\" href=\"" + linkAry[anchorCount] + "\">");
+            input = input.replace(new RegExp("\\[\/a\\]"), "</a>");
+            anchorCount++;
+        }
+    }
+
+    // for [question]...[/question]
+
+    if (input.match("\\[question\\].*?\\[/question\\]")) {
+        // convert to general question that can be directly asked to system
+
+    }
+
+    // for [ul][li]...[/li][/ul]
+    if (input.match("\\[ul\\].*?\\[/ul\\]")) {
+        // convert to general question that can be directly asked to system
+        input = input.replace(new RegExp("\\[ul\\]", "g"), "<ul>");
+        input = input.replace(new RegExp("\\[\/ul\\]", "g"), "</ul>");
+        input = input.replace(new RegExp("\\[li\\]", "g"), "<li>");
+        input = input.replace(new RegExp("\\[\/li\\]", "g"), "</li>");
+    }
+
+    // for [question][/question]
+    if (input.match("\\[question\\].*?\\[/question\\]")) {
+        // convert to general question that can be directly asked to system
+        input = input.replace(new RegExp("\\[question\\]", "g"), "<a href=\"#\" class=\"answer-relate-question\">");
+        input = input.replace(new RegExp("\\[\/question\\]", "g"), "</a>");
+        // handler are in
+    }
+
+    //for [extend]...[/extend] same step above but replace to
+    //<span class="extend-btn">Read More</span><div class="extend-hide">...<div>
+    if (input.match("\\[extend\\].*?\\[/extend\\]")) {
+
+        let extendText = input.match("\\[extend\\].*?\\[/extend\\]").toString();
+
+        extendText = extendText.replace(new RegExp("\\[extend\\]", "g"), "");
+
+        extendText = extendText.replace(new RegExp("\\[/extend\\]", "g"), "");
+
+        input = input.replace(new RegExp("\\[extend\\].*?\\[/extend\\]", "g"), "<div><span class=\"read-more btn btn-secondary\">Read More</span><div class=\"answer-body hide\">" + extendText + "</div></div>");
+    }
+
+    return input;
+}

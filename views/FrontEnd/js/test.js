@@ -351,7 +351,7 @@ $(() => {
         const url = '/api/profile/update-avatar';
 
         const data = new FormData();
-        data.append("file",$('#submit-avatar-input')[0].files[0]);
+        data.append("file", $('#submit-avatar-input')[0].files[0]);
 
         fetch(url, {
             method: "POST",
@@ -361,11 +361,11 @@ $(() => {
             if (res.status !== 200) {
                 generateNotice('error', "Error, status code: " + res.status);
                 return;
-            }else{
-              res.json().then(function(result) {
-                generateNotice(result.type, result.information);
-                $('#user-avatar').prop("src",result.avatarPath+ '?' + Math.random());
-              })
+            } else {
+                res.json().then(function(result) {
+                    generateNotice(result.type, result.information);
+                    $('#user-avatar').prop("src", result.avatarPath + '?' + Math.random());
+                })
             }
 
         }).catch(function(err) {

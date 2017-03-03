@@ -6,7 +6,7 @@ const serverStatus = require(appRoot + '/app/server-status');
 let User = require(appRoot + '/app/models/user');
 
 module.exports.humanizeString = function(inputQuestionString) {
-    const humanizedInput = string(inputQuestionString).humanize().toString();
+    const humanizedInput = string(inputQuestionString).humanize().toString().trim();
     return humanizedInput;
 };
 
