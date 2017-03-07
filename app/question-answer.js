@@ -80,6 +80,7 @@ module.exports.ask = function(user, input) {
 
                 }).catch(function(err) {
                     throw err;
+                    reject(err);
                 });
 
             }

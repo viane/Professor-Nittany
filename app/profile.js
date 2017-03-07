@@ -27,6 +27,8 @@ const formidable = require('formidable');
 
 const loginChecking = require(appRoot + '/app/utility-function/login-checking');
 
+const wordToText = require(appRoot + '/app/utility-function/word-file-to-text');
+
 router.post('/upload/upload-description-text-file', busboy({
     limits: {
         fileSize: 4 * 1024 * 1024
@@ -73,7 +75,7 @@ router.post('/upload/upload-description-text-file', busboy({
                             throw err;
                         } else {
 
-                            const fullDoc = combineResult(response);
+                            const fullDoc = wordToText.combineResult(response);
 
                             updateUserSelfDescription(req.user, fullDoc).then(function() {
                                 // done write to DB, delete file
@@ -183,28 +185,6 @@ router.post('/like-question', function(req, res) {
 });
 
 module.exports = router;
-
-const combineResult = (response) => {
-    let fullDoc = ""; // will store all content in the word file as plain text
-
-    // fill up the fullDoc
-    for (const docIndex in response.answer_units) {
-        if (response.answer_units[docIndex].hasOwnProperty("title")) {
-            fullDoc += response.answer_units[docIndex].title + ". ";
-        }
-        for (const textIndex in response.answer_units[docIndex].content) {
-            if (response.answer_units[docIndex].content[textIndex].hasOwnProperty("text")) {
-                fullDoc += response.answer_units[docIndex].content[textIndex].text;
-            }
-        }
-    }
-
-    if (fullDoc.length == 0) {
-        fullDoc = "Document not acceptable, try a different document.";
-    }
-
-    return fullDoc;
-}
 
 const getUserDataPath = function(userType) {
     let path = "";

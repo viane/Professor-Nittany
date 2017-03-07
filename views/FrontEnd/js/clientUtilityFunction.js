@@ -150,6 +150,11 @@ $(function() {
     $("#upload-description-Text-File").dropzone({url: "/api/profile/upload/upload-description-text-file"});
 });
 
+// for upload source learning document at /SystemManagement
+$(function() {
+    $("#upload-system-learning-document").dropzone({url: "/api/system/update/domain"});
+});
+
 //////////////////////////////////////////////////
 // user like/fav question answer handler functions
 //////////////////////////////////////////////////

@@ -16,6 +16,8 @@ const testingAPIModule = require(appRoot + '/app/testing/testAPI');
 const profileAPI = require(appRoot + '/app/profile');
 const validator = require("email-validator");
 const serverStatusAPI = require(appRoot + '/app/api/server-status');
+const system = require(appRoot + '/app/api/system');
+const loginChecking = require(appRoot + '/app/utility-function/login-checking');
 
 module.exports = function(app, passport) {
 
@@ -261,7 +263,7 @@ module.exports = function(app, passport) {
     app.get('/status', function(req, res) {
         res.render(frontEndRoot + 'status.ejs', {
 
-        }); 
+        });
     });
 
     // =====================================
@@ -330,6 +332,16 @@ module.exports = function(app, passport) {
 
         //send to client
 
+    });
+
+    // =================================================
+    // Routes for developer manage system
+    // =================================================
+
+    app.get('/SystemManagement', loginChecking.isAdminRedirect, function(req, res) {
+        res.render(frontEndRoot + 'system-management.ejs', {
+            user: req.user
+        });
     });
 
     ////////////////////////////////////////////////
@@ -430,11 +442,14 @@ module.exports = function(app, passport) {
     // General server functionality testing api
     app.use('/api/testing/', testingAPIModule);
 
-    //  Profile APIs
+    // Profile APIs
     app.use('/api/profile', isLoggedInRedirect, profileAPI);
 
     // Server status APIs
     app.use('/api/server-status', serverStatusAPI);
+
+    // system AI APIs
+    app.use('/api/system',loginChecking.isAdminRedirect, system);
 };
 
 // route middleware to make sure

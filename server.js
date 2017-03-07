@@ -34,6 +34,9 @@ const passport = require('passport');
 // for server status functions
 const serverStatus = require(appRoot + '/app/server-status');
 
+// for system status functions
+const systemStatus = require(appRoot + '/app/system-status');
+
 app.use(opbeat.middleware.express()); // opbeat for heroku monitoring
 
 app.use(bodyParser.json({
@@ -87,6 +90,12 @@ require(appRoot + '/app/socket-io.js')(server); //handle communication between c
 
 serverStatus.initQuestionFeeds().then((result) => {
     console.log("Success loaded question feeds from server");
+}).catch((err) => {
+    throw err
+}) // loading questionFeeds from Disk
+
+systemStatus.initGetKnowledgeDomain().then((result) => {
+    console.log("Success loaded knowledge domain terms from server");
 }).catch((err) => {
     throw err
 }) // loading questionFeeds from Disk
