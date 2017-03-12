@@ -72,7 +72,7 @@ router.post('/update/domain', loginChecking.isAdminRedirect, busboy({
                     "concept": 0.4,
                     "entity": 0.8,
                     "taxonomy": 0.3,
-                    "keyword": 0.5
+                    "keyword": 0.75
                 }
             });
 
@@ -86,7 +86,7 @@ router.post('/update/domain', loginChecking.isAdminRedirect, busboy({
                 writer.write({entity_name: "About_Behrend", entity_value: term, entity_synonyms: ""});
             });
             writer.end();
-            
+
             res.sendStatus(200);
         } else {
             res.sendStatus(302);
