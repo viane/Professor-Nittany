@@ -15,6 +15,11 @@ var WechatStrategy = require("passport-wechat").Strategy;
 
 var appRoot = require('app-root-path');
 
+const serverStatus = require(appRoot + '/app/server-status');
+const loadJsonFile = require('load-json-file');
+const writeJsonFile = require('write-json-file');
+const serverStatusPath = '/config/server-status.json';
+
 // load up the user model
 var User = require(appRoot + '/app/models/user');
 
@@ -114,15 +119,15 @@ module.exports = function(passport) {
 
                         // set up account information
                         if (req.body.account_role === "Student") {
-                          newUser.local.role = "student";
+                            newUser.local.role = "student";
                         }
 
                         if (req.body.account_role === "Advisor") {
-                          newUser.local.role  = "advisor";
+                            newUser.local.role = "advisor";
                         }
 
                         if (req.body.account_role === "Admin") {
-                          newUser.local.role  = "admin";
+                            newUser.local.role = "admin";
                         }
 
                         newUser.local.email = req.body.email; // facebook can return multiple emails so we'll take the first
@@ -132,14 +137,28 @@ module.exports = function(passport) {
                         newUser.local.displayName = req.body.first_name + " " + req.body.last_name;
 
                         // save our user to the database
-                        newUser.save(function(err) {
+                        newUser.save(function(err, newRecord) {
                             if (err) {
                                 throw err;
                                 return done(err, false, req.flash('signupMessage', err));
+                            } else {
+                                console.log(req.body.account_role.red);
+                                // if successful
+                                // if newUser is an advisor
+                                if (req.body.account_role === "Advisor") {
+                                    //  push new advsior id to server
+                                    serverStatus.addNewToAdvisorLists(newRecord._id).then(() => {
+                                        return done(null, newUser);
+                                    }).catch((err) => {
+                                        throw err;
+                                        return done(err, false, req.flash('signupMessage', err));
+                                    });
+                                } else {
+                                    return done(null, newUser);
+                                }
+
                             }
-                            // if successful, return the new user
-                            return done(null, newUser);
-                        });
+                        })
                     }
                 } else {
                     return done("Email not vaild", false, req.flash('signupMessage', 'Email not vaild'));

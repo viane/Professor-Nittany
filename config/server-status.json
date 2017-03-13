@@ -17,5 +17,8 @@
 		"Should I take EE?",
 		"What is engineering department contact infomation?"
 	],
-	"current_online_user": 0
+	"current_online_user": 0,
+	"advisor_list": [
+		"58c62aee5b5253c9ced16f95"
+	]
 }

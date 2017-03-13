@@ -49,7 +49,7 @@ module.exports = function(server) {
             ////////////////////////////////////////////////////////////
             // used in demo, feed client analysis of last asked question
             ////////////////////////////////////////////////////////////
-            if (data.sender.id === "58927ed26d256512009d6b64") {
+            if (data.sender.id === "58c636153cd0ab4e32155583") {
                 console.log("test user asked a question");
                 const alchemyAPI = require(appRoot + '/app/alchemyAPI');
                 alchemyAPI.getAnalysis(currentInput).then(function(analysis) {

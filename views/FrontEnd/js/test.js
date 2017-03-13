@@ -373,3 +373,27 @@ $(() => {
         });
     });
 });
+
+// get advisor list when user generated assessment and sending to advisors
+$(()=>{
+  $('#goto-advisor-list-btn').on('click',()=>{
+    const url = '/api/server-status/get-advisor-list';
+    fetch(url, {
+        method: "GET",
+        credentials: 'include'
+    }).then(function(res) {
+        if (res.status !== 200) {
+            generateNotice('error', "Error, status code: " + res.status);
+            return;
+        } else {
+            res.json().then(function(result) {
+                $('.advisor-list-panel').html("<pre>"+JSON.stringify(result,"\n",2)+"</pre>");
+                $(".loader").css('display','none');
+            })
+        }
+    }).catch(function(err) {
+        generateNotice('error', err);
+        $(".loader").css('display','none');
+    });
+  });
+})

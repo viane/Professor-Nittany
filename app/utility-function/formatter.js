@@ -49,7 +49,7 @@ module.exports.retrieveTermsFromAlchemyAPI = (_result, _opt) => {
 /////////////////////////////////////////////////////////////////////////////
 
 // this function is the core algorithm for preprocessing, which should be updated and optimized mostly
-const convertPerspectsToAIReadable = (perspect_type, content) => {
+module.exports.convertPerspectsToAIReadable = (perspect_type, content) => {
     let AI_Read_String = "";
 
     // reference Doc/markdown/alchemyAPI response example.md for example output of each perspect

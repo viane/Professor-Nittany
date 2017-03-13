@@ -19,6 +19,8 @@ const csvWriter = require('csv-write-stream');
 
 let documentText = "";
 
+// API to update conversation filter domain by uploading document
+
 router.post('/update/domain', loginChecking.isAdminRedirect, busboy({
     limits: {
         fileSize: 4 * 1024 * 1024
@@ -97,5 +99,6 @@ router.post('/update/domain', loginChecking.isAdminRedirect, busboy({
         res.sendStatus(302);
     })
 });
+
 
 module.exports = router;

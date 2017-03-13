@@ -33,17 +33,17 @@ router.post('/upload/upload-description-text-file', busboy({
     limits: {
         fileSize: 4 * 1024 * 1024
     }
-}), function(req, res, next) {
+}), (req, res, next) => {
 
     if (!req.busboy)
         return next('route');
 
     let fstream;
     req.pipe(req.busboy);
-    req.busboy.on('file', function(fieldname, file, filename) {
+    req.busboy.on('file', (fieldname, file, filename) => {
         if (path.extname(filename) === ".txt") {
             file.on('data', function(data) {
-                updateUserSelfDescription(req.user, data).then(function(query_report) {
+                updateUserSelfDescription(req.user, data).then((query_report) => {
                     res.sendStatus(200);
                 }).catch(function(err) {
                     throw err;
@@ -70,16 +70,16 @@ router.post('/upload/upload-description-text-file', busboy({
                         file: fs.createReadStream(filePath), conversion_target: 'ANSWER_UNITS',
                         // Use a custom configuration.
                         config: json.document_conversion_config
-                    }, function(err, response) {
+                    }, (err, response) => {
                         if (err) {
                             throw err;
                         } else {
 
                             const fullDoc = wordToText.combineResult(response);
 
-                            updateUserSelfDescription(req.user, fullDoc).then(function() {
+                            updateUserSelfDescription(req.user, fullDoc).then(() => {
                                 // done write to DB, delete file
-                                del.promise([filePath]).then(function() {}).catch(function(err) {
+                                del.promise([filePath]).then(() => {}).catch((err) => {
                                     throw err;
                                 });
                                 res.sendStatus(200);
@@ -103,10 +103,10 @@ router.post('/upload/upload-description-text-file', busboy({
 
 // Get user interests
 router.get('/get-interest', (req, res) => {
-    User.findById(req.user._id).exec().then(function(foundUser) {
+    User.findById(req.user._id).exec().then((foundUser) => {
         const interestPath = getInterestPathFromUser(foundUser);
         res.send({status: "success", information: "good", interest: foundUser[interestPath].interest});
-    }).catch(function(err) {
+    }).catch((err) => {
         throw err;
         res.send({type: 'error', information: err});
     })
@@ -119,13 +119,15 @@ router.post('/update-avatar', loginChecking.isLoggedInRedirect, (req, res) => {
 
     form.maxFieldsSize = 1024 * 1024;
 
-    form.parse(req, function(err, fields, files) {
+    form.parse(req, (err, fields, files) => {
 
         const file = files.file;
 
+        // Only jpeg, png, jpg are allowed
+
         if (file.type != "image/jpeg" && file.type != "image/png" && file.type != "image/jpg") {
             res.send({type: 'error', information: "Unexcepted image type"});
-            del.promise([file.path]).then(function() {}).catch(function(err) {
+            del.promise([file.path]).then(function() {}).catch((err) => {
                 throw err;
             });
         } else {
@@ -152,14 +154,14 @@ router.post('/update-avatar', loginChecking.isLoggedInRedirect, (req, res) => {
                         '_id': req.user.id
                     }, {
                         "local.avatar": updatePath
-                    }, {new: true}).exec().then(function(foundUser) {
+                    }, {new: true}).exec().then((foundUser) => {
                         if (!foundUser || foundUser.type != "local") {
                             res.send({type: 'error', information: "Unknow failure"})
                             throw new Error("User updating avatar with suspicious user type");
                         } else {
                             res.send({type: 'success', information: "Success upload avatar", avatarPath: updatePath});
                         }
-                    }).catch(function(err) {
+                    }).catch((err) => {
                         throw err;
                         res.send({type: 'error', information: err});
                     })
@@ -172,13 +174,17 @@ router.post('/update-avatar', loginChecking.isLoggedInRedirect, (req, res) => {
 
 })
 
-router.post('/favorite-question', function(req, res) {
+router.post('/set-privacy', (req, res) => {
+    res.send({status: "success", information: "API not open yet"});
+})
+
+router.post('/favorite-question', (req, res) => {
     const id = req.user._id;
     console.log(req.user);
     res.send({status: "success", information: "done!"});
 });
 
-router.post('/like-question', function(req, res) {
+router.post('/like-question', (req, res) => {
     const id = req.user._id;
     console.log(req.user);
     res.send({status: "success", information: "done!"});
@@ -186,7 +192,7 @@ router.post('/like-question', function(req, res) {
 
 module.exports = router;
 
-const getUserDataPath = function(userType) {
+const getUserDataPath = (userType) => {
     let path = "";
     switch (userType) {
         case "local":
@@ -212,7 +218,7 @@ const updateUserSelfDescription = (user, description) => {
     const id = user._id;
     const updatePath = getUserDataPath(user.type);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         User.update({
             _id: id
         }, {
@@ -223,9 +229,9 @@ const updateUserSelfDescription = (user, description) => {
                     evaluation: ""
                 }
             }
-        }).exec().then(function(query_report) {
+        }).exec().then((query_report) => {
             resolve(query_report);
-        }).catch(function(err) {
+        }).catch((err) => {
             throw err
             reject(err);
         });
@@ -236,7 +242,7 @@ const updateUserPersonalityAssessment = (user, assessment) => {
     const id = user._id;
     const updatePath = getUserDataPath(user.type) + ".evaluation";
 
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
 
         User.update({
             _id: id
@@ -244,9 +250,9 @@ const updateUserPersonalityAssessment = (user, assessment) => {
             "$set": {
                 [updatePath]: assessment
             }
-        }).exec().then(function(query_report) {
+        }).exec().then((query_report) => {
             resolve(query_report);
-        }).catch(function(err) {
+        }).catch((err) => {
             throw err
             reject(err);
         });

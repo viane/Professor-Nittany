@@ -281,16 +281,21 @@ $(function() {
     })
 })
 
-//////////////////////////////////////////////
-// This function adds and removes the hidden class from the developer token input
-//////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
+// This function toggle the admin/advisor token for signup
+////////////////////////////////////////////////////////////////////////////////////////////
 $(function() {
     $("#form-register-role").change(function() {
-
         if ($("#form-register-role option:selected").text() === "Admin") {
             $("#form-admin-token").removeClass("hidden");
         } else {
             $("#form-admin-token").addClass("hidden");
+        }
+
+        if ($("#form-register-role option:selected").text() === "Advisor") {
+            $("#form-advisor-token").removeClass("hidden");
+        } else {
+            $("#form-advisor-token").addClass("hidden");
         }
     })
 })

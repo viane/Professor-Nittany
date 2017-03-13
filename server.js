@@ -37,6 +37,9 @@ const serverStatus = require(appRoot + '/app/server-status');
 // for system status functions
 const systemStatus = require(appRoot + '/app/system-status');
 
+// customize console.log font color
+const logColor = require('colors');
+
 app.use(opbeat.middleware.express()); // opbeat for heroku monitoring
 
 app.use(bodyParser.json({
@@ -88,17 +91,26 @@ require(appRoot + '/app/routes.js')(app, passport); // Routes
 
 require(appRoot + '/app/socket-io.js')(server); //handle communication between client and server
 
+// loading questionFeeds from Disk
 serverStatus.initQuestionFeeds().then((result) => {
-    console.log("Success loaded question feeds from server");
+    console.log("√ Success loaded question feeds".green);
 }).catch((err) => {
     throw err
-}) // loading questionFeeds from Disk
+})
 
-systemStatus.initGetKnowledgeDomain().then((result) => {
-    console.log("Success loaded knowledge domain terms from server");
+// loading advisorList from Disk
+serverStatus.initAdvisorList().then((result) => {
+    console.log("√ Success loaded advisor list".green);
 }).catch((err) => {
     throw err
-}) // loading questionFeeds from Disk
+})
+
+// loading KnowledgeDomain from Disk
+systemStatus.initGetKnowledgeDomain().then((result) => {
+    console.log("√ Success loaded knowledge domain terms".green);
+}).catch((err) => {
+    throw err
+})
 
 server.listen(app.get('port'), function() {
     console.log('Express server listening on port ' + app.get('port'))
