@@ -98,13 +98,6 @@ serverStatus.initQuestionFeeds().then((result) => {
     throw err
 })
 
-// loading advisorList from Disk
-serverStatus.initAdvisorList().then((result) => {
-    console.log("√ Success loaded advisor list".green);
-}).catch((err) => {
-    throw err
-})
-
 // loading KnowledgeDomain from Disk
 systemStatus.initGetKnowledgeDomain().then((result) => {
     console.log("√ Success loaded knowledge domain terms".green);

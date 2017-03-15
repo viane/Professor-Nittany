@@ -147,7 +147,14 @@ $(function() {
 
 // for upload self description at /uploadPersonal
 $(function() {
-    $("#upload-description-Text-File").dropzone({url: "/api/profile/upload/upload-description-text-file"});
+    if (window.location.href === "http://localhost:3000/profile" || window.location.href === "https://intelligent-student-advisor.herokuapp.com/profile") {
+        var myDropzone = new Dropzone("#upload-description-Text-File", {url: "/api/profile/upload/upload-description-text-file"});
+        myDropzone.on("success", function(file) {
+          setTimeout(()=>{
+            location.reload();
+          },800)
+        })
+    }
 });
 
 // for upload source learning document at /SystemManagement
@@ -469,17 +476,17 @@ const addQuestionFeedClickEventHanlder = () => {
 // Answer related question ask event handler
 //////////////////////////////////////////////
 
-const addAnswerRelatedQuestionHandler = ()=>{
-  $('.answer-relate-question').each(function() {
-      $(this).on('click', function(evt) {
-          evt.preventDefault();
-          // grab question text and put in to search bar
-          $('#userQueryInput').val($(this).text())
+const addAnswerRelatedQuestionHandler = () => {
+    $('.answer-relate-question').each(function() {
+        $(this).on('click', function(evt) {
+            evt.preventDefault();
+            // grab question text and put in to search bar
+            $('#userQueryInput').val($(this).text())
 
-          // mannual fire search event by click the submit button
-          $('#querySubmitBtn').click();
-      })
-  })
+            // mannual fire search event by click the submit button
+            $('#querySubmitBtn').click();
+        })
+    })
 }
 
 //////////////////////////////////////////////

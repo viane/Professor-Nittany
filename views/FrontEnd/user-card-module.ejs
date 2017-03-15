@@ -97,9 +97,12 @@
                     <i class="fa fa-inbox"></i> Inbox<span class="label pull-right">*</span>
                 </a>
             </li>
+            <!-- Generate assessment only available for student -->
+            <% if (user.type === "local" && user.local.role != "advisor") { %>
             <li>
                 <a rel="modal:open" class="sb-links-sm" href="#assessment-section"><i class="fa fa-file-text-o"></i> Generate Assessment</a>
             </li>
+            <% } %>
         </ul>
     </div>
 </div>
@@ -107,10 +110,10 @@
 <div id="assessment-section" style="display:none;">
     <div class="assessment-section-selection" style="display: inline">
         <h3>Select what you want to be included</h3>
-        <label class="checkbox-inline"><input type="checkbox" value="">Introduction</label>
-        <label class="checkbox-inline"><input type="checkbox" value="">Interest</label>
-        <label class="checkbox-inline"><input type="checkbox" value="">Research</label>
-        <label class="checkbox-inline"><input type="checkbox" value="">Question History</label>
+        <label class="checkbox-inline"><input type="checkbox" value="introduction">Introduction</label>
+        <label class="checkbox-inline"><input type="checkbox" value="interest">Interest</label>
+        <label class="checkbox-inline"><input type="checkbox" value="personality">Personality Assessment</label>
+        <label class="checkbox-inline"><input type="checkbox" value="question">Question History</label>
         <a id="goto-advisor-list-btn" class="btn btn-success" rel="modal:open" href="#assessment-advisor">Next</a>
         <a class="btn btn-danger" rel="modal:close">Exit</a>
     </div>
@@ -125,7 +128,7 @@
         <%- include ejsModule/loader.ejs %>
 
         <a class="btn btn-primary" rel="modal:open" href="#assessment-section">Previous</a>
-        <a class="btn btn-success">Send</a>
-        <a class="btn btn-danger" rel="modal:close">Exit</a>
+        <a id="assessment-send-btn" class="btn btn-success">Send</a>
+        <a id="assessment-advisor-exit-btn" class="btn btn-danger" rel="modal:close">Exit</a>
     </div>
 </div>

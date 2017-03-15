@@ -60,7 +60,7 @@
     "supertest": "^3.0.0",
     "util": "^0.10.3",
     "validator": "^6.2.1",
-    "watson-developer-cloud": "*",
+    "watson-developer-cloud": "^2.26.0",
     "write-json-file": "^2.0.0"
   },
   "devDependencies": {},

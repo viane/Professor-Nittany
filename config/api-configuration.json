@@ -47,6 +47,12 @@
                     "names": ["pullout heading", "pulloutheading", "heading", "subtitle"]
                 }]
             }
+        },
+        "normalized_html": {
+            "exclude_tags_keep_content": ["font", "em", "span", "strong", "code"]
+        },
+        "answer_units": {
+            "selector_tags": ["h1", "h2", "h3", "h4", "h5", "h6"]
         }
     }
 }

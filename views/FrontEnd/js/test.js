@@ -374,26 +374,49 @@ $(() => {
     });
 });
 
-// get advisor list when user generated assessment and sending to advisors
-$(()=>{
-  $('#goto-advisor-list-btn').on('click',()=>{
-    const url = '/api/server-status/get-advisor-list';
-    fetch(url, {
-        method: "GET",
-        credentials: 'include'
-    }).then(function(res) {
-        if (res.status !== 200) {
-            generateNotice('error', "Error, status code: " + res.status);
-            return;
-        } else {
-            res.json().then(function(result) {
-                $('.advisor-list-panel').html("<pre>"+JSON.stringify(result,"\n",2)+"</pre>");
-                $(".loader").css('display','none');
-            })
-        }
-    }).catch(function(err) {
-        generateNotice('error', err);
-        $(".loader").css('display','none');
+// get advisor list when user sending generated assessment and to advisors
+$(() => {
+    $('#goto-advisor-list-btn').on('click', () => {
+        const url = '/api/server-status/get-advisor-list';
+        fetch(url, {
+            method: "GET",
+            credentials: 'include'
+        }).then(function(res) {
+            if (res.status !== 200) {
+                generateNotice('error', "Error, status code: " + res.status);
+                return;
+            } else {
+                res.json().then(function(result) {
+                    // clear pannel
+                    $('.advisor-list-panel').html("");
+                    // render advisors
+                    result.advisors.map((advisor) => {
+                        let advisorDom = "<figure class=\"advisor-profile-wrapper\">";
+                        // profile image
+                        advisorDom += "<div class=\"profile-image\"><img src=\"" + advisor.avatar + "\"/></div>";
+                        advisorDom += "<figcaption>";
+                        // checkbox
+                        advisorDom += "<label class=\"checkbox checkbox--four\"><div style=\"display:none\" data-advisor-id=\"" + advisor.id + "\" data-advisor-email=\"" + advisor.email + "\" data-advisor-displayName=\"" + advisor.displayName + "\"></div><input class=\"advisor-check-input\" type=\"checkbox\" /><span></span></label>";
+                        // displayName
+                        advisorDom += "<h3>" + advisor.displayName + "</h3>";
+                        // email
+                        advisorDom += "<h4>" + advisor.email + "</h4>";
+                        // interest
+                        let interestContent = "";
+                        advisor.interest.map((interest) => {
+                            interestContent += interest.toString();
+                        });
+                        advisorDom += "<p>" + interestContent + "</p>";
+                        advisorDom += "</figcaption>"
+                        advisorDom += "</figure>";
+                        $('.advisor-list-panel').append(advisorDom);
+                    });
+                    $(".loader").css('display', 'none');
+                })
+            }
+        }).catch(function(err) {
+            generateNotice('error', err);
+            $(".loader").css('display', 'none');
+        });
     });
-  });
 })

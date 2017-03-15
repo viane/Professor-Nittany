@@ -25,7 +25,8 @@
   vertical-align: middle;
   position: relative;
   z-index: 2;
-  max-width: 500px;
+  max-width: 45%;
+  min-width: 320px;
   box-sizing: border-box;
   width: 90%;
   background: #fff;

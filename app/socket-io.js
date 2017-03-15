@@ -1,5 +1,6 @@
 const appRoot = require('app-root-path');
 const questionAnswer = require('./question-answer');
+const User = require(appRoot + '/app/models/user');
 
 module.exports = function(server) {
     const io = require('socket.io').listen(server);
@@ -13,8 +14,8 @@ module.exports = function(server) {
             user.type = data.type;
         });
 
-        // when the client emits 'new message', this listens and executes
-        socket.on('new message', function(data) {
+        // when the client emits 'new question', this listens and executes
+        socket.on('question', function(data) {
 
             const currentInput = data.content;
 
@@ -27,7 +28,10 @@ module.exports = function(server) {
                 if (user.id === data.sender.id && user.type === data.sender.type) {
                     // ask system
                     questionAnswer.ask(user, currentInput).then(function(result) {
-                        socket.emit('new message', {message: result.response.docs, confidence:result.inDomain});
+                        socket.emit('answer', {
+                            message: result.response.docs,
+                            confidence: result.inDomain
+                        });
                     }).catch(function(err) {
                         console.log(err);
                     });
@@ -40,7 +44,10 @@ module.exports = function(server) {
 
                 //handle by queston and answer
                 questionAnswer.ask(null, currentInput).then(function(result) {
-                    socket.emit('new message', {message: result.response.docs, confidence:result.inDomain});
+                    socket.emit('answer', {
+                        message: result.response.docs,
+                        confidence: result.inDomain
+                    });
                 }).catch(function(err) {
                     console.log(err);
                 });
@@ -62,7 +69,36 @@ module.exports = function(server) {
             ////////////////////////////////////////////////////////////
             // End of demo function
             ////////////////////////////////////////////////////////////
+
         });
+
+        ////////////////////////////////////////////////////////////
+        // client send advisor assessment(s)
+        ////////////////////////////////////////////////////////////
+
+        socket.on('client-send-assessment', function(data) {
+            // find client information
+            User.findById(data.senderID, (err, user) => {
+                if (err) {
+                    console.error(err);
+                    socket.emit('fail-notify-advisor','Failed to connect to advisors, please contact us.');
+                    return;
+                }
+                const student = user;
+                // push notification to inbox
+                data.receiveAdvisor.map((advisorObj) => {
+                    // fix this, use socket.broadcast.to(socketid).emit(..) instead
+                    socket.broadcast.emit('advsisor-receive-assessment', {
+                        id: advisorObj.id,
+                        student: student,
+                        viewSection: data.viewSection
+                    });
+                });
+                // log assessment to DB
+                socket.emit('success-notify-advisor',data.receiveAdvisor);
+            })
+        });
+
         // when the user disconnects.. perform this
         socket.on('disconnect', function() {
             console.log("A user disconnected socket connection");

@@ -5,6 +5,7 @@ const router = express.Router();
 const appRoot = require('app-root-path');
 const serverStatus = require(appRoot + '/app/server-status');
 const loginChecking = require(appRoot + '/app/utility-function/login-checking');
+const User = require(appRoot + '/app/models/user');
 
 // get api for server questionFeeds
 router.get('/get-question-feeds', (req, res) => {
@@ -13,10 +14,38 @@ router.get('/get-question-feeds', (req, res) => {
 
 // get api for list advisors
 router.get('/get-advisor-list', loginChecking.isLoggedInRedirect, (req, res) => {
-    // send advisor information as array
-    setTimeout(()=> {
-        res.send({advisors: serverStatus.getAdvisorList()})
-    }, 1000)
+    User.find({
+        "local.role": "advisor"
+    }, (err, users) => {
+        if (err) {
+            console.error(err);
+            res.sendStatus(300);
+        } else {
+            let advisorList = [];
+            for (let index = 0; index < users.length; index++) {
+                const advisorRecordTemplate = {
+                    id: "",
+                    avatar: "",
+                    interest: "",
+                    email: "",
+                    displayName: ""
+                };
+
+                advisorRecordTemplate.id = users[index]._id;
+                advisorRecordTemplate.avatar = users[index].local.avatar;
+                advisorRecordTemplate.interest = users[index].local.interest;
+                advisorRecordTemplate.email = users[index].local.email;
+                advisorRecordTemplate.displayName = users[index].local.displayName;
+
+                advisorList.unshift(advisorRecordTemplate);
+
+                if (index == users.length - 1) {
+                    // send advisor information as array
+                    res.send({advisors: advisorList})
+                }
+            }
+        }
+    })
 });
 
 // used for demo, get question analysis for last asked questionFeeds
@@ -25,3 +54,10 @@ router.get('/get-last-question-analysis', (req, res) => {
 });
 
 module.exports = router;
+
+// array prototype for get last item
+if (!Array.prototype.last) {
+    Array.prototype.last = function() {
+        return this[this.length - 1];
+    };
+};

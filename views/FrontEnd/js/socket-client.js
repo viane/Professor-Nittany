@@ -28,7 +28,7 @@ $(function() {
     socket.emit('load', user);
 
     // when server send back a message
-    socket.on('new message', function(data) {
+    socket.on('answer', function(data) {
         addChatMessage("server", data);
         //console.log("server received your data and sent to you: " +JSON.stringify(data.message));
     });
@@ -40,6 +40,84 @@ $(function() {
     socket.on('question-analysis', function(data) {
         displayAnalysis(data);
     });
+
+    ////////////////////////////////////////////////////////////////////////
+    // Inbox message
+    ////////////////////////////////////////////////////////////////////////
+    socket.on('inbox', function(data) {});
+
+    ////////////////////////////////////////////////////////////////////////
+    // Send assessment
+    ////////////////////////////////////////////////////////////////////////
+    $("#assessment-send-btn").click(() => {
+        let payload = {
+            senderID:"",
+            viewSection: [],
+            receiveAdvisor: []
+        }
+
+        payload.senderID = $('#user-id').text();
+
+        // form open section to be viewed by advisor
+        $('.assessment-section-selection input:checked').each(function() {
+            payload.viewSection.unshift($(this).val());
+        })
+
+        // form receiving advisors array
+        $('.advisor-profile-wrapper input:checked').each(function() {
+            const receiverID = $(this).prev('div').data('advisor-id');
+            const receiverEmail = $(this).prev('div').data('advisor-email');
+            const receiverDisplayName = $(this).prev('div').data('advisor-displayname');
+            const receiverObj = {
+                id: receiverID,
+                email: receiverEmail,
+                displayName: receiverDisplayName
+            };
+            payload.receiveAdvisor.unshift(receiverObj);
+        });
+
+        // checking any missing field
+      if (payload.senderID === "") {
+        // empty user id
+        generateNotice('error','User login status invalid, please re-signin.');
+      }else if (payload.viewSection.length === 0) {
+        // empty assessment section
+        generateNotice('warning','Please select at least <b>1</b> section to be viewed by advisors');
+      }else if (payload.receiveAdvisor.length === 0) {
+        // no advisor select
+        generateNotice('warning','Please select at least <b>1</b> advisor to view your assessment');
+      }else {
+        // all good
+        socket.emit('client-send-assessment',payload);
+
+        // on feedback
+        // success
+        socket.on('success-notify-advisor',(data)=>{
+          generateNotice('success','Successfully send to advisors.');
+          setTimeout(()=>{
+            $('#assessment-advisor-exit-btn').click();
+          },1400);
+        })
+        // fail
+        socket.on('fail-notify-advisor',(err)=>{
+          generateNotice('success','Failed to send to advisor, error: ', err);
+        })
+      }
+    })
+
+    ////////////////////////////////////////////////////////////////////////
+    // To Advisor receive an assessment (need fix)
+    ////////////////////////////////////////////////////////////////////////
+    socket.on('advsisor-receive-assessment', (data)=>{
+
+      if ($('#user-id').text() === data.id) {
+        generateNotice('success', "A student wants you to view assessment");
+
+        if (window.location.href === "http://localhost:3000/advising" || window.location.href === "https://intelligent-student-advisor.herokuapp.com/advising") {
+          $(".panel-primary").append("<p>View Section:"+ JSON.stringify(data.viewSection)+"</p><pre>"+JSON.stringify(data.student)+"</pre>")
+        }
+      }
+    })
 
     const displayAnalysis = (data) => {
         //clear previous result
@@ -88,7 +166,7 @@ $(function() {
         if (message.content) {
 
             // tell server to execute 'new message' and send along one parameter
-            socket.emit('new message', message);
+            socket.emit('question', message);
             addChatMessage("client", message.content);
         }
     });

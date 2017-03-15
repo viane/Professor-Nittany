@@ -142,21 +142,8 @@ module.exports = function(passport) {
                                 throw err;
                                 return done(err, false, req.flash('signupMessage', err));
                             } else {
-                                console.log(req.body.account_role.red);
                                 // if successful
-                                // if newUser is an advisor
-                                if (req.body.account_role === "Advisor") {
-                                    //  push new advsior id to server
-                                    serverStatus.addNewToAdvisorLists(newRecord._id).then(() => {
-                                        return done(null, newUser);
-                                    }).catch((err) => {
-                                        throw err;
-                                        return done(err, false, req.flash('signupMessage', err));
-                                    });
-                                } else {
-                                    return done(null, newUser);
-                                }
-
+                                return done(null, newUser);
                             }
                         })
                     }

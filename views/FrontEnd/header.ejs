@@ -54,6 +54,18 @@
 			<div style="display:none"><p id="user-id"><%= user._id %></p></div>
 			<div style="display:none"><p id="user-type"><%= user.type %></p></div>
 
+			<!-- inbox -->
+			<li class="active">
+				<a href="#" class="dropdown" data-toggle="dropdown">
+						<i class="fa fa-inbox" aria-hidden="true"></i>
+				</a>
+				<ul class="dropdown-menu">
+					<li><a href="#" class="btn"><i class="fa fa-envelope" aria-hidden="true"></i>Test new message</a></li>
+					<li><a href="#" class="btn"><i class="fa fa-envelope-open" aria-hidden="true"></i>Test opened message</a></li>
+				</ul>
+			</li>
+			<!-- End inbox -->
+
 			<li class="active">
 				<a href="#" class="dropdown" data-toggle="dropdown">
 					<span class="user-avatar pull-left" style="margin-right:8px; margin-top:-5px;">
