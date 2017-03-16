@@ -67,9 +67,9 @@ router.post('/upload/upload-description-text-file', busboy({
                 loadJsonFile(appRoot + '/config/api-configuration.json').then(json => {
                     // using watson documention conversion
                     document_conversion.convert({
-                        file: fs.createReadStream(filePath), conversion_target: document_conversion.conversion_target.ANSWER_UNITS,
-                        // Use a custom configuration.
-                        config: json.document_conversion_config
+                        file: fs.createReadStream(filePath),
+                        conversion_target: document_conversion.conversion_target.ANSWER_UNITS,
+                        word: json.document_conversion_config
                     }, (err, response) => {
                         if (err) {
                             console.error(err);
