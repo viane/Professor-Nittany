@@ -43,9 +43,9 @@ router.post('/update/domain', loginChecking.isAdminRedirect, busboy({
                 loadJsonFile(appRoot + '/config/api-configuration.json').then(json => {
                     // using watson documention conversion
                     document_conversion.convert({
-                        file: fs.createReadStream(filePath), conversion_target: 'ANSWER_UNITS',
-                        // Use a custom configuration.
-                        config: json.document_conversion_config
+                        file: fs.createReadStream(filePath),
+                        conversion_target: document_conversion.conversion_target.ANSWER_UNITS,
+                        word: json.document_conversion_config
                     }, (err, response) => {
                         if (err) {
                             console.error(err);
@@ -99,6 +99,5 @@ router.post('/update/domain', loginChecking.isAdminRedirect, busboy({
         res.sendStatus(302);
     })
 });
-
 
 module.exports = router;

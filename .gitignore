@@ -12,3 +12,5 @@ config/server-status.json
 
 views/img/Thumbs.db
 *.log
+
+config/conversation-entity-config.csv

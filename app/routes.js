@@ -140,7 +140,7 @@ module.exports = function(app, passport) {
                 user: req.user, // get the user out of session and pass to template
                 introduction: foundUser[path].personality_assessement.description_content,
                 ask_history: foundUser[path].ask_history,
-                personality_assessement:personality,
+                personality_assessement:foundUser[path].personality_assessement.evaluation,
                 privacy: foundUser.privacy
             });
         });
