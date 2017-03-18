@@ -258,8 +258,8 @@ module.exports = function(app, passport) {
     ////////////////////////////////////////////////
     // Inbox main
     ///////////////////////////////////////////////////
-    app.get('/inbox-module', /*loginChecking.isAdvisorRedirect,*/ function(req, res) {
-            res.render(frontEndRoot + '/ejsModule/inbox-module.ejs');
+    app.get('/inbox', /*loginChecking.isAdvisorRedirect,*/ function(req, res) {
+            res.render(frontEndRoot + '/inbox.ejs');
     });
 
     // =====================================
