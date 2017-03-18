@@ -44,18 +44,36 @@ router.post('/upload/upload-description-text-file', busboy({
         if (path.extname(filename) === ".txt") {
             file.on('data', function(data) {
                 updateUserSelfDescription(req.user, data).then((query_report) => {
-                    res.sendStatus(200);
+                    const dataText = data.toString();
+
+                    // if user description is longer than 100 words
+                    if (countWords(dataText) > 100) {
+                        getAndUpdatePersonalityAssessment(req.user, dataText).then(() => {
+                            res.sendStatus(200);
+                        }).catch((err) => {
+                            console.error(err);
+                            res.sendStatus(300);
+                        });
+                    } else {
+                        const updatePath = getUserDataPath(req.user.type);
+                        User.update({
+                            _id: req.user._id
+                        }, {
+                            $set: {
+                                [updatePath.evaluation]: {}
+                            }
+                        }).exec().then(() => {
+                            res.sendStatus(200);
+                        }).catch((err) => {
+                            console.error(err);
+                            res.sendStatus(300);
+                        });
+                    }
                 }).catch(function(err) {
-                    throw err;
+                    console.error(err);
                     res.sendStatus(300);
                 });
 
-                const dataText = data.toString();
-
-                // personality analysis only takes input that is more than 100 words
-                if (countWords(dataText) > 105) {
-                    getAndUpdatePersonalityAssessment(req.user, dataText);
-                }
             });
         } else if (path.extname(filename) === ".doc" || path.extname(filename) === ".docx") {
             // if user upload a word file, write to temp folder and named by it's id, then parse and upload to DB
@@ -83,16 +101,37 @@ router.post('/upload/upload-description-text-file', busboy({
                                 del.promise([filePath]).then(() => {}).catch((err) => {
                                     throw err;
                                 });
-                                res.sendStatus(200);
+                                if (countWords(fullDoc) > 100) {
+                                    getAndUpdatePersonalityAssessment(req.user, fullDoc).then(() => {
+                                        res.sendStatus(200);
+                                    }).catch((err) => {
+                                        console.error(err);
+                                        res.sendStatus(300);
+                                    });
+                                } else {
+                                    const updatePath = getUserDataPath(req.user.type);
+                                    User.update({
+                                        _id: req.user._id
+                                    }, {
+                                        $set: {
+                                            [updatePath.evaluation]: {
+                                            }
+                                        }
+                                    }).exec().then(() => {
+                                        res.sendStatus(200);
+                                    }).catch((err) => {
+                                        console.error(err);
+                                        res.sendStatus(300);
+                                    });
+                                }
+
                             }).catch(function(err) {
                                 // if error on write to DB, leave the file in the folder for further examnaton
                                 throw err;
                                 res.sendStatus(300);
                             });
                             // personality analysis only takes input that is more than 100 words
-                            if (countWords(fullDoc) > 105) {
-                                getAndUpdatePersonalityAssessment(req.user, fullDoc);
-                            }
+
                         }
                     });
                 });
@@ -105,8 +144,30 @@ router.post('/upload/upload-description-text-file', busboy({
 // Get user interests
 router.get('/get-interest', (req, res) => {
     User.findById(req.user._id).exec().then((foundUser) => {
-        const interestPath = getInterestPathFromUser(foundUser);
+        const interestPath = getUserRecordPathByAccountType(foundUser);
         res.send({status: "success", information: "good", interest: foundUser[interestPath].interest});
+    }).catch((err) => {
+        throw err;
+        res.send({type: 'error', information: err});
+    })
+});
+
+// Get user introduction
+router.get('/get-introduction', (req, res) => {
+    User.findById(req.user._id).exec().then((foundUser) => {
+        const path = getUserRecordPathByAccountType(foundUser);
+        res.send({status: "success", information: "Successfully load introduction.", introduction: foundUser[path].personality_assessement.description_content});
+    }).catch((err) => {
+        throw err;
+        res.send({type: 'error', information: err});
+    })
+});
+
+// Get user personaltity assessment
+router.get('/get-personalityAssessment', (req, res) => {
+    User.findById(req.user._id).exec().then((foundUser) => {
+        const path = getUserRecordPathByAccountType(foundUser);
+        res.send({status: "success", information: "Successfully load assessment.", assessment: foundUser[path].personality_assessement.evaluation});
     }).catch((err) => {
         throw err;
         res.send({type: 'error', information: err});
@@ -227,7 +288,7 @@ const updateUserSelfDescription = (user, description) => {
                 [updatePath]: {
                     last_upload_time: new Date().toISOString(),
                     description_content: description.toString('utf8'),
-                    evaluation: ""
+                    evaluation: {}
                 }
             }
         }).exec().then((query_report) => {
@@ -261,10 +322,15 @@ const updateUserPersonalityAssessment = (user, assessment) => {
 
 }
 
+// after updateUserSelfDescription is called
 const getAndUpdatePersonalityAssessment = (user, description) => {
-    personality.getAnalysis(description).then(assessment => updateUserPersonalityAssessment(user, assessment).then().catch(err => {
-        throw err
-    }))
+    return new Promise((resolve, reject) => {
+        personality.getAnalysis(description).then(assessment => updateUserPersonalityAssessment(user, assessment).then(resolve()).catch(err => {
+            console.error(err);
+            reject(err);
+        }));
+    });
+
 }
 
 var countWords = (s) => {
@@ -274,7 +340,7 @@ var countWords = (s) => {
     return s.split(' ').length;
 }
 
-const getInterestPathFromUser = user => {
+const getUserRecordPathByAccountType = user => {
     const userType = user.type;
     let returnPath = "";
     switch (userType) {

@@ -27,7 +27,7 @@ $(function() {
     // on page load, send server the user info of init the socket
     socket.emit('load', user);
 
-    // when server send back a message
+    // when server send back an answer
     socket.on('answer', function(data) {
         addChatMessage("server", data);
         //console.log("server received your data and sent to you: " +JSON.stringify(data.message));

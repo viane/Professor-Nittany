@@ -263,7 +263,7 @@ pre {
     min-height: 150px;
     border: 2px solid rgba(0, 0, 0, 0.3);
     background: white;
-    padding: 20px 20px;
+    /* padding: 20px 20px; */
 }
 
 .dropzone.dz-clickable {
@@ -698,5 +698,10 @@ pre {
   background: #26ca28;
 }
 
-/* profile page troduction section fix*/
+/* profile page Introduction section fix*/
 #introduction-content-p,#personality-assessement-p{min-height: 150px;/* max-height: 150px; */height: 150px;overflow-y: scroll;resize: vertical;}
+
+/* personality section animation*/
+#personality-assessement{
+  transition: all 1.2s ease-in-out;
+}
