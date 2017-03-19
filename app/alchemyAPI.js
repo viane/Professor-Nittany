@@ -15,6 +15,7 @@ module.exports = router;
 
 module.exports.getAnalysis = function(inputString) {
     var parameters = {
+        language: 'english',
         extract: 'concepts,entities,keywords,taxonomy',
         sentiment: 1,
         maxRetrieve: 50,
@@ -24,7 +25,7 @@ module.exports.getAnalysis = function(inputString) {
     return new Promise(function(resolve, reject) {
         alchemy_language.combined(parameters, function(err, response) {
             if (err) {
-                throw err;
+                console.error(err);
                 reject(err);
             } else {
                 resolve(response);

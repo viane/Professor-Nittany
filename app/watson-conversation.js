@@ -1,10 +1,12 @@
-var watson = require('watson-developer-cloud');
+'use strict'
 
-var dialog_stack = ["root"],
+const watson = require('watson-developer-cloud');
+
+let dialog_stack = ["root"],
     dialog_turn_counter = 1,
     dialog_request_counter = 1;
 
-var conversation = watson.conversation({username: '2b2e38a3-e4b9-4602-a9eb-8be58f235fca', password: 'YXyHpjWJXbLf', version: 'v1', version_date: '2016-07-11'});
+const conversation = watson.conversation({username: '2b2e38a3-e4b9-4602-a9eb-8be58f235fca', password: 'YXyHpjWJXbLf', version: 'v1', version_date: '2016-07-11'});
 
 exports.enterMessage = function(inputText) {
     return new Promise(function(resolve, reject) {
@@ -23,7 +25,7 @@ exports.enterMessage = function(inputText) {
             workspace_id: '67c7c32c-453d-47b5-b942-2f1ee76ffa77'
         }, function(err, response) {
             if (err) {
-                console.log('error:', err);
+                console.error('error:', err);
                 reject(err);
             } else {
                 //update dialog path

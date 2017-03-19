@@ -126,7 +126,6 @@
                                             <input type="text" name="email" placeholder="Email" class="form-email form-control" id="form-email">
                                         </div>
                                         <div class="form-group">
-                                        <!-- k* https://github.com/wenzhixin/bootstrap-show-password-->
                                             <label class="sr-only" for="form-password">Password</label>
                                             <input type="password" name="password" placeholder="Password" class="form-password form-control" id="form-password" data-signup-password>
                                             <span class="show-password-btn"><i class="fa fa-eye" aria-hidden="true"></i></span>
@@ -139,8 +138,12 @@
                                                 <option>Admin</option>
                                             </select>
                                         </div>
+                                        <div class="form-group hidden" id="form-advisor-token">
+                                            <label class="sr-only" for="advisor_token">Advisor Token</label>
+                                            <input type="text" name="advisor-token" placeholder="Advisor Token" class="form-advisor-token form-control">
+                                        </div>
                                         <div class="form-group hidden" id="form-admin-token">
-                                            <label class="sr-only" for="admin_token">Token</label>
+                                            <label class="sr-only" for="admin_token">Admin Token</label>
                                             <input type="text" name="admin-token" placeholder="Admin Token" class="form-admin-token form-control">
                                         </div>
                                     <button type="submit" class="btn">Sign up!</button>

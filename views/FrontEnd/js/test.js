@@ -345,13 +345,13 @@ $(document).ready(function() {
     $('[data-toggle="tooltip"]').tooltip();
 });
 
-//code to change avatar
+// code to change avatar
 $(() => {
     $("#submit-avatar-input").on('change', function() {
         const url = '/api/profile/update-avatar';
 
         const data = new FormData();
-        data.append("file",$('#submit-avatar-input')[0].files[0]);
+        data.append("file", $('#submit-avatar-input')[0].files[0]);
 
         fetch(url, {
             method: "POST",
@@ -361,11 +361,11 @@ $(() => {
             if (res.status !== 200) {
                 generateNotice('error', "Error, status code: " + res.status);
                 return;
-            }else{
-              res.json().then(function(result) {
-                generateNotice(result.type, result.information);
-                $('#user-avatar').prop("src",result.avatarPath+ '?' + Math.random());
-              })
+            } else {
+                res.json().then(function(result) {
+                    generateNotice(result.type, result.information);
+                    $('#user-avatar').prop("src", result.avatarPath + '?' + Math.random());
+                })
             }
 
         }).catch(function(err) {
@@ -373,3 +373,89 @@ $(() => {
         });
     });
 });
+
+// get advisor list when user sending generated assessment and to advisors
+$(() => {
+    $('#goto-advisor-list-btn').on('click', () => {
+        const url = '/api/server-status/get-advisor-list';
+        fetch(url, {
+            method: "GET",
+            credentials: 'include'
+        }).then(function(res) {
+            if (res.status !== 200) {
+                generateNotice('error', "Error, status code: " + res.status);
+                return;
+            } else {
+                res.json().then(function(result) {
+                    // clear pannel
+                    $('.advisor-list-panel').html("");
+                    // render advisors
+                    result.advisors.map((advisor) => {
+                        let advisorDom = "<figure class=\"advisor-profile-wrapper\">";
+                        // profile image
+                        advisorDom += "<div class=\"profile-image\"><img src=\"" + advisor.avatar + "\"/></div>";
+                        advisorDom += "<figcaption>";
+                        // checkbox
+                        advisorDom += "<label class=\"checkbox checkbox--four\"><div style=\"display:none\" data-advisor-id=\"" + advisor.id + "\" data-advisor-email=\"" + advisor.email + "\" data-advisor-displayName=\"" + advisor.displayName + "\"></div><input class=\"advisor-check-input\" type=\"checkbox\" /><span></span></label>";
+                        // displayName
+                        advisorDom += "<h3>" + advisor.displayName + "</h3>";
+                        // email
+                        advisorDom += "<h4>" + advisor.email + "</h4>";
+                        // interest
+                        let interestContent = "";
+                        advisor.interest.map((interest) => {
+                            interestContent += interest.toString();
+                        });
+                        advisorDom += "<p>" + interestContent + "</p>";
+                        advisorDom += "</figcaption>"
+                        advisorDom += "</figure>";
+                        $('.advisor-list-panel').append(advisorDom);
+                    });
+                    $(".loader").css('display', 'none');
+                })
+            }
+        }).catch(function(err) {
+            generateNotice('error', err);
+            $(".loader").css('display', 'none');
+        });
+    });
+})
+
+//////////////////////////////////////////////
+// Display question history on profile page
+//////////////////////////////////////////////
+$(() => {
+    if (location.href === "http://localhost:3000/profile" || location.href === "https://intelligent-student-advisor.herokuapp.com/profile") {
+        questionHistory.map((logedQuestionObj) => {
+
+            let respond = "<li class=\"list-group-item text-left\">"
+
+            //add favorite btn to answer
+            respond += "<div id=\"hearts-existing\" class=\"hearrrt\" data-toggle=\"tooltip\" data-container=\"body\" data-placement=\"right\" title=\"Favorite!\" data-favortite = \"true\"></div>";
+
+            //add answer body and
+            respond += "<div class=\"question-log-question-body\"><p class=\"question-body\">" + logedQuestionObj.question_body + "</p></div>";
+
+            respond += "</li>"
+
+            // display user favorited question
+            if (logedQuestionObj.favorite) {
+                $('#favorite-question-list').append(respond);
+            }
+
+            // display user question history
+            if (!logedQuestionObj.favorite) {
+                $('#asked-question-list').append(respond);
+            }
+
+        })
+
+        // enable heart icon functionality
+        $(".hearrrt").hearrrt();
+
+        // mannual mark up each favorite question
+        $('#favorite-question-list .hearrrt span').each(function() {
+            $(this).click()
+        });
+    }
+})

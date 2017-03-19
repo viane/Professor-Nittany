@@ -32,6 +32,20 @@ var userSchema = mongoose.Schema({
             default: false
         }
     },
+    inbox:[{
+      title:String,
+      date: {
+          type: Date,
+          default: Date.now
+      },
+      senderID:String,
+      senderDisplayName:String,
+      body:String,
+      isViewed:{
+        type:Boolean,
+        default:false
+      }
+    }],
     local: {
         email: {
             type: String

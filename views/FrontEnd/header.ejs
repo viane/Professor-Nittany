@@ -17,19 +17,22 @@
 <!-- JQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
-<!-- socket.io -->
-<script src="/socket.io/socket.io.js"></script>
-<script src="../js/socket-client.js"></script>
+<!-- modernizr -->
+<script src="./js/modernizr.js"></script>
 
 <!-- dropzone -->
 <script src="./js/dropzone.js"></script>
 
-<!-- Noty -->
-<script src="../js/jquery.noty.packaged.js"></script>
-
 <!-- Client utility functions -->
 <script src="../js/clientUtilityFunction.js"></script>
 <script src="../js/test.js"></script>
+
+<!-- socket.io -->
+<script src="/socket.io/socket.io.js"></script>
+<script src="../js/socket-client.js"></script>
+
+<!-- Noty -->
+<script src="../js/jquery.noty.packaged.js"></script>
 
 <!-- Bootstrap Javascript -->
 <script src="css/form3/assets/bootstrap/js/bootstrap.min.js"></script>
@@ -48,6 +51,21 @@
 		<ul class="nav navbar-nav navbar-right">
 
 			<% if (locals.user) { %>
+			<div style="display:none"><p id="user-id"><%= user._id %></p></div>
+			<div style="display:none"><p id="user-type"><%= user.type %></p></div>
+
+			<!-- inbox -->
+			<li class="active">
+				<a href="#" class="dropdown" data-toggle="dropdown">
+						<i class="fa fa-inbox" aria-hidden="true"></i>
+				</a>
+				<ul class="dropdown-menu">
+					<li><a href="#" class="btn"><i class="fa fa-envelope" aria-hidden="true"></i>Test new message</a></li>
+					<li><a href="#" class="btn"><i class="fa fa-envelope-open" aria-hidden="true"></i>Test opened message</a></li>
+				</ul>
+			</li>
+			<!-- End inbox -->
+
 			<li class="active">
 				<a href="#" class="dropdown" data-toggle="dropdown">
 					<span class="user-avatar pull-left" style="margin-right:8px; margin-top:-5px;">
@@ -63,7 +81,7 @@
 			</li>
 			<% } %>
 
-			<% if (locals.user && user.local.role == "admin") { %>   
+			<% if (locals.user && user.local.role == "admin") { %>
 			<li title="about"><a href="/admin" class="menu-admin-btn">Console</a></li>
 			<% } %>
 

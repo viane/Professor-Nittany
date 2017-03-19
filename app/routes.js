@@ -132,11 +132,19 @@ module.exports = function(app, passport) {
         };
 
         User.findById(req.user._id, function(err, foundUser) {
+            let personality = {};
+            if (foundUser[path].personality_assessement.evaluation) {
+              personality = foundUser[path].personality_assessement.evaluation.personality;
+            }
             res.render(frontEndRoot + 'profile.ejs', {
                 user: req.user, // get the user out of session and pass to template
                 introduction: foundUser[path].personality_assessement.description_content,
                 ask_history: foundUser[path].ask_history,
+<<<<<<< HEAD
                 personality_assessement:foundUser[path].personality_assessement.evaluation.personality,
+=======
+                personality_assessement:foundUser[path].personality_assessement.evaluation,
+>>>>>>> b2be201213b411178a7d84ead655a47dc36cdfef
                 privacy: foundUser.privacy
             });
         });
@@ -255,7 +263,11 @@ module.exports = function(app, passport) {
     // Inbox main
     ///////////////////////////////////////////////////
     app.get('/inbox', /*loginChecking.isAdvisorRedirect,*/ function(req, res) {
+<<<<<<< HEAD
             res.render(frontEndRoot + '/ejsModule/inbox.ejs');
+=======
+            res.render(frontEndRoot + '/inbox.ejs');
+>>>>>>> b2be201213b411178a7d84ead655a47dc36cdfef
     });
 
     // =====================================

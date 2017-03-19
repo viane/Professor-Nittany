@@ -1,8 +1,9 @@
 <style type="text/css">
     .img-avatar {
         width: 75%;
-        padding:10px
+        padding: 10px
     }
+
     a.sb-links-sm {
         border: 2px outset;
         border-radius: 10px;
@@ -14,6 +15,7 @@
         position: relative;
         overflow: hidden;
     }
+
     .btn-file input[type=file] {
         position: absolute;
         top: 0;
@@ -34,60 +36,60 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <% if (user.type === "local") { %>
-          <h4><%= user.local.displayName %></h4>
-          <p>
-            <%= user.local.email %>
-          </p>
-        <% } %>
-        <% if (user.type === "facebook") { %>
-          <h4><%= user.facebook.displayName %></h4>
-          <p>
-            <%= user.facebook.email %>
-          </p>
-        <% } %>
-        <% if (user.type === "twitter") { %>
-          <h4><%= user.twitter.displayName %></h4>
-          <p>
-            <%= user.twitter.email %>
-          </p>
-        <% } %>
-        <% if (user.type === "linkedin") { %>
-          <h4><%= user.linkedin.displayName %></h4>
-          <p>
-            <%= user.linkedin.email %>
-          </p>
-        <% } %>
-        <% if (user.type === "google") { %>
-          <h4><%= user.google.displayName %></h4>
-          <p>
-            <%= user.google.email %>
-          </p>
-        <% } %>
+            <h4><%= user.local.displayName %></h4>
+            <p>
+                <%= user.local.email %>
+            </p>
+            <% } %>
+                <% if (user.type === "facebook") { %>
+                    <h4><%= user.facebook.displayName %></h4>
+                    <p>
+                        <%= user.facebook.email %>
+                    </p>
+                    <% } %>
+                        <% if (user.type === "twitter") { %>
+                            <h4><%= user.twitter.displayName %></h4>
+                            <p>
+                                <%= user.twitter.email %>
+                            </p>
+                            <% } %>
+                                <% if (user.type === "linkedin") { %>
+                                    <h4><%= user.linkedin.displayName %></h4>
+                                    <p>
+                                        <%= user.linkedin.email %>
+                                    </p>
+                                    <% } %>
+                                        <% if (user.type === "google") { %>
+                                            <h4><%= user.google.displayName %></h4>
+                                            <p>
+                                                <%= user.google.email %>
+                                            </p>
+                                            <% } %>
     </div>
     <div class="panel-body">
         <ul class="nav nav-pills nav-stacked nav-email shadow mb-20">
             <li>
                 <figure>
-                  <% if (user.type === "local") { %>
-                    <img class="img-avatar" id="user-avatar" src="<%= user.local.avatar %>"></img>
-                    <form id="update-avatar-form">
-                      <span class="btn btn-default btn-file">
+                    <% if (user.type === "local") { %>
+                        <img class="img-avatar" id="user-avatar" src="<%= user.local.avatar %>"></img>
+                        <form id="update-avatar-form">
+                            <span class="btn btn-default btn-file">
                         Change Avatar<!--glyphicon glyphicon-picture--> <input type="file" id="submit-avatar-input" accept=".jpg, .png, .jpeg" name="file">
                       </span>
-                    </form>
-                    <% } %>
-                    <% if (user.type === "facebook") { %>
-                      <img class="img-avatar" id="user-avatar" src="<%= user.facebook.avatar %>"></img>
-                    <% } %>
-                    <% if (user.type === "twitter") { %>
-                      <img class="img-avatar" id="user-avatar" src="<%= user.twitter.avatar %>"></img>
-                    <% } %>
-                    <% if (user.type === "linkedin") { %>
-                      <img class="img-avatar" id="user-avatar" src="<%= user.linkedin.avatar %>"></img>
-                    <% } %>
-                    <% if (user.type === "google") { %>
-                      <img class="img-avatar" id="user-avatar" src="<%= user.google.avatar %>"></img>
-                    <% } %>
+                        </form>
+                        <% } %>
+                            <% if (user.type === "facebook") { %>
+                                <img class="img-avatar" id="user-avatar" src="<%= user.facebook.avatar %>"></img>
+                                <% } %>
+                                    <% if (user.type === "twitter") { %>
+                                        <img class="img-avatar" id="user-avatar" src="<%= user.twitter.avatar %>"></img>
+                                        <% } %>
+                                            <% if (user.type === "linkedin") { %>
+                                                <img class="img-avatar" id="user-avatar" src="<%= user.linkedin.avatar %>"></img>
+                                                <% } %>
+                                                    <% if (user.type === "google") { %>
+                                                        <img class="img-avatar" id="user-avatar" src="<%= user.google.avatar %>"></img>
+                                                        <% } %>
                 </figure>
             </li>
             <li>
@@ -95,9 +97,38 @@
                     <i class="fa fa-inbox"></i> Inbox<span class="label pull-right">*</span>
                 </a>
             </li>
+            <!-- Generate assessment only available for student -->
+            <% if (user.type === "local" && user.local.role != "advisor") { %>
             <li>
-                <a class="sb-links-sm" href="#"><i class="fa fa-file-text-o"></i> Generate Assessment</a>
+                <a rel="modal:open" class="sb-links-sm" href="#assessment-section"><i class="fa fa-file-text-o"></i> Generate Assessment</a>
             </li>
+            <% } %>
         </ul>
+    </div>
+</div>
+
+<div id="assessment-section" style="display:none;">
+    <div class="assessment-section-selection" style="display: inline">
+        <h3>Select what you want to be included</h3>
+        <label class="checkbox-inline"><input type="checkbox" value="introduction">Introduction</label>
+        <label class="checkbox-inline"><input type="checkbox" value="interest">Interest</label>
+        <label class="checkbox-inline"><input type="checkbox" value="personality">Personality Assessment</label>
+        <label class="checkbox-inline"><input type="checkbox" value="question">Question History</label>
+        <a id="goto-advisor-list-btn" class="btn btn-success" rel="modal:open" href="#assessment-advisor">Next</a>
+        <a class="btn btn-danger" rel="modal:close">Exit</a>
+    </div>
+</div>
+
+<div id="assessment-advisor" style="display:none;">
+    <div class="assessment-advisor-selection" style="display: inline">
+        <h3>Select which advisor you wish to see your assessment</h3>
+
+        <div class="advisor-list-panel"></div>
+        <!-- loader -->
+        <%- include ejsModule/loader.ejs %>
+
+        <a class="btn btn-primary" rel="modal:open" href="#assessment-section">Previous</a>
+        <a id="assessment-send-btn" class="btn btn-success">Send</a>
+        <a id="assessment-advisor-exit-btn" class="btn btn-danger" rel="modal:close">Exit</a>
     </div>
 </div>
