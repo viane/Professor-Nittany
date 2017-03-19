@@ -16,6 +16,8 @@ const testingAPIModule = require(appRoot + '/app/testing/testAPI');
 const profileAPI = require(appRoot + '/app/profile');
 const validator = require("email-validator");
 const serverStatusAPI = require(appRoot + '/app/api/server-status');
+const system = require(appRoot + '/app/api/system');
+const loginChecking = require(appRoot + '/app/utility-function/login-checking');
 
 module.exports = function(app, passport) {
 
@@ -52,7 +54,7 @@ module.exports = function(app, passport) {
             return;
         }
         if (!validator.validate(req.body.email)) {
-            res.send({status: 302, type: 'error', information: 'Invaild email'});
+            res.send({status: 302, type: 'error', information: 'Invalid email'});
             return;
         }
         passport.authenticate('local-login', (err, user, info) => {
@@ -84,12 +86,12 @@ module.exports = function(app, passport) {
         // precondition checking
         if (checkSignUpParameter(req, res)) {
             //email and password not empty, start local authentication
-            passport.authenticate('local-signup', function(err, user, info) {
+            passport.authenticate('local-signup', (err, user, info) => {
                 if (err) {
                     return res.send({status: 302, type: 'error', information: err});
                 } else {
                     // req / res held in closure
-                    req.logIn(user, function(err) {
+                    req.logIn(user, (err) => {
                         if (err) {
                             return res.send({status: 302, type: 'error', information: err});
                         }
@@ -104,8 +106,8 @@ module.exports = function(app, passport) {
     // PROFILE SECTION =========================
     // =====================================
     // we will want this protected so you have to be logged in to visit
-    // we will use route middleware to verify this (the isLoggedInRedirect function)
-    app.get('/profile', isLoggedInRedirect, function(req, res) {
+    // we will use route middleware to verify this (the loginChecking.isLoggedInRedirect function)
+    app.get('/profile', loginChecking.isLoggedInRedirect, function(req, res) {
         let path = "";
 
         switch (req.user.type) {
@@ -132,7 +134,9 @@ module.exports = function(app, passport) {
         User.findById(req.user._id, function(err, foundUser) {
             res.render(frontEndRoot + 'profile.ejs', {
                 user: req.user, // get the user out of session and pass to template
+                introduction: foundUser[path].personality_assessement.description_content,
                 ask_history: foundUser[path].ask_history,
+                personality_assessement:foundUser[path].personality_assessement.evaluation.personality,
                 privacy: foundUser.privacy
             });
         });
@@ -247,6 +251,25 @@ module.exports = function(app, passport) {
     //     failureRedirect: '/'
     // }));
 
+    ////////////////////////////////////////////////
+    // Inbox main
+    ///////////////////////////////////////////////////
+    app.get('/inbox', /*loginChecking.isAdvisorRedirect,*/ function(req, res) {
+            res.render(frontEndRoot + '/ejsModule/inbox.ejs');
+    });
+
+    // =====================================
+    // Advisor page
+    // =====================================
+    app.get('/advising', loginChecking.isAdvisorRedirect, function(req, res) {
+        User.findById(req.user._id, function(err, foundUser) {
+            res.render(frontEndRoot + 'advising.ejs', {
+                user: req.user,
+                privacy: foundUser.privacy
+            });
+        });
+    });
+
     // =====================================
     // LOGOUT ==============================
     // =====================================
@@ -256,9 +279,18 @@ module.exports = function(app, passport) {
     });
 
     // =====================================
+    // Server status
+    // =====================================
+    app.get('/status', function(req, res) {
+        res.render(frontEndRoot + 'status.ejs', {
+
+        });
+    });
+
+    // =====================================
     // Admin console
     // =====================================
-    app.get('/admin', isLoggedInRedirect, function(req, res) {
+    app.get('/admin', loginChecking.isLoggedInRedirect, function(req, res) {
         res.render(frontEndRoot + 'admin.ejs', {
             message: req.flash('Message'),
             user: req.user
@@ -269,14 +301,14 @@ module.exports = function(app, passport) {
     // Routes for developer manage question and answer
     // =================================================
 
-    app.get('/QuestionAnswerManagement', isLoggedInRedirect, function(req, res) {
+    app.get('/QuestionAnswerManagement', loginChecking.isLoggedInRedirect, function(req, res) {
         res.render(frontEndRoot + 'question-Answer-Management.ejs', {
             message: req.flash('Message'),
             user: req.user
         }); // load the index.ejs file
     });
 
-    app.post('/postQuestionAnswer', isLoggedInRedirect, function(req, res) {
+    app.post('/postQuestionAnswer', loginChecking.isLoggedInRedirect, function(req, res) {
         //input check
         var questionContext = req.body.question;
         var answerContext = req.body.answer;
@@ -312,7 +344,7 @@ module.exports = function(app, passport) {
         }
     });
 
-    app.get('/viewQuestionAnswer', isLoggedInNotice, function(req, res) {
+    app.get('/viewQuestionAnswer', loginChecking.isLoggedInNotice, function(req, res) {
         //input parameter
 
         //create DB connection
@@ -321,6 +353,16 @@ module.exports = function(app, passport) {
 
         //send to client
 
+    });
+
+    // =================================================
+    // Routes for developer manage system
+    // =================================================
+
+    app.get('/SystemManagement', loginChecking.isAdminRedirect, function(req, res) {
+        res.render(frontEndRoot + 'system-management.ejs', {
+            user: req.user
+        });
     });
 
     ////////////////////////////////////////////////
@@ -337,8 +379,6 @@ module.exports = function(app, passport) {
       res.sendFile(req.path, options, function(err) {
           if (err) {
               console.error(err);
-          } else {
-              console.log('Sent:', req.path);
           }
       });
     });
@@ -354,8 +394,6 @@ module.exports = function(app, passport) {
       res.sendFile(req.path, options, function(err) {
           if (err) {
               console.error(err);
-          } else {
-              console.log('Sent:', req.path);
           }
       });
     });
@@ -371,8 +409,6 @@ module.exports = function(app, passport) {
       res.sendFile(req.path, options, function(err) {
           if (err) {
               console.error(err);
-          } else {
-              console.log('Sent:', req.path);
           }
       });
     });
@@ -388,8 +424,6 @@ module.exports = function(app, passport) {
         res.sendFile(req.path, options, function(err) {
             if (err) {
                 console.error(err);
-            } else {
-                console.log('Sent:', req.path);
             }
         });
     });
@@ -413,41 +447,24 @@ module.exports = function(app, passport) {
     app.use('/api/speech-to-text', watsonToken);
 
     // local user apply to be admin
-    app.use('/api/account', isLoggedInNotice, accountManage);
+    app.use('/api/account', loginChecking.isLoggedInNotice, accountManage);
 
     // admin upload questions from text file
-    app.use('/api/admin/upload/', isLoggedInRedirect, uploadQuestionByTextFile);
+    app.use('/api/admin/upload/', loginChecking.isLoggedInRedirect, uploadQuestionByTextFile);
 
     // General server functionality testing api
     app.use('/api/testing/', testingAPIModule);
 
-    //  Profile APIs
-    app.use('/api/profile', isLoggedInRedirect, profileAPI);
+    // Profile APIs
+    app.use('/api/profile', loginChecking.isLoggedInRedirect, profileAPI);
 
     // Server status APIs
     app.use('/api/server-status', serverStatusAPI);
+
+    // system AI APIs
+    app.use('/api/system',loginChecking.isAdminRedirect, system);
 };
 
-// route middleware to make sure
-function isLoggedInRedirect(req, res, next) {
-
-    // if user is authenticated in the session, carry on
-    if (req.isAuthenticated())
-        return next();
-
-    // if they aren't redirect them to the home page
-    res.redirect('/login');
-}
-
-function isLoggedInNotice(req, res, next) {
-
-    // if user is authenticated in the session, carry on
-    if (req.isAuthenticated())
-        return next();
-
-    // if they aren't redirect them to the home page
-    res.send({status: "error", information: "Login required"});
-}
 
 function checkSignUpParameter(req, res) {
     // callback with email and password from our form
@@ -464,27 +481,46 @@ function checkSignUpParameter(req, res) {
         return false;
     }
     if (!req.body.account_role) {
-        res.send({status: 302, type: 'error', information: 'Invaild account role'});
+        res.send({status: 302, type: 'error', information: 'Invalid account role'});
         return false;
     }
 
     if (req.body.account_role === "Admin" && (!req.body['admin-token'] || req.body['admin-token'] == 0)) {
-        res.send({status: 302, type: 'error', information: 'Missing developer token for registering as developer'});
+        res.send({status: 302, type: 'error', information: 'Missing admin token for registering as admin'});
+        return false;
+    }
+
+    if (req.body.account_role === "Advisor" && (!req.body['advisor-token'] || req.body['advisor-token'] == 0)) {
+        res.send({status: 302, type: 'error', information: 'Missing advisor token for registering as advisor'});
         return false;
     }
 
     if (req.body.account_role === "Admin" && !validateAdminToken(req.body['admin-token'])) {
-        res.send({status: 302, type: 'error', information: 'Invaild admin token'});
+        res.send({status: 302, type: 'error', information: 'Invalid admin token'});
+        return false;
+    }
+
+    if (req.body.account_role === "Advisor" && !validateAdvisorToken(req.body['advisor-token'])) {
+        res.send({status: 302, type: 'error', information: 'Invalid advisor token'});
         return false;
     }
     return true;
 }
 
-const validateAdminToken = function(code) {
+const validateAdminToken = (token) => {
     const correctSecret = "bwqlrEfvDofy7nZC8NLDXFlbh92rbL2moCxBSrXv8stqPcZjeGJCpbJ2QF2yh2iTBnWpEorY5ll2KTfl91FBEc5IEqnQboOfV319Js8fan6gRKHXSBwqbNPy3oRcKENfHQbTBPPCZSz2VaG4pLIB2K7VzL4AD93w7iKrDMfYeggwUGKJf0tX6xAAUyQwZQO5Wswn00aYtPYwst19WlKoFl3eEUQRQ05qFrLP5WwbG7ALmZSLztCnysBKGtUWyFa2";
-    if (code === correctSecret) {
+    if (token === correctSecret) {
         return true;
     } else {
         return false;
     }
+}
+
+const validateAdvisorToken = (token) =>{
+  const correctSecret = "b2aP7l3PMqjnL1cZNDGIyWBoM5i2BW22oyUAFxEZo3Afv0vtGzRPt1mcrcNLPqoxxqDJunVWbie4CZ6hDXRwVMF1YMDGMHjXP5nCXb2UF1VY3K1cpefpKEoAzyeaKzTT";
+  if (token === correctSecret) {
+      return true;
+  } else {
+      return false;
+  }
 }
