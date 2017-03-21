@@ -77,32 +77,92 @@ module.exports = function(server) {
         ////////////////////////////////////////////////////////////
 
         socket.on('client-send-assessment', function(data) {
+            // prechecking
+            if (data.senderID === "" || data.viewSection.length === 0 || data.receiveAdvisor.length === 0) {
+                socket.emit('fail-submit-assessment', {'message': 'Sorry, there was an error when create assessment, please contact us.'});
+                return;
+            }
+
             // find client information
             User.findById(data.senderID, (err, user) => {
                 if (err) {
                     console.error(err);
-                    socket.emit('fail-notify-advisor','Failed to connect to advisors, please contact us.');
+                    socket.emit('fail-submit-assessment', {'message': 'Sorry, there was an error when create assessment, please contact us.'});
                     return;
                 }
-                const student = user;
-                // push notification to inbox
-                data.receiveAdvisor.map((advisorObj) => {
-                    // fix this, use socket.broadcast.to(socketid).emit(..) instead
-                    socket.broadcast.emit('advsisor-receive-assessment', {
-                        id: advisorObj.id,
-                        student: student,
-                        viewSection: data.viewSection
-                    });
+
+                ////////////////////////////////////////////////////////////
+                // save request assessment to user DB
+                ////////////////////////////////////////////////////////////
+                // if conbine everthing and save with 1 call, the stack limit will be exceeded
+                // so create record and save by each segment
+                // cost more time and more calls, but save the day
+
+                // on success create empty record
+                const userInfoPath = getUserInformationPath(user);
+
+                // Comments will be stored as advisors' indivually
+                if (data.viewSection.includes("question")) {
+                    user.assessment_history[newAssessmentIndex].question = user[userInfoPath].ask_history;
+                }
+
+                if (data.viewSection.includes("personality")) {
+                    user.assessment_history[newAssessmentIndex].personality_evaluation = user[userInfoPath].personality_assessement.evaluation.personality;
+                }
+
+                if (data.viewSection.includes("interest")) {
+                    user.assessment_history[newAssessmentIndex].interest = user[userInfoPath].interest;
+                }
+
+                if (data.viewSection.includes("introduction")) {
+                    user.assessment_history[newAssessmentIndex].introduction = user[userInfoPath].personality_assessement.description_content;
+                }
+                user.save((err) => {
+                    if (err) {
+                        console.error(err);
+                        socket.emit('fail-submit-assessment', {'message': err});
+                        return;
+                    }
+                    socket.emit('success-submit-assessment', {'message': 'Successly create an assessment.'});
                 });
+
+                // const student = user;
+                // // notify advisor that a student send an assessment to them
+                // data.receiveAdvisor.map((advisorObj) => {
+                //     // fix this, use socket.broadcast.to(socketid).emit(..) instead
+                //     socket.broadcast.emit('advsisor-receive-assessment', {
+                //         id: advisorObj.id,
+                //         student: student,
+                //         viewSection: data.viewSection
+                //     });
+                // });
+
                 // log assessment to DB
-                socket.emit('success-notify-advisor',data.receiveAdvisor);
+
             })
         });
 
-        // when the user disconnects.. perform this
-        socket.on('disconnect', function() {
-            console.log("A user disconnected socket connection");
-            // echo globally that this client has left
-        });
+        // when the user disconnects
+        socket.on('disconnect', function() {});
     });
 };
+
+const getUserInformationPath = (User) => {
+    if (User.type === "local") {
+        return "local";
+    }
+    if (User.type === "google") {
+        return "google";
+    }
+    if (User.type === "linkedin") {
+        return "linkedin";
+    }
+    if (User.type === "twitter") {
+        return "twitter";
+    }
+    if (User.type === "facebook") {
+        return "facebook";
+    }
+}
+
+const formAssessmentObjByOption = (request, user) => {}

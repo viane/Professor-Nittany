@@ -32,20 +32,22 @@ var userSchema = mongoose.Schema({
             default: false
         }
     },
-    inbox:[{
-      title:String,
-      date: {
-          type: Date,
-          default: Date.now
-      },
-      senderID:String,
-      senderDisplayName:String,
-      body:String,
-      isViewed:{
-        type:Boolean,
-        default:false
-      }
-    }],
+    inbox: [
+        {
+            title: String,
+            date: {
+                type: Date,
+                default: Date.now
+            },
+            senderID: String,
+            senderDisplayName: String,
+            body: String,
+            isViewed: {
+                type: Boolean,
+                default: false
+            }
+        }
+    ],
     local: {
         email: {
             type: String
@@ -105,9 +107,7 @@ var userSchema = mongoose.Schema({
                 ]
             }
         ],
-        interest: [
-            mongoose.Schema.Types.Mixed
-        ],
+        interest: [mongoose.Schema.Types.Mixed],
         personality_assessement: {
             last_upload_time: {
                 type: Date,
@@ -170,9 +170,7 @@ var userSchema = mongoose.Schema({
                 ]
             }
         ],
-        interest: [
-            mongoose.Schema.Types.Mixed
-        ],
+        interest: [mongoose.Schema.Types.Mixed],
         personality_assessement: {
             last_upload_time: {
                 type: Date,
@@ -231,9 +229,7 @@ var userSchema = mongoose.Schema({
                 ]
             }
         ],
-        interest: [
-            mongoose.Schema.Types.Mixed
-        ],
+        interest: [mongoose.Schema.Types.Mixed],
         personality_assessement: {
             last_upload_time: {
                 type: Date,
@@ -293,9 +289,7 @@ var userSchema = mongoose.Schema({
                 ]
             }
         ],
-        interest: [
-            mongoose.Schema.Types.Mixed
-        ],
+        interest: [mongoose.Schema.Types.Mixed],
         personality_assessement: {
             last_upload_time: {
                 type: Date,
@@ -357,9 +351,7 @@ var userSchema = mongoose.Schema({
                 ]
             }
         ],
-        interest: [
-            mongoose.Schema.Types.Mixed
-        ],
+        interest: [mongoose.Schema.Types.Mixed],
         personality_assessement: {
             last_upload_time: {
                 type: Date,
@@ -370,7 +362,31 @@ var userSchema = mongoose.Schema({
         }
     },
     account_status: String,
-    account_actvition_code: String
+    account_actvition_code: String,
+    assessment_history: [
+        {
+            _id: {
+                type: mongoose.Schema.ObjectId,
+                auto: true
+            },
+            request_time: {
+                type: Date,
+                default: Date.now
+            },
+            question: Array,
+            question_comment: Array,
+            personality_evaluation: Array,
+            personality_evaluation_comment: Array,
+            interest: Array,
+            interest_comment: Array,
+            introduction: String,
+            introduction_comment: Array,
+            reviewer: Array,
+            comment_summary: Array,
+            advisor_viewed_current: Array,
+            advisor_viewed_before_user_last_check: Array
+        }
+    ]
 }, {strict: true});
 
 // checking if password is valid using bcrypt
