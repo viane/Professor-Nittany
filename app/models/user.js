@@ -363,7 +363,7 @@ var userSchema = mongoose.Schema({
     },
     account_status: String,
     account_actvition_code: String,
-    assessment_history: [
+    submitted_assessment_history: [
         {
             _id: {
                 type: mongoose.Schema.ObjectId,
@@ -385,6 +385,12 @@ var userSchema = mongoose.Schema({
             comment_summary: Array,
             advisor_viewed_current: Array,
             advisor_viewed_before_user_last_check: Array
+        }
+    ],
+    received_assessment_history: [
+        {
+            from_user_id: String,
+            assessment_id: String
         }
     ]
 }, {strict: true});

@@ -1,6 +1,7 @@
 const appRoot = require('app-root-path');
 const questionAnswer = require('./question-answer');
 const User = require(appRoot + '/app/models/user');
+const colors = require('colors');
 
 module.exports = function(server) {
     const io = require('socket.io').listen(server);
@@ -87,7 +88,7 @@ module.exports = function(server) {
             User.findById(data.senderID, (err, user) => {
                 if (err) {
                     console.error(err);
-                    socket.emit('fail-submit-assessment', {'message': 'Sorry, there was an error when create assessment, please contact us.'});
+                    socket.emit('fail-submit-assessment', {'message': 'Sorry, there is an issue with your account, please contact us.'});
                     return;
                 }
 
@@ -118,30 +119,52 @@ module.exports = function(server) {
                     assessmentCopy.introduction = user[userInfoPath].personality_assessement.description_content;
                 }
 
-                user.assessment_history.unshift(assessmentCopy);
-                
-                user.save((err) => {
+                user.submitted_assessment_history.unshift(assessmentCopy);
+
+                user.save((err, updatedStudentRecord) => {
                     if (err) {
                         console.error(err);
                         socket.emit('fail-submit-assessment', {'message': err});
                         return;
                     }
-                    socket.emit('success-submit-assessment', {'message': 'Successly create an assessment.'});
+
+                    // save assessment to each advisor's DB
+                    data.receiveAdvisor.map((advisorObj) => {
+                        User.findById(advisorObj.id, (err, advisorRecord) => {
+                            if (err) {
+                                console.error(err);
+                                socket.emit('fail-submit-assessment', {'message': 'Sorry, there is an issue with the advisor you select, please contact us.'});
+                                return;
+                            }
+                            if (advisorRecord[advisorRecord.type].role != "advisor") {
+                                console.error("A user send assessment to non-advisor account.".red);
+                                return;
+                            }
+                            const assessment_id = updatedStudentRecord.submitted_assessment_history[updatedStudentRecord.submitted_assessment_history.length - 1]._id;
+                            const assessmentInfoCopy = {
+                                from_user_id: data.senderID,
+                                assessment_id: assessment_id
+                            };
+
+                            advisorRecord.received_assessment_history.unshift(assessmentInfoCopy);
+                            advisorRecord.save((err,newAdvisor)=>{
+                              if (err) {
+                                console.error(err);
+                                socket.emit('fail-submit-assessment', {'message': 'Sorry, there is an issue with the advisor you select, please contact us.'});
+                                return;
+                              }
+                            })
+                            // notify this advisor that a student sent an assessment
+                            // fix this, use socket.broadcast.to(socketid).emit(..) instead
+                            socket.broadcast.emit('advsisor-receive-assessment', {
+                                id: advisorObj.id,
+                                student: updatedStudentRecord,
+                                viewSection: data.viewSection
+                            });
+                        })
+                    })
+                    socket.emit('success-submit-assessment', {'message': 'Successly saved your assessment and sent to advisor.'});
                 });
-
-                // const student = user;
-                // // notify advisor that a student send an assessment to them
-                // data.receiveAdvisor.map((advisorObj) => {
-                //     // fix this, use socket.broadcast.to(socketid).emit(..) instead
-                //     socket.broadcast.emit('advsisor-receive-assessment', {
-                //         id: advisorObj.id,
-                //         student: student,
-                //         viewSection: data.viewSection
-                //     });
-                // });
-
-                // log assessment to DB
-
             })
         });
 
