@@ -100,23 +100,26 @@ module.exports = function(server) {
 
                 // on success create empty record
                 const userInfoPath = getUserInformationPath(user);
-
+                let assessmentCopy = {};
                 // Comments will be stored as advisors' indivually
                 if (data.viewSection.includes("question")) {
-                    user.assessment_history[newAssessmentIndex].question = user[userInfoPath].ask_history;
+                    assessmentCopy.question = user[userInfoPath].ask_history;
                 }
 
                 if (data.viewSection.includes("personality")) {
-                    user.assessment_history[newAssessmentIndex].personality_evaluation = user[userInfoPath].personality_assessement.evaluation.personality;
+                    assessmentCopy.personality_evaluation = user[userInfoPath].personality_assessement.evaluation.personality;
                 }
 
                 if (data.viewSection.includes("interest")) {
-                    user.assessment_history[newAssessmentIndex].interest = user[userInfoPath].interest;
+                    assessmentCopy.interest = user[userInfoPath].interest;
                 }
 
                 if (data.viewSection.includes("introduction")) {
-                    user.assessment_history[newAssessmentIndex].introduction = user[userInfoPath].personality_assessement.description_content;
+                    assessmentCopy.introduction = user[userInfoPath].personality_assessement.description_content;
                 }
+
+                user.assessment_history.unshift(assessmentCopy);
+                
                 user.save((err) => {
                     if (err) {
                         console.error(err);
