@@ -140,11 +140,7 @@ module.exports = function(app, passport) {
                 user: req.user, // get the user out of session and pass to template
                 introduction: foundUser[path].personality_assessement.description_content,
                 ask_history: foundUser[path].ask_history,
-<<<<<<< HEAD
-                personality_assessement:foundUser[path].personality_assessement.evaluation.personality,
-=======
                 personality_assessement:foundUser[path].personality_assessement.evaluation,
->>>>>>> b2be201213b411178a7d84ead655a47dc36cdfef
                 privacy: foundUser.privacy
             });
         });
@@ -263,11 +259,8 @@ module.exports = function(app, passport) {
     // Inbox main
     ///////////////////////////////////////////////////
     app.get('/inbox', /*loginChecking.isAdvisorRedirect,*/ function(req, res) {
-<<<<<<< HEAD
-            res.render(frontEndRoot + '/ejsModule/inbox.ejs');
-=======
-            res.render(frontEndRoot + '/inbox.ejs');
->>>>>>> b2be201213b411178a7d84ead655a47dc36cdfef
+            console.log(req.user);
+            res.render(frontEndRoot + '/inbox.ejs', {user: req.user});
     });
 
     // =====================================
