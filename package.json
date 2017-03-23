@@ -61,6 +61,7 @@
     "util": "^0.10.3",
     "validator": "^6.2.1",
     "watson-developer-cloud": "^2.26.0",
+    "wrenchmode-express": "0.0.3",
     "write-json-file": "^2.0.0"
   },
   "devDependencies": {},

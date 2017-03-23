@@ -147,12 +147,12 @@ module.exports = function(server) {
                             };
 
                             advisorRecord.received_assessment_history.unshift(assessmentInfoCopy);
-                            advisorRecord.save((err,newAdvisor)=>{
-                              if (err) {
-                                console.error(err);
-                                socket.emit('fail-submit-assessment', {'message': 'Sorry, there is an issue with the advisor you select, please contact us.'});
-                                return;
-                              }
+                            advisorRecord.save((err, newAdvisor) => {
+                                if (err) {
+                                    console.error(err);
+                                    socket.emit('fail-submit-assessment', {'message': 'Sorry, there is an issue with the advisor you select, please contact us.'});
+                                    return;
+                                }
                             })
                             // notify this advisor that a student sent an assessment
                             // fix this, use socket.broadcast.to(socketid).emit(..) instead

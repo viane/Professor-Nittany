@@ -1,14 +1,11 @@
 'use strict';
 
-const morgan = require('morgan'); //request logger
-
 require('@risingstack/trace'); //for heorku tracking addon
-
 require('./config/console'); //overide global console.log function
-
+const opbeat = require('opbeat'); // tracing new release
 global.Promise = require("bluebird");
 
-const opbeat = require('opbeat');
+const morgan = require('morgan'); //request logger
 const http = require('http');
 const https = require('https');
 const path = require('path');
@@ -40,7 +37,11 @@ const systemStatus = require(appRoot + '/app/system-status');
 // customize console.log font color
 const logColor = require('colors');
 
+// wrenchmode for maintenance mode
+const wrenchmodeExpress = require('wrenchmode-express');
+
 app.use(opbeat.middleware.express()); // opbeat for heroku monitoring
+app.use(wrenchmodeExpress());
 
 app.use(bodyParser.json({
     limit: '50mb',
