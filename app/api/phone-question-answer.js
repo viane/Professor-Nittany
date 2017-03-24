@@ -11,6 +11,8 @@ const request = require('request');
 const colors = require('colors');
 const questionAnswer = require(appRoot + '/app/question-answer');
 
+const systemErrorMSG = "Sorry there is an issue in system, please try again later or contact us!";
+
 // Watson STT has some issue on recognizing audio file, use Twilio default transcript for now
 let speech_to_text;
 loadJsonFile(appRoot + '/config/credential.json').then(credential => {
@@ -61,25 +63,26 @@ router.post('/after-record', (req, res) => {
         speech_to_text.recognize(params, function(error, resultTranscript) {
             if (error) {
                 console.error(error);
-                twiml.say("Sorry there is an issue in system, please try again later or contact us!", {voice: 'alice'}).hangup();
+                twiml.say(systemErrorMSG, {voice: 'alice'}).hangup();
                 res.send(twiml.toString());
             } else {
                 // confidence
                 const transcriptArruracy = resultTranscript.results[0].alternatives.confidence;
-                // if no transcript
+                // if no transcript or low accurate on interpration
                 if (!resultTranscript.results[0].alternatives[0].hasOwnProperty('transcript') || resultTranscript.results[0].alternatives[0].confidence <= 0.6) {
                     twiml.say("Sorry I not sure what you said, please try again or ask differently!", {voice: 'alice'});
                     res.send(twiml.toString());
                 } else {
                     // STT transcript
                     const transcript = resultTranscript.results[0].alternatives[0].transcript;
-                    // ask IAP
+                    // ask IAP as visitor
                     questionAnswer.ask(null, transcript).then(function(result) {
-                        twiml.say(result.response.docs[0].body, {voice: 'alice'}).hangup();
+                        // start QA looping
+                        twiml.say(result.response.docs[0].body, {voice: 'alice'});
                         res.send(twiml.toString());
                     }).catch(function(err) {
                         console.error(err);
-                        twiml.say("Sorry there is an issue in system, please try again later or contact us!", {voice: 'alice'}).hangup();
+                        twiml.say(systemErrorMSG, {voice: 'alice'}).hangup();
                         res.send(twiml.toString());
                     });
                 }
@@ -90,7 +93,7 @@ router.post('/after-record', (req, res) => {
         // piping error of audio file
         console.error(err);
         const twiml = new twilio.TwimlResponse();
-        twiml.say("Sorry there is an issue in system, please try again later or contact us!", {voice: 'alice'}).hangup();
+        twiml.say(systemErrorMSG, {voice: 'alice'}).hangup();
         res.send(twiml.toString());
     });
 });

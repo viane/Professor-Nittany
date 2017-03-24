@@ -53,7 +53,7 @@ var userSchema = mongoose.Schema({
             type: String
         },
         password: String,
-        frist_name: String,
+        first_name: String,
         last_name: String,
         displayName: String,
         avatar: {
