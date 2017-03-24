@@ -50,7 +50,7 @@ module.exports = function(server) {
                         confidence: result.inDomain
                     });
                 }).catch(function(err) {
-                    console.log(err);
+                    console.error(err);
                 });
             };
 

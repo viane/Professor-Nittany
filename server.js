@@ -41,7 +41,8 @@ const logColor = require('colors');
 const wrenchmodeExpress = require('wrenchmode-express');
 
 app.use(opbeat.middleware.express()); // opbeat for heroku monitoring
-app.use(wrenchmodeExpress());
+
+// app.use(wrenchmodeExpress({jwt: "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJQcm9qZWN0OjEyOCIsImV4cCI6MTQ5Mjg3MTcxMiwiaWF0IjoxNDkwMjc5NzEyLCJpc3MiOiJXcmVuY2htb2RlIiwianRpIjoiOGUwYjEwZjAtZTJhNC00ZTA4LThmZDEtM2MxMmM3Y2Q5NzRjIiwicGVtIjp7fSwic3ViIjoiUHJvamVjdDoxMjgiLCJ0eXAiOiJ0b2tlbiJ9.wU4jKQWhGRwXMY-WPopiVqKaXZRT6DW84yorO3-IVDu105vq0yeF_VDdXoIu-H40PxFmx3Txns_v-zi0uIPwtg", disable_local_wrench: false}));
 
 app.use(bodyParser.json({
     limit: '50mb',
@@ -104,12 +105,10 @@ systemStatus.initGetKnowledgeDomain().then((result) => {
     console.log("√ Success loaded knowledge domain terms".green);
 }).catch((err) => {
     throw err
-})
+});
 
 server.listen(app.get('port'), function() {
     console.log('Express server listening on port ' + app.get('port'))
 });
 
 module.exports = app;
-
-const personality = require('./app/personality-insights');

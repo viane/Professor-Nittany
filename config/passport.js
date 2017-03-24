@@ -148,7 +148,7 @@ module.exports = function(passport) {
                         })
                     }
                 } else {
-                    return done("Email not vaild", false, req.flash('signupMessage', 'Email not vaild'));
+                    return done("Email not valid", false, req.flash('signupMessage', 'Email not vaild'));
                 }
             }
         });

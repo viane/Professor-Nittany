@@ -58,6 +58,7 @@
     "string": "^3.3.3",
     "superagent": "^3.5.0",
     "supertest": "^3.0.0",
+    "twilio": "^2.11.1",
     "util": "^0.10.3",
     "validator": "^6.2.1",
     "watson-developer-cloud": "^2.26.0",

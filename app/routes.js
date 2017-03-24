@@ -18,6 +18,7 @@ const validator = require("email-validator");
 const serverStatusAPI = require(appRoot + '/app/api/server-status');
 const system = require(appRoot + '/app/api/system');
 const loginChecking = require(appRoot + '/app/utility-function/login-checking');
+const phoneQA = require(appRoot + '/app/api/phone-question-answer');
 
 module.exports = function(app, passport) {
 
@@ -467,6 +468,9 @@ module.exports = function(app, passport) {
 
     // system AI APIs
     app.use('/api/system',loginChecking.isAdminRedirect, system);
+
+    // phone system
+    app.use('/api/phone', phoneQA);
 };
 
 
