@@ -295,7 +295,7 @@ module.exports = function(app, passport) {
     // =====================================
     // Admin console
     // =====================================
-    app.get('/admin', loginChecking.isLoggedInRedirect, function(req, res) {
+    app.get('/admin', loginChecking.isAdminRedirect, function(req, res) {
         res.render(frontEndRoot + 'admin.ejs', {
             message: req.flash('Message'),
             user: req.user
