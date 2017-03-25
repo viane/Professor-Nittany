@@ -44,11 +44,10 @@ router.post('/voice-in', (req, res) => {
 
 // API for after recording, STT the voice record then ask IAP then speak back the result
 router.post('/after-record', (req, res) => {
-    const voiceFileUrl = req.body.RecordingUrl;
-    const voiceFileWAVUrl = voiceFileUrl + ".wav";
+    console.log(req.body);
+    const voiceFileWAVUrl = req.body.RecordingUrl.toString().concat(".wav");
     const caller = req.body.From;
     const voiceFileLocalPath = appRoot + '/app/audio-file-temp-folder/' + req.body.RecordingSid + ".wav";
-
     // fetch audio then read it to Watson STT, temporary disabled
     request(voiceFileWAVUrl).pipe(fs.createWriteStream(voiceFileLocalPath)).on('finish', () => {
         const params = {
@@ -66,19 +65,34 @@ router.post('/after-record', (req, res) => {
                 twiml.say(systemErrorMSG, {voice: 'alice'}).hangup();
                 res.send(twiml.toString());
             } else {
+                console.log(JSON.stringify(resultTranscript, null, 2));
+                // STT transcript (question body)
+                const transcript = resultTranscript.results[0].alternatives[0].transcript;
                 // confidence
                 const transcriptArruracy = resultTranscript.results[0].alternatives.confidence;
                 // if no transcript or low accurate on interpration
-                if (!resultTranscript.results[0].alternatives[0].hasOwnProperty('transcript') || resultTranscript.results[0].alternatives[0].confidence <= 0.6) {
-                    twiml.say("Sorry I not sure what you said, please try again or ask differently!", {voice: 'alice'});
+                if (!resultTranscript.results[0].alternatives[0].hasOwnProperty('transcript') || transcriptArruracy <= 0.6) {
+                    twiml.say("Sorry I not sure what you said of ", {voice: 'alice'});
+                    twiml.say(transcript, {voice: 'alice'});
+                    twiml.say("Please try again or ask differently!", {voice: 'alice'});
                     res.send(twiml.toString());
                 } else {
-                    // STT transcript
-                    const transcript = resultTranscript.results[0].alternatives[0].transcript;
                     // ask IAP as visitor
                     questionAnswer.ask(null, transcript).then(function(result) {
                         // start QA looping
-                        twiml.say(result.response.docs[0].body, {voice: 'alice'});
+                        const answerBody = result.response.docs[0].body;
+                        twiml.say(answerBody, {
+                            voice: 'alice'
+                        }, () => {
+                            this.redirect({
+                                method: 'POST',
+                                action: '/api/phone/qa-feedback-start',
+                                url: '/api/phone/qa-feedback-start',
+                                question: transcript,
+                                answer: answerBody,
+                                localFilePath: voiceFileLocalPath
+                            });
+                        }); //twiml.redirect('/voice');
                         res.send(twiml.toString());
                     }).catch(function(err) {
                         console.error(err);
@@ -86,7 +100,6 @@ router.post('/after-record', (req, res) => {
                         res.send(twiml.toString());
                     });
                 }
-                // delete audio file
             }
         });
     }).on('error', (err) => {
@@ -98,4 +111,76 @@ router.post('/after-record', (req, res) => {
     });
 });
 
+// After watson answered, accepting feedback
+router.post('/qa-feedback-start', (req, res) => {
+    console.log(req.body);
+    // question body
+    // answer body
+    // caller
+    const longUrl = '';
+    const data = {key :'AIzaSyC3RngXLBgnzcrjoYr0zp959d45yl1id6g',longUrl:longUrl};
+    fetch('https://www.googleapis.com/urlshortener/v1/url', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    }).then(function(res) {
+        return res.json();
+    }).then(function(json) {
+        console.log(json);
+    });
+    // - send question, answer to user's phone via SMS with a shorten URL to IAP for this QA
+    const twiml = new twilio.TwimlResponse();
+    twiml.say("Press 1 to receive your question and answer via text or press 2 to ask a different question.", {voice: 'alice'});
+
+    twiml.gather({
+        numDigits: 1,
+        action: '/api/phone/feedback-on-selection-start'
+    }, (gatherNode) => {
+        gatherNode.say('Press 1 to receive your question and answer via text or press 2 to ask a different question.', {voice: 'alice'});
+    });
+
+    // If the user doesn't enter input, loop to ask question - answer
+    twiml.redirect('/api/phone/qa-loop');
+    res.send(twiml.toString());
+});
+
+// handle user's selection after asked a question and got the answer
+router.post('/feedback-on-selection-start', (req, res) => {
+  // Use the Twilio Node.js SDK to build an XML response
+let twiml = new twilio.TwimlResponse();
+
+// If the user entered digits, process their request
+if (req.body.Digits) {
+  if (req.body.Digits === '1') {
+    twiml.say('Sending a copy of your question and answer to your phone!', {voice:'alice'},()=>{
+      this.say('Do you want to ask another question? Press 1 for yes, or simply hangup to end the call.', {voice:'alice'}, ()=>{
+        twiml.gather({
+            numDigits: 1,
+            action: '/api/phone/qa-loop',
+            finishOnKey:'1',
+            timeout:'10',
+            method:'POST'
+        })
+      });
+    }).pause();
+  }
+  if (req.body.Digits === '2') {
+    twiml.redirect('/api/phone/qa-loop');
+  }else{
+    // if user input any digit other than 1 or 2
+    twiml.say('Sorry the selection are not avaliable, Have a nice day!', {voice:'alice'}).hangup();
+  }
+} else {
+  twiml.say('Sorry, I don\'t understand that choice.').pause();
+  // If no input was sent, redirect to the feedback route
+  twiml.redirect('/api/phone/qa-feedback');
+}
+
+// Render the response as XML in reply to the webhook request
+response.send(twiml.toString());
+});
+
+// API for after first QA done, start looping QA until user hangup
+router.post('/qa-loop', (req, res) => {});
+  // regular QA session, similar like voice-in
 module.exports = router;
