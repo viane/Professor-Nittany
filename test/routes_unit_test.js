@@ -206,7 +206,7 @@ describe('Unit Testing', function () {
 						last_name: "",
 						email: "unittest@test.com",
 						password: "password",
-						accuont_role: "Student"}).end(function(err, res) {
+						account_role: "Student"}).end(function(err, res) {
 							if (err) {
 								return done(err);
 							} else {
