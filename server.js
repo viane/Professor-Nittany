@@ -37,12 +37,7 @@ const systemStatus = require(appRoot + '/app/system-status');
 // customize console.log font color
 const logColor = require('colors');
 
-// wrenchmode for maintenance mode
-const wrenchmodeExpress = require('wrenchmode-express');
-
 app.use(opbeat.middleware.express()); // opbeat for heroku monitoring
-
-// app.use(wrenchmodeExpress({jwt: "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJQcm9qZWN0OjEyOCIsImV4cCI6MTQ5Mjg3MTcxMiwiaWF0IjoxNDkwMjc5NzEyLCJpc3MiOiJXcmVuY2htb2RlIiwianRpIjoiOGUwYjEwZjAtZTJhNC00ZTA4LThmZDEtM2MxMmM3Y2Q5NzRjIiwicGVtIjp7fSwic3ViIjoiUHJvamVjdDoxMjgiLCJ0eXAiOiJ0b2tlbiJ9.wU4jKQWhGRwXMY-WPopiVqKaXZRT6DW84yorO3-IVDu105vq0yeF_VDdXoIu-H40PxFmx3Txns_v-zi0uIPwtg", disable_local_wrench: false}));
 
 app.use(bodyParser.json({
     limit: '50mb',
@@ -107,7 +102,7 @@ systemStatus.initGetKnowledgeDomain().then((result) => {
     throw err
 });
 
-server.listen(app.get('port') || 3000, 'localhost',function() {
+server.listen(app.get('port') || 3000,function() {
     console.log('Express server listening on port ' + app.get('port'))
 });
 
