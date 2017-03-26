@@ -66,6 +66,12 @@ router.post('/after-record', (req, res) => {
             } else {
                 console.log(JSON.stringify(resultTranscript, null, 2));
                 // STT transcript (question body)
+                if (resultTranscript.results.length == 0) {
+                  twiml.say("Sorry I didn't hear anything", {voice: 'alice'}).pause();
+                  twiml.redirect('/api/phone/qa-loop');
+                  res.send(twiml.toString());
+                  return;
+                }
                 const transcript = resultTranscript.results[0].alternatives[0].transcript;
                 // confidence
                 const transcriptArruracy = resultTranscript.results[0].alternatives.confidence;
