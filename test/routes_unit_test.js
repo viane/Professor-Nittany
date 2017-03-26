@@ -206,7 +206,7 @@ describe('Unit Testing', function () {
 						last_name: "",
 						email: "unittest@test.com",
 						password: "password",
-						account_role: "Student"}).end(function(err, res) {
+						accuont_role: "Student"}).end(function(err, res) {
 							if (err) {
 								return done(err);
 							} else {
@@ -297,7 +297,7 @@ describe('Unit Testing', function () {
 							} else {
 								expect(res.statusCode).to.equal(200);
 								expect(res.text).to.include('\"type\":\"error\"');
-								expect(res.text).to.include('\"information\":\"Missing admin token for registering as advisor\"');
+								expect(res.text).to.include('\"information\":\"Missing advisor token for registering as advisor\"');
 								done();
 							}
 						});
@@ -634,7 +634,7 @@ describe('Unit Testing', function () {
 				newUser.local.email = "unittest@test.com";
 				newUser.hashPassword("testing123");
 				newUser.local.displayName = "Tester";
-				newUser.local.account_role = "Advisor";
+				newUser.local.role = "advisor";
 				newUser.save();
 				logValidUserIn( function () {
 				server.get('/advising').end(function (error, response) {
@@ -642,6 +642,7 @@ describe('Unit Testing', function () {
 						return done(error);
 					}
 					else {
+						console.log(response);
 						expect(response.statusCode).to.equal(200);
 						done();
 					}
@@ -698,7 +699,7 @@ describe('Unit Testing', function () {
 				newUser.local.email = "unittest@test.com";
 				newUser.hashPassword("testing123");
 				newUser.local.displayName = "Tester";
-				newUser.local.account_role = "Admin";
+				newUser.local.role = "Admin";
 				newUser.save();
 				logValidUserIn( function () {
 				server.get('/admin').end(function (error, response) {
@@ -748,7 +749,7 @@ describe('Unit Testing', function () {
 				newUser.local.email = "unittest@test.com";
 				newUser.hashPassword("testing123");
 				newUser.local.displayName = "Tester";
-				newUser.local.account_role = "Admin";
+				newUser.local.role = "Admin";
 				newUser.save();
 				logValidUserIn( function () {
 				server.get('/QuestionAnswerManagement').end(function (error, response) {
@@ -866,7 +867,7 @@ describe('Unit Testing', function () {
 				newUser.local.email = "unittest@test.com";
 				newUser.hashPassword("testing123");
 				newUser.local.displayName = "Tester";
-				newUser.local.account_role = "Admin";
+				newUser.local.role = "Admin";
 				newUser.save();
 				logValidUserIn( function () {
 				server.get('/SystemManagement').end(function (error, response) {
@@ -891,7 +892,7 @@ function createUser(callback) {
 	newUser.local.email = "unittest@test.com";
 	newUser.hashPassword("testing123");
 	newUser.local.displayName = "Tester";
-	newUser.local.account_role = "Student";
+	newUser.local.role = "Student";
 	newUser.save();
 	callback();
 }
