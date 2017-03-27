@@ -5,7 +5,9 @@ const writeJsonFile = require('write-json-file');
 const appRoot = require('app-root-path');
 const serverStatusPath = '/config/server-status.json';
 
+// store question strings
 let questionFeeds = [];
+
 
 module.exports.updateStatsFromQuestionObj = function(questionObj) {
     return null;
@@ -24,7 +26,7 @@ module.exports.initQuestionFeeds = () => {
             questionFeeds = json.recent_asked_question;
             // write the question feeds to disk every 1 hour
             setInterval(() => {
-                writeQuestionFeeds().catch((err) => {
+                backupQuestionFeeds().catch((err) => {
                     throw err
                 })
             }, 3600000);
@@ -52,9 +54,9 @@ module.exports.updateRecentAskedQuestions = (Question) => {
     questionFeeds.unshift(Question);
 };
 
-// write current questionFeeds to disk for maintianess etc
+// write current questionFeeds to disk
 // return a promise
-const writeQuestionFeeds = () => {
+const backupQuestionFeeds = () => {
     return new Promise((resolve, reject) => {
         // read last copy from disk
         loadJsonFile(appRoot + serverStatusPath).then(json => {

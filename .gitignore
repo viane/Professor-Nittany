@@ -11,4 +11,5 @@ app/log/console_log.txt
 config/server-status.json
 
 views/img/Thumbs.db
+audio-file-temp-folder/
 *.log

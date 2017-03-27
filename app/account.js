@@ -1,9 +1,6 @@
 'use strict'
-
 const appRoot = require('app-root-path');
-
 const express = require('express');
-
 const router = express.Router();
 const busboy = require('connect-busboy');
 const path = require('path');

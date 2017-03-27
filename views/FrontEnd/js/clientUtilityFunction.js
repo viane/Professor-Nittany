@@ -145,9 +145,280 @@ $(function() {
     $("#upload-Question-Text-File").dropzone({url: "/api/admin/upload/upload-by-text-file"});
 });
 
-// for upload self description at /uploadPersonal
+// display personality assessement on profile game
+$(() => {
+    if (location.href === "http://localhost:3000/profile" || location.href === "https://intelligent-student-advisor.herokuapp.com/profile") {
+
+        var svg = d3.select("#personality-assessement").append("svg").append("g")
+
+        svg.append("g").attr("class", "slices");
+        svg.append("g").attr("class", "labels");
+        svg.append("g").attr("class", "lines");
+
+        var width = 850,
+            height = 450,
+            radius = Math.min(width, height) / 2;
+
+        var pie = d3.layout.pie().sort(null).value(function(d) {
+            return d.value;
+        });
+
+        var arc = d3.svg.arc().outerRadius(radius * 0.8).innerRadius(radius * 0.4);
+
+        var outerArc = d3.svg.arc().innerRadius(radius * 0.9).outerRadius(radius * 0.9);
+
+        svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        var key = function(d) {
+            return d.data.label;
+        };
+
+        let domainAry = [];
+        let domainTermPercentailAry = [];
+        let domainTermValueAry = [];
+
+        const colorRangeAry = shuffleAry([
+            "#a05d56",
+            "#d0743c",
+            "#ff8c00",
+            "#b0ff38",
+            "#38b0ff",
+            "#ff38b0",
+            "#8738ff",
+            "#EAFEAF",
+            "#a3b17a",
+            "#afeafe",
+            "#1805df",
+            "#b9b4f5",
+            "#0c026f"
+        ]);
+
+        const clearDataAry = () => {
+            // // clear each array
+            domainAry.splice(0, domainAry.length);
+            domainTermPercentailAry.splice(0, domainTermPercentailAry.length);
+            domainTermValueAry.splice(0, domainTermValueAry.length);
+        }
+
+        const loadAssessmentData = (personality_assessement) => {
+            if (!jQuery.isEmptyObject(personality_assessement)) { // fill dataAry
+                personality_assessement.personality.map((personalityCategory) => {
+                    domainAry.unshift(personalityCategory.name);
+                    domainTermPercentailAry.unshift(personalityCategory.percentile)
+                    domainTermValueAry.unshift(personalityCategory.percentile + personalityCategory.raw_score);
+                });
+
+                // reset personality display to normal size and hide warning message
+                $('#personality-assessement').css('height', '450px');
+                $('#personality-assessement-insufficient-word-message').css('display', 'none');
+            } else {
+                // if prevous svg drawed
+                if ($('#personality-assessement svg').length > 0) {
+                    // clean up drawing
+                    $('#personality-assessement svg g .slices').empty();
+                    $('#personality-assessement svg g .labels').empty();
+                    $('#personality-assessement svg g .lines').empty();
+
+                    // shrink personality display section and show warning message about description is less than 100 words
+                    $('#personality-assessement-insufficient-word-message').css('display', 'block');
+                    $('#personality-assessement').css('height', '100px');
+                }
+            }
+        }
+
+        var color = d3.scale.ordinal().domain(domainAry).range(colorRangeAry);
+
+        function parseData() {
+            let returnVal = [];
+
+            for (let i = 0; i < domainAry.length; i++) {
+                // ex: Openness-55.69%
+                const label = domainAry[i] + " - " + (domainTermPercentailAry[i] * 100).toFixed(1) + "%";
+                const value = domainTermValueAry[i];
+                returnVal.unshift({label: label, value: value});
+            }
+
+            return returnVal;
+        }
+
+        // fire d3 to generate display
+        const drawPersonalityAssessment = (personality_assessement) => {
+            clearDataAry();
+            loadAssessmentData(personality_assessement);
+
+            if (!jQuery.isEmptyObject(personality_assessement)) {
+                setTimeout(() => {
+                    change(parseData());
+                }, 500);
+            }
+
+        }
+
+        drawPersonalityAssessment(personality_assessement);
+
+        function change(data) {
+
+            /* ------- PIE SLICES -------*/
+            var slice = svg.select(".slices").selectAll("path.slice").data(pie(data), key);
+
+            slice.enter().insert("path").style("fill", function(d) {
+                return color(d.data.label);
+            }).attr("class", "slice");
+
+            slice.transition().duration(1000).attrTween("d", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    return arc(interpolate(t));
+                };
+            })
+
+            slice.exit().remove();
+
+            /* ------- TEXT LABELS -------*/
+
+            var text = svg.select(".labels").selectAll("text").data(pie(data), key);
+
+            text.enter().append("text").attr("dy", ".35em").text(function(d) {
+                return d.data.label;
+            });
+
+            function midAngle(d) {
+                return d.startAngle + (d.endAngle - d.startAngle) / 2;
+            }
+
+            text.transition().duration(1000).attrTween("transform", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    var pos = outerArc.centroid(d2);
+                    pos[0] = radius * (midAngle(d2) < Math.PI
+                        ? 1
+                        : -1);
+                    return "translate(" + pos + ")";
+                };
+            }).styleTween("text-anchor", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    return midAngle(d2) < Math.PI
+                        ? "start"
+                        : "end";
+                };
+            });
+
+            text.exit().remove();
+
+            /* ------- SLICE TO TEXT POLYLINES -------*/
+
+            var polyline = svg.select(".lines").selectAll("polyline").data(pie(data), key);
+
+            polyline.enter().append("polyline");
+
+            polyline.transition().duration(1000).attrTween("points", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    var pos = outerArc.centroid(d2);
+                    pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI
+                        ? 1
+                        : -1);
+                    return [arc.centroid(d2), outerArc.centroid(d2), pos];
+                };
+            });
+
+            polyline.exit().remove();
+        };
+
+        // for upload self description at /uploadPersonal
+        var myDropzone = new Dropzone("#upload-description-Text-File", {url: "/api/profile/upload/upload-description-text-file"});
+        myDropzone.on("success", function(file) {
+            // prompt success upload
+            generateNotice('success', 'Successfully upload your document.');
+
+            // fetch new self descrition(introduction) and render on profile page
+            const getIntroductionAPIUrl = "/api/profile/get-introduction";
+            fetch(getIntroductionAPIUrl, {
+                method: "GET",
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+                }
+            }).then(function(res) {
+                if (res.status !== 200) {
+                    generateNotice(res.type, "Error, " + res.information);
+                } else {
+                    res.json().then(function(res) {
+                        $('#introduction-content-p').text(res.introduction);
+                    })
+                };
+
+                // change left text to the same high as dropzone, for better view
+                $('#introduction-content-p').css('height', $('.dropzone').height() + "px");
+            }).catch(function(err) {
+                generateNotice('error', err)
+            });
+
+            // fetch new personality assessment and render on profile page
+            const getPersonalityAssessmentAPIUrl = "/api/profile/get-personalityAssessment";
+            fetch(getPersonalityAssessmentAPIUrl, {
+                method: "GET",
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+                }
+            }).then(function(res) {
+                if (res.status !== 200) {
+                    generateNotice(res.type, "Error, " + res.information);
+                } else {
+                    res.json().then(function(res) {
+                        const assessement = res.assessment;
+                        drawPersonalityAssessment(assessement);
+                    })
+                };
+            }).catch(function(err) {
+                generateNotice('error', err)
+            });
+
+        })
+    }
+
+})
+
+// shuffle array
+function shuffleAry(array) {
+    var currentIndex = array.length,
+        temporaryValue,
+        randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+}
+
+// for upload source learning document at /SystemManagement
 $(function() {
-    $("#upload-description-Text-File").dropzone({url: "/api/profile/upload/upload-description-text-file"});
+    $("#upload-system-learning-document").dropzone({url: "/api/system/update/domain"});
 });
 
 //////////////////////////////////////////////////
@@ -184,7 +455,14 @@ const addReadmoreHandler = () => {
 $(document).ready(function() {
     $("#signup-form").on("submit", function(e) {
         e.preventDefault();
-
+        const passwordValidRegex = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
+        const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");
+        const password = $('#signup-form-password').val();
+        if (!passwordValidRegex.test(password) || spcialCharRegex.test(password) || password.length == 0) {
+          generateNotice('error','Invalid password format, please check the rules of password.');
+          $('.password-rule-list').fadeIn('fast').effect( "shake" );
+          return;
+        }
         // post signup request to server
         const url = '/signup';
         const $form = $(this),
@@ -276,16 +554,21 @@ $(function() {
     })
 })
 
-//////////////////////////////////////////////
-// This function adds and removes the hidden class from the developer token input
-//////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
+// This function toggle the admin/advisor token for signup
+////////////////////////////////////////////////////////////////////////////////////////////
 $(function() {
     $("#form-register-role").change(function() {
-
         if ($("#form-register-role option:selected").text() === "Admin") {
             $("#form-admin-token").removeClass("hidden");
         } else {
             $("#form-admin-token").addClass("hidden");
+        }
+
+        if ($("#form-register-role option:selected").text() === "Advisor") {
+            $("#form-advisor-token").removeClass("hidden");
+        } else {
+            $("#form-advisor-token").addClass("hidden");
         }
     })
 })
@@ -459,17 +742,17 @@ const addQuestionFeedClickEventHanlder = () => {
 // Answer related question ask event handler
 //////////////////////////////////////////////
 
-const addAnswerRelatedQuestionHandler = ()=>{
-  $('.answer-relate-question').each(function() {
-      $(this).on('click', function(evt) {
-          evt.preventDefault();
-          // grab question text and put in to search bar
-          $('#userQueryInput').val($(this).text())
+const addAnswerRelatedQuestionHandler = () => {
+    $('.answer-relate-question').each(function() {
+        $(this).on('click', function(evt) {
+            evt.preventDefault();
+            // grab question text and put in to search bar
+            $('#userQueryInput').val($(this).text())
 
-          // mannual fire search event by click the submit button
-          $('#querySubmitBtn').click();
-      })
-  })
+            // mannual fire search event by click the submit button
+            $('#querySubmitBtn').click();
+        })
+    })
 }
 
 //////////////////////////////////////////////

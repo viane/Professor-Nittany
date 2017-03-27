@@ -27,33 +27,53 @@ const formidable = require('formidable');
 
 const loginChecking = require(appRoot + '/app/utility-function/login-checking');
 
+const wordToText = require(appRoot + '/app/utility-function/word-file-to-text');
+
 router.post('/upload/upload-description-text-file', busboy({
     limits: {
         fileSize: 4 * 1024 * 1024
     }
-}), function(req, res, next) {
+}), (req, res, next) => {
 
     if (!req.busboy)
         return next('route');
 
     let fstream;
     req.pipe(req.busboy);
-    req.busboy.on('file', function(fieldname, file, filename) {
+    req.busboy.on('file', (fieldname, file, filename) => {
         if (path.extname(filename) === ".txt") {
             file.on('data', function(data) {
-                updateUserSelfDescription(req.user, data).then(function(query_report) {
-                    res.sendStatus(200);
+                updateUserSelfDescription(req.user, data).then((query_report) => {
+                    const dataText = data.toString();
+
+                    // if user description is longer than 100 words
+                    if (countWords(dataText) > 100) {
+                        getAndUpdatePersonalityAssessment(req.user, dataText).then(() => {
+                            res.sendStatus(200);
+                        }).catch((err) => {
+                            console.error(err);
+                            res.sendStatus(300);
+                        });
+                    } else {
+                        const updatePath = getUserDataPath(req.user.type);
+                        User.update({
+                            _id: req.user._id
+                        }, {
+                            $set: {
+                                [updatePath.evaluation]: {}
+                            }
+                        }).exec().then(() => {
+                            res.sendStatus(200);
+                        }).catch((err) => {
+                            console.error(err);
+                            res.sendStatus(300);
+                        });
+                    }
                 }).catch(function(err) {
-                    throw err;
+                    console.error(err);
                     res.sendStatus(300);
                 });
 
-                const dataText = data.toString();
-
-                // personality analysis only takes input that is more than 100 words
-                if (countWords(dataText) > 105) {
-                    getAndUpdatePersonalityAssessment(req.user, dataText);
-                }
             });
         } else if (path.extname(filename) === ".doc" || path.extname(filename) === ".docx") {
             // if user upload a word file, write to temp folder and named by it's id, then parse and upload to DB
@@ -65,31 +85,53 @@ router.post('/upload/upload-description-text-file', busboy({
                 loadJsonFile(appRoot + '/config/api-configuration.json').then(json => {
                     // using watson documention conversion
                     document_conversion.convert({
-                        file: fs.createReadStream(filePath), conversion_target: 'ANSWER_UNITS',
-                        // Use a custom configuration.
-                        config: json.document_conversion_config
-                    }, function(err, response) {
+                        file: fs.createReadStream(filePath),
+                        conversion_target: document_conversion.conversion_target.ANSWER_UNITS,
+                        word: json.document_conversion_config
+                    }, (err, response) => {
                         if (err) {
-                            throw err;
+                            console.error(err);
+                            res.sendStatus(300);
                         } else {
 
-                            const fullDoc = combineResult(response);
+                            const fullDoc = wordToText.combineResult(response);
 
-                            updateUserSelfDescription(req.user, fullDoc).then(function() {
+                            updateUserSelfDescription(req.user, fullDoc).then(() => {
                                 // done write to DB, delete file
-                                del.promise([filePath]).then(function() {}).catch(function(err) {
+                                del.promise([filePath]).then(() => {}).catch((err) => {
                                     throw err;
                                 });
-                                res.sendStatus(200);
+                                if (countWords(fullDoc) > 100) {
+                                    getAndUpdatePersonalityAssessment(req.user, fullDoc).then(() => {
+                                        res.sendStatus(200);
+                                    }).catch((err) => {
+                                        console.error(err);
+                                        res.sendStatus(300);
+                                    });
+                                } else {
+                                    const updatePath = getUserDataPath(req.user.type);
+                                    User.update({
+                                        _id: req.user._id
+                                    }, {
+                                        $set: {
+                                            [updatePath.evaluation]: {
+                                            }
+                                        }
+                                    }).exec().then(() => {
+                                        res.sendStatus(200);
+                                    }).catch((err) => {
+                                        console.error(err);
+                                        res.sendStatus(300);
+                                    });
+                                }
+
                             }).catch(function(err) {
                                 // if error on write to DB, leave the file in the folder for further examnaton
                                 throw err;
                                 res.sendStatus(300);
                             });
                             // personality analysis only takes input that is more than 100 words
-                            if (countWords(fullDoc) > 105) {
-                                getAndUpdatePersonalityAssessment(req.user, fullDoc);
-                            }
+
                         }
                     });
                 });
@@ -101,10 +143,32 @@ router.post('/upload/upload-description-text-file', busboy({
 
 // Get user interests
 router.get('/get-interest', (req, res) => {
-    User.findById(req.user._id).exec().then(function(foundUser) {
-        const interestPath = getInterestPathFromUser(foundUser);
+    User.findById(req.user._id).exec().then((foundUser) => {
+        const interestPath = getUserRecordPathByAccountType(foundUser);
         res.send({status: "success", information: "good", interest: foundUser[interestPath].interest});
-    }).catch(function(err) {
+    }).catch((err) => {
+        throw err;
+        res.send({type: 'error', information: err});
+    })
+});
+
+// Get user introduction
+router.get('/get-introduction', (req, res) => {
+    User.findById(req.user._id).exec().then((foundUser) => {
+        const path = getUserRecordPathByAccountType(foundUser);
+        res.send({status: "success", information: "Successfully load introduction.", introduction: foundUser[path].personality_assessement.description_content});
+    }).catch((err) => {
+        throw err;
+        res.send({type: 'error', information: err});
+    })
+});
+
+// Get user personaltity assessment
+router.get('/get-personalityAssessment', (req, res) => {
+    User.findById(req.user._id).exec().then((foundUser) => {
+        const path = getUserRecordPathByAccountType(foundUser);
+        res.send({status: "success", information: "Successfully load assessment.", assessment: foundUser[path].personality_assessement.evaluation});
+    }).catch((err) => {
         throw err;
         res.send({type: 'error', information: err});
     })
@@ -117,13 +181,15 @@ router.post('/update-avatar', loginChecking.isLoggedInRedirect, (req, res) => {
 
     form.maxFieldsSize = 1024 * 1024;
 
-    form.parse(req, function(err, fields, files) {
+    form.parse(req, (err, fields, files) => {
 
         const file = files.file;
 
+        // Only jpeg, png, jpg are allowed
+
         if (file.type != "image/jpeg" && file.type != "image/png" && file.type != "image/jpg") {
             res.send({type: 'error', information: "Unexcepted image type"});
-            del.promise([file.path]).then(function() {}).catch(function(err) {
+            del.promise([file.path]).then(function() {}).catch((err) => {
                 throw err;
             });
         } else {
@@ -150,14 +216,14 @@ router.post('/update-avatar', loginChecking.isLoggedInRedirect, (req, res) => {
                         '_id': req.user.id
                     }, {
                         "local.avatar": updatePath
-                    }, {new: true}).exec().then(function(foundUser) {
+                    }, {new: true}).exec().then((foundUser) => {
                         if (!foundUser || foundUser.type != "local") {
                             res.send({type: 'error', information: "Unknow failure"})
                             throw new Error("User updating avatar with suspicious user type");
                         } else {
                             res.send({type: 'success', information: "Success upload avatar", avatarPath: updatePath});
                         }
-                    }).catch(function(err) {
+                    }).catch((err) => {
                         throw err;
                         res.send({type: 'error', information: err});
                     })
@@ -170,13 +236,17 @@ router.post('/update-avatar', loginChecking.isLoggedInRedirect, (req, res) => {
 
 })
 
-router.post('/favorite-question', function(req, res) {
+router.post('/set-privacy', (req, res) => {
+    res.send({status: "success", information: "API not open yet"});
+})
+
+router.post('/favorite-question', (req, res) => {
     const id = req.user._id;
     console.log(req.user);
     res.send({status: "success", information: "done!"});
 });
 
-router.post('/like-question', function(req, res) {
+router.post('/like-question', (req, res) => {
     const id = req.user._id;
     console.log(req.user);
     res.send({status: "success", information: "done!"});
@@ -184,29 +254,7 @@ router.post('/like-question', function(req, res) {
 
 module.exports = router;
 
-const combineResult = (response) => {
-    let fullDoc = ""; // will store all content in the word file as plain text
-
-    // fill up the fullDoc
-    for (const docIndex in response.answer_units) {
-        if (response.answer_units[docIndex].hasOwnProperty("title")) {
-            fullDoc += response.answer_units[docIndex].title + ". ";
-        }
-        for (const textIndex in response.answer_units[docIndex].content) {
-            if (response.answer_units[docIndex].content[textIndex].hasOwnProperty("text")) {
-                fullDoc += response.answer_units[docIndex].content[textIndex].text;
-            }
-        }
-    }
-
-    if (fullDoc.length == 0) {
-        fullDoc = "Document not acceptable, try a different document.";
-    }
-
-    return fullDoc;
-}
-
-const getUserDataPath = function(userType) {
+const getUserDataPath = (userType) => {
     let path = "";
     switch (userType) {
         case "local":
@@ -232,7 +280,7 @@ const updateUserSelfDescription = (user, description) => {
     const id = user._id;
     const updatePath = getUserDataPath(user.type);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         User.update({
             _id: id
         }, {
@@ -240,12 +288,12 @@ const updateUserSelfDescription = (user, description) => {
                 [updatePath]: {
                     last_upload_time: new Date().toISOString(),
                     description_content: description.toString('utf8'),
-                    evaluation: ""
+                    evaluation: {}
                 }
             }
-        }).exec().then(function(query_report) {
+        }).exec().then((query_report) => {
             resolve(query_report);
-        }).catch(function(err) {
+        }).catch((err) => {
             throw err
             reject(err);
         });
@@ -256,7 +304,7 @@ const updateUserPersonalityAssessment = (user, assessment) => {
     const id = user._id;
     const updatePath = getUserDataPath(user.type) + ".evaluation";
 
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
 
         User.update({
             _id: id
@@ -264,9 +312,9 @@ const updateUserPersonalityAssessment = (user, assessment) => {
             "$set": {
                 [updatePath]: assessment
             }
-        }).exec().then(function(query_report) {
+        }).exec().then((query_report) => {
             resolve(query_report);
-        }).catch(function(err) {
+        }).catch((err) => {
             throw err
             reject(err);
         });
@@ -274,10 +322,15 @@ const updateUserPersonalityAssessment = (user, assessment) => {
 
 }
 
+// after updateUserSelfDescription is called
 const getAndUpdatePersonalityAssessment = (user, description) => {
-    personality.getAnalysis(description).then(assessment => updateUserPersonalityAssessment(user, assessment).then().catch(err => {
-        throw err
-    }))
+    return new Promise((resolve, reject) => {
+        personality.getAnalysis(description).then(assessment => updateUserPersonalityAssessment(user, assessment).then(resolve()).catch(err => {
+            console.error(err);
+            reject(err);
+        }));
+    });
+
 }
 
 var countWords = (s) => {
@@ -287,7 +340,7 @@ var countWords = (s) => {
     return s.split(' ').length;
 }
 
-const getInterestPathFromUser = user => {
+const getUserRecordPathByAccountType = user => {
     const userType = user.type;
     let returnPath = "";
     switch (userType) {

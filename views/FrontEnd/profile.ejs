@@ -20,6 +20,23 @@
 			border-image-repeat: repeat;
 			background-color: #eee;
 		}
+		/* for d3 personality display style*/
+
+		svg {
+			width: 100%;
+			height: 100%;
+		}
+
+		path.slice {
+			stroke-width: 2px;
+		}
+
+		polyline {
+			opacity: .3;
+			stroke: black;
+			stroke-width: 2px;
+			fill: none;
+		}
 	</style>
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -28,12 +45,22 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
 
-	<script src="/js/wordcloud2.js"></script>
+
 </head>
-<!-- if user acct-type = student .... teacher .... dev ... -->
 
 <body>
 	<%- include header.ejs %>
+
+		<!-- interest cloud -->
+		<script src="/js/wordcloud2.js"></script>
+
+		<!-- display advisors panel for sending assessment -->
+		<script src="js/jquery.modal.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="css/jquery.modal.css" type="text/css" media="screen" />
+
+		<!-- import d3 for display personality assessment -->
+		<script src="https://d3js.org/d3.v3.min.js" type="text/javascript" charset="utf-8"></script>
+
 		<%- include search-bar-module.ejs %>
 
 			<!-- nav bar -->
@@ -48,46 +75,57 @@
 						</div>
 
 						<div class="bs-callout bs-callout-primary text-left">
-							<div class="checkbox" id="interests-checkbox">
-								<label><input type="checkbox" value=""><h4>Introduction</h4></label>
-							</div>
-							<p id="borderimg2" class="editable" contenteditable="true">
-								Lorem ipsum dolor sit amet, ea vel prima adhuc, scripta liberavisse ea quo, te vel vidit mollis complectitur. Quis verear mel ne. Munere vituperata vis cu,te pri duis timeam scaevola, nam postea diceret ne. Cum ex quod aliquip mediocritatem, mei habemus
-								persecuti mediocritatem ei.Odio recteque expetenda eum ea, cu atqui maiestatis cum. Te eum nibh laoreet, case nostrud nusquam an vis.Clita debitis apeirian et sit, integre iudicabit elaboraret duo ex. Nihil causae adipisci id eos.
-							</p>
-							<div id="uploadFileSection" class="white-container-mid bs-callout bs-callout-info text-left">
-								<h4>Upload self-description</h4>
-								<form class="dropzone" id="upload-description-Text-File" name="upload-file"></form>
+							<div class="row">
+								<div class="col-xs-12 col-md-9">
+									<h4>Introduction</h4>
+									<p id="introduction-content-p" class="editable" contenteditable="true">
+										<% if(!introduction) { %>
+											Write something about yourself here!
+											</br>
+											Or upload a descriptive text!
+											<% } else { %>
+												<%- introduction  %>
+													<% } %>
+									</p>
+								</div>
+								<div class="col-xs-6 col-md-3">
+									<div id="uploadFileSection" class="text-left">
+										<h4>Upload Document</h4>
+										<form class="dropzone" id="upload-description-Text-File" name="upload-file"></form>
+									</div>
+								</div>
 							</div>
 						</div>
 
 						<div class="bs-callout bs-callout-primary text-left">
-							<div class="checkbox" id="interests-checkbox">
-								<label><input type="checkbox" value=""><h4>Interests</h4></label>
-							</div>
+							<h4>Interests</h4>
 							<!-- http://vitalets.github.io/x-editable/demo-bs3.html -->
 							<p id="borderimg2" class="editable" contenteditable="true">
-								Lorem ipsum dolor sit amet, ea vel prima adhuc, scripta liberavisse ea quo, te vel vidit mollis complectitur. Quis verear mel ne. Munere vituperata vis cu,te pri duis timeam scaevola, nam postea diceret ne. Cum ex quod aliquip mediocritatem, mei habemus
-								persecuti mediocritatem ei.Odio recteque expetenda eum ea, cu atqui maiestatis cum. Te eum nibh laoreet, case nostrud nusquam an vis.Clita debitis apeirian et sit, integre iudicabit elaboraret duo ex. Nihil causae adipisci id eos.
+								What we think you are interested!
 							</p>
 						</div>
 						<div class="bs-callout bs-callout-primary text-left">
-							<div class="checkbox" id="research-checkbox">
-								<label><input type="checkbox" value=""><h4>Research</h4></label>
+							<h4>Personality</h4>
+							<div id="personality-assessement" <% if(personality_assessement) { %> style="height: 450px" <% } %>>
+								<p id="personality-assessement-insufficient-word-message">To get a persoanlity assessment, please tell us more about yourself (more than 100 words)</p>
+								<% if(!personality_assessement) { %>
+									<p>Write a introduction to get your personality assessment</p>
+									<% } %>
 							</div>
-							<p id="borderimg2" class="editable" contenteditable="true">
-								Software Engineering, Machine Learning, Image Processing, Computer Vision, Artificial Neural Networks, Data Science, Evolutionary Algorithms.
-							</p>
 						</div>
-						<div class="bs-callout bs-callout-info text-left">
-							<div class="checkbox" id="questions-checkbox">
-								<label><input type="checkbox" value=""><h4>What You Asked</h4></label>
-							</div>
-							<div id="asked-question-list"></div>
+						<script>
+							const questionHistory = <% if(ask_history) { %> <%- JSON.stringify(ask_history) %> <% }else{ %> [] <% } %> ;
+							let personality_assessement =  <% if(personality_assessement) { %>  <%- JSON.stringify(personality_assessement) %> <% }else{ %> [] <% } %> ;
+						</script>
 
-							<script>
-								const questionHistory = <%- JSON.stringify(ask_history) %>;
-							</script>
+						<div class="bs-callout bs-callout-info text-left">
+							<h4>Favorite</h4>
+							<div id="favorite-question-list"> </div>
+						</div>
+
+						<div class="bs-callout bs-callout-info text-left">
+							<h4>Question History</h4>
+							<div id="asked-question-list"></div>
 						</div>
 					</div>
 				</div>
