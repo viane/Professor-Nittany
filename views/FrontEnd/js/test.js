@@ -330,7 +330,6 @@ $(function() {
 });
 
 $(document).ready(function() {
-
     $('#stars').on('starrr:change', function(e, value) {
         $('#count').html(value);
     });
@@ -458,4 +457,19 @@ $(() => {
             $(this).click()
         });
     }
+})
+
+//////////////////////////////////////////
+// Password strength validation
+//////////////////////////////////////////
+
+$(() => {
+    const strongPasswordRegex = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
+    const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");
+    $('#signup-form-password').on('keyup', function() {
+        const passwordPattern = $(this).val();
+        if (strongPasswordRegex.test(passwordPattern) && !spcialCharRegex.test(passwordPattern)) {
+            console.log("Good password");
+        }
+    })
 })
