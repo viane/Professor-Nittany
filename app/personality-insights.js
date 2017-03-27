@@ -31,7 +31,6 @@ module.exports.getAnalysis = input => {
 
             personality_insights.profile(params, (err, response) => {
                 if (err) {
-                    throw err;
                     reject(err);
                 } else {
                     resolve(response);
