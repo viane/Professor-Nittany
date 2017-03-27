@@ -47,17 +47,12 @@ router.post('/voice-in', (req, res) => {
 
 // API for after recording, STT the voice record then ask IAP then speak back the result
 router.post('/after-record', (req, res) => {
+    console.log(req.body);
     const voiceFileWAVUrl = req.body.RecordingUrl.toString().concat(".wav");
     const caller = req.body.From;
     const voiceFileLocalPath = appRoot + '/app/audio-file-temp-folder/' + req.body.RecordingSid + ".wav";
     // fetch audio then read it to Watson STT, temporary disabled
     request(voiceFileWAVUrl).pipe(fs.createWriteStream(voiceFileLocalPath)).on('finish', () => {
-        // delete auido file
-        fs.unlink(voiceFileLocalPath, (err) => {
-            if (err)
-                console.error(err);
-            }
-        );
         const params = {
             audio: fs.createReadStream(voiceFileLocalPath),
             content_type: 'audio/wav',
@@ -114,10 +109,13 @@ router.post('/after-record', (req, res) => {
                         twiml.redirect('/api/phone/qa-loop');
                         res.send(twiml.toString());
                         // store QA id by CallSid, prepare to send text of copy to user
-                        QACopyAry.unshift({
-                            callSid: req.body.CallSid, question: questionTranscript, // won't work
-                            answer: answerBody
-                        });
+                        QACopyAry.unshift({callSid: req.body.CallSid, question: questionTranscript, answer: answerBody});
+                        // delete auido file
+                        fs.unlink(voiceFileLocalPath, (err) => {
+                            if (err)
+                                console.error(err);
+                            }
+                        );
                     }).catch(function(err) {
                         console.error(err);
                         twiml.say(systemErrorMSG, {voice: 'alice'}).hangup();
