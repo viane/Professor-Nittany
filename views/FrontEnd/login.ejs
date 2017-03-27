@@ -16,13 +16,13 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
             <![endif]-->
 
-        </head>
+</head>
 
-        <body>
-            <%- include header.ejs %>
+<body>
+    <%- include header.ejs %>
 
 
-            <%- include search-bar-module.ejs %>
+        <%- include search-bar-module.ejs %>
 
             <!-- Top content -->
             <div class="top-content">
@@ -79,7 +79,7 @@
                                     <a href="/auth/twitter" class=""><i class="fa fa-twitter" style="font-size:24px; padding: 0px 5px"></i></a>
                                     <a href="/auth/google" class=""><i class="fa fa-google" style="font-size:24px; padding: 0px 5px"></i></a>
 
-                            <!-- <i class="fa fa-amazon" style="font-size:24px; padding: 0px 5px"></i>
+                                    <!-- <i class="fa fa-amazon" style="font-size:24px; padding: 0px 5px"></i>
                                     <i class="fa fa-instagram" style="font-size:24px; padding: 0px 5px"></i>
                                     <i class="fa fa-weibo" style="font-size:24px; padding: 0px 5px"></i> -->
                                 </div>
@@ -129,6 +129,13 @@
                                             <label class="sr-only" for="form-password">Password</label>
                                             <input type="password" name="password" placeholder="Password" class="form-password form-control" id="signup-form-password" data-signup-password>
                                             <span class="show-password-btn"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                                            <div class="form-group password-rule-list" style="display:none">
+                                                  <li id="password-lower-letter-condition"><i id="password-lower-letter-condition-icon" class="fa fa-square-o" aria-hidden="true"></i> At least 1 lower case letter</li>
+                                                  <li id="password-upper-letter-condition"><i id="password-upper-letter-condition-icon" class="fa fa-square-o" aria-hidden="true"></i> At least 1 upper case letter</li>
+                                                  <li id="password-number-condition"><i id="password-number-condition-icon" class="fa fa-square-o" aria-hidden="true"></i> At least 1 number</li>
+                                                  <li id="password-length-condition"><i id="password-length-condition-icon" class="fa fa-square-o" aria-hidden="true"></i> At least 8 characters long</li>
+                                                  <li id="password-special-letter-condition"><i id="password-special-letter-condition-icon" class="fa fa-square-o" aria-hidden="true"></i> No special character</li>
+                                            </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="form-acct-type">Account Type</label>
@@ -146,8 +153,8 @@
                                             <label class="sr-only" for="admin_token">Admin Token</label>
                                             <input type="text" name="admin-token" placeholder="Admin Token" class="form-admin-token form-control">
                                         </div>
-                                    <button type="submit" class="btn">Sign up!</button>
-                                    </div>
+                                        <button type="submit" class="btn">Sign up!</button>
+                                </div>
                                 </form>
                             </div>
 
@@ -159,11 +166,11 @@
             </div>
 
 
-        </div>
+            </div>
 
-        <%- include footer.ejs %>
+            <%- include footer.ejs %>
 
 
-    </body>
+</body>
 
-    </html>
+</html>

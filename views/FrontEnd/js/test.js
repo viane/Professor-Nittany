@@ -464,12 +464,80 @@ $(() => {
 //////////////////////////////////////////
 
 $(() => {
-    const strongPasswordRegex = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
+    const lowerLetterRegex = new RegExp("(?=.*[a-z])");
+    const upperLetterRegex = new RegExp("(?=.*[A-Z])");
+    const numberRegex = new RegExp("(?=.*[0-9])");
+    const lengthRegex = new RegExp("(?=.{8,})");
     const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");
+    $('#signup-form-password').on('focus', () => {
+        $('.password-rule-list').fadeIn("slow")
+    });
+    $('#signup-form-password').on('focusout', () => {
+        $('.password-rule-list').fadeOut("fast")
+    })
     $('#signup-form-password').on('keyup', function() {
-        const passwordPattern = $(this).val();
-        if (strongPasswordRegex.test(passwordPattern) && !spcialCharRegex.test(passwordPattern)) {
-            console.log("Good password");
+        const password = $(this).val();
+        if (password.length == 0) {
+            $('#password-lower-letter-condition-icon').addClass("fa-square-o").removeClass("fa-check-square-o").removeClass("fa-minus-square-o");
+            $('#password-lower-letter-condition').css('color', 'lightgray');
+
+            $('#password-upper-letter-condition-icon').addClass("fa-square-o").removeClass("fa-check-square-o").removeClass("fa-minus-square-o");
+            $('#password-upper-letter-condition').css('color', 'lightgray');
+
+            $('#password-number-condition-icon').addClass("fa-square-o").removeClass("fa-check-square-o").removeClass("fa-minus-square-o");
+            $('#password-number-condition').css('color', 'lightgray');
+
+            $('#password-length-condition-icon').addClass("fa-square-o").removeClass("fa-check-square-o").removeClass("fa-minus-square-o");
+            $('#password-length-condition').css('color', 'lightgray');
+
+            $('#password-special-letter-condition-icon').addClass("fa-square-o").removeClass("fa-check-square-o").removeClass("fa-minus-square-o");
+            $('#password-special-letter-condition').css('color', 'lightgray');
+
+        } else {
+            // lower case letter check
+            if (!lowerLetterRegex.test(password)) {
+                $('#password-lower-letter-condition-icon').removeClass("fa-square-o").removeClass("fa-check-square-o").addClass("fa-minus-square-o");
+                $('#password-lower-letter-condition').css('color', 'red');
+            } else {
+                $('#password-lower-letter-condition-icon').removeClass("fa-square-o").removeClass("fa-minus-square-o").addClass("fa-check-square-o");
+                $('#password-lower-letter-condition').css('color', 'darkseagreen');
+            }
+
+            // upper case letter check
+            if (!upperLetterRegex.test(password)) {
+                $('#password-upper-letter-condition-icon').removeClass("fa-square-o").removeClass("fa-check-square-o").addClass("fa-minus-square-o");
+                $('#password-upper-letter-condition').css('color', 'red');
+            } else {
+                $('#password-upper-letter-condition-icon').removeClass("fa-square-o").removeClass("fa-minus-square-o").addClass("fa-check-square-o");
+                $('#password-upper-letter-condition').css('color', 'darkseagreen');
+            }
+
+            // number check
+            if (!numberRegex.test(password)) {
+                $('#password-number-condition-icon').removeClass("fa-square-o").removeClass("fa-check-square-o").addClass("fa-minus-square-o");
+                $('#password-number-condition').css('color', 'red');
+            } else {
+                $('#password-number-condition-icon').removeClass("fa-square-o").removeClass("fa-minus-square-o").addClass("fa-check-square-o");
+                $('#password-number-condition').css('color', 'darkseagreen');
+            }
+
+            // length check
+            if (!lengthRegex.test(password)) {
+                $('#password-length-condition-icon').removeClass("fa-square-o").removeClass("fa-check-square-o").addClass("fa-minus-square-o");
+                $('#password-length-condition').css('color', 'red');
+            } else {
+                $('#password-length-condition-icon').removeClass("fa-square-o").removeClass("fa-minus-square-o").addClass("fa-check-square-o");
+                $('#password-length-condition').css('color', 'darkseagreen');
+            }
+
+            // special letter check
+            if (spcialCharRegex.test(password)) {
+                $('#password-special-letter-condition-icon').removeClass("fa-square-o").removeClass("fa-check-square-o").addClass("fa-minus-square-o");
+                $('#password-special-letter-condition').css('color', 'red');
+            } else {
+                $('#password-special-letter-condition-icon').removeClass("fa-square-o").removeClass("fa-minus-square-o").addClass("fa-check-square-o");
+                $('#password-special-letter-condition').css('color', 'darkseagreen');
+            }
         }
     })
 })

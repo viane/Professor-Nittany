@@ -455,7 +455,14 @@ const addReadmoreHandler = () => {
 $(document).ready(function() {
     $("#signup-form").on("submit", function(e) {
         e.preventDefault();
-
+        const passwordValidRegex = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
+        const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");
+        const password = $('#signup-form-password').val();
+        if (!passwordValidRegex.test(password) || spcialCharRegex.test(password) || password.length == 0) {
+          generateNotice('error','Invalid password format, please check the rules of password.');
+          $('.password-rule-list').fadeIn('fast').effect( "shake" );
+          return;
+        }
         // post signup request to server
         const url = '/signup';
         const $form = $(this),

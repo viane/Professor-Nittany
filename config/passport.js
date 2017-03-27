@@ -19,6 +19,7 @@ const serverStatus = require(appRoot + '/app/server-status');
 const loadJsonFile = require('load-json-file');
 const writeJsonFile = require('write-json-file');
 const serverStatusPath = '/config/server-status.json';
+const accountUtility = require(appRoot + '/app/utility-function/account');
 
 // load up the user model
 var User = require(appRoot + '/app/models/user');
@@ -97,6 +98,10 @@ module.exports = function(passport) {
         passwordField: 'password',
         passReqToCallback: true // allows us to pass back the entire request to the callback
     }, function(req, email, password, done) {
+        // valid password format
+        if (!accountUtility.validPasswordFormat(password)) {
+            return done("Invalid password format, check the rule of making password.", false, req.flash('signupMessage', 'Invalid password format')); // req.flash is the way to set flashdata using connect-flash
+        }
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
         User.findOne({

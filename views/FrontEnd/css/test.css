@@ -705,3 +705,13 @@ pre {
 #personality-assessement{
   transition: all 1.2s ease-in-out;
 }
+
+/* password condition list */
+.password-rule-list{
+  list-style: none;
+  background-color: rgb(255, 248, 248);
+  text-indent: 4px;
+  color: lightgray;
+  border-radius: 6px;
+  font-weight: 600;
+}
