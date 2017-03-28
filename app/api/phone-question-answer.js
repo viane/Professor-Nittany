@@ -140,15 +140,22 @@ router.post('/feedback-on-selection-start', (req, res) => {
     if (req.body.Digits) {
         if (req.body.Digits === '1' && req.body.Caller != 'client:Anonymous') {
             twiml.say('Sending a copy of your question and answer to your phone!', {voice: 'alice'}).pause();
+            //////////////////////////////////////////////////
             //  SMS QA to caller
+            //////////////////////////////////////////////////
             const QAObject = QACopyAry.filter((QA, index) => {
                 if (QA.callSid === req.body.CallSid) {
                     QACopyAry.splice(index, 1);
                     return QA;
                 }
             })[0];
-            const smsBody = "Question: " + QAObject.question + "\n" + "Answer: " + QAObject.answer;
-            // function call to send SMS
+            // SMS max limit: 1600 characters
+            // answer format rule: 
+            // 1. if answer less than 3 sentences, no change
+            // 2. if answer logner than 3 sentances, only keep first 3 sentances, form a url to IAP with a external question, attach with the answer.
+            // 3. regualr flag system applies
+            // 4. for any url, use google url shortener before send
+            const smsBody = "Question: " + QAObject.question + "." + "\n" + "Answer: " + QAObject.answer;
             twilioSMS.messages.create({
                 to: req.body.From,
                 from: req.body.To,

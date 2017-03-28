@@ -19,6 +19,7 @@ const serverStatusAPI = require(appRoot + '/app/api/server-status');
 const system = require(appRoot + '/app/api/system');
 const loginChecking = require(appRoot + '/app/utility-function/login-checking');
 const phoneQA = require(appRoot + '/app/api/phone-question-answer');
+const smsQA = require(appRoot + '/app/api/sms-question-answer');
 
 module.exports = function(app, passport) {
 
@@ -471,6 +472,9 @@ module.exports = function(app, passport) {
 
     // phone system
     app.use('/api/phone', phoneQA);
+
+    // sms system
+    app.use('/api/sms', smsQA);
 };
 
 
