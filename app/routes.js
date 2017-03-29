@@ -20,6 +20,8 @@ const system = require(appRoot + '/app/api/system');
 const loginChecking = require(appRoot + '/app/utility-function/login-checking');
 const phoneQA = require(appRoot + '/app/api/phone-question-answer');
 const smsQA = require(appRoot + '/app/api/sms-question-answer');
+const nodemailer = require('nodemailer');
+const smtpTransport = require('nodemailer-smtp-transport');
 
 module.exports = function(app, passport) {
 
@@ -114,12 +116,30 @@ module.exports = function(app, passport) {
                 user.local.account_activation_code = null;
                 user.local.account_status = "active";
                 user.save((err, newUser) => {
-                    console.log(newUser);
                     if (err) {
                         console.error(err);
                         return res.render(frontEndRoot + 'active-account.ejs', {system_error: 'There is an issue with system, please contact us.'});
                     }
                     req.logIn(newUser, function(err) {
+                        if (err) {
+                            console.error(err);
+                        }
+                    });
+                    // email notice account is activated
+                    const mailer = nodemailer.createTransport(smtpTransport({
+                        service: 'gmail',
+                        auth: {
+                            user: 'xiaoyuz2011@gmail.com',
+                            pass: 'Zsbqwacc0'
+                        }
+                    }));
+                    const mailOptions = {
+                        to: newUser.local.email,
+                        from: 'Intelligent Academic Advisor <xpz5043@psu.edu>',
+                        subject: 'Intelligent Academic Advisor Account Activation',
+                        html: '<html><body style="background-color:white; border-radius:3px; padding: 30px;"><h1>Intelligent Academic Planer Reset Password</h1><p>This is a confirmation that your account ' + newUser.local.email + ' has just been activated.</p></body></html>'
+                    };
+                    mailer.sendMail(mailOptions, (err) => {
                         if (err) {
                             console.error(err);
                         }
