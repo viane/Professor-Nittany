@@ -495,10 +495,10 @@ module.exports = function(app, passport) {
     app.use('/api/system', loginChecking.isAdminRedirect, system);
 
     // phone system
-    app.use('/api/phone', phoneQA);
+    app.use('/api/phone-question-answer', phoneQA);
 
     // sms system
-    app.use('/api/sms', smsQA);
+    app.use('/api/sms-question-answer', smsQA);
 };
 
 function checkSignUpParameter(req, res) {

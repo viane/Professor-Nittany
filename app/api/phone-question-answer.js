@@ -40,7 +40,7 @@ router.post('/voice-in', (req, res) => {
         maxLength: 50, timeout: 55, finihOnKey: '1234567890*#',
         // transcribe: true,
         method: 'POST',
-        action: '/api/phone/after-record'
+        action: '/api/phone-question-answer/after-record'
     });
     res.send(twiml.toString());
 });
@@ -72,7 +72,7 @@ router.post('/after-record', (req, res) => {
                 // STT transcript (question body)
                 if (resultTranscript.results.length == 0) {
                     twiml.say("Sorry I didn't hear anything", {voice: 'alice'}).pause();
-                    twiml.redirect('/api/phone/qa-loop');
+                    twiml.redirect('/api/phone-question-answer/qa-loop');
                     res.send(twiml.toString());
                     return;
                 }
@@ -97,7 +97,7 @@ router.post('/after-record', (req, res) => {
                         // ask if user wants save a copy of QA or keep asking different question
                         twiml.gather({
                             numDigits: 1,
-                            action: '/api/phone/feedback-on-selection-start'
+                            action: '/api/phone-question-answer/feedback-on-selection-start'
                         }, (gatherNode) => {
                             if (req.body.Caller === 'client:Anonymous') {
                                 gatherNode.say('Press any key to ask a different question or hangup anytime to end the call.', {voice: 'alice'});
@@ -106,7 +106,7 @@ router.post('/after-record', (req, res) => {
                             }
                         });
                         // If the user doesn't enter input, loop to ask question - answer
-                        twiml.redirect('/api/phone/qa-loop');
+                        twiml.redirect('/api/phone-question-answer/qa-loop');
                         res.send(twiml.toString());
                         // store QA id by CallSid, prepare to send text of copy to user
                         QACopyAry.unshift({callSid: req.body.CallSid, question: questionTranscript, answer: answerBody});
@@ -150,7 +150,7 @@ router.post('/feedback-on-selection-start', (req, res) => {
                 }
             })[0];
             // SMS max limit: 1600 characters
-            // answer format rule: 
+            // answer format rule:
             // 1. if answer less than 3 sentences, no change
             // 2. if answer logner than 3 sentances, only keep first 3 sentances, form a url to IAP with a external question, attach with the answer.
             // 3. regualr flag system applies
@@ -169,7 +169,7 @@ router.post('/feedback-on-selection-start', (req, res) => {
                 }
                 twiml.gather({
                     numDigits: 1,
-                    action: '/api/phone/qa-loop'
+                    action: '/api/phone-question-answer/qa-loop'
                 }, (gatherNode) => {
                     gatherNode.say('Do you wish to ask a different question? Press any key for yes or simply hangup to end the call.', {voice: 'alice'});
                 });
@@ -178,7 +178,7 @@ router.post('/feedback-on-selection-start', (req, res) => {
 
         }
         if (req.body.Digits === '2' || req.body.Caller === 'client:Anonymous') {
-            twiml.redirect('/api/phone/qa-loop');
+            twiml.redirect('/api/phone-question-answer/qa-loop');
             res.send(twiml.toString());
         }
         if (req.body.Digits != '1' && req.body.Digits != '2') {
@@ -203,7 +203,7 @@ router.post('/qa-loop', (req, res) => {
         maxLength: 50, timeout: 55, finihOnKey: '1234567890*#',
         // transcribe: true,
         method: 'POST',
-        action: '/api/phone/after-record'
+        action: '/api/phone-question-answer/after-record'
     });
     res.send(twiml.toString());
 });
