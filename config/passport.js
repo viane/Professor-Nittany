@@ -1,31 +1,32 @@
 // config/passport.js
 'use strict'
 
-var validator = require("email-validator");
+const validator = require("email-validator");
 // load all the things we need
-var LocalStrategy = require('passport-local').Strategy;
-var FacebookStrategy = require('passport-facebook').Strategy;
-var TwitterStrategy = require('passport-twitter').Strategy;
-var GoogleStrategy = require('passport-google-oauth2').Strategy;
-var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
-var InstagramStrategy = require("passport-instagram").Strategy;
-var RedditStrategy = require("passport-reddit").Strategy;
-var AmazonStrategy = require("passport-amazon").Strategy;
-var WechatStrategy = require("passport-wechat").Strategy;
-
-var appRoot = require('app-root-path');
-
+const LocalStrategy = require('passport-local').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
+const TwitterStrategy = require('passport-twitter').Strategy;
+const GoogleStrategy = require('passport-google-oauth2').Strategy;
+const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
+const InstagramStrategy = require("passport-instagram").Strategy;
+const RedditStrategy = require("passport-reddit").Strategy;
+const AmazonStrategy = require("passport-amazon").Strategy;
+const WechatStrategy = require("passport-wechat").Strategy;
+const appRoot = require('app-root-path');
 const serverStatus = require(appRoot + '/app/server-status');
 const loadJsonFile = require('load-json-file');
 const writeJsonFile = require('write-json-file');
 const serverStatusPath = '/config/server-status.json';
 const accountUtility = require(appRoot + '/app/utility-function/account');
-
+const nodemailer = require('nodemailer');
+const smtpTransport = require('nodemailer-smtp-transport');
+const bcrypt = require('bcrypt-nodejs');
+const crypto = require('crypto');
 // load up the user model
-var User = require(appRoot + '/app/models/user');
+const User = require(appRoot + '/app/models/user');
 
 // load the auth variables
-var configAuth = require(appRoot + '/config/auth');
+const configAuth = require(appRoot + '/config/auth');
 
 // expose this function to our app using module.exports
 module.exports = function(passport) {
@@ -81,6 +82,10 @@ module.exports = function(passport) {
             if (!user.validPassword(password)) {
                 return done("Password incorrect", false, req.flash('signupMessage', 'Password incorrect')); // req.flash is the way to set flashdata using connect-flash
             }
+            // if account is inactive
+            if (user.local.account_status === "inactive" || user.local.account_activation_code != null) {
+                return done("Account is inactive.", false, req.flash('signupMessage', 'Account hasn\'t active yet')); // req.flash is the way to set flashdata using connect-flash
+            }
             // all is well, return successful user
             return done(null, user);
         });
@@ -115,7 +120,10 @@ module.exports = function(passport) {
                 if (validator.validate(req.body.email)) {
                     // if user record is found, return the message
                     if (user) {
-                        return done("Email already registered", false, req.flash('signupMessage', 'Email already registered')); // req.flash is the way to set flashdata using connect-flash
+                        if (user.local.account_status === "inactive" || user.local.account_activation_code != null) {
+                            return done("Email already registered but inactive.", false, req.flash('signupMessage', 'Email already registered'));
+                        }
+                        return done("Email already registered", false, req.flash('signupMessage', 'Email already registered'));
                     } else {
                         //create new user
                         var newUser = new User();
@@ -140,17 +148,39 @@ module.exports = function(passport) {
                         newUser.local.first_name = req.body.first_name;
                         newUser.local.last_name = req.body.last_name;
                         newUser.local.displayName = req.body.first_name + " " + req.body.last_name;
-
-                        // save our user to the database
-                        newUser.save(function(err, newRecord) {
-                            if (err) {
-                                throw err;
-                                return done(err, false, req.flash('signupMessage', err));
-                            } else {
-                                // if successful
-                                return done(null, newUser);
-                            }
-                        })
+                        newUser.local.account_status = "inactive";
+                        crypto.randomBytes(20, (err, buf) => {
+                            const token = buf.toString('hex');
+                            newUser.local.account_activation_code = token;
+                            // save our user to the database
+                            newUser.save(function(err, newRecord) {
+                                if (err) {
+                                    console.error(err);
+                                    return done(err, false, req.flash('signupMessage', err));
+                                }
+                                // email the actvition code
+                                const mailer = nodemailer.createTransport(smtpTransport({
+                                    service: 'gmail',
+                                    auth: {
+                                        user: 'xiaoyuz2011@gmail.com',
+                                        pass: 'Zsbqwacc0'
+                                    }
+                                }));
+                                const mailOptions = {
+                                    to: newRecord.local.email,
+                                    from: 'Intelligent Academic Advisor <xpz5043@psu.edu>',
+                                    subject: 'Intelligent Academic Advisor Account Activation',
+                                    html: '<html><body style="background-color:white; border-radius:3px; padding: 30px;"><h1>Intelligent Academic Planer Account Activation</h1><p>You are receiving this because you (or someone else) have requested the actvation of your account.</p><p>Please click on the following link to complete the process.</p><a href="http://' + req.headers.host + '/active-account/' + token + '"  style="display: block;width:200px;padding: 10px;line-height: 1.4;background-color: #94B8E9; color: #fff;text-decoration: none; text-align: center; margin: 0 auto;border-radius:4px;">Active Account</a><p>Or mannually paste the following link to your broswer: http://' + req.headers.host + '/active-account/' + token + '</p><p>If you did not request this, please ignore this email and your account will remain inactive.</p></body></html>'
+                                };
+                                mailer.sendMail(mailOptions, (err) => {
+                                    if (err) {
+                                        console.error(err);
+                                        return done("An error has occured, please try reset passowrd or contact us.", null, req.flash('signupMessage', "An error has occured, please try reset passowrd or contact us."));
+                                    }
+                                    return done(null, newUser);
+                                });
+                            })
+                        });
                     }
                 } else {
                     return done("Email not valid", false, req.flash('signupMessage', 'Email not vaild'));

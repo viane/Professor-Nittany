@@ -123,7 +123,12 @@ const userSchema = mongoose.Schema({
         resetPasswordExpires: {
             type: Date,
             default: null
-        }
+        },
+        account_status: {
+            type: String,
+            default: "inactive"
+        },
+        account_activation_code: String
     },
     facebook: {
         id: String,
@@ -369,8 +374,6 @@ const userSchema = mongoose.Schema({
             evaluation: mongoose.Schema.Types.Mixed
         }
     },
-    account_status: String,
-    account_actvition_code: String,
     submitted_assessment_history: [
         {
             _id: {

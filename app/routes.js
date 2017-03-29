@@ -92,42 +92,74 @@ module.exports = function(app, passport) {
                 if (err) {
                     return res.send({status: 302, type: 'error', information: err});
                 } else {
-                    // req / res held in closure
-                    req.logIn(user, (err) => {
-                        if (err) {
-                            return res.send({status: 302, type: 'error', information: err});
-                        }
-                        return res.send({status: 200, type: 'success', information: "Successfully registered"});
-                    });
+                    return res.send({status: 200, type: 'success', information: "Successfully registered, a activation link has sent to your email."});
                 }
             })(req, res, next)
         }
     });
 
     // =====================================
+    // Active Account with token
+    // =====================================
+    app.get('/active-account/:token', (req, res) => {
+        User.findOne({
+            "local.account_activation_code": req.params.token
+        }, (err, user) => {
+            if (!user) {
+                return res.render(frontEndRoot + 'active-account.ejs', {
+                    token_error: 'Account activation token is invalid or account is already activated.',
+                });
+            }
+            if (user.local.account_activation_code === req.params.token) {
+                user.local.account_activation_code = null;
+                user.local.account_status = "active";
+                user.save((err, newUser) => {
+                    console.log(newUser);
+                    if (err) {
+                        console.error(err);
+                        return res.render(frontEndRoot + 'active-account.ejs', {system_error: 'There is an issue with system, please contact us.'});
+                    }
+                    req.logIn(newUser, function(err) {
+                        if (err) {
+                            console.error(err);
+                        }
+                    });
+                    return res.render(frontEndRoot + 'active-account.ejs', {success: 'Your account is successfully activated now. You can now go to your <a href=\'/profile\'>Profile Page</a> now',activation_email:newUser.local.email});
+                })
+            }
+
+        });
+    });
+
+    // =====================================
     // Reset Password
     // =====================================
     app.get('/reset-password', function(req, res) {
-      if (req.user) {
-        res.redirect('/profile')
-      }else {
-        res.render(frontEndRoot + 'reset-password.ejs');
-      }
+        if (req.user) {
+            res.redirect('/profile')
+        } else {
+            res.render(frontEndRoot + 'reset-password.ejs');
+        }
     });
 
     // =====================================
     // Update Password with token
     // =====================================
-    app.get('/update-password/:token', (req, res)=> {
-      User.findOne({"local.resetPasswordToken": req.params.token, "local.resetPasswordExpires": { $gt: Date.now() } }, (err, user) => {
-        if (!user) {
-          return res.render(frontEndRoot + 'reset-password.ejs',{token_error:'Password reset token is invalid or has expired.'});
-        }
-        res.render(frontEndRoot + 'update-password.ejs', {
-          reset_email: user.local.email,
-          reset_token: req.params.token
+    app.get('/update-password/:token', (req, res) => {
+        User.findOne({
+            "local.resetPasswordToken": req.params.token,
+            "local.resetPasswordExpires": {
+                $gt: Date.now()
+            }
+        }, (err, user) => {
+            if (!user) {
+                return res.render(frontEndRoot + 'reset-password.ejs', {token_error: 'Password reset token is invalid or has expired.'});
+            }
+            res.render(frontEndRoot + 'update-password.ejs', {
+                reset_email: user.local.email,
+                reset_token: req.params.token
+            });
         });
-      });
     });
 
     // =====================================
