@@ -9,7 +9,7 @@ const question = require('../app/models/question');
 const appRoot = require('app-root-path');
 const frontEndRoot = appRoot + '/views/FrontEnd/';
 const watsonToken = require('./watson-token');
-const accountManage = require('./account');
+const accountManage = require(appRoot + '/app/api/account');
 const uploadQuestionByTextFile = require('./file-to-questionDB');
 const User = require(appRoot + "/app/models/user");
 const testingAPIModule = require(appRoot + '/app/testing/testAPI');
@@ -105,6 +105,32 @@ module.exports = function(app, passport) {
     });
 
     // =====================================
+    // Reset Password
+    // =====================================
+    app.get('/reset-password', function(req, res) {
+      if (req.user) {
+        res.redirect('/profile')
+      }else {
+        res.render(frontEndRoot + 'reset-password.ejs');
+      }
+    });
+
+    // =====================================
+    // Update Password with token
+    // =====================================
+    app.get('/update-password/:token', (req, res)=> {
+      User.findOne({"local.resetPasswordToken": req.params.token, "local.resetPasswordExpires": { $gt: Date.now() } }, (err, user) => {
+        if (!user) {
+          return res.render(frontEndRoot + 'reset-password.ejs',{token_error:'Password reset token is invalid or has expired.'});
+        }
+        res.render(frontEndRoot + 'update-password.ejs', {
+          reset_email: user.local.email,
+          reset_token: req.params.token
+        });
+      });
+    });
+
+    // =====================================
     // PROFILE SECTION =========================
     // =====================================
     // we will want this protected so you have to be logged in to visit
@@ -136,13 +162,13 @@ module.exports = function(app, passport) {
         User.findById(req.user._id, function(err, foundUser) {
             let personality = {};
             if (foundUser[path].personality_assessement.evaluation) {
-              personality = foundUser[path].personality_assessement.evaluation.personality;
+                personality = foundUser[path].personality_assessement.evaluation.personality;
             }
             res.render(frontEndRoot + 'profile.ejs', {
                 user: req.user, // get the user out of session and pass to template
                 introduction: foundUser[path].personality_assessement.description_content,
                 ask_history: foundUser[path].ask_history,
-                personality_assessement:foundUser[path].personality_assessement.evaluation,
+                personality_assessement: foundUser[path].personality_assessement.evaluation,
                 privacy: foundUser.privacy
             });
         });
@@ -157,7 +183,7 @@ module.exports = function(app, passport) {
     // handle the callback after facebook has authenticated the user
     app.get('/auth/facebook/callback', passport.authenticate('facebook', {
         successRedirect: '/profile',
-        failureRedirect: '/'
+        failureRedirect: '/login'
     }));
 
     // =====================================
@@ -169,7 +195,7 @@ module.exports = function(app, passport) {
     // handle the callback after facebook has authenticated the user
     app.get('/auth/twitter/callback', passport.authenticate('twitter', {
         successRedirect: '/profile',
-        failureRedirect: '/'
+        failureRedirect: '/login'
     }));
 
     // =====================================
@@ -182,7 +208,7 @@ module.exports = function(app, passport) {
     // handle the callback after facebook has authenticated the user
     app.get('/auth/google/callback', passport.authenticate('google', {
         successRedirect: '/profile',
-        failureRedirect: '/'
+        failureRedirect: '/login'
     }));
 
     // =====================================
@@ -195,7 +221,7 @@ module.exports = function(app, passport) {
 
     app.get('/auth/linkedin/callback', passport.authenticate('linkedin', {
         successRedirect: '/profile',
-        failureRedirect: '/'
+        failureRedirect: '/login'
     }));
 
     // =====================================
@@ -260,8 +286,10 @@ module.exports = function(app, passport) {
     ////////////////////////////////////////////////
     // Inbox main
     ///////////////////////////////////////////////////
-    app.get('/inbox', /*loginChecking.isAdvisorRedirect,*/ function(req, res) {
-            res.render(frontEndRoot + '/inbox.ejs');
+    app.get('/inbox',
+    /*loginChecking.isAdvisorRedirect,*/
+    function(req, res) {
+        res.render(frontEndRoot + '/inbox.ejs');
     });
 
     // =====================================
@@ -288,9 +316,7 @@ module.exports = function(app, passport) {
     // Server status
     // =====================================
     app.get('/status', function(req, res) {
-        res.render(frontEndRoot + 'status.ejs', {
-
-        });
+        res.render(frontEndRoot + 'status.ejs', {});
     });
 
     // =====================================
@@ -366,57 +392,55 @@ module.exports = function(app, passport) {
     // =================================================
 
     app.get('/SystemManagement', loginChecking.isAdminRedirect, function(req, res) {
-        res.render(frontEndRoot + 'system-management.ejs', {
-            user: req.user
-        });
+        res.render(frontEndRoot + 'system-management.ejs', {user: req.user});
     });
 
     ////////////////////////////////////////////////
     // Front end files routes
     ///////////////////////////////////////////////////
     app.get('/css/*', function(req, res) {
-      var options = {
-          root: appRoot + '/views/FrontEnd',
-          headers: {
-              'x-timestamp': Date.now(),
-              'x-sent': true
-          }
-      };
-      res.sendFile(req.path, options, function(err) {
-          if (err) {
-              console.error(err);
-          }
-      });
+        var options = {
+            root: appRoot + '/views/FrontEnd',
+            headers: {
+                'x-timestamp': Date.now(),
+                'x-sent': true
+            }
+        };
+        res.sendFile(req.path, options, function(err) {
+            if (err) {
+                console.error(err);
+            }
+        });
     });
 
     app.get('/fonts/*', function(req, res) {
-      var options = {
-          root: appRoot + '/views/FrontEnd',
-          headers: {
-              'x-timestamp': Date.now(),
-              'x-sent': true
-          }
-      };
-      res.sendFile(req.path, options, function(err) {
-          if (err) {
-              console.error(err);
-          }
-      });
+        var options = {
+            root: appRoot + '/views/FrontEnd',
+            headers: {
+                'x-timestamp': Date.now(),
+                'x-sent': true
+            }
+        };
+        res.sendFile(req.path, options, function(err) {
+            if (err) {
+                console.error(err);
+            }
+        });
     });
 
     app.get('/js/*', function(req, res) {
-      var options = {
-          root: appRoot + '/views/FrontEnd',
-          headers: {
-              'x-timestamp': Date.now(),
-              'x-sent': true
-          }
-      };
-      res.sendFile(req.path, options, function(err) {
-          if (err) {
-              console.error(err);
-          }
-      });
+        var options = {
+            root: appRoot + '/views/FrontEnd',
+            headers: {
+                'x-timestamp': Date.now(),
+                'x-sent': true
+            }
+        };
+        res.sendFile(req.path, options, function(err) {
+            if (err) {
+                console.error(err);
+            }
+        });
     });
 
     app.get('/avatar/*', function(req, res) {
@@ -452,8 +476,8 @@ module.exports = function(app, passport) {
     // Get speech to text token route
     app.use('/api/speech-to-text', watsonToken);
 
-    // local user apply to be admin
-    app.use('/api/account', loginChecking.isLoggedInNotice, accountManage);
+    // local account API
+    app.use('/api/account', accountManage);
 
     // admin upload questions from text file
     app.use('/api/admin/upload/', loginChecking.isLoggedInRedirect, uploadQuestionByTextFile);
@@ -468,7 +492,7 @@ module.exports = function(app, passport) {
     app.use('/api/server-status', serverStatusAPI);
 
     // system AI APIs
-    app.use('/api/system',loginChecking.isAdminRedirect, system);
+    app.use('/api/system', loginChecking.isAdminRedirect, system);
 
     // phone system
     app.use('/api/phone', phoneQA);
@@ -476,7 +500,6 @@ module.exports = function(app, passport) {
     // sms system
     app.use('/api/sms', smsQA);
 };
-
 
 function checkSignUpParameter(req, res) {
     // callback with email and password from our form
@@ -528,11 +551,11 @@ const validateAdminToken = (token) => {
     }
 }
 
-const validateAdvisorToken = (token) =>{
-  const correctSecret = "b2aP7l3PMqjnL1cZNDGIyWBoM5i2BW22oyUAFxEZo3Afv0vtGzRPt1mcrcNLPqoxxqDJunVWbie4CZ6hDXRwVMF1YMDGMHjXP5nCXb2UF1VY3K1cpefpKEoAzyeaKzTT";
-  if (token === correctSecret) {
-      return true;
-  } else {
-      return false;
-  }
+const validateAdvisorToken = (token) => {
+    const correctSecret = "b2aP7l3PMqjnL1cZNDGIyWBoM5i2BW22oyUAFxEZo3Afv0vtGzRPt1mcrcNLPqoxxqDJunVWbie4CZ6hDXRwVMF1YMDGMHjXP5nCXb2UF1VY3K1cpefpKEoAzyeaKzTT";
+    if (token === correctSecret) {
+        return true;
+    } else {
+        return false;
+    }
 }

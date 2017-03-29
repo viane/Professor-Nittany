@@ -542,7 +542,6 @@ pre {
     color: white;
 }
 
-
 .dropzone .dz-preview .dz-error-message:after {
     content: '';
     position: absolute;
@@ -555,163 +554,205 @@ pre {
     border-bottom: 6px solid #be2626;
 }
 
-#apply-admin-code{
-  width: 80%;
+#apply-admin-code {
+    width: 80%;
 }
 
+
 /* Advisor list style */
+
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 @import url(https://fonts.googleapis.com/css?family=Open+Sans);
 .advisor-profile-wrapper {
-  font-family: 'Open Sans', Arial, sans-serif;
-  position: relative;
-  float: left;
-  margin: 10px 1%;
-  min-width: 230px;
-  max-width: 415px;
-  width: 100%;
-  color: #fff;
-  text-align: left;
-  line-height: 1.4em;
-  font-size: 14px;
-  box-shadow: none !important;
-}
-.advisor-profile-wrapper * {
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-}
-.advisor-profile-wrapper .profile-image {
-  width: 26%;
-}
-.advisor-profile-wrapper .profile-image img {
-  border-radius: 5px;
-  max-width: 100%;
-  vertical-align: top;
-}
-.advisor-profile-wrapper .profile-image,
-.advisor-profile-wrapper figcaption {
-  float: left;
-}
-.advisor-profile-wrapper figcaption {
-  width: 70%;
-  background-color: #333333;
-  color: #fff;
-  padding: 25px;
-  display: inline-block;
-  margin-left: 4%;
-  border-radius: 5px;
-}
-.advisor-profile-wrapper figcaption:after {
-  content: '';
-  position: absolute;
-  right: 70%;
-  top: 30px;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 10px 10px 10px 0;
-  border-color: transparent #333333 transparent transparent;
-}
-.advisor-profile-wrapper h3,
-.advisor-profile-wrapper h4,
-.advisor-profile-wrapper p {
-  margin: 0 0 5px;
-}
-.advisor-profile-wrapper h3 {
-  font-weight: 600;
-  font-size: 1.2em;
-  font-family: 'Montserrat', Arial, sans-serif;
-  color: #fff;
-}
-.advisor-profile-wrapper h4 {
-  color: #8c8c8c;
-  font-weight: 400;
-  letter-spacing: 2px;
-}
-.advisor-profile-wrapper p {
-  font-size: 0.9em;
-  letter-spacing: 1px;
-  opacity: 0.9;
-}
-.advisor-profile-wrapper .icons {
-  text-align: center;
-  width: 100%;
-}
-.advisor-profile-wrapper i {
-  padding: 10px 2px;
-  display: inline-block;
-  font-size: 18px;
-  font-weight: normal;
-  color: #ffffff;
-  opacity: 0.75;
-}
-.advisor-profile-wrapper i:hover {
-  opacity: 1;
-  -webkit-transition: all 0.35s ease;
-  transition: all 0.35s ease;
-}
-.advisor-profile-wrapper a {
-  text-decoration: none;
+    font-family: 'Open Sans', Arial, sans-serif;
+    position: relative;
+    float: left;
+    margin: 10px 1%;
+    min-width: 230px;
+    max-width: 415px;
+    width: 100%;
+    color: #fff;
+    text-align: left;
+    line-height: 1.4em;
+    font-size: 14px;
+    box-shadow: none !important;
 }
 
+.advisor-profile-wrapper * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.advisor-profile-wrapper .profile-image {
+    width: 26%;
+}
+
+.advisor-profile-wrapper .profile-image img {
+    border-radius: 5px;
+    max-width: 100%;
+    vertical-align: top;
+}
+
+.advisor-profile-wrapper .profile-image, .advisor-profile-wrapper figcaption {
+    float: left;
+}
+
+.advisor-profile-wrapper figcaption {
+    width: 70%;
+    background-color: #333333;
+    color: #fff;
+    padding: 25px;
+    display: inline-block;
+    margin-left: 4%;
+    border-radius: 5px;
+}
+
+.advisor-profile-wrapper figcaption:after {
+    content: '';
+    position: absolute;
+    right: 70%;
+    top: 30px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent #333333 transparent transparent;
+}
+
+.advisor-profile-wrapper h3, .advisor-profile-wrapper h4, .advisor-profile-wrapper p {
+    margin: 0 0 5px;
+}
+
+.advisor-profile-wrapper h3 {
+    font-weight: 600;
+    font-size: 1.2em;
+    font-family: 'Montserrat', Arial, sans-serif;
+    color: #fff;
+}
+
+.advisor-profile-wrapper h4 {
+    color: #8c8c8c;
+    font-weight: 400;
+    letter-spacing: 2px;
+}
+
+.advisor-profile-wrapper p {
+    font-size: 0.9em;
+    letter-spacing: 1px;
+    opacity: 0.9;
+}
+
+.advisor-profile-wrapper .icons {
+    text-align: center;
+    width: 100%;
+}
+
+.advisor-profile-wrapper i {
+    padding: 10px 2px;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: normal;
+    color: #ffffff;
+    opacity: 0.75;
+}
+
+.advisor-profile-wrapper i:hover {
+    opacity: 1;
+    -webkit-transition: all 0.35s ease;
+    transition: all 0.35s ease;
+}
+
+.advisor-profile-wrapper a {
+    text-decoration: none;
+}
+
+
 /* advisor check box */
+
 .checkbox input[type=checkbox] {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 .checkbox {
-  position: absolute;
-  display: block;
+    position: absolute;
+    display: block;
 }
 
 .checkbox--four {
-  width: 40px;
-  height: 40px;
-  background: #4d90fe;
-  left: 88%;
-  top: 6px;
-  cursor: default;
-  border-radius: 100%;
+    width: 40px;
+    height: 40px;
+    background: #4d90fe;
+    left: 88%;
+    top: 6px;
+    cursor: default;
+    border-radius: 100%;
 }
+
 
 /**
  * Create the checkbox button
  */
+
 .checkbox--four span {
-  display: block;
-  width: 30px;
-  height: 30px;
-  border-radius: 100px;
-  transition: all .5s ease;
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  z-index: 1;
-  background: #333;
-  box-shadow:inset 0px 1px 3px rgba(0,0,0,0.5);
+    display: block;
+    width: 30px;
+    height: 30px;
+    border-radius: 100px;
+    transition: all .5s ease;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    z-index: 1;
+    background: #333;
+    box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.5);
 }
+
 
 /**
  * Create the checked state
  */
-.checkbox--four input[type=checkbox]:checked + span {
-  background: #26ca28;
+
+.checkbox--four input[type=checkbox]:checked+span {
+    background: #26ca28;
 }
+
 
 /* profile page Introduction section fix*/
-#introduction-content-p,#personality-assessement-p{min-height: 150px;/* max-height: 150px; */height: 150px;overflow-y: scroll;resize: vertical;}
 
-/* personality section animation*/
-#personality-assessement{
-  transition: all 1.2s ease-in-out;
+#introduction-content-p, #personality-assessement-p {
+    min-height: 150px;
+    /* max-height: 150px; */
+    height: 150px;
+    overflow-y: scroll;
+    resize: vertical;
 }
 
+
+/* personality section animation*/
+
+#personality-assessement {
+    transition: all 1.2s ease-in-out;
+}
+
+
 /* password condition list */
-.password-rule-list{
-  list-style: none;
-  background-color: rgb(255, 248, 248);
-  text-indent: 4px;
-  color: lightgray;
-  border-radius: 6px;
-  font-weight: 600;
+
+.password-rule-list {
+    list-style: none;
+    background-color: rgb(255, 248, 248);
+    text-indent: 4px;
+    color: lightgray;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+
+/*Token invalid or expeired warning on Reset-Password page*/
+
+.warning-box {
+    background-color: lightblue;
+    padding: 10px;
+    color: white;
+    border-radius: 4px;
+    text-align: left;
 }

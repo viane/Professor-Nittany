@@ -2,17 +2,17 @@
 
 'use strict'
 
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-var appRoot = require('app-root-path');
-var configDB = require(appRoot + '/config/database.js');
+const appRoot = require('app-root-path');
+const configDB = require(appRoot + '/config/database.js');
 
-var conn = mongoose.createConnection(configDB.userDB_URL);
-var bcrypt = require('bcrypt-nodejs');
+const conn = mongoose.createConnection(configDB.userDB_URL);
+const bcrypt = require('bcrypt-nodejs');
 
 // define the schema for our user model
-var userSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
     type: String,
     privacy: {
         basic_information: {
@@ -115,6 +115,14 @@ var userSchema = mongoose.Schema({
             },
             description_content: String,
             evaluation: mongoose.Schema.Types.Mixed
+        },
+        resetPasswordToken: {
+            type: String,
+            default: null
+        },
+        resetPasswordExpires: {
+            type: Date,
+            default: null
         }
     },
     facebook: {
@@ -402,16 +410,10 @@ userSchema.methods.validPassword = function(password) {
 
 // this method hashes the password and sets the users password
 userSchema.methods.hashPassword = function(password) {
-    var user = this;
-
-    // hash the password
+    const user = this;
     bcrypt.hash(password, null, null, function(err, hash) {
-        if (err)
-            return next(err);
-
         user.local.password = hash;
     });
-
 };
 
 // create the model for users and expose it to our app
