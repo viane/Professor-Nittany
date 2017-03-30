@@ -48,14 +48,15 @@ describe('Register Tests', function(done) {
             {first_name: "noProblems",
             last_name: "registerTest",
             email: "unittest@test.com",
-            password: "password",
-            account_role: "Student"}).end(function(err, res) {
+            password: "Testing123",
+            account_role: "Student",
+            account_status: "active"}).end(function(err, res) {
                 if (err) {
                     return done(err);
                 } else {
                     expect(res.statusCode).to.equal(200);
                     expect(res.text).to.include('\"type\":\"success\"');
-                    expect(res.text).to.include("\"information\":\"Successfully registered\"");
+                    expect(res.text).to.include("Successfully registered");
                     done();
                 }
             });
@@ -67,8 +68,9 @@ describe('Register Tests', function(done) {
                 {first_name: "LoginWithinTimeLimit",
                 last_name: "registerTest",
                 email: "unittest@test.com",
-                password: "password",
-                account_role: "Student"
+                password: "Testing123",
+                account_role: "Student",
+                account_status: "active"
             }).end(function(err, res) {
                 if (err) {
                     return done(err);

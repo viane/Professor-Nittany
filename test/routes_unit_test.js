@@ -85,7 +85,7 @@ describe('Unit Testing', function () {
 			it ('Should not login user if there is no email provided OR email is empty', function (done) {
 				server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({
 					email: "",
-					password: 'testing123'}).end(function(err, res) {
+					password: 'Testing123'}).end(function(err, res) {
 						if (err) {
 							return done(err);
 						} else {
@@ -113,7 +113,7 @@ describe('Unit Testing', function () {
 			it('Should not log in user if it is not a valid email', function (done) {
 				server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({
 					email: "foo",
-					password: 'testing123'}).end(function(err, res) {
+					password: 'Testing123'}).end(function(err, res) {
 						if (err) {
 							return done(err);
 						} else {
@@ -128,7 +128,7 @@ describe('Unit Testing', function () {
 				it('Should not log in user if email doesn\'t exist', function (done) {
 					server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({
 						email: "foo@test.com",
-						password: 'testing123'}).end(function(err, res) {
+						password: 'Testing123'}).end(function(err, res) {
 							if (err) {
 								return done(err);
 							} else {
@@ -157,7 +157,7 @@ describe('Unit Testing', function () {
 			it ('Should properly log in user if no problems', function (done) {
 				server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({
 					email: "unittest@test.com",
-					password: 'testing123'}).end(function(err, res) {
+					password: 'Testing123'}).end(function(err, res) {
 						if (err) {
 							return done(err);
 						} else {
@@ -170,26 +170,15 @@ describe('Unit Testing', function () {
 				});
 				});
 		describe('~~~~~Signup~~~~~', function (done) {
-
-			it('should access signup page with no problems', function (done) {
-				server.get('/signup').end(function (error, response) {
-					if (error) {
-						return done(error);
-					}
-					else {
-						expect(response.statusCode).to.equal(200);
-						done();
-					}
-				});
-				});
 			describe('------checkSignUpParameter Tests------', function (done) {
 				it('user cannot register with empty first name', function (done) {
 					server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
 						{first_name: "",
 						last_name: "Tester",
 						email: "unittest@test.com",
-						password: "password",
-						account_role: "Student"}).end(function(err, res) {
+						password: "Testing123",
+						account_role: "Student",
+						account_status: "active"}).end(function(err, res) {
 							if (err) {
 								return done(err);
 							} else {
@@ -205,8 +194,9 @@ describe('Unit Testing', function () {
 						{first_name: "Tester",
 						last_name: "",
 						email: "unittest@test.com",
-						password: "password",
-						account_role: "Student"}).end(function(err, res) {
+						password: "Testing123",
+						account_role: "Student",
+						account_status: "active"}).end(function(err, res) {
 							if (err) {
 								return done(err);
 							} else {
@@ -222,8 +212,9 @@ describe('Unit Testing', function () {
 						{first_name: "incorrectPassword",
 						last_name: "registerTest",
 						email: "",
-						password: "password",
-						account_role: "Student"}).end(function(err, res) {
+						password: "Testing123",
+						account_role: "Student",
+						account_status: "active"}).end(function(err, res) {
 							if (err) {
 								return done(err);
 							} else {
@@ -240,7 +231,8 @@ describe('Unit Testing', function () {
 						last_name: "registerTest",
 						email: "unittest@test.com",
 						password: "",
-						account_role: "Student"}).end(function(err, res) {
+						account_role: "Student",
+						account_status: "active"}).end(function(err, res) {
 							if (err) {
 								return done(err);
 							} else {
@@ -256,8 +248,9 @@ describe('Unit Testing', function () {
 						{first_name: "incorrectPassword",
 						last_name: "registerTest",
 						email: "unittest@test.com",
-						password: "password",
-						account_role: ""}).end(function(err, res) {
+						password: "Testing123",
+						account_role: "",
+						account_status: "active"}).end(function(err, res) {
 							if (err) {
 								return done(err);
 							} else {
@@ -273,8 +266,9 @@ describe('Unit Testing', function () {
 						{first_name: "incorrectPassword",
 						last_name: "registerTest",
 						email: "unittest@test.com",
-						password: "password",
-						account_role: "Admin"}).end(function(err, res) {
+						password: "Testing123",
+						account_role: "Admin",
+						account_status: "active"}).end(function(err, res) {
 							if (err) {
 								return done(err);
 							} else {
@@ -290,8 +284,9 @@ describe('Unit Testing', function () {
 						{first_name: "incorrectPassword",
 						last_name: "registerTest",
 						email: "unittest@test.com",
-						password: "password",
-						account_role: "Advisor"}).end(function(err, res) {
+						password: "Testing123",
+						account_role: "Advisor",
+						account_status: "active"}).end(function(err, res) {
 							if (err) {
 								return done(err);
 							} else {
@@ -307,8 +302,9 @@ describe('Unit Testing', function () {
 						{first_name: "incorrectPassword",
 						last_name: "registerTest",
 						email: "unittest@test.com",
-						password: "password",
+						password: "Testing123",
 						account_role: "Admin",
+						account_status: "active",
 						['admin-token']: "HireMe"
 					}).end(function(err, res) {
 						if (err) {
@@ -326,8 +322,9 @@ describe('Unit Testing', function () {
 						{first_name: "incorrectPassword",
 						last_name: "registerTest",
 						email: "unittest@test.com",
-						password: "password",
+						password: "Testing123",
 						account_role: "Advisor",
+						account_status: "active",
 						['advisor-token']: "ImAProfessor"
 					}).end(function(err, res) {
 						if (err) {
@@ -346,8 +343,9 @@ describe('Unit Testing', function () {
 							{first_name: "Tester",
 							last_name: "Tester",
 							email: "unittest",
-							password: "password",
-							account_role: "Student"}).end(function(err, res) {
+							password: "Testing123",
+							account_role: "Student",
+							account_status: "active"}).end(function(err, res) {
 								if (err) {
 									return done(err);
 								} else {
@@ -364,8 +362,9 @@ describe('Unit Testing', function () {
 							{first_name: "takenEmail",
 							last_name: "registerTest",
 							email: "unittest@test.com",
-							password: "testing123",
-							account_role: "Student"}).end(function(err, res) {
+							password: "Testing123",
+							account_role: "Student",
+							account_status: "active"}).end(function(err, res) {
 								if (err) {
 									return done(err);
 								} else {
@@ -382,9 +381,11 @@ describe('Unit Testing', function () {
 							{first_name: "noProblems",
 							last_name: "registerTest",
 							email: "unittest@test.com",
-							password: "password",
-							account_role: "Student"}).end(function(err, res) {
+							password: "Testing123",
+							account_role: "Student",
+							account_status: "active"}).end(function(err, res) {
 								if (err) {
+									console.log(err);
 									return done(err);
 								} else {
 									user.findOne({'local.email': 'unittest@test.com'}).exec( function (err, newUser) {
@@ -402,8 +403,9 @@ describe('Unit Testing', function () {
 							{first_name: "noProblems",
 							last_name: "registerTest",
 							email: "unittest@test.com",
-							password: "password",
+							password: "Testing123",
 							account_role: "Advisor",
+							account_status: "active",
 							['advisor-token']: "b2aP7l3PMqjnL1cZNDGIyWBoM5i2BW22oyUAFxEZo3Afv0vtGzRPt1mcrcNLPqoxxqDJunVWbie4CZ6hDXRwVMF1YMDGMHjXP5nCXb2UF1VY3K1cpefpKEoAzyeaKzTT"
 						}).end(function(err, res) {
 							if (err) {
@@ -424,8 +426,9 @@ describe('Unit Testing', function () {
 							{first_name: "noProblems",
 							last_name: "registerTest",
 							email: "unittest@test.com",
-							password: "password",
+							password: "Testing123",
 							account_role: "Admin",
+							account_status: "active",
 							['admin-token']: "bwqlrEfvDofy7nZC8NLDXFlbh92rbL2moCxBSrXv8stqPcZjeGJCpbJ2QF2yh2iTBnWpEorY5ll2KTfl91FBEc5IEqnQboOfV319Js8fan6gRKHXSBwqbNPy3oRcKENfHQbTBPPCZSz2VaG4pLIB2K7VzL4AD93w7iKrDMfYeggwUGKJf0tX6xAAUyQwZQO5Wswn00aYtPYwst19WlKoFl3eEUQRQ05qFrLP5WwbG7ALmZSLztCnysBKGtUWyFa2"
 						}).end(function(err, res) {
 							if (err) {
@@ -446,8 +449,9 @@ describe('Unit Testing', function () {
 							{first_name: "noProblems",
 							last_name: "registerTest",
 							email: "unittest@test.com",
-							password: "password",
-							account_role: "Student"}).end(function(err, res) {
+							password: "Testing123",
+							account_role: "Student",
+							account_status: "active"}).end(function(err, res) {
 								if (err) {
 									return done(err);
 								} else {
@@ -456,14 +460,14 @@ describe('Unit Testing', function () {
 										else {
 											expect(newUser.local).to.not.equal(undefined);
 											expect(newUser.local.email).to.equal("unittest@test.com");
-											expect(newUser.password).to.equal(newUser.hashPassword("password"));
+											expect(newUser.password).to.equal(newUser.hashPassword("Testing123"));
 											expect(newUser.local.first_name).to.equal("noProblems");
 											expect(newUser.local.last_name).to.equal("registerTest");
 											expect(newUser.local.displayName).to.equal("noProblems registerTest");
 											expect(newUser.local.role).to.equal("student");
 											expect(res.statusCode).to.equal(200);
 											expect(res.text).to.include('\"type\":\"success\"');
-											expect(res.text).to.include("\"information\":\"Successfully registered\"");
+											expect(res.text).to.include("Successfully registered");
 											done();
 										}
 									});
@@ -508,9 +512,10 @@ describe('Unit Testing', function () {
 							var newUser = new user();
 							newUser.type = "blah!";
 							newUser.local.email = "unittest@test.com";
-							newUser.hashPassword("testing123");
+							newUser.hashPassword("Testing123");
 							newUser.local.name = "Tester";
 							newUser.local.account_role = "Student";
+        					newUser.local.account_status = "active";
 							newUser.save();
 							logValidUserIn( function () {
 								server.get('/profile').end(function (error, response) {
@@ -632,9 +637,10 @@ describe('Unit Testing', function () {
 				var newUser = new user();
 				newUser.type = "local";
 				newUser.local.email = "unittest@test.com";
-				newUser.hashPassword("testing123");
+				newUser.hashPassword("Testing123");
 				newUser.local.displayName = "Tester";
 				newUser.local.role = "advisor";
+				newUser.local.account_status = "active";
 				newUser.save();
 				logValidUserIn( function () {
 				server.get('/advising').end(function (error, response) {
@@ -642,7 +648,6 @@ describe('Unit Testing', function () {
 						return done(error);
 					}
 					else {
-						console.log(response);
 						expect(response.statusCode).to.equal(200);
 						done();
 					}
@@ -697,9 +702,11 @@ describe('Unit Testing', function () {
 				var newUser = new user();
 				newUser.type = "local";
 				newUser.local.email = "unittest@test.com";
-				newUser.hashPassword("testing123");
+				newUser.hashPassword("Testing123");
 				newUser.local.displayName = "Tester";
-				newUser.local.role = "Admin";
+				newUser.local.role = "admin";
+				newUser.local.account_status = "active";
+				newUser.local['admin-token'] = "bwqlrEfvDofy7nZC8NLDXFlbh92rbL2moCxBSrXv8stqPcZjeGJCpbJ2QF2yh2iTBnWpEorY5ll2KTfl91FBEc5IEqnQboOfV319Js8fan6gRKHXSBwqbNPy3oRcKENfHQbTBPPCZSz2VaG4pLIB2K7VzL4AD93w7iKrDMfYeggwUGKJf0tX6xAAUyQwZQO5Wswn00aYtPYwst19WlKoFl3eEUQRQ05qFrLP5WwbG7ALmZSLztCnysBKGtUWyFa2";		
 				newUser.save();
 				logValidUserIn( function () {
 				server.get('/admin').end(function (error, response) {
@@ -747,9 +754,10 @@ describe('Unit Testing', function () {
 				var newUser = new user();
 				newUser.type = "local";
 				newUser.local.email = "unittest@test.com";
-				newUser.hashPassword("testing123");
+				newUser.hashPassword("Testing123");
 				newUser.local.displayName = "Tester";
-				newUser.local.role = "Admin";
+				newUser.local.role = "admin";
+				newUser.local.account_status = "active";
 				newUser.save();
 				logValidUserIn( function () {
 				server.get('/QuestionAnswerManagement').end(function (error, response) {
@@ -764,74 +772,73 @@ describe('Unit Testing', function () {
 				});
 			});
 			});
-		describe('~~~~~postQA~~~~~', function (done) {
-			afterEach( function (done) {
-				question.find({'question_body': 'What\'s unit testing'}).remove().exec(done);
-			});
+		// describe('~~~~~postQA~~~~~', function (done) {
+		// 	afterEach( function (done) {
+		// 		question.find({'question_body': 'What\'s unit testing'}).remove().exec(done);
+		// 	});
 
-			it('should redirect user to login page if not logged in and accessing /postQuestionAnswer', function (){
-				server.post('/postQuestionAnswer').end ( function (err, res) {
-					if (err) done(err);
-					else {
-						expect(res.redirect).to.equal(true);
-						expect(res.statusCode).to.equal(302);
-						expect(res.headers.location).to.equal('/login');
-					}
-				});
-			});
-			it('should return error if question is empty', function (done) {
-				createUser( function() {
-					logValidUserIn( function () {
-						server.post('/postQuestionAnswer').send({
-							question: '',
-							answer: 'Hi',
-							tag: 'Hi'
-						}).end( function (err, res) {
-							if (err) done(err);
-							else {
-								expect(res.statusCode).to.equal(200);
-								expect(res.text).to.include("Question can not be empty");
-								done();
-							}
-						});
-					});
-				});
-			});
-			it('should find question in database', function () {
-				createUser( function() {
-					logValidUserIn( function() {
-						server.post('/postQuestionAnswer').send({
-							question: 'What\'s unit testing',
-							answer: 'Unit testing is checking code line-by-line for correctness'
-						}).end( function (err, res) {
-							if (err) done(err);
-							else {
-								var u;
-								user.findOne({'local.email': 'unittest@test.com'}).exec( function (err, newU) {
-									if (err) done(err);
-									else 
-										{
-											u = newU;
-											console.log(u);
-											question.findOne({'question_body': 'What\'s unit testing'}).exec(function (err, newQ) {
-												console.log(newQ);
-												expect(res.statusCode).to.equal(200);
-												expect(newQ.question_body).to.equal('What\'s unit testing');
-												expect(newQ.question_answer).to.equal('Unit testing is checking code line-by-line for correctness');
-												expect(newQ.question_submitter).to.equal(u._id);
-												expect(newQ.question_upload_method).to.equal("mannual");
-												expect(res.text).to.include("Successfully added entry");
-												done();
-											});
-										}
-								});
+		// 	it('should redirect user to login page if not logged in and accessing /postQuestionAnswer', function (){
+		// 		server.post('/postQuestionAnswer').end ( function (err, res) {
+		// 			if (err) done(err);
+		// 			else {
+		// 				expect(res.redirect).to.equal(true);
+		// 				expect(res.statusCode).to.equal(302);
+		// 				expect(res.headers.location).to.equal('/login');
+		// 			}
+		// 		});
+		// 	});
+		// 	it('should return error if question is empty', function (done) {
+		// 		createUser( function() {
+		// 			logValidUserIn( function () {
+		// 				server.post('/postQuestionAnswer').send({
+		// 					question: '',
+		// 					answer: 'Hi',
+		// 					tag: 'Hi'
+		// 				}).end( function (err, res) {
+		// 					if (err) done(err);
+		// 					else {
+		// 						expect(res.statusCode).to.equal(200);
+		// 						expect(res.text).to.include("Question can not be empty");
+		// 						done();
+		// 					}
+		// 				});
+		// 			});
+		// 		});
+		// 	});
+		// 	it('should find question in database', function () {
+		// 		createUser( function() {
+		// 			logValidUserIn( function() {
+		// 				server.post('/postQuestionAnswer').send({
+		// 					question: 'What\'s unit testing',
+		// 					answer: 'Unit testing is checking code line-by-line for correctness'
+		// 				}).end( function (err, res) {
+		// 					if (err) done(err);
+		// 					else {
+		// 						var u;
+		// 						user.findOne({'local.email': 'unittest@test.com'}).exec( function (err, newU) {
+		// 							if (err) done(err);
+		// 							else 
+		// 								{
+		// 									u = newU;
+		// 									question.findOne({'question_body': 'What\'s unit testing'}).exec(function (err, newQ) {
+		// 										console.log(newQ);
+		// 										expect(res.statusCode).to.equal(200);
+		// 										expect(newQ.question_body).to.equal('What\'s unit testing');
+		// 										expect(newQ.question_answer).to.equal('Unit testing is checking code line-by-line for correctness');
+		// 										expect(newQ.question_submitter).to.equal(u._id);
+		// 										expect(newQ.question_upload_method).to.equal("mannual");
+		// 										expect(res.text).to.include("Successfully added entry");
+		// 										done();
+		// 									});
+		// 								}
+		// 						});
 								
-							}
-						});
-					});
-				});
-			});
-			});
+		// 					}
+		// 				});
+		// 			});
+		// 		});
+		// 	});
+		// 	});
 		describe('~~~~~SystemManagement~~~~~', function (done) {
 			it('user should be redirected to login page if not logged in and accessing /SystemManagement', function (done) {
 					server.get('/SystemManagement').end(function (error, response) {
@@ -865,9 +872,11 @@ describe('Unit Testing', function () {
 				var newUser = new user();
 				newUser.type = "local";
 				newUser.local.email = "unittest@test.com";
-				newUser.hashPassword("testing123");
+				newUser.hashPassword("Testing123");
 				newUser.local.displayName = "Tester";
-				newUser.local.role = "Admin";
+				newUser.local.role = "admin";
+				newUser.local.account_status = "active";
+				newUser.local['admin-token']= "bwqlrEfvDofy7nZC8NLDXFlbh92rbL2moCxBSrXv8stqPcZjeGJCpbJ2QF2yh2iTBnWpEorY5ll2KTfl91FBEc5IEqnQboOfV319Js8fan6gRKHXSBwqbNPy3oRcKENfHQbTBPPCZSz2VaG4pLIB2K7VzL4AD93w7iKrDMfYeggwUGKJf0tX6xAAUyQwZQO5Wswn00aYtPYwst19WlKoFl3eEUQRQ05qFrLP5WwbG7ALmZSLztCnysBKGtUWyFa2";
 				newUser.save();
 				logValidUserIn( function () {
 				server.get('/SystemManagement').end(function (error, response) {
@@ -890,16 +899,17 @@ function createUser(callback) {
 	var newUser = new user();
 	newUser.type = "local";
 	newUser.local.email = "unittest@test.com";
-	newUser.hashPassword("testing123");
+	newUser.hashPassword("Testing123");
 	newUser.local.displayName = "Tester";
 	newUser.local.role = "Student";
+    newUser.local.account_status = "active";
 	newUser.save();
 	callback();
 }
 function logValidUserIn(callback) {
 	server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({
 		email: "unittest@test.com",
-		password: 'testing123'}).end(function (err, res) {
+		password: 'Testing123'}).end(function (err, res) {
 			if (err) return err;
 			else callback();
 		});
