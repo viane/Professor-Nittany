@@ -404,7 +404,7 @@ const userSchema = mongoose.Schema({
             assessment_id: String
         }
     ],
-    inbox_trash:[Schema.Types.Mixed]
+    inbox_trash:[mongoose.Schema.Types.Mixed]
 }, {strict: true});
 
 // checking if password is valid using bcrypt
