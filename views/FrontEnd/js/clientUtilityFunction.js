@@ -484,9 +484,8 @@ $(document).ready(function() {
                     return;
                 } else {
                     generateNotice(res.type, res.information);
-                    setTimeout(function() {
-                        window.location.href = '/profile';
-                    }, 2500);
+                    // empty signup form
+                    $('#signup-form input').each((index,element)=>{$(element).val("")});
                 }
             })
         }).catch(function(err) {

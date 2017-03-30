@@ -2,17 +2,17 @@
 
 'use strict'
 
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-var appRoot = require('app-root-path');
-var configDB = require(appRoot + '/config/database.js');
+const appRoot = require('app-root-path');
+const configDB = require(appRoot + '/config/database.js');
 
-var conn = mongoose.createConnection(configDB.userDB_URL);
-var bcrypt = require('bcrypt-nodejs');
+const conn = mongoose.createConnection(configDB.userDB_URL);
+const bcrypt = require('bcrypt-nodejs');
 
 // define the schema for our user model
-var userSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
     type: String,
     privacy: {
         basic_information: {
@@ -115,7 +115,20 @@ var userSchema = mongoose.Schema({
             },
             description_content: String,
             evaluation: mongoose.Schema.Types.Mixed
-        }
+        },
+        resetPasswordToken: {
+            type: String,
+            default: null
+        },
+        resetPasswordExpires: {
+            type: Date,
+            default: null
+        },
+        account_status: {
+            type: String,
+            default: "inactive"
+        },
+        account_activation_code: String
     },
     facebook: {
         id: String,
@@ -361,8 +374,6 @@ var userSchema = mongoose.Schema({
             evaluation: mongoose.Schema.Types.Mixed
         }
     },
-    account_status: String,
-    account_actvition_code: String,
     submitted_assessment_history: [
         {
             _id: {
@@ -402,16 +413,10 @@ userSchema.methods.validPassword = function(password) {
 
 // this method hashes the password and sets the users password
 userSchema.methods.hashPassword = function(password) {
-    var user = this;
-
-    // hash the password
+    const user = this;
     bcrypt.hash(password, null, null, function(err, hash) {
-        if (err)
-            return next(err);
-
         user.local.password = hash;
     });
-
 };
 
 // create the model for users and expose it to our app

@@ -469,13 +469,13 @@ $(() => {
     const numberRegex = new RegExp("(?=.*[0-9])");
     const lengthRegex = new RegExp("(?=.{8,})");
     const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");
-    $('#signup-form-password').on('focus', () => {
+    $('.signup-form-password').on('focus', () => {
         $('.password-rule-list').fadeIn("slow")
     });
-    $('#signup-form-password').on('focusout', () => {
+    $('.signup-form-password').on('focusout', () => {
         $('.password-rule-list').fadeOut("fast")
     })
-    $('#signup-form-password').on('keyup', function() {
+    $('.signup-form-password').on('keyup', function() {
         const password = $(this).val();
         if (password.length == 0) {
             $('#password-lower-letter-condition-icon').addClass("fa-square-o").removeClass("fa-check-square-o").removeClass("fa-minus-square-o");
@@ -540,4 +540,92 @@ $(() => {
             }
         }
     })
+});
+
+//////////////////////////////////////////
+// Reset Password
+//////////////////////////////////////////
+$(() => {
+    $("#reset-password-form").on("submit", function(e) {
+        e.preventDefault();
+        const url = '/api/account/reset-password';
+        const form = $(this),
+            formId = form.attr('id');
+        const query = $("#" + formId).serialize();
+        fetch(url, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: query
+        }).then(function(res) {
+            if (res.status !== 200) {
+                generateNotice('error', 'Failed to request, please try again later or contact us.');
+                return;
+            } else {
+                res.json().then(function(result) {
+                    generateNotice(result.type, result.information);
+                    // add promt info of token expeiration time
+                })
+            }
+        }).catch(function(err) {
+            generateNotice('error', err);
+        });
+    });
+});
+
+$(() => {
+    $("#update-password-form").on("submit", function(e) {
+        e.preventDefault();
+        // password checking
+        const passwordValidRegex = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
+        const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");
+        const password = $('.signup-form-password').val();
+        if (!passwordValidRegex.test(password) || spcialCharRegex.test(password) || password.length == 0) {
+          generateNotice('error','Invalid password format, please check the rules of password.');
+          $('.password-rule-list').fadeIn('fast').effect( "shake" );
+          return;
+        }
+        const url = '/api/account/update-password';
+        const password1 = $('#password-primary');
+        const password2 = $('#password-secondary');
+        if (password1.val() !== password2.val()) {
+          password1.effect( "shake" );
+          password2.effect( "shake" );
+          return generateNotice('error','Passwords doesn\'t match.');
+        }
+        const form = $(this),
+            formId = form.attr('id');
+        const query = $("#" + formId).serialize();
+        fetch(url, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: query
+        }).then(function(res) {
+            if (res.status !== 200) {
+                generateNotice('error', 'Failed to request, please try again later or contact us.');
+                return;
+            } else {
+                res.json().then(function(result) {
+                    if (result.type === "redirect") {
+                      window.location.replace(result.url)
+                    }
+                    generateNotice(result.type, result.information);
+                    if (result.type === "success") {
+                      setTimeout(()=>{
+                        window.location.replace('/profile');
+                      },1500);
+                    }
+                })
+            }
+        }).catch(function(err) {
+            generateNotice('error', err);
+        });
+    });
 })
