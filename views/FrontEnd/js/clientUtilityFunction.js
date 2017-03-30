@@ -145,15 +145,286 @@ $(function() {
     $("#upload-Question-Text-File").dropzone({url: "/api/admin/upload/upload-by-text-file"});
 });
 
-// for upload self description at /uploadPersonal
+// display personality assessement on profile game
+$(() => {
+    if (location.href === "http://localhost:3000/profile" || location.href === "https://intelligent-student-advisor.herokuapp.com/profile") {
+
+        var svg = d3.select("#personality-assessement").append("svg").append("g")
+
+        svg.append("g").attr("class", "slices");
+        svg.append("g").attr("class", "labels");
+        svg.append("g").attr("class", "lines");
+
+        var width = 850,
+            height = 450,
+            radius = Math.min(width, height) / 2;
+
+        var pie = d3.layout.pie().sort(null).value(function(d) {
+            return d.value;
+        });
+
+        var arc = d3.svg.arc().outerRadius(radius * 0.8).innerRadius(radius * 0.4);
+
+        var outerArc = d3.svg.arc().innerRadius(radius * 0.9).outerRadius(radius * 0.9);
+
+        svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        var key = function(d) {
+            return d.data.label;
+        };
+
+        let domainAry = [];
+        let domainTermPercentailAry = [];
+        let domainTermValueAry = [];
+
+        const colorRangeAry = shuffleAry([
+            "#a05d56",
+            "#d0743c",
+            "#ff8c00",
+            "#b0ff38",
+            "#38b0ff",
+            "#ff38b0",
+            "#8738ff",
+            "#EAFEAF",
+            "#a3b17a",
+            "#afeafe",
+            "#1805df",
+            "#b9b4f5",
+            "#0c026f"
+        ]);
+
+        const clearDataAry = () => {
+            // // clear each array
+            domainAry.splice(0, domainAry.length);
+            domainTermPercentailAry.splice(0, domainTermPercentailAry.length);
+            domainTermValueAry.splice(0, domainTermValueAry.length);
+        }
+
+        const loadAssessmentData = (personality_assessement) => {
+            if (!jQuery.isEmptyObject(personality_assessement)) { // fill dataAry
+                personality_assessement.personality.map((personalityCategory) => {
+                    domainAry.unshift(personalityCategory.name);
+                    domainTermPercentailAry.unshift(personalityCategory.percentile)
+                    domainTermValueAry.unshift(personalityCategory.percentile + personalityCategory.raw_score);
+                });
+
+                // reset personality display to normal size and hide warning message
+                $('#personality-assessement').css('height', '450px');
+                $('#personality-assessement-insufficient-word-message').css('display', 'none');
+            } else {
+                // if prevous svg drawed
+                if ($('#personality-assessement svg').length > 0) {
+                    // clean up drawing
+                    $('#personality-assessement svg g .slices').empty();
+                    $('#personality-assessement svg g .labels').empty();
+                    $('#personality-assessement svg g .lines').empty();
+
+                    // shrink personality display section and show warning message about description is less than 100 words
+                    $('#personality-assessement-insufficient-word-message').css('display', 'block');
+                    $('#personality-assessement').css('height', '100px');
+                }
+            }
+        }
+
+        var color = d3.scale.ordinal().domain(domainAry).range(colorRangeAry);
+
+        function parseData() {
+            let returnVal = [];
+
+            for (let i = 0; i < domainAry.length; i++) {
+                // ex: Openness-55.69%
+                const label = domainAry[i] + " - " + (domainTermPercentailAry[i] * 100).toFixed(1) + "%";
+                const value = domainTermValueAry[i];
+                returnVal.unshift({label: label, value: value});
+            }
+
+            return returnVal;
+        }
+
+        // fire d3 to generate display
+        const drawPersonalityAssessment = (personality_assessement) => {
+            clearDataAry();
+            loadAssessmentData(personality_assessement);
+
+            if (!jQuery.isEmptyObject(personality_assessement)) {
+                setTimeout(() => {
+                    change(parseData());
+                }, 500);
+            }
+
+        }
+
+        drawPersonalityAssessment(personality_assessement);
+
+        function change(data) {
+
+            /* ------- PIE SLICES -------*/
+            var slice = svg.select(".slices").selectAll("path.slice").data(pie(data), key);
+
+            slice.enter().insert("path").style("fill", function(d) {
+                return color(d.data.label);
+            }).attr("class", "slice");
+
+            slice.transition().duration(1000).attrTween("d", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    return arc(interpolate(t));
+                };
+            })
+
+            slice.exit().remove();
+
+            /* ------- TEXT LABELS -------*/
+
+            var text = svg.select(".labels").selectAll("text").data(pie(data), key);
+
+            text.enter().append("text").attr("dy", ".35em").text(function(d) {
+                return d.data.label;
+            });
+
+            function midAngle(d) {
+                return d.startAngle + (d.endAngle - d.startAngle) / 2;
+            }
+
+            text.transition().duration(1000).attrTween("transform", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    var pos = outerArc.centroid(d2);
+                    pos[0] = radius * (midAngle(d2) < Math.PI
+                        ? 1
+                        : -1);
+                    return "translate(" + pos + ")";
+                };
+            }).styleTween("text-anchor", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    return midAngle(d2) < Math.PI
+                        ? "start"
+                        : "end";
+                };
+            });
+
+            text.exit().remove();
+
+            /* ------- SLICE TO TEXT POLYLINES -------*/
+
+            var polyline = svg.select(".lines").selectAll("polyline").data(pie(data), key);
+
+            polyline.enter().append("polyline");
+
+            polyline.transition().duration(1000).attrTween("points", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    var pos = outerArc.centroid(d2);
+                    pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI
+                        ? 1
+                        : -1);
+                    return [arc.centroid(d2), outerArc.centroid(d2), pos];
+                };
+            });
+
+            polyline.exit().remove();
+        };
+
+        // for upload self description at /uploadPersonal
+        var myDropzone = new Dropzone("#upload-description-Text-File", {url: "/api/profile/upload/upload-description-text-file"});
+        myDropzone.on("success", function(file) {
+            // prompt success upload
+            generateNotice('success', 'Successfully upload your document.');
+
+            // fetch new self descrition(introduction) and render on profile page
+            const getIntroductionAPIUrl = "/api/profile/get-introduction";
+            fetch(getIntroductionAPIUrl, {
+                method: "GET",
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+                }
+            }).then(function(res) {
+                if (res.status !== 200) {
+                    generateNotice(res.type, "Error, " + res.information);
+                } else {
+                    res.json().then(function(res) {
+                        $('#introduction-content-p').text(res.introduction);
+                    })
+                };
+
+                // change left text to the same high as dropzone, for better view
+                $('#introduction-content-p').css('height', $('.dropzone').height() + "px");
+            }).catch(function(err) {
+                generateNotice('error', err)
+            });
+
+            // fetch new personality assessment and render on profile page
+            const getPersonalityAssessmentAPIUrl = "/api/profile/get-personalityAssessment";
+            fetch(getPersonalityAssessmentAPIUrl, {
+                method: "GET",
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+                }
+            }).then(function(res) {
+                if (res.status !== 200) {
+                    generateNotice(res.type, "Error, " + res.information);
+                } else {
+                    res.json().then(function(res) {
+                        const assessement = res.assessment;
+                        drawPersonalityAssessment(assessement);
+                    })
+                };
+            }).catch(function(err) {
+                generateNotice('error', err)
+            });
+
+        })
+    }
+
+})
+
+// shuffle array
+function shuffleAry(array) {
+    var currentIndex = array.length,
+        temporaryValue,
+        randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+}
+
+// for upload source learning document at /SystemManagement
 $(function() {
-    $("#upload-description-Text-File").dropzone({url: "/api/profile/upload/upload-description-text-file"});
+    $("#upload-system-learning-document").dropzone({url: "/api/system/update/domain"});
 });
 
 //////////////////////////////////////////////////
 // user like/fav question answer handler functions
 //////////////////////////////////////////////////
-var addLikeBtnHandler = function(answerSequenceNumber) {
+const addLikeBtnHandler = function(answerSequenceNumber) {
     $($('.answer-like-btn')[answerSequenceNumber]).on('click', function() {
         const targetAnswer = $('[data-answer-seq=' + answerSequenceNumber + ']').text();
         console.log(targetAnswer);
@@ -161,125 +432,20 @@ var addLikeBtnHandler = function(answerSequenceNumber) {
 };
 
 //////////////////////////////////////////////////
-// answer text flag(tag) extraction and formation
+// read more click handler to expand answer
 //////////////////////////////////////////////////
-var formatText = function(inputText) {
-
-    //for [html]...[html]
-    if (inputText.match("\\[\\n\\]") || inputText.match("\\[\\\\n\\]")) {
-        //replace original link segment with DOM rendable element
-        inputText = inputText.replace(new RegExp("\\[\\n\\]", "g"), "</br>");
-        inputText = inputText.replace(new RegExp("\\[\\\\n\\]", "g"), "</br>");
-    }
-
-    //for [html]...[html]
-    if (inputText.match("\\[html\\].*?\\[html\\]")) { //if we find something like [html]...[html]
-
-        //extract link
-        var linkText = inputText.match("\\[html\\].*?\\[html\\]").toString(); //Now linkText will look like this [html]www.abc.com[/html]
-
-        //trim [html] out of [html]www.abc.com[/html]
-        linkText = linkText.replace(new RegExp("\\[html\\]", "g"), "");
-
-        //trim [/html] out of www.abc.com[/html]
-        linkText = linkText.replace(new RegExp("\\[html\\]", "g"), "");
-
-        console.log("Extracted link : " + linkText);
-
-        //replace original link segment with DOM rendable element
-        inputText = inputText.replace(new RegExp("\\[html\\].*?\\[html\\]", "g"), "<p><a href='" + linkText + "' target='_blank'>Click me</a></p>");
-    } else {
-        console.log("No [html]...[html] in the text");
-    }
-
-    //for [link]...[link]
-    if (inputText.match("\\[link\\].*?\\[link\\]")) { //if we find something like [html]...[/html]
-
-        //extract link
-        var linkText = inputText.match("\\[link\\].*?\\[link\\]").toString(); //Now linkText will look like this [html]www.abc.com[link]
-
-        //trim [link] out of [link]www.abc.com[link]
-        linkText = linkText.replace(new RegExp("\\[link\\]", "g"), "");
-
-        console.log("Extracted link : " + linkText);
-
-        //replace original link segment with DOM rendable element
-        inputText = inputText.replace(new RegExp("\\[link\\].*?\\[link\\]", "g"), "<p><a href='" + linkText + "' target='_blank'>Click me</a></p>");
-    } else {
-        console.log("No [link]...[link] in the text");
-    }
-
-    //for [link]...[/link]
-    if (inputText.match("\\[link\\].*?\\[/link\\]")) { //if we find something like [html]...[/html]
-
-        //extract link
-        var linkText = inputText.match("\\[link\\].*?\\[/link\\]").toString(); //Now linkText will look like this [html]www.abc.com[link]
-
-        //trim [link] out of [link]www.abc.com[/link]
-        linkText = linkText.replace(new RegExp("\\[link\\]", "g"), "");
-
-        //trim [/link] out of www.abc.com[/link]
-        linkText = linkText.replace(new RegExp("\\[/link\\]", "g"), "");
-        console.log("Extracted link : " + linkText);
-
-        //replace original link segment with DOM rendable element
-        inputText = inputText.replace(new RegExp("\\[link\\].*?\\[/link\\]", "g"), "<p><a href='" + linkText + "' target='_blank'>Click me</a></p>");
-    } else {
-        console.log("No [link]...[/link] in the text");
-    }
-
-    //for [tip]...[/tip] same step above but replace to
-    //<span class="tip">...</span>
-    if (inputText.match("\\[tip\\].*?\\[/tip\\]")) { //if we find something like [tip]...[/tip]
-
-        var tipText = inputText.match("\\[tip\\].*?\\[/tip\\]").toString(); //Now linkText will look like this
-
-        tipText = tipText.replace(new RegExp("\\[tip\\]", "g"), "");
-
-        tipText = tipText.replace(new RegExp("\\[/tip\\]", "g"), "");
-
-        console.log("Extracted tip : " + tipText);
-
-        inputText = inputText.replace(new RegExp("\\[tip\\].*?\\[/tip\\]", "g"), "<span class=\"tip\">" + tipText + "</span>");
-    } else {
-        console.log("No [tip]...[/tip] in the text");
-    }
-
-    //for [keyword]...[keyword] same step above but replace to
-    //<span class="tip">...</span>
-    if (inputText.match("\\[keyword\\].*?\\[keyword\\]")) { //if we find something like [tip]...[/tip]
-
-        var keywordText = inputText.match("\\[keyword\\].*?\\[keyword\\]").toString(); //Now linkText will look like this
-
-        keywordText = keywordText.replace(new RegExp("\\[keyword\\]", "g"), "");
-
-        console.log("Extracted tip : " + keywordText);
-
-        inputText = inputText.replace(new RegExp("\\[keyword\\].*?\\[keyword\\]", "g"), "<p><span class=\"tip\">Suggest: " + keywordText.capitalize() + " Service</span></p>");
-    } else {
-        console.log("No [keyword]...[keyword] in the text");
-    }
-
-    //for [extend]...[/extend] same step above but replace to
-    //<span class="extend-btn">Read More</span><div class="extend-hide">...<div>
-    if (inputText.match("\\[extend\\].*?\\[/extend\\]")) { //if we find something like [extend]...[/extend]
-
-        var extendText = inputText.match("\\[extend\\].*?\\[/extend\\]").toString(); //Now linkText will look like this
-
-        extendText = extendText.replace(new RegExp("\\[extend\\]", "g"), "");
-
-        extendText = extendText.replace(new RegExp("\\[/extend\\]", "g"), "");
-
-        console.log("Extracted extend : " + extendText);
-
-        inputText = inputText.replace(new RegExp("\\[extend\\].*?\\[/extend\\]", "g"), "<div class=\"read-more\">Read More</div><div class=\"extend-hide\"><p class=\"answer\">" + extendText + "</p></div>");
-    } else {
-        console.log("No [extend]...[/extend] in the text");
-    }
-
-    console.log("Formatted text: " + inputText);
-    //return formatted text
-    return inputText;
+const addReadmoreHandler = () => {
+    $('.read-more').each(function() {
+        $(this).on('click', function() {
+            if ($(this).text() === "Read More") {
+                $(this).text("Collapse")
+                $(this).next().removeClass("hide");
+            } else {
+                $(this).text("Read More")
+                $(this).next().addClass("hide");
+            }
+        })
+    })
 }
 
 //////////////////////////////////////////////
@@ -289,7 +455,14 @@ var formatText = function(inputText) {
 $(document).ready(function() {
     $("#signup-form").on("submit", function(e) {
         e.preventDefault();
-
+        const passwordValidRegex = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
+        const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");
+        const password = $('#signup-form-password').val();
+        if (!passwordValidRegex.test(password) || spcialCharRegex.test(password) || password.length == 0) {
+          generateNotice('error','Invalid password format, please check the rules of password.');
+          $('.password-rule-list').fadeIn('fast').effect( "shake" );
+          return;
+        }
         // post signup request to server
         const url = '/signup';
         const $form = $(this),
@@ -311,9 +484,8 @@ $(document).ready(function() {
                     return;
                 } else {
                     generateNotice(res.type, res.information);
-                    setTimeout(function() {
-                        window.location.href = '/profile';
-                    }, 2500);
+                    // empty signup form
+                    $('#signup-form input').each((index,element)=>{$(element).val("")});
                 }
             })
         }).catch(function(err) {
@@ -381,16 +553,21 @@ $(function() {
     })
 })
 
-//////////////////////////////////////////////
-// This function adds and removes the hidden class from the developer token input
-//////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
+// This function toggle the admin/advisor token for signup
+////////////////////////////////////////////////////////////////////////////////////////////
 $(function() {
     $("#form-register-role").change(function() {
-
         if ($("#form-register-role option:selected").text() === "Admin") {
             $("#form-admin-token").removeClass("hidden");
         } else {
             $("#form-admin-token").addClass("hidden");
+        }
+
+        if ($("#form-register-role option:selected").text() === "Advisor") {
+            $("#form-advisor-token").removeClass("hidden");
+        } else {
+            $("#form-advisor-token").addClass("hidden");
         }
     })
 })
@@ -411,9 +588,12 @@ $(() => {
     }).then(function(res) {
         res.json().then((result) => {
             result.feeds.map((feed) => {
-                const feedHtmlListElement = "<li><a href=\"#\">" + feed + "</a></li>";
+                const feedHtmlListElement = "<li><a href=\"#\" id=\"question-feed-content\">" + feed + "</a></li>";
                 $('#question-feed-list').append(feedHtmlListElement);
             })
+
+            // add click handler to each feed question
+            addQuestionFeedClickEventHanlder();
         })
     }).catch(function(err) {
         generateNotice('error', err)
@@ -425,11 +605,11 @@ $(() => {
 //////////////////////////////////////////////
 
 $(function() {
-  if ($('#external_question').length) {
-    const external_question = $('#external_question').text();
+    if ($('#external_question').length) {
+        const external_question = $('#external_question').text();
         $('#userQueryInput').val(external_question);
         $('#querySubmitBtn').click();
-  }
+    }
 })
 
 // $(()=>{
@@ -453,13 +633,11 @@ $(function() {
 var checkDOM = function(ElementName) {
     if ($(ElementName)) {
         return true;
-    }
-    else {
+    } else {
         console.log("DOM element : " + ElementName + "does not exists.");
         return false;
     }
 }
-
 
 var showAnimateTranscripting = function() {
     var text = $(".transcripting_loading_span");
@@ -519,26 +697,20 @@ $(document).ready(function() {
             if (questionContext.val().length == 0) {
                 questionContext.focus();
                 generateNotice('error', "<div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Question can't not be empty</div>"); //call Noty with message
-            }
-            else {
-                $.ajax({
-                    url: '/postQuestionAnswer',
-                    type: 'post',
-                    data: queryData
-                }).done(function(data) {
+            } else {
+                $.ajax({url: '/postQuestionAnswer', type: 'post', data: queryData}).done(function(data) {
                     if (data.status === "1") { //call Noty with message for success
-                        generateNotice('success', "<div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> "+data.message+"</div>");
+                        generateNotice('success', "<div><i class=\"fa fa-check\" aria-hidden=\"true\"></i> " + data.message + "</div>");
                         questionContext.val(""); //clear text input
                         answerContext.val("");
                         tagContext.val("");
-                    }
-                    else {
+                    } else {
                         //err
                         if (data.status === "0") { //call Noty with message for alert
-                            generateNotice('alert', "<div><i class=\"fa fa-exclamation\" aria-hidden=\"true\"></i> "+data.message+"</div>");
+                            generateNotice('alert', "<div><i class=\"fa fa-exclamation\" aria-hidden=\"true\"></i> " + data.message + "</div>");
                         }
                         if (data.status === "-1") { //call Noty with message for error
-                            generateNotice('error', "<div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> "+data.message+"</div>");
+                            generateNotice('error', "<div><i class=\"fa fa-times\" aria-hidden=\"true\"></i> " + data.message + "</div>");
                         }
                     }
                 });
@@ -549,6 +721,40 @@ $(document).ready(function() {
 })
 
 //////////////////////////////////////////////
+// Question feeds click event handler
+//////////////////////////////////////////////
+
+const addQuestionFeedClickEventHanlder = () => {
+    $('#question-feed-list li a').each(function() {
+        $(this).on('click', function(evt) {
+            evt.preventDefault();
+            // grab question text and put in to search bar
+            $('#userQueryInput').val($(this).text())
+
+            // mannual fire search event by click the submit button
+            $('#querySubmitBtn').click();
+        })
+    })
+};
+
+//////////////////////////////////////////////
+// Answer related question ask event handler
+//////////////////////////////////////////////
+
+const addAnswerRelatedQuestionHandler = () => {
+    $('.answer-relate-question').each(function() {
+        $(this).on('click', function(evt) {
+            evt.preventDefault();
+            // grab question text and put in to search bar
+            $('#userQueryInput').val($(this).text())
+
+            // mannual fire search event by click the submit button
+            $('#querySubmitBtn').click();
+        })
+    })
+}
+
+//////////////////////////////////////////////
 // String utility
 //////////////////////////////////////////////
 
@@ -556,4 +762,99 @@ String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
-String.prototype.formatAnswerByTag = function() {}
+//////////////////////////////////////////////////
+// answer text flag(tag) extraction and formation
+//////////////////////////////////////////////////
+
+const formatAnswerByTag = (input) => {
+
+    //for [\n]
+    const endLineRegularExpression = /(\[\\n\])/g;
+
+    input = input.replace(endLineRegularExpression, '</br>');
+
+    //for [html]...[/html]
+    if (input.match("\\[html\\].*?\\[/html\\]")) {
+
+        //[html] to <div class="answerHTMLDOM">
+        input = input.replace(new RegExp("\\[html\\]", "g"), "<div class=\"answerHTMLDOM\">");
+
+        //[/html] to </div>
+        input = input.replace(new RegExp("\\[/html\\]", "g"), "</div><p class=\"answer-body\">");
+
+    }
+
+    // hide [ask]...[/ask]
+
+    if (input.match("\\[ask\\].*?\\[/ask\\]")) {
+
+        input = input.replace(new RegExp("\\[ask\\].*?\\[/ask\\]", "g"), "");
+    }
+
+    // for [a]...[/a] and [link]...[/link] pair
+
+    const linkRegularExpression = /(\[link\].*?\[\/link\])/gi; // reg pattern for [link]...[/link]
+
+    let linkAry = input.match(linkRegularExpression); // search answer if there is any [link]...[/link], if there is one or more, each segement will be assign to an array
+
+    if (linkAry && linkAry.length > 0) { // if array contains any [link]...[/link]
+        input = input.replace(linkRegularExpression, "") // trim [link]...[/link] from original answer
+
+        // trim [link] and [/link] from each segement in array
+        linkAry = linkAry.map((link) => {
+            link = link.replace(new RegExp("\\[link\\]"), "");
+            link = link.replace(new RegExp("\\[\/link\\]"), "");
+            link = link.replace(new RegExp("\\s", "g"), "");
+            return link;
+        })
+
+        let anchorCount = 0;
+        const anchorRegularExpression = /\[a\].*?\[\/a\]/; // reg pattern for [a]...[/a]
+        while (input.match(anchorRegularExpression) && input.match(anchorRegularExpression).length > 0) { // check each [a]...[/a] in the original answer
+
+            // convert to <a target="_blank" href="...">...</a>
+            input = input.replace(new RegExp("\\[a\\]"), "<a target=\"_blank\" href=\"" + linkAry[anchorCount] + "\">");
+            input = input.replace(new RegExp("\\[\/a\\]"), "</a>");
+            anchorCount++;
+        }
+    }
+
+    // for [question]...[/question]
+
+    if (input.match("\\[question\\].*?\\[/question\\]")) {
+        // convert to general question that can be directly asked to system
+
+    }
+
+    // for [ul][li]...[/li][/ul]
+    if (input.match("\\[ul\\].*?\\[/ul\\]")) {
+        // convert to general question that can be directly asked to system
+        input = input.replace(new RegExp("\\[ul\\]", "g"), "<ul>");
+        input = input.replace(new RegExp("\\[\/ul\\]", "g"), "</ul>");
+        input = input.replace(new RegExp("\\[li\\]", "g"), "<li>");
+        input = input.replace(new RegExp("\\[\/li\\]", "g"), "</li>");
+    }
+
+    // for [question][/question]
+    if (input.match("\\[question\\].*?\\[/question\\]")) {
+        // convert to general question that can be directly asked to system
+        input = input.replace(new RegExp("\\[question\\]", "g"), "<a href=\"#\" class=\"answer-relate-question\">");
+        input = input.replace(new RegExp("\\[\/question\\]", "g"), "</a>");
+        // handler are in
+    }
+
+    //for [extend]...[/extend] same step above but replace to
+    //<span class="extend-btn">Read More</span><div class="extend-hide">...<div>
+    if (input.match("\\[extend\\].*?\\[/extend\\]")) {
+
+        let extendText = input.match("\\[extend\\].*?\\[/extend\\]").toString();
+
+        extendText = extendText.replace(new RegExp("\\[extend\\]", "g"), "");
+
+        extendText = extendText.replace(new RegExp("\\[/extend\\]", "g"), "");
+
+        input = input.replace(new RegExp("\\[extend\\].*?\\[/extend\\]", "g"), "<div><span class=\"read-more btn btn-secondary\">Read More</span><div class=\"answer-body hide\">" + extendText + "</div></div>");
+    }
+
+    return input;
+}

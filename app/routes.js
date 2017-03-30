@@ -9,13 +9,19 @@ const question = require('../app/models/question');
 const appRoot = require('app-root-path');
 const frontEndRoot = appRoot + '/views/FrontEnd/';
 const watsonToken = require('./watson-token');
-const accountManage = require('./account');
+const accountManage = require(appRoot + '/app/api/account');
 const uploadQuestionByTextFile = require('./file-to-questionDB');
 const User = require(appRoot + "/app/models/user");
 const testingAPIModule = require(appRoot + '/app/testing/testAPI');
 const profileAPI = require(appRoot + '/app/profile');
 const validator = require("email-validator");
 const serverStatusAPI = require(appRoot + '/app/api/server-status');
+const system = require(appRoot + '/app/api/system');
+const loginChecking = require(appRoot + '/app/utility-function/login-checking');
+const phoneQA = require(appRoot + '/app/api/phone-question-answer');
+const smsQA = require(appRoot + '/app/api/sms-question-answer');
+const nodemailer = require('nodemailer');
+const smtpTransport = require('nodemailer-smtp-transport');
 
 module.exports = function(app, passport) {
 
@@ -84,28 +90,104 @@ module.exports = function(app, passport) {
         // precondition checking
         if (checkSignUpParameter(req, res)) {
             //email and password not empty, start local authentication
-            passport.authenticate('local-signup', function(err, user, info) {
+            passport.authenticate('local-signup', (err, user, info) => {
                 if (err) {
                     return res.send({status: 302, type: 'error', information: err});
                 } else {
-                    // req / res held in closure
-                    req.logIn(user, function(err) {
-                        if (err) {
-                            return res.send({status: 302, type: 'error', information: err});
-                        }
-                        return res.send({status: 200, type: 'success', information: "Successfully registered"});
-                    });
+                    return res.send({status: 200, type: 'success', information: "Successfully registered, a activation link has sent to your email."});
                 }
             })(req, res, next)
         }
     });
 
     // =====================================
+    // Active Account with token
+    // =====================================
+    app.get('/active-account/:token', (req, res) => {
+        User.findOne({
+            "local.account_activation_code": req.params.token
+        }, (err, user) => {
+            if (!user) {
+                return res.render(frontEndRoot + 'active-account.ejs', {
+                    token_error: 'Account activation token is invalid or account is already activated.',
+                });
+            }
+            if (user.local.account_activation_code === req.params.token) {
+                user.local.account_activation_code = null;
+                user.local.account_status = "active";
+                user.save((err, newUser) => {
+                    if (err) {
+                        console.error(err);
+                        return res.render(frontEndRoot + 'active-account.ejs', {system_error: 'There is an issue with system, please contact us.'});
+                    }
+                    req.logIn(newUser, function(err) {
+                        if (err) {
+                            console.error(err);
+                        }
+                    });
+                    // email notice account is activated
+                    const mailer = nodemailer.createTransport(smtpTransport({
+                        service: 'gmail',
+                        auth: {
+                            user: 'xiaoyuz2011@gmail.com',
+                            pass: 'Zsbqwacc0'
+                        }
+                    }));
+                    const mailOptions = {
+                        to: newUser.local.email,
+                        from: 'Intelligent Academic Advisor <xpz5043@psu.edu>',
+                        subject: 'Intelligent Academic Advisor Account Activation',
+                        html: '<html><body style="background-color:white; border-radius:3px; padding: 30px;"><h1>Intelligent Academic Planer Reset Password</h1><p>This is a confirmation that your account ' + newUser.local.email + ' has just been activated.</p></body></html>'
+                    };
+                    mailer.sendMail(mailOptions, (err) => {
+                        if (err) {
+                            console.error(err);
+                        }
+                    });
+                    return res.render(frontEndRoot + 'active-account.ejs', {success: 'Your account is successfully activated now. You can now go to your <a href=\'/profile\'>Profile Page</a> now',activation_email:newUser.local.email});
+                })
+            }
+
+        });
+    });
+
+    // =====================================
+    // Reset Password
+    // =====================================
+    app.get('/reset-password', function(req, res) {
+        if (req.user) {
+            res.redirect('/profile')
+        } else {
+            res.render(frontEndRoot + 'reset-password.ejs');
+        }
+    });
+
+    // =====================================
+    // Update Password with token
+    // =====================================
+    app.get('/update-password/:token', (req, res) => {
+        User.findOne({
+            "local.resetPasswordToken": req.params.token,
+            "local.resetPasswordExpires": {
+                $gt: Date.now()
+            }
+        }, (err, user) => {
+            if (!user) {
+                return res.render(frontEndRoot + 'reset-password.ejs', {token_error: 'Password reset token is invalid or has expired.'});
+            }
+            res.render(frontEndRoot + 'update-password.ejs', {
+                reset_email: user.local.email,
+                reset_token: req.params.token
+            });
+        });
+    });
+
+    // =====================================
     // PROFILE SECTION =========================
     // =====================================
     // we will want this protected so you have to be logged in to visit
-    // we will use route middleware to verify this (the isLoggedInRedirect function)
-    app.get('/profile', isLoggedInRedirect, function(req, res) {
+    // we will use route middleware to verify this (the loginChecking.isLoggedInRedirect function)
+    app.get('/profile', loginChecking.isLoggedInRedirect, function(req, res) {
         let path = "";
 
         switch (req.user.type) {
@@ -130,9 +212,15 @@ module.exports = function(app, passport) {
         };
 
         User.findById(req.user._id, function(err, foundUser) {
+            let personality = {};
+            if (foundUser[path].personality_assessement.evaluation) {
+                personality = foundUser[path].personality_assessement.evaluation.personality;
+            }
             res.render(frontEndRoot + 'profile.ejs', {
                 user: req.user, // get the user out of session and pass to template
+                introduction: foundUser[path].personality_assessement.description_content,
                 ask_history: foundUser[path].ask_history,
+                personality_assessement: foundUser[path].personality_assessement.evaluation,
                 privacy: foundUser.privacy
             });
         });
@@ -147,7 +235,7 @@ module.exports = function(app, passport) {
     // handle the callback after facebook has authenticated the user
     app.get('/auth/facebook/callback', passport.authenticate('facebook', {
         successRedirect: '/profile',
-        failureRedirect: '/'
+        failureRedirect: '/login'
     }));
 
     // =====================================
@@ -159,7 +247,7 @@ module.exports = function(app, passport) {
     // handle the callback after facebook has authenticated the user
     app.get('/auth/twitter/callback', passport.authenticate('twitter', {
         successRedirect: '/profile',
-        failureRedirect: '/'
+        failureRedirect: '/login'
     }));
 
     // =====================================
@@ -172,7 +260,7 @@ module.exports = function(app, passport) {
     // handle the callback after facebook has authenticated the user
     app.get('/auth/google/callback', passport.authenticate('google', {
         successRedirect: '/profile',
-        failureRedirect: '/'
+        failureRedirect: '/login'
     }));
 
     // =====================================
@@ -185,7 +273,7 @@ module.exports = function(app, passport) {
 
     app.get('/auth/linkedin/callback', passport.authenticate('linkedin', {
         successRedirect: '/profile',
-        failureRedirect: '/'
+        failureRedirect: '/login'
     }));
 
     // =====================================
@@ -247,6 +335,27 @@ module.exports = function(app, passport) {
     //     failureRedirect: '/'
     // }));
 
+    ////////////////////////////////////////////////
+    // Inbox main
+    ///////////////////////////////////////////////////
+    app.get('/inbox',
+    /*loginChecking.isAdvisorRedirect,*/
+    function(req, res) {
+        res.render(frontEndRoot + '/inbox.ejs');
+    });
+
+    // =====================================
+    // Advisor page
+    // =====================================
+    app.get('/advising', loginChecking.isAdvisorRedirect, function(req, res) {
+        User.findById(req.user._id, function(err, foundUser) {
+            res.render(frontEndRoot + 'advising.ejs', {
+                user: req.user,
+                privacy: foundUser.privacy
+            });
+        });
+    });
+
     // =====================================
     // LOGOUT ==============================
     // =====================================
@@ -256,9 +365,16 @@ module.exports = function(app, passport) {
     });
 
     // =====================================
+    // Server status
+    // =====================================
+    app.get('/status', function(req, res) {
+        res.render(frontEndRoot + 'status.ejs', {});
+    });
+
+    // =====================================
     // Admin console
     // =====================================
-    app.get('/admin', isLoggedInRedirect, function(req, res) {
+    app.get('/admin', loginChecking.isAdminRedirect, function(req, res) {
         res.render(frontEndRoot + 'admin.ejs', {
             message: req.flash('Message'),
             user: req.user
@@ -269,14 +385,14 @@ module.exports = function(app, passport) {
     // Routes for developer manage question and answer
     // =================================================
 
-    app.get('/QuestionAnswerManagement', isLoggedInRedirect, function(req, res) {
+    app.get('/QuestionAnswerManagement', loginChecking.isLoggedInRedirect, function(req, res) {
         res.render(frontEndRoot + 'question-Answer-Management.ejs', {
             message: req.flash('Message'),
             user: req.user
         }); // load the index.ejs file
     });
 
-    app.post('/postQuestionAnswer', isLoggedInRedirect, function(req, res) {
+    app.post('/postQuestionAnswer', loginChecking.isLoggedInRedirect, function(req, res) {
         //input check
         var questionContext = req.body.question;
         var answerContext = req.body.answer;
@@ -312,7 +428,7 @@ module.exports = function(app, passport) {
         }
     });
 
-    app.get('/viewQuestionAnswer', isLoggedInNotice, function(req, res) {
+    app.get('/viewQuestionAnswer', loginChecking.isLoggedInNotice, function(req, res) {
         //input parameter
 
         //create DB connection
@@ -323,58 +439,60 @@ module.exports = function(app, passport) {
 
     });
 
+    // =================================================
+    // Routes for developer manage system
+    // =================================================
+
+    app.get('/SystemManagement', loginChecking.isAdminRedirect, function(req, res) {
+        res.render(frontEndRoot + 'system-management.ejs', {user: req.user});
+    });
+
     ////////////////////////////////////////////////
     // Front end files routes
     ///////////////////////////////////////////////////
     app.get('/css/*', function(req, res) {
-      var options = {
-          root: appRoot + '/views/FrontEnd',
-          headers: {
-              'x-timestamp': Date.now(),
-              'x-sent': true
-          }
-      };
-      res.sendFile(req.path, options, function(err) {
-          if (err) {
-              console.error(err);
-          } else {
-              console.log('Sent:', req.path);
-          }
-      });
+        var options = {
+            root: appRoot + '/views/FrontEnd',
+            headers: {
+                'x-timestamp': Date.now(),
+                'x-sent': true
+            }
+        };
+        res.sendFile(req.path, options, function(err) {
+            if (err) {
+                console.error(err);
+            }
+        });
     });
 
     app.get('/fonts/*', function(req, res) {
-      var options = {
-          root: appRoot + '/views/FrontEnd',
-          headers: {
-              'x-timestamp': Date.now(),
-              'x-sent': true
-          }
-      };
-      res.sendFile(req.path, options, function(err) {
-          if (err) {
-              console.error(err);
-          } else {
-              console.log('Sent:', req.path);
-          }
-      });
+        var options = {
+            root: appRoot + '/views/FrontEnd',
+            headers: {
+                'x-timestamp': Date.now(),
+                'x-sent': true
+            }
+        };
+        res.sendFile(req.path, options, function(err) {
+            if (err) {
+                console.error(err);
+            }
+        });
     });
 
     app.get('/js/*', function(req, res) {
-      var options = {
-          root: appRoot + '/views/FrontEnd',
-          headers: {
-              'x-timestamp': Date.now(),
-              'x-sent': true
-          }
-      };
-      res.sendFile(req.path, options, function(err) {
-          if (err) {
-              console.error(err);
-          } else {
-              console.log('Sent:', req.path);
-          }
-      });
+        var options = {
+            root: appRoot + '/views/FrontEnd',
+            headers: {
+                'x-timestamp': Date.now(),
+                'x-sent': true
+            }
+        };
+        res.sendFile(req.path, options, function(err) {
+            if (err) {
+                console.error(err);
+            }
+        });
     });
 
     app.get('/avatar/*', function(req, res) {
@@ -388,8 +506,6 @@ module.exports = function(app, passport) {
         res.sendFile(req.path, options, function(err) {
             if (err) {
                 console.error(err);
-            } else {
-                console.log('Sent:', req.path);
             }
         });
     });
@@ -412,42 +528,30 @@ module.exports = function(app, passport) {
     // Get speech to text token route
     app.use('/api/speech-to-text', watsonToken);
 
-    // local user apply to be admin
-    app.use('/api/account', isLoggedInNotice, accountManage);
+    // local account API
+    app.use('/api/account', accountManage);
 
     // admin upload questions from text file
-    app.use('/api/admin/upload/', isLoggedInRedirect, uploadQuestionByTextFile);
+    app.use('/api/admin/upload/', loginChecking.isLoggedInRedirect, uploadQuestionByTextFile);
 
     // General server functionality testing api
     app.use('/api/testing/', testingAPIModule);
 
-    //  Profile APIs
-    app.use('/api/profile', isLoggedInRedirect, profileAPI);
+    // Profile APIs
+    app.use('/api/profile', loginChecking.isLoggedInRedirect, profileAPI);
 
     // Server status APIs
     app.use('/api/server-status', serverStatusAPI);
+
+    // system AI APIs
+    app.use('/api/system', loginChecking.isAdminRedirect, system);
+
+    // phone system
+    app.use('/api/phone-question-answer', phoneQA);
+
+    // sms system
+    app.use('/api/sms-question-answer', smsQA);
 };
-
-// route middleware to make sure
-function isLoggedInRedirect(req, res, next) {
-
-    // if user is authenticated in the session, carry on
-    if (req.isAuthenticated())
-        return next();
-
-    // if they aren't redirect them to the home page
-    res.redirect('/login');
-}
-
-function isLoggedInNotice(req, res, next) {
-
-    // if user is authenticated in the session, carry on
-    if (req.isAuthenticated())
-        return next();
-
-    // if they aren't redirect them to the home page
-    res.send({status: "error", information: "Login required"});
-}
 
 function checkSignUpParameter(req, res) {
     // callback with email and password from our form
@@ -469,7 +573,12 @@ function checkSignUpParameter(req, res) {
     }
 
     if (req.body.account_role === "Admin" && (!req.body['admin-token'] || req.body['admin-token'] == 0)) {
-        res.send({status: 302, type: 'error', information: 'Missing developer token for registering as developer'});
+        res.send({status: 302, type: 'error', information: 'Missing admin token for registering as admin'});
+        return false;
+    }
+
+    if (req.body.account_role === "Advisor" && (!req.body['advisor-token'] || req.body['advisor-token'] == 0)) {
+        res.send({status: 302, type: 'error', information: 'Missing advisor token for registering as advisor'});
         return false;
     }
 
@@ -477,12 +586,26 @@ function checkSignUpParameter(req, res) {
         res.send({status: 302, type: 'error', information: 'Invalid admin token'});
         return false;
     }
+
+    if (req.body.account_role === "Advisor" && !validateAdvisorToken(req.body['advisor-token'])) {
+        res.send({status: 302, type: 'error', information: 'Invalid advisor token'});
+        return false;
+    }
     return true;
 }
 
-const validateAdminToken = function(code) {
+const validateAdminToken = (token) => {
     const correctSecret = "bwqlrEfvDofy7nZC8NLDXFlbh92rbL2moCxBSrXv8stqPcZjeGJCpbJ2QF2yh2iTBnWpEorY5ll2KTfl91FBEc5IEqnQboOfV319Js8fan6gRKHXSBwqbNPy3oRcKENfHQbTBPPCZSz2VaG4pLIB2K7VzL4AD93w7iKrDMfYeggwUGKJf0tX6xAAUyQwZQO5Wswn00aYtPYwst19WlKoFl3eEUQRQ05qFrLP5WwbG7ALmZSLztCnysBKGtUWyFa2";
-    if (code === correctSecret) {
+    if (token === correctSecret) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+const validateAdvisorToken = (token) => {
+    const correctSecret = "b2aP7l3PMqjnL1cZNDGIyWBoM5i2BW22oyUAFxEZo3Afv0vtGzRPt1mcrcNLPqoxxqDJunVWbie4CZ6hDXRwVMF1YMDGMHjXP5nCXb2UF1VY3K1cpefpKEoAzyeaKzTT";
+    if (token === correctSecret) {
         return true;
     } else {
         return false;

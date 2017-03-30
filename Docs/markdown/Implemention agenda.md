@@ -1,16 +1,9 @@
 ## Implemention agenda
-### Clean routes from server.js to router.js
 
-### User login system:
->Weibo (watting for developer identification)
->
->Github
->
->TQQ
->
->Wechat
+- SMS system
 
-### Notes:
->Check race ratio of students.
+- Stop AI interaction condition, forward to real advisor
 
->Find out what social media are used most, use them to serve login.
+- advisor ask student info through Intelligent-Academic-Planner
+
+- multi access to IAP, web, phone, SMS, chatbot plugin

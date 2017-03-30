@@ -1,14 +1,11 @@
 'use strict';
 
-const morgan = require('morgan'); //request logger
-
 require('@risingstack/trace'); //for heorku tracking addon
-
 require('./config/console'); //overide global console.log function
-
+const opbeat = require('opbeat'); // tracing new release
 global.Promise = require("bluebird");
 
-const opbeat = require('opbeat');
+const morgan = require('morgan'); //request logger
 const http = require('http');
 const https = require('https');
 const path = require('path');
@@ -33,6 +30,12 @@ const passport = require('passport');
 
 // for server status functions
 const serverStatus = require(appRoot + '/app/server-status');
+
+// for system status functions
+const systemStatus = require(appRoot + '/app/system-status');
+
+// customize console.log font color
+const logColor = require('colors');
 
 app.use(opbeat.middleware.express()); // opbeat for heroku monitoring
 
@@ -85,16 +88,22 @@ require(appRoot + '/app/routes.js')(app, passport); // Routes
 
 require(appRoot + '/app/socket-io.js')(server); //handle communication between client and server
 
+// loading questionFeeds from Disk
 serverStatus.initQuestionFeeds().then((result) => {
-    console.log("Success loaded question feeds from server");
+    console.log("√ Success loaded question feeds".green);
 }).catch((err) => {
     throw err
-}) // loading questionFeeds from Disk
+})
 
-server.listen(app.get('port'), function() {
+// loading KnowledgeDomain from Disk
+systemStatus.initGetKnowledgeDomain().then((result) => {
+    console.log("√ Success loaded knowledge domain terms".green);
+}).catch((err) => {
+    throw err
+});
+
+server.listen(app.get('port') || 3000,function() {
     console.log('Express server listening on port ' + app.get('port'))
 });
 
 module.exports = app;
-
-const personality = require('./app/personality-insights');

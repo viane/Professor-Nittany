@@ -330,7 +330,6 @@ $(function() {
 });
 
 $(document).ready(function() {
-
     $('#stars').on('starrr:change', function(e, value) {
         $('#count').html(value);
     });
@@ -345,13 +344,13 @@ $(document).ready(function() {
     $('[data-toggle="tooltip"]').tooltip();
 });
 
-//code to change avatar
+// code to change avatar
 $(() => {
     $("#submit-avatar-input").on('change', function() {
         const url = '/api/profile/update-avatar';
 
         const data = new FormData();
-        data.append("file",$('#submit-avatar-input')[0].files[0]);
+        data.append("file", $('#submit-avatar-input')[0].files[0]);
 
         fetch(url, {
             method: "POST",
@@ -361,11 +360,11 @@ $(() => {
             if (res.status !== 200) {
                 generateNotice('error', "Error, status code: " + res.status);
                 return;
-            }else{
-              res.json().then(function(result) {
-                generateNotice(result.type, result.information);
-                $('#user-avatar').prop("src",result.avatarPath+ '?' + Math.random());
-              })
+            } else {
+                res.json().then(function(result) {
+                    generateNotice(result.type, result.information);
+                    $('#user-avatar').prop("src", result.avatarPath + '?' + Math.random());
+                })
             }
 
         }).catch(function(err) {
@@ -373,3 +372,260 @@ $(() => {
         });
     });
 });
+
+// get advisor list when user sending generated assessment and to advisors
+$(() => {
+    $('#goto-advisor-list-btn').on('click', () => {
+        const url = '/api/server-status/get-advisor-list';
+        fetch(url, {
+            method: "GET",
+            credentials: 'include'
+        }).then(function(res) {
+            if (res.status !== 200) {
+                generateNotice('error', "Error, status code: " + res.status);
+                return;
+            } else {
+                res.json().then(function(result) {
+                    // clear pannel
+                    $('.advisor-list-panel').html("");
+                    // render advisors
+                    result.advisors.map((advisor) => {
+                        let advisorDom = "<figure class=\"advisor-profile-wrapper\">";
+                        // profile image
+                        advisorDom += "<div class=\"profile-image\"><img src=\"" + advisor.avatar + "\"/></div>";
+                        advisorDom += "<figcaption>";
+                        // checkbox
+                        advisorDom += "<label class=\"checkbox checkbox--four\"><div style=\"display:none\" data-advisor-id=\"" + advisor.id + "\" data-advisor-email=\"" + advisor.email + "\" data-advisor-displayName=\"" + advisor.displayName + "\"></div><input class=\"advisor-check-input\" type=\"checkbox\" /><span></span></label>";
+                        // displayName
+                        advisorDom += "<h3>" + advisor.displayName + "</h3>";
+                        // email
+                        advisorDom += "<h4>" + advisor.email + "</h4>";
+                        // interest
+                        let interestContent = "";
+                        advisor.interest.map((interest) => {
+                            interestContent += interest.toString();
+                        });
+                        advisorDom += "<p>" + interestContent + "</p>";
+                        advisorDom += "</figcaption>"
+                        advisorDom += "</figure>";
+                        $('.advisor-list-panel').append(advisorDom);
+                    });
+                    $(".loader").css('display', 'none');
+                })
+            }
+        }).catch(function(err) {
+            generateNotice('error', err);
+            $(".loader").css('display', 'none');
+        });
+    });
+})
+
+//////////////////////////////////////////////
+// Display question history on profile page
+//////////////////////////////////////////////
+$(() => {
+    if (location.href === "http://localhost:3000/profile" || location.href === "https://intelligent-student-advisor.herokuapp.com/profile") {
+        questionHistory.map((logedQuestionObj) => {
+
+            let respond = "<li class=\"list-group-item text-left\">"
+
+            //add favorite btn to answer
+            respond += "<div id=\"hearts-existing\" class=\"hearrrt\" data-toggle=\"tooltip\" data-container=\"body\" data-placement=\"right\" title=\"Favorite!\" data-favortite = \"true\"></div>";
+
+            //add answer body and
+            respond += "<div class=\"question-log-question-body\"><p class=\"question-body\">" + logedQuestionObj.question_body + "</p></div>";
+
+            respond += "</li>"
+
+            // display user favorited question
+            if (logedQuestionObj.favorite) {
+                $('#favorite-question-list').append(respond);
+            }
+
+            // display user question history
+            if (!logedQuestionObj.favorite) {
+                $('#asked-question-list').append(respond);
+            }
+
+        })
+
+        // enable heart icon functionality
+        $(".hearrrt").hearrrt();
+
+        // mannual mark up each favorite question
+        $('#favorite-question-list .hearrrt span').each(function() {
+            $(this).click()
+        });
+    }
+})
+
+//////////////////////////////////////////
+// Password strength validation
+//////////////////////////////////////////
+
+$(() => {
+    const lowerLetterRegex = new RegExp("(?=.*[a-z])");
+    const upperLetterRegex = new RegExp("(?=.*[A-Z])");
+    const numberRegex = new RegExp("(?=.*[0-9])");
+    const lengthRegex = new RegExp("(?=.{8,})");
+    const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");
+    $('.signup-form-password').on('focus', () => {
+        $('.password-rule-list').fadeIn("slow")
+    });
+    $('.signup-form-password').on('focusout', () => {
+        $('.password-rule-list').fadeOut("fast")
+    })
+    $('.signup-form-password').on('keyup', function() {
+        const password = $(this).val();
+        if (password.length == 0) {
+            $('#password-lower-letter-condition-icon').addClass("fa-square-o").removeClass("fa-check-square-o").removeClass("fa-minus-square-o");
+            $('#password-lower-letter-condition').css('color', 'lightgray');
+
+            $('#password-upper-letter-condition-icon').addClass("fa-square-o").removeClass("fa-check-square-o").removeClass("fa-minus-square-o");
+            $('#password-upper-letter-condition').css('color', 'lightgray');
+
+            $('#password-number-condition-icon').addClass("fa-square-o").removeClass("fa-check-square-o").removeClass("fa-minus-square-o");
+            $('#password-number-condition').css('color', 'lightgray');
+
+            $('#password-length-condition-icon').addClass("fa-square-o").removeClass("fa-check-square-o").removeClass("fa-minus-square-o");
+            $('#password-length-condition').css('color', 'lightgray');
+
+            $('#password-special-letter-condition-icon').addClass("fa-square-o").removeClass("fa-check-square-o").removeClass("fa-minus-square-o");
+            $('#password-special-letter-condition').css('color', 'lightgray');
+
+        } else {
+            // lower case letter check
+            if (!lowerLetterRegex.test(password)) {
+                $('#password-lower-letter-condition-icon').removeClass("fa-square-o").removeClass("fa-check-square-o").addClass("fa-minus-square-o");
+                $('#password-lower-letter-condition').css('color', 'red');
+            } else {
+                $('#password-lower-letter-condition-icon').removeClass("fa-square-o").removeClass("fa-minus-square-o").addClass("fa-check-square-o");
+                $('#password-lower-letter-condition').css('color', 'darkseagreen');
+            }
+
+            // upper case letter check
+            if (!upperLetterRegex.test(password)) {
+                $('#password-upper-letter-condition-icon').removeClass("fa-square-o").removeClass("fa-check-square-o").addClass("fa-minus-square-o");
+                $('#password-upper-letter-condition').css('color', 'red');
+            } else {
+                $('#password-upper-letter-condition-icon').removeClass("fa-square-o").removeClass("fa-minus-square-o").addClass("fa-check-square-o");
+                $('#password-upper-letter-condition').css('color', 'darkseagreen');
+            }
+
+            // number check
+            if (!numberRegex.test(password)) {
+                $('#password-number-condition-icon').removeClass("fa-square-o").removeClass("fa-check-square-o").addClass("fa-minus-square-o");
+                $('#password-number-condition').css('color', 'red');
+            } else {
+                $('#password-number-condition-icon').removeClass("fa-square-o").removeClass("fa-minus-square-o").addClass("fa-check-square-o");
+                $('#password-number-condition').css('color', 'darkseagreen');
+            }
+
+            // length check
+            if (!lengthRegex.test(password)) {
+                $('#password-length-condition-icon').removeClass("fa-square-o").removeClass("fa-check-square-o").addClass("fa-minus-square-o");
+                $('#password-length-condition').css('color', 'red');
+            } else {
+                $('#password-length-condition-icon').removeClass("fa-square-o").removeClass("fa-minus-square-o").addClass("fa-check-square-o");
+                $('#password-length-condition').css('color', 'darkseagreen');
+            }
+
+            // special letter check
+            if (spcialCharRegex.test(password)) {
+                $('#password-special-letter-condition-icon').removeClass("fa-square-o").removeClass("fa-check-square-o").addClass("fa-minus-square-o");
+                $('#password-special-letter-condition').css('color', 'red');
+            } else {
+                $('#password-special-letter-condition-icon').removeClass("fa-square-o").removeClass("fa-minus-square-o").addClass("fa-check-square-o");
+                $('#password-special-letter-condition').css('color', 'darkseagreen');
+            }
+        }
+    })
+});
+
+//////////////////////////////////////////
+// Reset Password
+//////////////////////////////////////////
+$(() => {
+    $("#reset-password-form").on("submit", function(e) {
+        e.preventDefault();
+        const url = '/api/account/reset-password';
+        const form = $(this),
+            formId = form.attr('id');
+        const query = $("#" + formId).serialize();
+        fetch(url, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: query
+        }).then(function(res) {
+            if (res.status !== 200) {
+                generateNotice('error', 'Failed to request, please try again later or contact us.');
+                return;
+            } else {
+                res.json().then(function(result) {
+                    generateNotice(result.type, result.information);
+                    // add promt info of token expeiration time
+                })
+            }
+        }).catch(function(err) {
+            generateNotice('error', err);
+        });
+    });
+});
+
+$(() => {
+    $("#update-password-form").on("submit", function(e) {
+        e.preventDefault();
+        // password checking
+        const passwordValidRegex = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
+        const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");
+        const password = $('.signup-form-password').val();
+        if (!passwordValidRegex.test(password) || spcialCharRegex.test(password) || password.length == 0) {
+          generateNotice('error','Invalid password format, please check the rules of password.');
+          $('.password-rule-list').fadeIn('fast').effect( "shake" );
+          return;
+        }
+        const url = '/api/account/update-password';
+        const password1 = $('#password-primary');
+        const password2 = $('#password-secondary');
+        if (password1.val() !== password2.val()) {
+          password1.effect( "shake" );
+          password2.effect( "shake" );
+          return generateNotice('error','Passwords doesn\'t match.');
+        }
+        const form = $(this),
+            formId = form.attr('id');
+        const query = $("#" + formId).serialize();
+        fetch(url, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: query
+        }).then(function(res) {
+            if (res.status !== 200) {
+                generateNotice('error', 'Failed to request, please try again later or contact us.');
+                return;
+            } else {
+                res.json().then(function(result) {
+                    if (result.type === "redirect") {
+                      window.location.replace(result.url)
+                    }
+                    generateNotice(result.type, result.information);
+                    if (result.type === "success") {
+                      setTimeout(()=>{
+                        window.location.replace('/profile');
+                      },1500);
+                    }
+                })
+            }
+        }).catch(function(err) {
+            generateNotice('error', err);
+        });
+    });
+})
