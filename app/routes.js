@@ -385,14 +385,14 @@ module.exports = function(app, passport) {
     // Routes for developer manage question and answer
     // =================================================
 
-    app.get('/QuestionAnswerManagement', loginChecking.isLoggedInRedirect, function(req, res) {
+    app.get('/QuestionAnswerManagement', loginChecking.isAdminRedirect, function(req, res) {
         res.render(frontEndRoot + 'question-Answer-Management.ejs', {
             message: req.flash('Message'),
             user: req.user
         }); // load the index.ejs file
     });
 
-    app.post('/postQuestionAnswer', loginChecking.isLoggedInRedirect, function(req, res) {
+    app.post('/postQuestionAnswer', loginChecking.isAdminRedirect, function(req, res) {
         //input check
         var questionContext = req.body.question;
         var answerContext = req.body.answer;
@@ -428,7 +428,7 @@ module.exports = function(app, passport) {
         }
     });
 
-    app.get('/viewQuestionAnswer', loginChecking.isLoggedInNotice, function(req, res) {
+    app.get('/viewQuestionAnswer', loginChecking.isAdminRedirect, function(req, res) {
         //input parameter
 
         //create DB connection

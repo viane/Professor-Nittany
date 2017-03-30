@@ -48,9 +48,10 @@ describe('Login Tests', function(done) {
         var newUser = new user();
         newUser.type = "local";
         newUser.local.email = "unittest@test.com";
-        newUser.hashPassword("testing123");
+        newUser.hashPassword("Testing123");
         newUser.local.displayName = "Tester";
         newUser.local.account_role = "Student";
+        newUser.local.account_status = "active";
         newUser.save();
         done();
     });
@@ -58,7 +59,7 @@ describe('Login Tests', function(done) {
     /* User is removed after each function already */
 
     it('A user can login with a proper email and password', function(done) {
-        server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "unittest@test.com", password: 'testing123'}).end(function(err, res) {
+        server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "unittest@test.com", password: 'Testing123'}).end(function(err, res) {
             if (err) {
                 return done(err);
             } else {
@@ -72,7 +73,7 @@ describe('Login Tests', function(done) {
 
     it('A user can login within 5 seconds', function(done) {
         var startTime = Date.now();
-        server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "unittest@test.com", password: 'testing123'}).end(function(err, res) {
+        server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "unittest@test.com", password: 'Testing123'}).end(function(err, res) {
             if (err) {
                 return done(err);
             } else {
