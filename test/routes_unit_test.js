@@ -772,73 +772,72 @@ describe('Unit Testing', function () {
 				});
 			});
 			});
-		// describe('~~~~~postQA~~~~~', function (done) {
-		// 	afterEach( function (done) {
-		// 		question.find({'question_body': 'What\'s unit testing'}).remove().exec(done);
-		// 	});
+		describe('~~~~~postQA~~~~~', function (done) {
+			afterEach( function (done) {
+				question.find({'question_body': 'What\'s unit testing'}).remove().exec(done);
+			});
 
-		// 	it('should redirect user to login page if not logged in and accessing /postQuestionAnswer', function (){
-		// 		server.post('/postQuestionAnswer').end ( function (err, res) {
-		// 			if (err) done(err);
-		// 			else {
-		// 				expect(res.redirect).to.equal(true);
-		// 				expect(res.statusCode).to.equal(302);
-		// 				expect(res.headers.location).to.equal('/login');
-		// 			}
-		// 		});
-		// 	});
-		// 	it('should return error if question is empty', function (done) {
-		// 		createUser( function() {
-		// 			logValidUserIn( function () {
-		// 				server.post('/postQuestionAnswer').send({
-		// 					question: '',
-		// 					answer: 'Hi',
-		// 					tag: 'Hi'
-		// 				}).end( function (err, res) {
-		// 					if (err) done(err);
-		// 					else {
-		// 						expect(res.statusCode).to.equal(200);
-		// 						expect(res.text).to.include("Question can not be empty");
-		// 						done();
-		// 					}
-		// 				});
-		// 			});
-		// 		});
-		// 	});
-		// 	it('should find question in database', function () {
-		// 		createUser( function() {
-		// 			logValidUserIn( function() {
-		// 				server.post('/postQuestionAnswer').send({
-		// 					question: 'What\'s unit testing',
-		// 					answer: 'Unit testing is checking code line-by-line for correctness'
-		// 				}).end( function (err, res) {
-		// 					if (err) done(err);
-		// 					else {
-		// 						var u;
-		// 						user.findOne({'local.email': 'unittest@test.com'}).exec( function (err, newU) {
-		// 							if (err) done(err);
-		// 							else 
-		// 								{
-		// 									u = newU;
-		// 									question.findOne({'question_body': 'What\'s unit testing'}).exec(function (err, newQ) {
-		// 										console.log(newQ);
-		// 										expect(res.statusCode).to.equal(200);
-		// 										expect(newQ.question_body).to.equal('What\'s unit testing');
-		// 										expect(newQ.question_answer).to.equal('Unit testing is checking code line-by-line for correctness');
-		// 										expect(newQ.question_submitter).to.equal(u._id);
-		// 										expect(newQ.question_upload_method).to.equal("mannual");
-		// 										expect(res.text).to.include("Successfully added entry");
-		// 										done();
-		// 									});
-		// 								}
-		// 						});
+			it('should redirect user to login page if not logged in and accessing /postQuestionAnswer', function (){
+				server.post('/postQuestionAnswer').end ( function (err, res) {
+					if (err) done(err);
+					else {
+						expect(res.redirect).to.equal(true);
+						expect(res.statusCode).to.equal(302);
+						expect(res.headers.location).to.equal('/login');
+					}
+				});
+			});
+			it('should return error if question is empty', function (done) {
+				createUser( function() {
+					logValidUserIn( function () {
+						server.post('/postQuestionAnswer').send({
+							question: '',
+							answer: 'Hi',
+							tag: 'Hi'
+						}).end( function (err, res) {
+							if (err) done(err);
+							else {
+								expect(res.statusCode).to.equal(200);
+								expect(res.text).to.include("Question can not be empty");
+								done();
+							}
+						});
+					});
+				});
+			});
+			it('should find question in database', function () {
+				createUser( function() {
+					logValidUserIn( function() {
+						server.post('/postQuestionAnswer').send({
+							question: 'What\'s unit testing',
+							answer: 'Unit testing is checking code line-by-line for correctness'
+						}).end( function (err, res) {
+							if (err) done(err);
+							else {
+								var u;
+								user.findOne({'local.email': 'unittest@test.com'}).exec( function (err, newU) {
+									if (err) done(err);
+									else 
+										{
+											u = newU;
+											question.findOne({'question_body': 'What\'s unit testing'}).exec(function (err, newQ) {
+												expect(res.statusCode).to.equal(200);
+												expect(newQ.question_body).to.equal('What\'s unit testing');
+												expect(newQ.question_answer).to.equal('Unit testing is checking code line-by-line for correctness');
+												expect(newQ.question_submitter).to.equal(u._id);
+												expect(newQ.question_upload_method).to.equal("mannual");
+												expect(res.text).to.include("Successfully added entry");
+												done();
+											});
+										}
+								});
 								
-		// 					}
-		// 				});
-		// 			});
-		// 		});
-		// 	});
-		// 	});
+							}
+						});
+					});
+				});
+			});
+			});
 		describe('~~~~~SystemManagement~~~~~', function (done) {
 			it('user should be redirected to login page if not logged in and accessing /SystemManagement', function (done) {
 					server.get('/SystemManagement').end(function (error, response) {
