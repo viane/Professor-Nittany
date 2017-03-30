@@ -108,9 +108,7 @@ module.exports = function(app, passport) {
             "local.account_activation_code": req.params.token
         }, (err, user) => {
             if (!user) {
-                return res.render(frontEndRoot + 'active-account.ejs', {
-                    token_error: 'Account activation token is invalid or account is already activated.',
-                });
+                return res.render(frontEndRoot + 'active-account.ejs', {token_error: 'Account activation token is invalid or account is already activated.'});
             }
             if (user.local.account_activation_code === req.params.token) {
                 user.local.account_activation_code = null;
@@ -130,7 +128,7 @@ module.exports = function(app, passport) {
                         service: 'gmail',
                         auth: {
                             user: 'xiaoyuz2011@gmail.com',
-                            pass: 'Zsbqwacc0'
+                            pass: 'Zsbqwacc1'
                         }
                     }));
                     const mailOptions = {
@@ -144,7 +142,10 @@ module.exports = function(app, passport) {
                             console.error(err);
                         }
                     });
-                    return res.render(frontEndRoot + 'active-account.ejs', {success: 'Your account is successfully activated now. You can now go to your <a href=\'/profile\'>Profile Page</a> now',activation_email:newUser.local.email});
+                    return res.render(frontEndRoot + 'active-account.ejs', {
+                        success: 'Your account is successfully activated now. You can now go to your <a href=\'/profile\'>Profile Page</a> now',
+                        activation_email: newUser.local.email
+                    });
                 })
             }
 
@@ -338,10 +339,9 @@ module.exports = function(app, passport) {
     ////////////////////////////////////////////////
     // Inbox main
     ///////////////////////////////////////////////////
-    app.get('/inbox',
-    /*loginChecking.isAdvisorRedirect,*/
-    function(req, res) {
-        res.render(frontEndRoot + '/inbox.ejs');
+    app.get('/inbox', loginChecking.isLoggedInRedirect, function(req, res) {
+      console.log(req.user);
+        res.render(frontEndRoot + '/inbox.ejs',{user: req.user});
     });
 
     // =====================================
