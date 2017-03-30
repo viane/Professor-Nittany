@@ -46,14 +46,15 @@ describe('Logout Tests', function() {
         var newUser = new user();
         newUser.type = "local";
         newUser.local.email = "unittest@test.com";
-        newUser.hashPassword("testing123");
+        newUser.hashPassword("Testing123");
         newUser.local.displayName = "Tester";
         newUser.local.account_role = "Student";
+        newUser.local.account_status = "active";
         newUser.save();
         /* Done creating user*/
 
         /*Log user in */
-        server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "unittest@test.com", password: 'testing123'}).end(function(err, res) {
+        server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "unittest@test.com", password: 'Testing123'}).end(function(err, res) {
             if (err) {
                 return done(err);
             } else {
