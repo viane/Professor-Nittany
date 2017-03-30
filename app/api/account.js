@@ -73,7 +73,7 @@ router.post('/reset-password', (req, res) => {
                 service: 'gmail',
                 auth: {
                     user: 'xiaoyuz2011@gmail.com',
-                    pass: 'Zsbqwacc0'
+                    pass: 'Zsbqwacc1'
                 }
             }));
             const mailOptions = {
@@ -150,7 +150,7 @@ router.post('/update-password', (req, res) => {
                 service: 'gmail',
                 auth: {
                     user: 'xiaoyuz2011@gmail.com',
-                    pass: 'Zsbqwacc0'
+                    pass: 'Zsbqwacc1'
                 }
             }));
             const mailOptions = {
