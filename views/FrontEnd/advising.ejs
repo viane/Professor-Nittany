@@ -21,15 +21,129 @@
 <body>
     <%- include header.ejs %>
         <div class="container-fluid">
-            <div class="col-sm-9">
-                <div class="panel panel-primary">
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <%- include user-card-module.ejs %>
-                    <%- include question-feed-module.ejs %>
-            </div>
+            <div class="container-fluid">
+                <div class="col-sm-9">
+                    <div class="panel panel-primary">
 
+                        <div class="bs-callout bs-callout-primary text-left">
+                            <div class="row">
+                                <h4>Student words</h4>
+                                <canvas id="interest-canvas" width="600" height="420"></canvas>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <div class="advisor-comments" contenteditable="true" data-placeholder="enter comments here"></div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="row text-center">
+                                        <button type="button" class="btn btn-success adv-btn" id="save-comment-words"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                                        <button type="button" class="btn btn-danger adv-btn" id="cancel-comment-words"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bs-callout bs-callout-primary text-left">
+                            <h4>Introduction</h4>
+                            <p id="student-intro"></p>
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <div class="advisor-comments" contenteditable="true" data-placeholder="enter comments here"></div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="row text-center">
+                                    <button type="button" class="btn btn-success adv-btn" id="save-comment-intro"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                                        <button type="button" class="btn btn-danger adv-btn" id="cancel-comment-intro"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bs-callout bs-callout-primary text-left">
+                            <h4>Interests</h4>
+                            <p id="student-interests"></p>
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <div class="advisor-comments" contenteditable="true" data-placeholder="enter comments here"></div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="row text-center">
+                                        <button type="button" class="btn btn-success adv-btn" id="save-comment-interests"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                                        <button type="button" class="btn btn-danger adv-btn" id="cancel-comment-interests"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bs-callout bs-callout-primary text-left">
+                            <h4>Personality</h4>
+                            <p id="student-personality"></p>
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <div class="advisor-comments" contenteditable="true" data-placeholder="enter comments here"></div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="row text-center">
+                                        <button type="button" class="btn btn-success adv-btn" id="save-comment-personality"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                                        <button type="button" class="btn btn-danger adv-btn" id="cancel-comment-personality"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bs-callout bs-callout-info text-left">
+                            <h4>Favorite</h4>
+                            <div id="favorite-question-list"></div>
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <div class="advisor-comments" contenteditable="true" data-placeholder="enter comments here"></div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="row text-center">
+                                        <button type="button" class="btn btn-success adv-btn" id="save-comment-fav"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                                        <button type="button" class="btn btn-danger adv-btn" id="cancel-comment-fav"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bs-callout bs-callout-info text-left">
+                            <h4>Question History</h4>
+                            <div id="asked-question-list"></div>
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <div class="advisor-comments" contenteditable="true" data-placeholder="enter comments here"></div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="row text-center">
+                                        <button type="button" class="btn btn-success adv-btn" id="save-comment-ques"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                                        <button type="button" class="btn btn-danger adv-btn" id="cancel-comment-ques"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-info">
+                        <div class="panel-heading">Summary</div>
+                        <div class="panel-body text-left">
+                            <div class="col-sm-11">
+                                <div class="advisor-summary" contenteditable="true" data-placeholder="enter summary here"></div>
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="row text-center">
+                                    <button type="button" class="btn btn-success adv-btn" id="save-summary"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                                    <button type="button" class="btn btn-danger adv-btn" id="cancel-summary"><span class="glyphicon glyphicon-trash"></span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <%- include user-card-module.ejs %>
+                        <%- include question-feed-module.ejs %>
+                </div>
+
+            </div>
         </div>
         <%- include footer.ejs %>
 </body>
