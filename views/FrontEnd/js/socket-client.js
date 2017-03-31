@@ -47,7 +47,7 @@ $(function() {
     socket.on('inbox', function(data) {});
 
     ////////////////////////////////////////////////////////////////////////
-    // Send assessment
+    // Send assessment to advisor
     ////////////////////////////////////////////////////////////////////////
     $("#assessment-send-btn").click(() => {
         let payload = {
@@ -92,15 +92,15 @@ $(function() {
 
         // on feedback
         // success
-        socket.on('success-notify-advisor',(data)=>{
-          generateNotice('success','Successfully send to advisors.');
+        socket.on('success-submit-assessment',(data)=>{
+          generateNotice('success', data.message);
           setTimeout(()=>{
             $('#assessment-advisor-exit-btn').click();
           },1400);
         })
         // fail
-        socket.on('fail-notify-advisor',(err)=>{
-          generateNotice('success','Failed to send to advisor, error: ', err);
+        socket.on('fail-submit-assessment',(err)=>{
+          generateNotice('success',data.err);
         })
       }
     })

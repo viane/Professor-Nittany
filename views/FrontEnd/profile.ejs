@@ -122,8 +122,8 @@
 							</div>
 						</div>
 						<script>
-							const questionHistory = <%- JSON.stringify(ask_history) %>;
-							let personality_assessement = <%- JSON.stringify(personality_assessement) %>;
+							const questionHistory = <% if(ask_history) { %> <%- JSON.stringify(ask_history) %> <% }else{ %> [] <% } %> ;
+							let personality_assessement =  <% if(personality_assessement) { %>  <%- JSON.stringify(personality_assessement) %> <% }else{ %> [] <% } %> ;
 						</script>
 
 						<div class="bs-callout bs-callout-info text-left">

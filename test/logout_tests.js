@@ -18,15 +18,11 @@ const server = request.agent('http://localhost:3000');
 const database = require(appRoot + '/config/database.js');
 const user = require(appRoot + '/app/models/user.js');
 
-
-    /* !!!!!!!!!!!!!!!!! LOGIN TESTS !!!!!!!!!!!!!!!!!!!!!!
+/* !!!!!!!!!!!!!!!!! LOGOUT TESTS !!!!!!!!!!!!!!!!!!!!!!
 Included are:
-1. A User can login with a proper email and password
-2. A User cannot login with a incorrect password
-3. A User cannot login with an incorrect email
-4. A User should be logged in within 5 seconds
+1. A User can log out properly
 */
-describe('Login Tests', function(done) {
+describe('Logout Tests', function() {
     /* Called Before every describe in this describe */
     before(function(done) {
         mongoose.createConnection(database.userDB_URL);
@@ -43,8 +39,10 @@ describe('Login Tests', function(done) {
         //Removes users with email unittest@test.com
         user.find({'local.email': 'unittest@test.com'}).remove().exec(done);
     });
+    
     /* Called before every test (it call) in this describe */
     beforeEach(function(done) {
+        /* Create a new user and store it in the database */
         var newUser = new user();
         newUser.type = "local";
         newUser.local.email = "unittest@test.com";
@@ -53,33 +51,24 @@ describe('Login Tests', function(done) {
         newUser.local.account_role = "Student";
         newUser.local.account_status = "active";
         newUser.save();
-        done();
-    });
+        /* Done creating user*/
 
-    /* User is removed after each function already */
-
-    it('A user can login with a proper email and password', function(done) {
+        /*Log user in */
         server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "unittest@test.com", password: 'Testing123'}).end(function(err, res) {
             if (err) {
                 return done(err);
             } else {
-                expect(res.statusCode).to.equal(200);
-                expect(res.text).to.include('\"type\":\"success\"');
-                expect(res.text).to.include('\"information\":\"Login success\"');
                 done();
             }
         });
+        /* Done logging user in */
     });
 
-    it('A user can login within 5 seconds', function(done) {
-        var startTime = Date.now();
-        server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "unittest@test.com", password: 'Testing123'}).end(function(err, res) {
-            if (err) {
-                return done(err);
-            } else {
-                    expect(Date.now() - startTime).to.be.below(5000); //Less than 5 seconds.
-                    done();
-                }
-            });
-    });
+    it('A user can log out properly', function(done) {
+       server.get('/logout').end( function (err, res) {
+          expect(res.statusCode).to.equal(302);
+          expect(res.headers['location']).to.equal('/');
+          done();
+      });
+   });
 });

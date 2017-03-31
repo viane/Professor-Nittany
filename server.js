@@ -1,14 +1,11 @@
 'use strict';
 
-const morgan = require('morgan'); //request logger
-
 require('@risingstack/trace'); //for heorku tracking addon
-
 require('./config/console'); //overide global console.log function
-
+const opbeat = require('opbeat'); // tracing new release
 global.Promise = require("bluebird");
 
-const opbeat = require('opbeat');
+const morgan = require('morgan'); //request logger
 const http = require('http');
 const https = require('https');
 const path = require('path');
@@ -103,12 +100,10 @@ systemStatus.initGetKnowledgeDomain().then((result) => {
     console.log("√ Success loaded knowledge domain terms".green);
 }).catch((err) => {
     throw err
-})
+});
 
-server.listen(app.get('port'), function() {
+server.listen(app.get('port') || 3000,function() {
     console.log('Express server listening on port ' + app.get('port'))
 });
 
 module.exports = app;
-
-const personality = require('./app/personality-insights');
