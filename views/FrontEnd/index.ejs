@@ -44,7 +44,6 @@
       <% if (user.linkedin.id) { %>
       linkedin
       <% } %>
-
     </div>
     <div id="user-id">
       <% if (user.local.email) { %>
@@ -62,7 +61,6 @@
       <% if (user.linkedin.id) { %>
       <%= user.linkedin.id %>
       <% } %>
-
     </div>
     <% } %>
   </div>
@@ -103,7 +101,7 @@
             </span>
           </div>
         </form>
-        <div class="row">
+        <div class="row" id="result-row">
           <%- include result-module.ejs %>
         </div>
       </div>
@@ -111,7 +109,6 @@
         <%- include question-feed-module.ejs %>
       </div>
     </div>
-
   </div>
 
   <script src="../js/jquery.subscribe.js"></script>
