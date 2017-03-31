@@ -339,6 +339,7 @@ module.exports = function(app, passport) {
     ////////////////////////////////////////////////
     // Inbox main
     ///////////////////////////////////////////////////
+
     app.get('/inbox', loginChecking.isLoggedInRedirect, function(req, res) {
       console.log(req.user);
         res.render(frontEndRoot + '/inbox.ejs',{user: req.user});
