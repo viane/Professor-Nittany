@@ -26,28 +26,28 @@ Included are:
 3. A User cannot login with an incorrect email
 4. A User should be logged in within 5 seconds
 */
-describe('Login Tests', function(done) {
+describe('Login Tests', function (done) {
     /* Called Before every describe in this describe */
-    before(function(done) {
+    before(function (done) {
         mongoose.createConnection(database.userDB_URL);
         done();
     });
 
     //Called After every describe in this describe
-    after(function(done) {
+    after(function (done) {
         mongoose.connection.close();
         done();
     });
 
-    afterEach(function(done) {
-        //Removes users with email unittest@test.com
-        user.find({'local.email': 'unittest@test.com'}).remove().exec(done);
+    afterEach(function (done) {
+        //Removes users with email intelligentacademicplanner@outlook.com
+        user.find({'local.email': 'intelligentacademicplanner@outlook.com'}).remove().exec(done);
     });
     /* Called before every test (it call) in this describe */
-    beforeEach(function(done) {
+    beforeEach(function (done) {
         var newUser = new user();
         newUser.type = "local";
-        newUser.local.email = "unittest@test.com";
+        newUser.local.email = "intelligentacademicplanner@outlook.com";
         newUser.hashPassword("Testing123");
         newUser.local.displayName = "Tester";
         newUser.local.account_role = "Student";
@@ -59,7 +59,7 @@ describe('Login Tests', function(done) {
     /* User is removed after each function already */
 
     it('A user can login with a proper email and password', function(done) {
-        server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "unittest@test.com", password: 'Testing123'}).end(function(err, res) {
+        server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "intelligentacademicplanner@outlook.com", password: 'Testing123'}).end(function(err, res) {
             if (err) {
                 return done(err);
             } else {
@@ -73,7 +73,7 @@ describe('Login Tests', function(done) {
 
     it('A user can login within 5 seconds', function(done) {
         var startTime = Date.now();
-        server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "unittest@test.com", password: 'Testing123'}).end(function(err, res) {
+        server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "intelligentacademicplanner@outlook.com", password: 'Testing123'}).end(function(err, res) {
             if (err) {
                 return done(err);
             } else {
