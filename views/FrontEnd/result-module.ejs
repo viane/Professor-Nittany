@@ -1,11 +1,11 @@
 <style>
     .q-responses {
         padding-left: 25px;
-        background-image: url(images/Penn_State_Logo.png);
+        /*background-image: url(images/Penn_State_Logo.png);
         background-position: center;
         background-size: 90%;
-        background-repeat: no-repeat;
-        overflow: scroll;
+        background-repeat: no-repeat;*/
+        overflow-y: auto;
         height: 400px;
     }
     #stars-existing {
@@ -24,7 +24,7 @@
     <div class="panel-heading">Answers</div>
 
     <div class="panel-body q-responses">
-      <div id="answer-low-confidence-warning" class="col-lg-12 hide" style="float:none">Sorry, I see the question is not in my knowledge domain, so my answer might be inaccurate.</div>
+      <div id="answer-low-confidence-warning" class="col-lg-12 hide"><strong>Sorry, I see the question is not in my knowledge domain, so my answer might be inaccurate.</strong></div>
         <ol class="list-group chat-thread" id="answer-list">
 <!--             POPULATE THIS AREA WITH THE RESPONSES-->
 
