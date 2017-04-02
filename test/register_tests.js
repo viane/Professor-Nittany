@@ -38,8 +38,8 @@ describe('Register Tests', function(done) {
     });
 
     afterEach(function(done) {
-        //Removes users with email unittest@test.com
-        user.find({'local.email': 'unittest@test.com'}).remove().exec(done);
+        //Removes users with email intelligentacademicplanner@outlook.com
+        user.find({'local.email': 'intelligentacademicplanner@outlook.com'}).remove().exec(done);
     });
 
 
@@ -47,7 +47,7 @@ describe('Register Tests', function(done) {
         server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
             {first_name: "noProblems",
             last_name: "registerTest",
-            email: "unittest@test.com",
+            email: "intelligentacademicplanner@outlook.com",
             password: "Testing123",
             account_role: "Student",
             account_status: "active"}).end(function(err, res) {
@@ -67,7 +67,7 @@ describe('Register Tests', function(done) {
             server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
                 {first_name: "LoginWithinTimeLimit",
                 last_name: "registerTest",
-                email: "unittest@test.com",
+                email: "intelligentacademicplanner@outlook.com",
                 password: "Testing123",
                 account_role: "Student",
                 account_status: "active"

@@ -22,30 +22,30 @@ const user = require(appRoot + '/app/models/user.js');
 Included are:
 1. A User can log out properly
 */
-describe('Logout Tests', function() {
+describe('Logout Tests', function (done) {
     /* Called Before every describe in this describe */
-    before(function(done) {
+    before(function (done) {
         mongoose.createConnection(database.userDB_URL);
         done();
     });
 
     //Called After every describe in this describe
-    after(function(done) {
+    after(function (done) {
         mongoose.connection.close();
         done();
     });
 
-    afterEach(function(done) {
-        //Removes users with email unittest@test.com
-        user.find({'local.email': 'unittest@test.com'}).remove().exec(done);
+    afterEach(function (done) {
+        //Removes users with email intelligentacademicplanner@outlook.com
+        user.find({'local.email': 'intelligentacademicplanner@outlook.com'}).remove().exec(done);
     });
     
     /* Called before every test (it call) in this describe */
-    beforeEach(function(done) {
+    beforeEach(function (done) {
         /* Create a new user and store it in the database */
         var newUser = new user();
         newUser.type = "local";
-        newUser.local.email = "unittest@test.com";
+        newUser.local.email = "intelligentacademicplanner@outlook.com";
         newUser.hashPassword("Testing123");
         newUser.local.displayName = "Tester";
         newUser.local.account_role = "Student";
@@ -54,7 +54,7 @@ describe('Logout Tests', function() {
         /* Done creating user*/
 
         /*Log user in */
-        server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "unittest@test.com", password: 'Testing123'}).end(function(err, res) {
+        server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({email: "intelligentacademicplanner@outlook.com", password: 'Testing123'}).end(function(err, res) {
             if (err) {
                 return done(err);
             } else {
