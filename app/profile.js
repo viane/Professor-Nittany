@@ -29,6 +29,10 @@ const loginChecking = require(appRoot + '/app/utility-function/login-checking');
 
 const wordToText = require(appRoot + '/app/utility-function/word-file-to-text');
 
+const arrayUtility = require(appRoot + '/app/utility-function/array');
+
+const formatter = require(appRoot + '/app/utility-function/formatter');
+
 router.post('/upload/upload-description-text-file', busboy({
     limits: {
         fileSize: 4 * 1024 * 1024
@@ -114,8 +118,7 @@ router.post('/upload/upload-description-text-file', busboy({
                                         _id: req.user._id
                                     }, {
                                         $set: {
-                                            [updatePath.evaluation]: {
-                                            }
+                                            [updatePath.evaluation]: {}
                                         }
                                     }).exec().then(() => {
                                         res.sendStatus(200);
@@ -144,8 +147,8 @@ router.post('/upload/upload-description-text-file', busboy({
 // Get user interests
 router.get('/get-interest', (req, res) => {
     User.findById(req.user._id).exec().then((foundUser) => {
-        const interestPath = getUserRecordPathByAccountType(foundUser);
-        res.send({status: "success", information: "good", interest: foundUser[interestPath].interest});
+      // format interest array
+        res.send({status: "success", information: "good", interest: formatter.convertUserInterestTowordCloud(foundUser.interest)});
     }).catch((err) => {
         throw err;
         res.send({type: 'error', information: err});
@@ -254,8 +257,55 @@ router.post('/like-question', (req, res) => {
 
 module.exports = router;
 
-module.exports.updateInterest = (user, analysis)=>{
-  console.log(analysis);
+module.exports.updateInterest = (user, analysis) => {
+    // each part of analysis is in {text, realvence} json format
+    User.findById(user.id, (err, foundUser) => {
+        if (err) {
+            console.log(err);
+        } else {
+            // update interest array
+            // addup realvence if term exist, else push to array
+            analysis.keywords.map((keyword) => {
+                const trueIndex = arrayUtility.findIndexByKeyValue(foundUser.interest, 'term', keyword.text);
+                if (trueIndex != null) {
+                    foundUser.interest[trueIndex].value += keyword.relevance;
+                } else {
+                    foundUser.interest.unshift({term: keyword.text, value: keyword.relevance});
+                }
+            });
+            analysis.entities.map((entity) => {
+                const trueIndex = arrayUtility.findIndexByKeyValue(foundUser.interest, 'term', entity.text);
+                if (trueIndex != null) {
+                    foundUser.interest[trueIndex].value += entity.relevance;
+                } else {
+                    foundUser.interest.unshift({term: entity.text, value: entity.relevance});
+                }
+            });
+            analysis.concepts.map((concept) => {
+                const trueIndex = arrayUtility.findIndexByKeyValue(foundUser.interest, 'term', concept.text);
+                if (trueIndex != null) {
+                    foundUser.interest[trueIndex].value += concept.relevance;
+                } else {
+                    foundUser.interest.unshift({term: concept.text, value: concept.relevance});
+                }
+            });
+
+            User.findOneAndUpdate({
+                "_id": user.id
+            }, {
+                "$set": {
+                    "interest": foundUser.interest
+                }
+            }, {
+                "new": true
+            }, (err, update) => {
+                if (err) {
+                    console.error(err);
+                }
+                console.log(update);
+            });
+        }
+    });
 };
 
 const getUserDataPath = (userType) => {

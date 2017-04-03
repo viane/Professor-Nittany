@@ -32,6 +32,7 @@ const userSchema = mongoose.Schema({
             default: false
         }
     },
+    interest: [mongoose.Schema.Types.Mixed],
     inbox: [
         {
             title: String,
@@ -107,7 +108,6 @@ const userSchema = mongoose.Schema({
                 ]
             }
         ],
-        interest: [mongoose.Schema.Types.Mixed],
         personality_assessement: {
             last_upload_time: {
                 type: Date,
@@ -183,7 +183,6 @@ const userSchema = mongoose.Schema({
                 ]
             }
         ],
-        interest: [mongoose.Schema.Types.Mixed],
         personality_assessement: {
             last_upload_time: {
                 type: Date,
@@ -242,7 +241,6 @@ const userSchema = mongoose.Schema({
                 ]
             }
         ],
-        interest: [mongoose.Schema.Types.Mixed],
         personality_assessement: {
             last_upload_time: {
                 type: Date,
@@ -302,7 +300,6 @@ const userSchema = mongoose.Schema({
                 ]
             }
         ],
-        interest: [mongoose.Schema.Types.Mixed],
         personality_assessement: {
             last_upload_time: {
                 type: Date,
@@ -364,7 +361,6 @@ const userSchema = mongoose.Schema({
                 ]
             }
         ],
-        interest: [mongoose.Schema.Types.Mixed],
         personality_assessement: {
             last_upload_time: {
                 type: Date,

@@ -57,8 +57,8 @@ module.exports = function(server) {
             ////////////////////////////////////////////////////////////
             if (data.sender.id === "58c636153cd0ab4e32155583") {
                 console.log("test user asked a question");
-                const alchemyAPI = require(appRoot + '/app/alchemyAPI');
-                alchemyAPI.getAnalysis(currentInput).then(function(analysis) {
+                const naturalLanguageUnderstanding = require(appRoot+'/app/natural-language-understanding');
+                naturalLanguageUnderstanding.getAnalysis(currentInput).then(function(analysis) {
                     socket.broadcast.emit('question-analysis', {analysis: analysis});
                 }).catch((err) => {
                     throw err;

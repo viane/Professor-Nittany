@@ -459,9 +459,9 @@ $(document).ready(function() {
         const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");
         const password = $('#signup-form-password').val();
         if (!passwordValidRegex.test(password) || spcialCharRegex.test(password) || password.length == 0) {
-          generateNotice('error','Invalid password format, please check the rules of password.');
-          $('.password-rule-list').fadeIn('fast').effect( "shake" );
-          return;
+            generateNotice('error', 'Invalid password format, please check the rules of password.');
+            $('.password-rule-list').fadeIn('fast').effect("shake");
+            return;
         }
         // post signup request to server
         const url = '/signup';
@@ -485,7 +485,9 @@ $(document).ready(function() {
                 } else {
                     generateNotice(res.type, res.information);
                     // empty signup form
-                    $('#signup-form input').each((index,element)=>{$(element).val("")});
+                    $('#signup-form input').each((index, element) => {
+                        $(element).val("")
+                    });
                 }
             })
         }).catch(function(err) {
@@ -604,11 +606,13 @@ $(() => {
 // ask-question-module function
 //////////////////////////////////////////////
 
-$(function() {
-    if ($('#external_question').length) {
+$(() => {
+    if ($('#external_question').text().length > 0) {
         const external_question = $('#external_question').text();
         $('#userQueryInput').val(external_question);
-        $('#querySubmitBtn').click();
+        setTimeout(() => {
+            $('#querySubmitBtn').click();
+        }, 300);
     }
 })
 

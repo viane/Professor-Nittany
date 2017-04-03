@@ -16,6 +16,7 @@ $(() => {
                     return;
                 }
                 res.json().then(function(result) {
+                  console.log(result.interest);
                     if (result.interest.length > 0) { // if user current has some interests
                         WordCloud(document.getElementById('interest-canvas'), {
                             list: result.interest,
@@ -30,8 +31,8 @@ $(() => {
                                 const newsize = Math.pow(size, 2.1) * $('#interest-canvas').width() / 500 + 10;
                                 return newsize;
                             },
-                            rotateRatio: 0.5,
-                            rotationSteps: 2
+                            rotateRatio: 0,
+                            rotationSteps: 0
                         });
                     } else {
                         const canvas = $("#interest-canvas");
@@ -57,8 +58,8 @@ $(() => {
 // test only, delete before productlize
 $(() => {
     if (window.location.href === "http://localhost:3000/login") {
-        $('#form-username').val("test@test.com");
-        $('#form-password').val("test");
+        $('#form-username').val("xiaoyuz2011@gmail.com");
+        $('#form-password').val("Zsbqwacc0");
     }
 })
 
