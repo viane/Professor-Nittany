@@ -19,6 +19,10 @@ const database = require(appRoot + '/config/database.js');
 const user = require(appRoot + '/app/models/user.js');
 const question = require(appRoot + '/app/models/question.js');
 
+var serverResponse;
+var createdUser;
+var q = "What is computer science?";
+var timeTaken;
 
 
 
@@ -26,119 +30,74 @@ describe('Ask Question Tests', function () {
 
 	/* Called once before a describe */
 	before(function (done) {
+		this.timeout(10000);
 		mongoose.createConnection(database.userDB_URL);
-		done();
+		createUser( function() {
+			logValidUserIn( function() {
+				user.findOne({'local.email': 'intelligentacademicplanner@outlook.com'}).exec( function (err, newUser) {
+					if (err) return done(err);
+					var message = {};
+			        message.sender = {};
+			        message.sender.id = newUser._id;
+			        message.sender.type = newUser.type;
+			        message.content = q;
+			        var startTime = Date.now();
+			        sendMessage(message);
+					socket.on('answer', function (answer) {
+						serverResponse = answer;
+						user.findOne({'local.email': 'intelligentacademicplanner@outlook.com'}).exec( function (err, u) {
+							createdUser = u;
+							timeTaken = Date.now() - startTime;
+							done();
+						});
+					});
+				});
+			});
 		});
+	});
 
 	/* Called once after a describe */
 	after(function (done) {
-		mongoose.connection.close();
-		done();
+		user.find({'local.email': 'intelligentacademicplanner@outlook.com'}).remove( function() {
+			socket.disconnect();
+			mongoose.connection.close();
+			done();
 		});
-
-	afterEach( function() {
-		socket.disconnect();
 	});
 
 	it ('A user can ask a question', function (done) {
-        var message = {};
-        message.sender = {};
-        message.sender.id = 0;
-        message.content = "What is Unit Testing?";
-		sendMessage(message);
-
-		socket.on('answer', function (answer) {
-			expect(answer.message).to.not.equal("");
-			done();
-		})
+		expect(serverResponse.message).to.not.equal("");
+		done();
 	});
 
 	it ('The system will respond with a relevant answer', function (done) {
-		var message = {};
-        message.sender = {};
-        message.sender.id = 0;
-        message.content = "What is Computer Science?";
-		sendMessage(message);
-
-		socket.on('answer', function (answer) {
-			expect(answer.message[0].body).to.include("Computer Science");
-			done();
-		});
+		expect(serverResponse.message[0].body).to.include("Computer Science");
+		done();
 	});
 
 	it ('The system will provide multiple responses', function (done) {
-		var message = {};
-        message.sender = {};
-        message.sender.id = 0;
-        message.content = "What is Computer Science?";
-		sendMessage(message);
-
-		socket.on('answer', function (answer) {
-			expect(answer.message.length).to.be.above(1);
-			done();
-		});
+		expect(serverResponse.message.length).to.be.above(1);
+		done();
 	});
 
 	it('The system should store data unique to the user', function (done) {
-		createUser( function() {
-			logValidUserIn( function() {
-				user.findOne({'local.email': 'intelligentacademicplanner@outlook.com'}).exec( function (err, newUser) {
-					//if (err) return done(err);
-					var message = {};
-			        message.sender = {};
-			        message.sender.id = newUser._id;
-			        message.sender.type = newUser.type;
-			        message.content = "What is Computer Science?";
-			        sendMessage(message);
-					socket.on('answer', function (answer) {
-						expect(newUser.ask_history.length).to.be.above(0);
-				    	//Removes users with email intelligentacademicplanner@outlook.com
-				    	user.find({'local.email': 'intelligentacademicplanner@outlook.com'}).remove( function() {
-				    		done();
-				    	});
-					});
-				});
-			});
-		});
+		expect(createdUser.local.ask_history.length).to.be.above(0);
+		done();
 	});
 	it('The system should keep track of asked questions', function (done) {
-		createUser( function() {
-			logValidUserIn( function() {
-				user.findOne({'local.email': 'intelligentacademicplanner@outlook.com'}).exec( function (err, newUser) {
-					//if (err) return done(err);
-					var message = {};
-			        message.sender = {};
-			        message.sender.id = newUser._id;
-			        message.sender.type = newUser.type;
-			        message.content = "What is Computer Science?";
-			        sendMessage(message);
-					socket.on('answer', function (answer) {
-						expect(newUser.local.ask_history[0].question_body).to.equal(message.content);
-				    	//Removes users with email intelligentacademicplanner@outlook.com
-				    	user.find({'local.email': 'intelligentacademicplanner@outlook.com'}).remove( function() {
-				    		done();
-				    	});
-					});
-				});
-			});
-		});
+		expect(createdUser.local.ask_history[0].question_body).to.equal(q);
+		done();
 	});
 
 	it('The user should be able to leave feedback for a question', function() {
 		//Don't know how this will be implemented, so cannot test it right now.
+		//Further testing needed here.
+		expect(createdUser.local.ask_history[0].user_ratings[0].rating).to.equal(3);
+		done();
 	});
 	it ('Should answer within 5 seconds', function (done) {
-		var startTime = Date.now();
-		var message = {};
-        message.sender = {};
-        message.sender.id = 0;
-        message.content = "What is Computer Science?";
-		sendMessage(message);
-
-		socket.on('answer', function (answer) {
-			expect(Date.now() - startTime).to.be.below(5000); //Less than 5 seconds.
-			done();
-		});
+		expect(timeTaken).to.be.below(5000);//Less than 5 seconds
+		done();
 	});
 });
 
@@ -159,7 +118,6 @@ function createUser(callback) {
 	newUser.local.displayName = "Tester";
 	newUser.local.role = "Student";
     newUser.local.account_status = "active";
-    newUser.local.ask_history = [{ question_body: "" }];
 	newUser.save(callback);
 }
 
