@@ -1,19 +1,19 @@
 'use strict'
 const appRoot = require('app-root-path');
 const string = require('string');
-const alchemyAPI = require(appRoot + '/app/alchemyAPI');
 const serverStatus = require(appRoot + '/app/server-status');
 const formatter = require(appRoot + '/app/utility-function/formatter');
 let User = require(appRoot + '/app/models/user');
+const naturalLanguageUnderstanding = require(appRoot+'/app/natural-language-understanding');
 
 module.exports.humanizeString = function(inputQuestionString) {
     const humanizedInput = string(inputQuestionString).humanize().toString().trim();
     return humanizedInput;
 };
 
-module.exports.alchemyAnalysis = function(inputString) {
+module.exports.NLUAnalysis = function(inputString) {
     return new Promise(function(resolve, reject) {
-        alchemyAPI.getAnalysis(inputString).then(function(analysis) {
+        naturalLanguageUnderstanding.getAnalysis(inputString).then(function(analysis) {
             resolve(analysis);
         }).catch(function(err) {
             throw err;
@@ -36,12 +36,9 @@ module.exports.parseQuestionObj = function(input, analysis) {
 
     AI_Read_Vector = AI_Read_Vector.concat(formatter.convertPerspectsToAIReadable("entity", analysis.entities));
 
-    AI_Read_Vector = AI_Read_Vector.concat(formatter.convertPerspectsToAIReadable("taxonomy", analysis.taxonomy));
-
     AI_Read_Vector = AI_Read_Vector.concat(formatter.convertPerspectsToAIReadable("keyword", analysis.keywords));
 
     question.AI_Read_Body = AI_Read_Vector;
-
     return question;
 };
 

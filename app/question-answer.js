@@ -7,6 +7,7 @@ const processAnswer = require('./process-answer');
 const processQuestion = require('./process-question');
 const serverStatus = require('./server-status');
 const stringChecking = require('./utility-function/string-checking');
+const profile = require(appRoot + '/app/profile');
 
 module.exports.ask = function(user, input) {
 
@@ -34,7 +35,12 @@ module.exports.ask = function(user, input) {
         conversation.enterMessage(userInput).then(function(resultFromConversation) {
 
             // analysis the concept, keyword, taxonomy, entities of the question
-            processQuestion.alchemyAnalysis(userInput).then(function(analysis) {
+            processQuestion.NLUAnalysis(userInput).then(function(analysis) {
+
+                // update user interest from analysis
+                if (user) {
+                  profile.updateInterest(user, analysis);
+                }
 
                 // now process the question and rephrase to AI readable
                 const questionObj = processQuestion.parseQuestionObj(userInput, analysis);

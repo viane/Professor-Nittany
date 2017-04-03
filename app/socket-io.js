@@ -42,8 +42,6 @@ module.exports = function(server) {
                 }
             } else {
                 //visitor's input block
-
-                //handle by queston and answer
                 questionAnswer.ask(null, currentInput).then(function(result) {
                     socket.emit('answer', {
                         message: result.response.docs,

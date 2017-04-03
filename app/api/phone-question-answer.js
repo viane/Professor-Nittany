@@ -40,24 +40,19 @@ router.post('/voice-in', (req, res) => {
         maxLength: 50, timeout: 55, finihOnKey: '1234567890*#',
         // transcribe: true,
         method: 'POST',
-        action: '/api/phone/after-record'
+        action: '/api/phone-question-answer/after-record'
     });
     res.send(twiml.toString());
 });
 
 // API for after recording, STT the voice record then ask IAP then speak back the result
 router.post('/after-record', (req, res) => {
+    console.log(req.body);
     const voiceFileWAVUrl = req.body.RecordingUrl.toString().concat(".wav");
     const caller = req.body.From;
     const voiceFileLocalPath = appRoot + '/app/audio-file-temp-folder/' + req.body.RecordingSid + ".wav";
     // fetch audio then read it to Watson STT, temporary disabled
     request(voiceFileWAVUrl).pipe(fs.createWriteStream(voiceFileLocalPath)).on('finish', () => {
-        // delete auido file
-        fs.unlink(voiceFileLocalPath, (err) => {
-            if (err)
-                console.error(err);
-            }
-        );
         const params = {
             audio: fs.createReadStream(voiceFileLocalPath),
             content_type: 'audio/wav',
@@ -77,7 +72,7 @@ router.post('/after-record', (req, res) => {
                 // STT transcript (question body)
                 if (resultTranscript.results.length == 0) {
                     twiml.say("Sorry I didn't hear anything", {voice: 'alice'}).pause();
-                    twiml.redirect('/api/phone/qa-loop');
+                    twiml.redirect('/api/phone-question-answer/qa-loop');
                     res.send(twiml.toString());
                     return;
                 }
@@ -102,7 +97,7 @@ router.post('/after-record', (req, res) => {
                         // ask if user wants save a copy of QA or keep asking different question
                         twiml.gather({
                             numDigits: 1,
-                            action: '/api/phone/feedback-on-selection-start'
+                            action: '/api/phone-question-answer/feedback-on-selection-start'
                         }, (gatherNode) => {
                             if (req.body.Caller === 'client:Anonymous') {
                                 gatherNode.say('Press any key to ask a different question or hangup anytime to end the call.', {voice: 'alice'});
@@ -111,13 +106,16 @@ router.post('/after-record', (req, res) => {
                             }
                         });
                         // If the user doesn't enter input, loop to ask question - answer
-                        twiml.redirect('/api/phone/qa-loop');
+                        twiml.redirect('/api/phone-question-answer/qa-loop');
                         res.send(twiml.toString());
                         // store QA id by CallSid, prepare to send text of copy to user
-                        QACopyAry.unshift({
-                            callSid: req.body.CallSid, question: questionTranscript, // won't work
-                            answer: answerBody
-                        });
+                        QACopyAry.unshift({callSid: req.body.CallSid, question: questionTranscript, answer: answerBody});
+                        // delete auido file
+                        fs.unlink(voiceFileLocalPath, (err) => {
+                            if (err)
+                                console.error(err);
+                            }
+                        );
                     }).catch(function(err) {
                         console.error(err);
                         twiml.say(systemErrorMSG, {voice: 'alice'}).hangup();
@@ -142,15 +140,22 @@ router.post('/feedback-on-selection-start', (req, res) => {
     if (req.body.Digits) {
         if (req.body.Digits === '1' && req.body.Caller != 'client:Anonymous') {
             twiml.say('Sending a copy of your question and answer to your phone!', {voice: 'alice'}).pause();
+            //////////////////////////////////////////////////
             //  SMS QA to caller
+            //////////////////////////////////////////////////
             const QAObject = QACopyAry.filter((QA, index) => {
                 if (QA.callSid === req.body.CallSid) {
                     QACopyAry.splice(index, 1);
                     return QA;
                 }
             })[0];
-            const smsBody = "Question: " + QAObject.question + "\n" + "Answer: " + QAObject.answer;
-            // function call to send SMS
+            // SMS max limit: 1600 characters
+            // answer format rule:
+            // 1. if answer less than 3 sentences, no change
+            // 2. if answer logner than 3 sentances, only keep first 3 sentances, form a url to IAP with a external question, attach with the answer.
+            // 3. regualr flag system applies
+            // 4. for any url, use google url shortener before send
+            const smsBody = "Question: " + QAObject.question + "." + "\n" + "Answer: " + QAObject.answer;
             twilioSMS.messages.create({
                 to: req.body.From,
                 from: req.body.To,
@@ -164,7 +169,7 @@ router.post('/feedback-on-selection-start', (req, res) => {
                 }
                 twiml.gather({
                     numDigits: 1,
-                    action: '/api/phone/qa-loop'
+                    action: '/api/phone-question-answer/qa-loop'
                 }, (gatherNode) => {
                     gatherNode.say('Do you wish to ask a different question? Press any key for yes or simply hangup to end the call.', {voice: 'alice'});
                 });
@@ -173,7 +178,7 @@ router.post('/feedback-on-selection-start', (req, res) => {
 
         }
         if (req.body.Digits === '2' || req.body.Caller === 'client:Anonymous') {
-            twiml.redirect('/api/phone/qa-loop');
+            twiml.redirect('/api/phone-question-answer/qa-loop');
             res.send(twiml.toString());
         }
         if (req.body.Digits != '1' && req.body.Digits != '2') {
@@ -198,7 +203,7 @@ router.post('/qa-loop', (req, res) => {
         maxLength: 50, timeout: 55, finihOnKey: '1234567890*#',
         // transcribe: true,
         method: 'POST',
-        action: '/api/phone/after-record'
+        action: '/api/phone-question-answer/after-record'
     });
     res.send(twiml.toString());
 });

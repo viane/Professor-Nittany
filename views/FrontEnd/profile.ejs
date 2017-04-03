@@ -89,27 +89,35 @@
 									</p>
 								</div>
 								<div class="col-xs-6 col-md-3">
-									<div id="uploadFileSection" class="text-left">
+									<div id="uploadFileSection" class="text-center">
 										<h4>Upload Document</h4>
 										<form class="dropzone" id="upload-description-Text-File" name="upload-file"></form>
 									</div>
 								</div>
+							</div>
+							<div class="row text-center btn-row">
+								<button type="button" class="btn btn-success prof-btn-md" id="intro-save-btn">Save</button>
+								<button type="button" class="btn btn-danger prof-btn-md" id="intro-cancel-btn">Cancel</button>
 							</div>
 						</div>
 
 						<div class="bs-callout bs-callout-primary text-left">
 							<h4>Interests</h4>
 							<!-- http://vitalets.github.io/x-editable/demo-bs3.html -->
-							<p id="borderimg2" class="editable" contenteditable="true">
-								What we think you are interested!
+							<p class="editable" contenteditable="true">
+								What we think you are interested in!
 							</p>
+							<div class="row text-center btn-row">
+								<button type="button" class="btn btn-success prof-btn-md" id="interests-save-btn">Save</button>
+								<button type="button" class="btn btn-danger prof-btn-md" id="interests-cancel-btn">Cancel</button>
+							</div>
 						</div>
 						<div class="bs-callout bs-callout-primary text-left">
 							<h4>Personality</h4>
 							<div id="personality-assessement" <% if(personality_assessement) { %> style="height: 450px" <% } %>>
-								<p id="personality-assessement-insufficient-word-message">To get a persoanlity assessment, please tell us more about yourself (more than 100 words)</p>
+								<p id="personality-assessement-insufficient-word-message">To get a personality assessment, please tell us more about yourself (at least 100 words)</p>
 								<% if(!personality_assessement) { %>
-									<p>Write a introduction to get your personality assessment</p>
+									<p>Write an introduction to get your personality assessment</p>
 									<% } %>
 							</div>
 						</div>
