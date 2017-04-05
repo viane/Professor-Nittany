@@ -33,6 +33,10 @@ const arrayUtility = require(appRoot + '/app/utility-function/array');
 
 const formatter = require(appRoot + '/app/utility-function/formatter');
 
+router.post('/upload/update-introduction', (req,res)=>{
+  //
+});
+
 router.post('/upload/upload-description-text-file', busboy({
     limits: {
         fileSize: 4 * 1024 * 1024
@@ -59,12 +63,11 @@ router.post('/upload/upload-description-text-file', busboy({
                             res.sendStatus(300);
                         });
                     } else {
-                        const updatePath = getUserDataPath(req.user.type);
                         User.update({
                             _id: req.user._id
                         }, {
                             $set: {
-                                [updatePath.evaluation]: {}
+                                'personality_assessement.evaluation': {}
                             }
                         }).exec().then(() => {
                             res.sendStatus(200);
@@ -113,12 +116,11 @@ router.post('/upload/upload-description-text-file', busboy({
                                         res.sendStatus(300);
                                     });
                                 } else {
-                                    const updatePath = getUserDataPath(req.user.type);
                                     User.update({
                                         _id: req.user._id
                                     }, {
                                         $set: {
-                                            [updatePath.evaluation]: {}
+                                            'personality_assessement.evaluation': {}
                                         }
                                     }).exec().then(() => {
                                         res.sendStatus(200);
@@ -158,8 +160,7 @@ router.get('/get-interest', (req, res) => {
 // Get user introduction
 router.get('/get-introduction', (req, res) => {
     User.findById(req.user._id).exec().then((foundUser) => {
-        const path = getUserRecordPathByAccountType(foundUser);
-        res.send({status: "success", information: "Successfully load introduction.", introduction: foundUser[path].personality_assessement.description_content});
+        res.send({status: "success", information: "Successfully load introduction.", introduction: foundUser.personality_assessement.description_content});
     }).catch((err) => {
         throw err;
         res.send({type: 'error', information: err});
@@ -169,8 +170,7 @@ router.get('/get-introduction', (req, res) => {
 // Get user personaltity assessment
 router.get('/get-personalityAssessment', (req, res) => {
     User.findById(req.user._id).exec().then((foundUser) => {
-        const path = getUserRecordPathByAccountType(foundUser);
-        res.send({status: "success", information: "Successfully load assessment.", assessment: foundUser[path].personality_assessement.evaluation});
+        res.send({status: "success", information: "Successfully load assessment.", assessment: foundUser.personality_assessement.evaluation});
     }).catch((err) => {
         throw err;
         res.send({type: 'error', information: err});
@@ -332,14 +332,12 @@ const getUserDataPath = (userType) => {
 
 const updateUserSelfDescription = (user, description) => {
     const id = user._id;
-    const updatePath = getUserDataPath(user.type);
-
     return new Promise((resolve, reject) => {
         User.update({
             _id: id
         }, {
             $set: {
-                [updatePath]: {
+                personality_assessement: {
                     last_upload_time: new Date().toISOString(),
                     description_content: description.toString('utf8'),
                     evaluation: {}
@@ -356,15 +354,12 @@ const updateUserSelfDescription = (user, description) => {
 
 const updateUserPersonalityAssessment = (user, assessment) => {
     const id = user._id;
-    const updatePath = getUserDataPath(user.type) + ".evaluation";
-
     return new Promise((resolve, reject) => {
-
         User.update({
             _id: id
         }, {
             "$set": {
-                [updatePath]: assessment
+                'personality_assessement.evaluation': assessment
             }
         }).exec().then((query_report) => {
             resolve(query_report);

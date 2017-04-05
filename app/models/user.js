@@ -49,6 +49,14 @@ const userSchema = mongoose.Schema({
             }
         }
     ],
+    personality_assessement: {
+        last_upload_time: {
+            type: Date,
+            default: Date.now
+        },
+        description_content: String,
+        evaluation: mongoose.Schema.Types.Mixed
+    },
     local: {
         email: {
             type: String
@@ -108,14 +116,7 @@ const userSchema = mongoose.Schema({
                 ]
             }
         ],
-        personality_assessement: {
-            last_upload_time: {
-                type: Date,
-                default: Date.now
-            },
-            description_content: String,
-            evaluation: mongoose.Schema.Types.Mixed
-        },
+
         resetPasswordToken: {
             type: String,
             default: null
@@ -183,14 +184,6 @@ const userSchema = mongoose.Schema({
                 ]
             }
         ],
-        personality_assessement: {
-            last_upload_time: {
-                type: Date,
-                default: Date.now
-            },
-            description_content: String,
-            evaluation: mongoose.Schema.Types.Mixed
-        }
     },
     twitter: {
         id: String,
@@ -240,15 +233,7 @@ const userSchema = mongoose.Schema({
                     }
                 ]
             }
-        ],
-        personality_assessement: {
-            last_upload_time: {
-                type: Date,
-                default: Date.now
-            },
-            description_content: String,
-            evaluation: mongoose.Schema.Types.Mixed
-        }
+        ]
     },
     linkedin: {
         id: String,
@@ -299,15 +284,7 @@ const userSchema = mongoose.Schema({
                     }
                 ]
             }
-        ],
-        personality_assessement: {
-            last_upload_time: {
-                type: Date,
-                default: Date.now
-            },
-            description_content: String,
-            evaluation: mongoose.Schema.Types.Mixed
-        }
+        ]
     },
     google: {
         id: String,
@@ -360,15 +337,7 @@ const userSchema = mongoose.Schema({
                     }
                 ]
             }
-        ],
-        personality_assessement: {
-            last_upload_time: {
-                type: Date,
-                default: Date.now
-            },
-            description_content: String,
-            evaluation: mongoose.Schema.Types.Mixed
-        }
+        ]
     },
     submitted_assessment_history: [
         {

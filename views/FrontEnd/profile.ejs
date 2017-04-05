@@ -114,11 +114,8 @@
 						</div>
 						<div class="bs-callout bs-callout-primary text-left">
 							<h4>Personality</h4>
-							<div id="personality-assessement" <% if(personality_assessement) { %> style="height: 450px" <% } %>>
-								<p id="personality-assessement-insufficient-word-message">To get a personality assessment, please tell us more about yourself (at least 100 words)</p>
-								<% if(!personality_assessement) { %>
-									<p>Write an introduction to get your personality assessment</p>
-									<% } %>
+							<div id="personality-assessement" <% if(!personality_assessement) { %> style="height: 450px" <% } %>>
+								<p id="personality-assessement-insufficient-word-message">To get a personality assessment, please write an introduction about yourself (at least 100 words)</p>
 							</div>
 						</div>
 						<script>
