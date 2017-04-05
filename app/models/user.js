@@ -33,6 +33,7 @@ const userSchema = mongoose.Schema({
         }
     },
     interest: [mongoose.Schema.Types.Mixed],
+    interest_manual: [mongoose.Schema.Types.Mixed],
     inbox: [
         {
             title: String,

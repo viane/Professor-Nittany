@@ -338,7 +338,7 @@ $(() => {
         };
 
         // for upload self description at /uploadPersonal
-        var myDropzone = new Dropzone("#upload-description-Text-File", {url: "/api/profile/upload/upload-description-text-file"});
+        const myDropzone = new Dropzone("#upload-description-Text-File", {url: "/api/profile/upload/upload-description-text-file"});
         myDropzone.on("success", function(file) {
             // prompt success upload
             generateNotice('success', 'Successfully upload your document.');
@@ -357,7 +357,11 @@ $(() => {
                     generateNotice(res.type, "Error, " + res.information);
                 } else {
                     res.json().then(function(res) {
+                        // refresh introduction
                         $('#introduction-content-p').text(res.introduction);
+
+                        // re-render interest
+                        fetchAndRenderInterest();
                     })
                 };
 

@@ -1,56 +1,10 @@
-// load word cloud canvas only on profile page
+// load word cloud canvas only on profile page, wordCloud, wordcloud
 $(() => {
     if (window.location.href === "http://localhost:3000/profile" || window.location.href === "https://intelligent-student-advisor.herokuapp.com/profile") {
         if (WordCloud.isSupported) {
-            const url = '/api/profile/get-interest';
-            fetch(url, {
-                method: "GET",
-                credentials: 'include',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-                }
-            }).then(function(res) {
-                if (res.status !== 200) {
-                    generateNotice('error', "Error, status code: " + res.status);
-                    return;
-                }
-                res.json().then(function(result) {
-                  console.log(result.interest);
-                    if (result.interest.length > 0) { // if user current has some interests
-                        WordCloud(document.getElementById('interest-canvas'), {
-                            list: result.interest,
-                            color: 'random-dark',
-                            hover: window.drawBox,
-                            fontFamily: 'Helvetica, sans-serif',
-                            click: function(item) {
-                                alert(item[0] + ': ' + item[1]);
-                            },
-                            gridSize: Math.round(12 * $('#interest-canvas').width() / 400),
-                            weightFactor: function(size) {
-                                const newsize = Math.pow(size, 2.1) * $('#interest-canvas').width() / 500 + 10;
-                                return newsize;
-                            },
-                            rotateRatio: 0,
-                            rotationSteps: 0
-                        });
-                    } else {
-                        const canvas = $("#interest-canvas");
-                        canvas.css({"height": "180"});
-                        let ctx = canvas[0].getContext("2d");
-                        ctx.font = "normal 50px Roboto sans-serif";
-                        ctx.textAlign = "left";
-                        ctx.fillText("Ask more questions", 60, 120);
-                        ctx.fillText("Add self introduction", 60, 200);
-                        ctx.fillText("To explore interests!", 60, 280);
-                    }
-
-                })
-            }).catch(function(err) {
-                generateNotice('error', err)
-            });
+            fetchAndRenderInterest();
         } else {
-            generateNotice('warning', "Your browser doesn't support word cloud for displaying interests");
+            generateNotice('warning', "Your browser doesn't support displaying interests");
         }
     }
 })
@@ -460,6 +414,168 @@ $(() => {
     }
 })
 
+//////////////////////////////////////////////////////////////////////////////////
+// handler for Edit bar/buttons for introduction and interest on profile page
+//////////////////////////////////////////////////////////////////////////////////
+$(() => {
+    let introductionCopy = $('#introduction-content-p').text();
+
+    // show edit bar when user focus on introduction
+    $('#introduction-content-p').on('focus', function() {
+        $(this).next().show('fast');
+    });
+
+    // always show interest input
+    $('#user-interest-tags').next().show('fast');
+
+    // save, cancel, undo, redo button for introduction
+    $('#introduction-undo-btn').click(() => {
+        document.execCommand('undo', false, null);
+    });
+
+    $('#introduction-redo-btn').click(() => {
+        document.execCommand('redo', false, null);
+    });
+
+    $('#introduction-cancel-btn').click(() => {
+        $('#introduction-content-p').text(introductionCopy);
+    });
+
+    $('#introduction-save-btn').click(() => {
+        // form input string to txt binary
+        const data = $('#introduction-content-p').text().trim();
+        if (introductionCopy === $('#introduction-content-p').text()) {
+            generateNotice('warning', 'Please make a change on your introduction before submit.');
+            return;
+        }
+        const url = '/api/profile/upload/update-introduction';
+        fetch(url, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: 'introdcution=' + data
+        }).then(function(res) {
+            if (res.status !== 200) {
+                generateNotice('error', 'Failed to request, please save your introduction somewhere else and try again later or contact us.');
+                return;
+            } else {
+                generateNotice('success', 'Success update your introdcution.');
+                // update copy
+                introductionCopy = $('#introduction-content-p').text();
+                fetchAndRenderInterest();
+            }
+        }).catch(function(err) {
+            generateNotice('error', err);
+        });
+    });
+
+    $('#interest-save-btn').click(() => {
+        let interestAry = [];
+
+        $('#user-interest-tags span').map((index, interest) => {
+            interestAry.unshift($(interest).text().trim().toString());
+        });
+
+        const url = '/api/profile/update-interest-manual';
+        fetch(url, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: 'interest_manual=' + JSON.stringify(interestAry)
+        }).then(function(res) {
+            if (res.status !== 200) {
+                generateNotice('error', 'Failed to request, please save your interest somewhere else and try again later or contact us.');
+                return;
+            } else {
+                generateNotice('success', 'Success update your interest.');
+                fetchAndRenderInterest();
+            }
+        }).catch(function(err) {
+            generateNotice('error', err);
+        });
+
+    });
+})
+
+//////////////////////////////////////////////////////////////////////////////////
+// handler for tag for interest on profile page
+//////////////////////////////////////////////////////////////////////////////////
+$(() => {
+    if (location.href === "http://localhost:3000/profile" || location.href === "https://intelligent-student-advisor.herokuapp.com/profile") {
+        // on profile load, load interest from server
+        const url = '/api/profile/get-interest-manual';
+        fetch(url, {
+            method: "GET",
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            }
+        }).then(function(res) {
+            if (res.status !== 200) {
+                generateNotice('error', 'Failed load your interest from server, please reload the page or contact us.');
+                return;
+            } else {
+                // load interest input bar
+                res.json().then((interest_raw) => {
+                    interest_raw.interestAry[0].map((interestObj, index) => {
+                        //interestObj = [{'term','value'}]
+                        $('#user-interest-tags').append('<span>' + interestObj.term + '</span>')
+                    })
+
+                });
+            }
+        }).catch(function(err) {
+            generateNotice('error', err);
+        });
+    }
+    // on save
+    $("#user-interest-tags input").on({
+        focusout: function() {
+            // when user click outside direct without comma or return
+            if (this.value.length < 2) {
+                return generateNotice('warning', 'Interest term you entered is too short.');
+            }
+            var txt = this.value.replace(/[^a-z0-9A-Z\+\-\.\#\ ]/ig, ''); // allowed characters
+            if (txt)
+                $("<span/>", {
+                    text: txt,
+                    insertBefore: this
+                });
+            this.value = "";
+        },
+        keyup: function(ev) {
+            // if: comma|enter|tab (delimit more keyCodes with | pipe)
+            if (/(188|13)/.test(ev.which)) {
+                // if interest term is longer than 2 characters
+                if (/(188)/.test(ev.which)) { // end by comma
+                    if (this.value.length < 3) {
+                        return generateNotice('warning', 'Interest term you entered is too short.');
+
+                    }
+                }
+                if (/(13)/.test(ev.which)) { // end by return
+                    if (this.value.length < 2) {
+                        return generateNotice('warning', 'Interest term you entered is too short.');
+
+                    }
+
+                }
+                $(this).focusout().focus();
+            }
+        }
+    });
+    $('#user-interest-tags').on('click', 'span', function() {
+        $(this).remove();
+    });
+})
+
 //////////////////////////////////////////
 // Password strength validation
 //////////////////////////////////////////
@@ -585,17 +701,17 @@ $(() => {
         const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");
         const password = $('.signup-form-password').val();
         if (!passwordValidRegex.test(password) || spcialCharRegex.test(password) || password.length == 0) {
-          generateNotice('error','Invalid password format, please check the rules of password.');
-          $('.password-rule-list').fadeIn('fast').effect( "shake" );
-          return;
+            generateNotice('error', 'Invalid password format, please check the rules of password.');
+            $('.password-rule-list').fadeIn('fast').effect("shake");
+            return;
         }
         const url = '/api/account/update-password';
         const password1 = $('#password-primary');
         const password2 = $('#password-secondary');
         if (password1.val() !== password2.val()) {
-          password1.effect( "shake" );
-          password2.effect( "shake" );
-          return generateNotice('error','Passwords doesn\'t match.');
+            password1.effect("shake");
+            password2.effect("shake");
+            return generateNotice('error', 'Passwords doesn\'t match.');
         }
         const form = $(this),
             formId = form.attr('id');
@@ -615,13 +731,13 @@ $(() => {
             } else {
                 res.json().then(function(result) {
                     if (result.type === "redirect") {
-                      window.location.replace(result.url)
+                        window.location.replace(result.url)
                     }
                     generateNotice(result.type, result.information);
                     if (result.type === "success") {
-                      setTimeout(()=>{
-                        window.location.replace('/profile');
-                      },1500);
+                        setTimeout(() => {
+                            window.location.replace('/profile');
+                        }, 1500);
                     }
                 })
             }
@@ -629,4 +745,56 @@ $(() => {
             generateNotice('error', err);
         });
     });
-})
+});
+
+// fetch user interest and render word cloud to display
+const fetchAndRenderInterest = () => {
+    const url = '/api/profile/get-interest';
+    fetch(url, {
+        method: "GET",
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+        }
+    }).then(function(res) {
+        if (res.status !== 200) {
+            generateNotice('error', "Error, status code: " + res.status);
+            return;
+        }
+        res.json().then(function(result) {
+            setTimeout(() => {
+                if (result.interest.length > 0) { // if user current has some interests
+                    WordCloud($('#interest-canvas')[0], {
+                        list: result.interest,
+                        color: 'random-dark',
+                        hover: window.drawBox,
+                        fontFamily: 'Helvetica, sans-serif',
+                        click: function(item) {
+                            console.log(item[0] + ': ' + item[1]);
+                        },
+                        gridSize: Math.round(16 * $('#interest-canvas').width() / 1200),
+                        weightFactor: function(size) {
+                            return Math.pow(size, 2.3) * $('#interest-canvas').width() / 500 + 10;
+                        },
+                        minSize:10,
+                        clearCanvas:true,
+                        rotateRatio: 0,
+                        rotationSteps: 0
+                    });
+                } else {
+                    const canvas = $("#interest-canvas");
+                    canvas.css({"height": "180"});
+                    let ctx = canvas[0].getContext("2d");
+                    ctx.font = "normal 50px Roboto sans-serif";
+                    ctx.textAlign = "left";
+                    ctx.fillText("Ask more questions", 60, 120);
+                    ctx.fillText("Add self introduction", 60, 200);
+                    ctx.fillText("To explore interests!", 60, 280);
+                }
+            }, 0);
+        })
+    }).catch(function(err) {
+        generateNotice('error', err)
+    });
+}

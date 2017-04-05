@@ -127,6 +127,6 @@ module.exports.convertPerspectsToAIReadable = (perspect_type, content) => {
 module.exports.convertUserInterestTowordCloud = function (interest) {
   // [{term, value},...] to [[term, (int)value],...]
   return interest.map((interest)=>{
-    return [interest.term, parseInt(interest.value,10)];
+    return [interest.term, parseInt(interest.value,10)+1];
   })
 };

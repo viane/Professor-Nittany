@@ -255,6 +255,7 @@ pre {
     }
 }
 
+
 /*background-image: url("../images/upload.png");*/
 
 .dropzone, .dropzone * {
@@ -759,17 +760,17 @@ pre {
     text-align: left;
 }
 
-.editable{
+.editable {
     border: 1px solid grey;
     padding: 1%;
+    overflow-y: scroll;
 }
 
-.prof-btn-md{
-    width: 20%;
+.prof-btn-md {
     margin: 5px;
 }
 
-div.btn-row{
+div.btn-row {
     margin: 2%;
 }
 
@@ -780,13 +781,13 @@ div.btn-row{
     background-size: 7%;
 }
 
-#answer-low-confidence-warning{
+#answer-low-confidence-warning {
     float: none;
     background-color: rgb(25, 185, 231);
     color: white;
 }
 
-div.advisor-comments{
+div.advisor-comments {
     width: 100%;
     height: 50px;
     border: 1px solid #1E90FF;
@@ -795,11 +796,11 @@ div.advisor-comments{
 }
 
 div.advisor-comments:empty:before, div.advisor-summary:empty:before {
-  content:attr(data-placeholder);
-  color:gray
+    content: attr(data-placeholder);
+    color: gray
 }
 
-div.advisor-summary{
+div.advisor-summary {
     width: 100%;
     height: 150px;
     border: 1px solid #1E90FF;
@@ -807,6 +808,63 @@ div.advisor-summary{
     overflow-y: auto;
 }
 
-button.adv-btn{
+button.adv-btn {
     margin: 5px;
+}
+
+.interest-canvas {}
+
+.edit-bar {
+    display: none;
+    width: 100%;
+    margin-top:5px;
+}
+
+.edit-btn {
+    padding-left: 10px;
+        float: right;
+}
+
+.edit-btn span {
+        cursor: default;
+}
+
+/* place holder for interest filed on profile page*/
+#user-interest-input:empty:not(:focus)::before {
+  content: attr(data-placeholder);
+}
+
+/* Interest tag on profile*/
+#user-interest-tags{
+  border:1px solid #ccc;
+  padding:5px;
+  font-family:Arial;
+}
+#user-interest-tags > span{
+  cursor:pointer;
+  display:block;
+  float:left;
+  color:#fff;
+  background:#789;
+  padding:5px;
+  padding-right:25px;
+  margin:4px;
+}
+#user-interest-tags > span:hover{
+  opacity:0.7;
+}
+#user-interest-tags > span:after{
+ position:absolute;
+ content:"×";
+ border:1px solid;
+ padding:2px 5px;
+ margin-left:3px;
+ font-size:11px;
+}
+#user-interest-tags > input{
+  background:#eee;
+  border:0;
+  margin:4px;
+  padding:7px;
+  width:auto;
 }
