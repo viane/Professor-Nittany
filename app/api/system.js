@@ -11,11 +11,11 @@ const watson = require('watson-developer-cloud');
 const document_conversion = watson.document_conversion({username: 'd1f406ed-2958-472b-80d6-f1f5a8f176f1', password: 'hiJHDXkxq16o', version: 'v1', version_date: '2015-12-15'});
 const loginChecking = require(appRoot + '/app/utility-function/login-checking');
 const fs = require('fs');
-const alchemy = require(appRoot + '/app/alchemyAPI');
 const systemStatus = require(appRoot + '/app/system-status');
 const formatter = require(appRoot + '/app/utility-function/formatter');
 const arrayUtility = require(appRoot + '/app/utility-function/array');
 const csvWriter = require('csv-write-stream');
+const naturalLanguageUnderstanding = require(appRoot+'/app/natural-language-understanding');
 
 let documentText = "";
 
@@ -66,7 +66,7 @@ router.post('/update/domain', loginChecking.isAdminRedirect, busboy({
     });
 }, (req, res) => {
 
-    alchemy.getAnalysis(documentText).then((result) => {
+    naturalLanguageUnderstanding.getAnalysis(documentText).then((result) => {
         if (result.status === "OK") {
             // get terms from result
             const formattedResultAry = formatter.retrieveTermsFromAlchemyAPI(result, {

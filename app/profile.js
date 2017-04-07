@@ -254,6 +254,10 @@ router.post('/like-question', (req, res) => {
 
 module.exports = router;
 
+module.exports.updateInterest = (user, analysis)=>{
+  console.log(analysis);
+};
+
 const getUserDataPath = (userType) => {
     let path = "";
     switch (userType) {
