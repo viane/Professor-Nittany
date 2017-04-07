@@ -94,7 +94,7 @@ module.exports = function(app, passport) {
                 if (err) {
                     return res.send({status: 302, type: 'error', information: err});
                 } else {
-                    return res.send({status: 200, type: 'success', information: "Successfully registered, a activation link has sent to your email."});
+                    return res.send({status: 200, type: 'success', information: "Successfully registered, an activation link has been sent to your email."});
                 }
             })(req, res, next)
         }
@@ -116,7 +116,7 @@ module.exports = function(app, passport) {
                 user.save((err, newUser) => {
                     if (err) {
                         console.error(err);
-                        return res.render(frontEndRoot + 'active-account.ejs', {system_error: 'There is an issue with system, please contact us.'});
+                        return res.render(frontEndRoot + 'active-account.ejs', {system_error: 'There is an issue with the system, please contact us.'});
                     }
                     req.logIn(newUser, function(err) {
                         if (err) {
@@ -135,7 +135,7 @@ module.exports = function(app, passport) {
                         to: newUser.local.email,
                         from: 'Intelligent Academic Advisor <xpz5043@psu.edu>',
                         subject: 'Intelligent Academic Advisor Account Activation',
-                        html: '<html><body style="background-color:white; border-radius:3px; padding: 30px;"><h1>Intelligent Academic Planer Reset Password</h1><p>This is a confirmation that your account ' + newUser.local.email + ' has just been activated.</p></body></html>'
+                        html: '<html><body style="background-color:white; border-radius:3px; padding: 30px;"><h1>Intelligent Academic Planner Account Activation</h1><p>This is a confirmation that your account ' + newUser.local.email + ' has just been activated.</p></body></html>'
                     };
                     mailer.sendMail(mailOptions, (err) => {
                         if (err) {
@@ -143,7 +143,7 @@ module.exports = function(app, passport) {
                         }
                     });
                     return res.render(frontEndRoot + 'active-account.ejs', {
-                        success: 'Your account is successfully activated now. You can now go to your <a href=\'/profile\'>Profile Page</a> now',
+                        success: 'Your account is successfully activated now. You can go to your <a href=\'/profile\'>Profile Page</a> now',
                         activation_email: newUser.local.email
                     });
                 })

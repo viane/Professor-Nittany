@@ -810,3 +810,14 @@ div.advisor-summary{
 button.adv-btn{
     margin: 5px;
 }
+
+.show-password-btn{
+    position: relative;
+    top: -40px;
+    left: 90%;
+}
+
+#forgot-pw{
+    position: relative;
+    left: -5%;
+}
