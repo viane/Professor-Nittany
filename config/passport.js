@@ -170,12 +170,12 @@ module.exports = function(passport) {
                                     to: newRecord.local.email,
                                     from: 'Intelligent Academic Advisor <xpz5043@psu.edu>',
                                     subject: 'Intelligent Academic Advisor Account Activation',
-                                    html: '<html><body style="background-color:white; border-radius:3px; padding: 30px;"><h1>Intelligent Academic Planer Account Activation</h1><p>You are receiving this because you (or someone else) have requested the actvation of your account.</p><p>Please click on the following link to complete the process.</p><a href="http://' + req.headers.host + '/active-account/' + token + '"  style="display: block;width:200px;padding: 10px;line-height: 1.4;background-color: #94B8E9; color: #fff;text-decoration: none; text-align: center; margin: 0 auto;border-radius:4px;">Active Account</a><p>Or mannually paste the following link to your broswer: http://' + req.headers.host + '/active-account/' + token + '</p><p>If you did not request this, please ignore this email and your account will remain inactive.</p></body></html>'
+                                    html: '<html><body style="background-color:white; border-radius:3px; padding: 30px;"><h1>Intelligent Academic Planner Account Activation</h1><p>You are receiving this because you (or someone else) have requested the activation of your account.</p><p>Please click on the following link to complete the process.</p><a href="http://' + req.headers.host + '/active-account/' + token + '"  style="display: block;width:200px;padding: 10px;line-height: 1.4;background-color: #94B8E9; color: #fff;text-decoration: none; text-align: center; margin: 0 auto;border-radius:4px;">Activate Account</a><p>Or mannually paste the following link to your broswer: http://' + req.headers.host + '/active-account/' + token + '</p><p>If you did not request this, please ignore this email and your account will remain inactive.</p></body></html>'
                                 };
                                 mailer.sendMail(mailOptions, (err) => {
                                     if (err) {
                                         console.error(err);
-                                        return done("An error has occured, please try reset passowrd or contact us.", null, req.flash('signupMessage', "An error has occured, please try reset passowrd or contact us."));
+                                        return done("An error has occured, please try reset password or contact us.", null, req.flash('signupMessage', "An error has occurred, please try reset password or contact us."));
                                     }
                                     return done(null, newUser);
                                 });
