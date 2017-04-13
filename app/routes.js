@@ -124,16 +124,21 @@ module.exports = function(app, passport) {
                         }
                     });
                     // email notice account is activated
-                    const mailer = nodemailer.createTransport(smtpTransport({
-                        service: 'gmail',
+                    const mailer = nodemailer.createTransport({
+                        host: "smtp-mail.outlook.com", // hostname
+                        secureConnection: false, // TLS requires secureConnection to be false
+                        port: 587, // port for secure SMTP
+                        tls: {
+                            ciphers: 'SSLv3'
+                        },
                         auth: {
-                            user: 'xiaoyuz2011@gmail.com',
-                            pass: 'Zsbqwacc1'
+                            user: 'IntelligentAcademicPlanner@outlook.com',
+                            pass: 'IAPGraduation2017'
                         }
-                    }));
+                    });
                     const mailOptions = {
                         to: newUser.local.email,
-                        from: 'Intelligent Academic Advisor <xpz5043@psu.edu>',
+                        from: 'Intelligent Academic Advisor <IntelligentAcademicPlanner@outlook.com>',
                         subject: 'Intelligent Academic Advisor Account Activation',
                         html: '<html><body style="background-color:white; border-radius:3px; padding: 30px;"><h1>Intelligent Academic Planner Account Activation</h1><p>This is a confirmation that your account ' + newUser.local.email + ' has just been activated.</p></body></html>'
                     };
@@ -314,8 +319,8 @@ module.exports = function(app, passport) {
     ///////////////////////////////////////////////////
 
     app.get('/inbox', loginChecking.isLoggedInRedirect, function(req, res) {
-      console.log(req.user);
-        res.render(frontEndRoot + '/inbox.ejs',{user: req.user});
+        console.log(req.user);
+        res.render(frontEndRoot + '/inbox.ejs', {user: req.user});
     });
 
     // =====================================

@@ -12,7 +12,7 @@ var rrparams = {
 
 var solrClient = retrieve_and_rank.createSolrClient(rrparams);
 
-var ranker_id = '766366x22-rank-2623';
+var ranker_id = '1eec74x28-rank-4480';
 
 exports.enterMessage = function(inputText, questionTopic) {
     return new Promise(function(resolve, reject) {
