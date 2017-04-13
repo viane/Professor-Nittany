@@ -15,6 +15,8 @@ module.exports = function(server) {
             user.type = data.type;
         });
 
+        // io.to(socket.id).emit('dm', 'direct message');
+
         // when the client emits 'new question', this listens and executes
         socket.on('question', function(data) {
 

@@ -11,6 +11,14 @@ $(function() {
 
     const socket = io();
 
+    socket.on('connect', function() {
+        console.log(socket.id); // 'G5p5...'
+    });
+
+    socket.on('dm',(message)=>{
+      console.log(message);
+    })
+
     // Log a message
     function log(message, options) {
         var $el = $('<li>').addClass('log').text(message);
