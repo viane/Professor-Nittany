@@ -35,13 +35,15 @@ const formatter = require(appRoot + '/app/utility-function/formatter');
 
 const naturalLanguageUnderstanding = require(appRoot + '/app/natural-language-understanding');
 
-router.get('/get-interest-manual', (req,res)=>{
-  User.findById(req.user._id).exec().then((updateRecord, err) => {
-    return res.send({interestAry: [updateRecord.interest_manual]});
-  }).catch((err) => {
-      console.error(err);
-      res.sendStatus(500);
-  });
+router.get('/get-interest-manual', (req, res) => {
+    User.findById(req.user._id).exec().then((updateRecord, err) => {
+        return res.send({
+            interestAry: [updateRecord.interest_manual]
+        });
+    }).catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+    });
 })
 
 router.post('/update-interest-manual', (req, res) => {
@@ -59,10 +61,10 @@ router.post('/update-interest-manual', (req, res) => {
         }
         // form manual interest array has no duplicates with max weight
         const interestAry = arrayUtility.arrayUnique(JSON.parse(req.body.interest_manual).map((interest) => {
-            if (interest.length<2) {
-              return res.sendStatus(300);
+            if (interest.length < 2) {
+                return res.sendStatus(300);
             };
-            return {'term':interest.toString().trim(), value: maxScore}
+            return {'term': interest.toString().trim(), value: maxScore}
         }));
         updateRecord.interest_manual = interestAry;
         updateRecord.save((err, user) => {
@@ -263,19 +265,15 @@ router.post('/upload/upload-description-text-file', busboy({
 // Get user interests
 router.get('/get-interest', (req, res) => {
     User.findById(req.user._id).exec().then((foundUser) => {
-      let interestAry = [];
-      foundUser.interest_manual.map((interestObj)=>{
-        interestAry.unshift(interestObj)
-      });
-      foundUser.interest.map((interestObj)=>{
-        interestAry.unshift(interestObj)
-      })
-        // format interest array
-        res.send({
-            status: "success",
-            information: "good",
-            interest: formatter.convertUserInterestTowordCloud(interestAry)
+        let interestAry = [];
+        foundUser.interest_manual.map((interestObj) => {
+            interestAry.unshift(interestObj)
         });
+        foundUser.interest.map((interestObj) => {
+            interestAry.unshift(interestObj)
+        })
+        // format interest array
+        res.send({status: "success", information: "good", interest: formatter.convertUserInterestTowordCloud(interestAry)});
     }).catch((err) => {
         throw err;
         res.send({type: 'error', information: err});
@@ -300,6 +298,59 @@ router.get('/get-personalityAssessment', (req, res) => {
         throw err;
         res.send({type: 'error', information: err});
     })
+});
+
+// Delete question from quesion history
+router.post('/delete-question-history', loginChecking.isLoggedInRedirect, (req, res) => {
+    User.update({
+        _id: req.user._id
+    }, {
+        $pull: {
+            ask_history: {
+                'question_body': req.body.question_body
+            }
+        }
+    }).exec().then(() => {
+        res.sendStatus(200);
+    }).catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+    });
+});
+
+// unfav question from question history
+router.post('/unfav-question-history', loginChecking.isLoggedInRedirect, (req, res) => {
+    User.update({
+        _id: req.user._id,
+        'ask_history.question_body': req.body.question_body
+    }, {
+        '$set': {
+            'ask_history.$.favorite': false
+        }
+    }).exec().then(() => {
+        res.sendStatus(200);
+    }).catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+    });
+});
+
+// fav question with answer pair from main page
+router.post('/fav-question-answer', loginChecking.isLoggedInRedirect, (req, res) => {
+    User.update({
+        _id: req.user._id,
+        'ask_history.question_body': req.body.question_body
+    }, {
+        '$set': {
+            'ask_history.$.favorite': true,
+            'ask_history.$.answer_body': req.body.answer
+        }
+    }).exec().then(() => {
+        res.sendStatus(200);
+    }).catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+    });
 });
 
 // Post user avatar
@@ -361,13 +412,10 @@ router.post('/update-avatar', loginChecking.isLoggedInRedirect, (req, res) => {
         }
 
     });
-
-})
-
+});
 router.post('/set-privacy', (req, res) => {
     res.send({status: "success", information: "API not open yet"});
-})
-
+});
 router.post('/favorite-question', (req, res) => {
     const id = req.user._id;
     res.send({status: "success", information: "done!"});

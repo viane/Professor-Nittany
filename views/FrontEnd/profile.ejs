@@ -138,12 +138,14 @@
 						</script>
 
 						<div class="bs-callout bs-callout-info text-left">
-							<h4>Favorite</h4>
-							<div id="favorite-question-list"> </div>
+							<h4>Favorite Question and Answer</h4>
+							<% if(ask_history.length == 0) { %> Ask some questions and favorite them to fill here! <% } %>
+							<div id="favorite-question-list"></div>
 						</div>
 
 						<div class="bs-callout bs-callout-info text-left">
-							<h4>Question History</h4>
+							<h4>Other Question and History</h4>
+							<% if(ask_history.length == 0) { %> Ask some questions to leave a trace! <% } %>
 							<div id="asked-question-list"></div>
 						</div>
 					</div>

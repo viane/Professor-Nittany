@@ -32,6 +32,48 @@ const userSchema = mongoose.Schema({
             default: false
         }
     },
+    ask_history: [
+        {
+            question_body: {
+                type: String
+            },
+            favorite: {
+                type: Boolean,
+                default: false
+            },
+            answer_body:{
+              type: String
+            },
+            ask_time: {
+                type: Date,
+                default: Date.now
+            },
+            ask_count: {
+                type: Number,
+                default: 1
+            },
+            question_concept: [
+                {
+                    type: mongoose.Schema.Types.Mixed
+                }
+            ],
+            question_entitie: [
+                {
+                    type: mongoose.Schema.Types.Mixed
+                }
+            ],
+            question_taxonomy: [
+                {
+                    type: mongoose.Schema.Types.Mixed
+                }
+            ],
+            question_keyword: [
+                {
+                    type: mongoose.Schema.Types.Mixed
+                }
+            ]
+        }
+    ],
     interest: [mongoose.Schema.Types.Mixed],
     interest_manual: [mongoose.Schema.Types.Mixed],
     inbox: [
@@ -78,45 +120,7 @@ const userSchema = mongoose.Schema({
             type: String,
             default: "student"
         },
-        ask_history: [
-            {
-                question_body: {
-                    type: String
-                },
-                favorite: {
-                    type: Boolean,
-                    default: false
-                },
-                ask_time: {
-                    type: Date,
-                    default: Date.now
-                },
-                ask_count: {
-                    type: Number,
-                    default: 1
-                },
-                question_concept: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_entitie: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_taxonomy: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_keyword: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ]
-            }
-        ],
+
 
         resetPasswordToken: {
             type: String,
@@ -145,46 +149,7 @@ const userSchema = mongoose.Schema({
         role: {
             type: String,
             default: "student"
-        },
-        ask_history: [
-            {
-                question_body: {
-                    type: String
-                },
-                favorite: {
-                    type: Boolean,
-                    default: false
-                },
-                ask_time: {
-                    type: Date,
-                    default: Date.now
-                },
-                ask_count: {
-                    type: Number,
-                    default: 1
-                },
-                question_concept: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_entitie: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_taxonomy: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_keyword: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ]
-            }
-        ],
+        }
     },
     twitter: {
         id: String,
@@ -195,46 +160,7 @@ const userSchema = mongoose.Schema({
         role: {
             type: String,
             default: "student"
-        },
-        ask_history: [
-            {
-                question_body: {
-                    type: String
-                },
-                favorite: {
-                    type: Boolean,
-                    default: false
-                },
-                ask_time: {
-                    type: Date,
-                    default: Date.now
-                },
-                ask_count: {
-                    type: Number,
-                    default: 1
-                },
-                question_concept: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_entitie: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_taxonomy: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_keyword: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ]
-            }
-        ]
+        }
     },
     linkedin: {
         id: String,
@@ -246,46 +172,7 @@ const userSchema = mongoose.Schema({
         role: {
             type: String,
             default: "student"
-        },
-        ask_history: [
-            {
-                question_body: {
-                    type: String
-                },
-                favorite: {
-                    type: Boolean,
-                    default: false
-                },
-                ask_time: {
-                    type: Date,
-                    default: Date.now
-                },
-                ask_count: {
-                    type: Number,
-                    default: 1
-                },
-                question_concept: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_entitie: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_taxonomy: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_keyword: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ]
-            }
-        ]
+        }
     },
     google: {
         id: String,
@@ -299,46 +186,7 @@ const userSchema = mongoose.Schema({
         role: {
             type: String,
             default: "student"
-        },
-        ask_history: [
-            {
-                question_body: {
-                    type: String
-                },
-                favorite: {
-                    type: Boolean,
-                    default: false
-                },
-                ask_time: {
-                    type: Date,
-                    default: Date.now
-                },
-                ask_count: {
-                    type: Number,
-                    default: 1
-                },
-                question_concept: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_entitie: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_taxonomy: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_keyword: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ]
-            }
-        ]
+        }
     },
     submitted_assessment_history: [
         {

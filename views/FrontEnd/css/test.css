@@ -879,3 +879,11 @@ button.adv-btn {
   padding:7px;
   width:auto;
 }
+
+.question-log-question-body:before{
+  content: "Q: ";
+}
+
+.question-log-answer-body:before{
+  content: "A: ";
+}

@@ -1,7 +1,6 @@
 $(function() {
     // Initialize variables
     const $window = $(window);
-    let currentQuestionAnswerSequence = 0;
     //var $usernameInput = $('.usernameInput'); // Input for username
     //var $messages = $('.messages'); // Messages area
 
@@ -15,8 +14,8 @@ $(function() {
         console.log(socket.id); // 'G5p5...'
     });
 
-    socket.on('dm',(message)=>{
-      console.log(message);
+    socket.on('dm', (message) => {
+        console.log(message);
     })
 
     // Log a message
@@ -59,7 +58,7 @@ $(function() {
     ////////////////////////////////////////////////////////////////////////
     $("#assessment-send-btn").click(() => {
         let payload = {
-            senderID:"",
+            senderID: "",
             viewSection: [],
             receiveAdvisor: []
         }
@@ -85,46 +84,46 @@ $(function() {
         });
 
         // checking any missing field
-      if (payload.senderID === "") {
-        // empty user id
-        generateNotice('error','User login status invalid, please re-signin.');
-      }else if (payload.viewSection.length === 0) {
-        // empty assessment section
-        generateNotice('warning','Please select at least <b>1</b> section to be viewed by advisors');
-      }else if (payload.receiveAdvisor.length === 0) {
-        // no advisor select
-        generateNotice('warning','Please select at least <b>1</b> advisor to view your assessment');
-      }else {
-        // all good
-        socket.emit('client-send-assessment',payload);
+        if (payload.senderID === "") {
+            // empty user id
+            generateNotice('error', 'User login status invalid, please re-signin.');
+        } else if (payload.viewSection.length === 0) {
+            // empty assessment section
+            generateNotice('warning', 'Please select at least <b>1</b> section to be viewed by advisors');
+        } else if (payload.receiveAdvisor.length === 0) {
+            // no advisor select
+            generateNotice('warning', 'Please select at least <b>1</b> advisor to view your assessment');
+        } else {
+            // all good
+            socket.emit('client-send-assessment', payload);
 
-        // on feedback
-        // success
-        socket.on('success-submit-assessment',(data)=>{
-          generateNotice('success', data.message);
-          setTimeout(()=>{
-            $('#assessment-advisor-exit-btn').click();
-          },1400);
-        })
-        // fail
-        socket.on('fail-submit-assessment',(err)=>{
-          generateNotice('success',data.err);
-        })
-      }
+            // on feedback
+            // success
+            socket.on('success-submit-assessment', (data) => {
+                generateNotice('success', data.message);
+                setTimeout(() => {
+                    $('#assessment-advisor-exit-btn').click();
+                }, 1400);
+            })
+            // fail
+            socket.on('fail-submit-assessment', (err) => {
+                generateNotice('success', data.err);
+            })
+        }
     })
 
     ////////////////////////////////////////////////////////////////////////
     // To Advisor receive an assessment (need fix)
     ////////////////////////////////////////////////////////////////////////
-    socket.on('advsisor-receive-assessment', (data)=>{
+    socket.on('advsisor-receive-assessment', (data) => {
 
-      if ($('#user-id').text() === data.id) {
-        generateNotice('success', "A student wants you to view assessment");
+        if ($('#user-id').text() === data.id) {
+            generateNotice('success', "A student wants you to view assessment");
 
-        if (window.location.href === "http://localhost:3000/advising" || window.location.href === "https://intelligent-student-advisor.herokuapp.com/advising") {
-          $(".panel-primary").append("<p>View Section:"+ JSON.stringify(data.viewSection)+"</p><pre>"+JSON.stringify(data.student)+"</pre>")
+            if (window.location.href === "http://localhost:3000/advising" || window.location.href === "https://intelligent-student-advisor.herokuapp.com/advising") {
+                $(".panel-primary").append("<p>View Section:" + JSON.stringify(data.viewSection) + "</p><pre>" + JSON.stringify(data.student) + "</pre>")
+            }
         }
-      }
     })
 
     const displayAnalysis = (data) => {
@@ -203,10 +202,10 @@ $(function() {
                     }
 
                     //add favorite btn to answer
-                    respond += "<div id=\"hearts-existing\" class=\"hearrrt\" data-toggle=\"tooltip\" data-container=\"body\" data-placement=\"right\" title=\"Favorite!\"></div>"
+                    respond += "<div id=\"hearts-existing\" class=\"hearrrt question-fav-btn-main\" data-toggle=\"tooltip\" data-container=\"body\" data-placement=\"right\" title=\"Favorite!\"></div>"
 
                     //add answer body and
-                    respond += "<div class=\"answer\"><p class=\"answer-body\" data-answer-seq=" + currentQuestionAnswerSequence + ">" + formatAnswerByTag(answer.body) + "</p></div>";
+                    respond += "<div class=\"answer\"><p class=\"answer-body\">" + formatAnswerByTag(answer.body) + "</p></div>";
 
                     //add rating btn
                     respond += "<span id=\"stars-existing\" class=\"starrr\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Rate!\"></span>"
@@ -216,10 +215,6 @@ $(function() {
 
                     chatWindow.append(respond);
 
-                    currentQuestionAnswerSequence++;
-
-                    //add like btn handler
-                    addLikeBtnHandler(currentQuestionAnswerSequence);
                 })
             } else {
                 // if question is not in the knowledge domain
@@ -232,10 +227,10 @@ $(function() {
                 respond = "<li class=\"list-group-item text-left\">"
 
                 // add favorite btn to answer
-                respond += "<div id=\"hearts-existing\" class=\"hearrrt\" data-toggle=\"tooltip\" data-container=\"body\" data-placement=\"right\" title=\"Favorite!\"></div>"
+                respond += "<div id=\"hearts-existing\" class=\"hearrrt question-fav-btn-main\" data-toggle=\"tooltip\" data-container=\"body\" data-placement=\"right\" title=\"Favorite!\"></div>"
 
                 // add answer body and
-                respond += "<div class=\"answer\"><p class=\"answer-body\" data-answer-seq=" + currentQuestionAnswerSequence + ">" + formatAnswerByTag(message[0].body) + "</p></div>";
+                respond += "<div class=\"answer\"><p class=\"answer-body\">" + formatAnswerByTag(message[0].body) + "</p></div>";
 
                 // add rating btn
                 respond += "<span id=\"stars-existing\" class=\"starrr\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Rate!\"></span>"
@@ -245,11 +240,10 @@ $(function() {
 
                 chatWindow.append(respond);
 
-                currentQuestionAnswerSequence++;
-
-                //add like btn handler
-                addLikeBtnHandler(currentQuestionAnswerSequence);
             }
+
+            //add fav btn handler
+            favoriteBtnHandler();
 
             if ($("#user-id").text()) {
                 // enable heart layout on each answer

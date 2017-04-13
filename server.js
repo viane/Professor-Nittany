@@ -61,7 +61,7 @@ app.use(cookieParser()); // read cookies (needed for auth)
 app.set('view engine', 'ejs'); // set up ejs for templating
 
 // required for passport
-app.use(session({
+const _session = session({
     secret: 'intellegent academic planner',
     maxAge: 3600000,
     resave: true,
@@ -69,7 +69,9 @@ app.use(session({
         maxAge: 3600000
     },
     saveUninitialized: true
-}));
+});
+app.use(_session);
+
 // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
@@ -86,7 +88,7 @@ require(appRoot + '/config/passport')(passport); // pass passport for configurat
 
 require(appRoot + '/app/routes.js')(app, passport); // Routes
 
-require(appRoot + '/app/socket-io.js')(server); //handle communication between client and server
+require(appRoot + '/app/socket-io.js')(server, _session); //handle communication between client and server
 
 // loading questionFeeds from Disk
 serverStatus.initQuestionFeeds().then((result) => {

@@ -384,12 +384,15 @@ $(() => {
 
             let respond = "<li class=\"list-group-item text-left\">"
 
-            //add favorite btn to answer
-            respond += "<div id=\"hearts-existing\" class=\"hearrrt\" data-toggle=\"tooltip\" data-container=\"body\" data-placement=\"right\" title=\"Favorite!\" data-favortite = \"true\"></div>";
-
-            //add answer body and
-            respond += "<div class=\"question-log-question-body\"><p class=\"question-body\">" + logedQuestionObj.question_body + "</p></div>";
-
+            if (logedQuestionObj.favorite) {
+                //add favorite btn to answer
+                respond += "<div id=\"hearts-existing\" class=\"hearrrt question-fav-btn\" data-toggle=\"tooltip\" data-container=\"body\" data-placement=\"right\" title=\"Favorite!\" data-favortite = \"true\"></div>";
+            } else {
+                respond += "<div class=\"question-history-delete-btn\"><i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></div>";
+            }
+            //add question and answer body
+            respond += "<div class=\"question-log-question-body\"><p class=\"question-body\"><b>" + logedQuestionObj.question_body + "</b></p></div>";
+            respond += "<div class=\"question-log-answer-body\">" + logedQuestionObj.answer_body + "</div>";
             respond += "</li>"
 
             // display user favorited question
@@ -411,7 +414,92 @@ $(() => {
         $('#favorite-question-list .hearrrt span').each(function() {
             $(this).click()
         });
+
+        // add read more handler
+        addReadmoreHandler();
+
+        // add ask answer related question handler
+        addAnswerRelatedQuestionHandler();
     }
+})
+
+//////////////////////////////////////////////////////////////////////////////////
+// handler for question fav/history delete btn
+//////////////////////////////////////////////////////////////////////////////////
+$(() => {
+    const initQuestionDeleteBtnHandler = () => {
+        // delete question from question history
+        $('.question-history-delete-btn').click(function() {
+            const section = $(this).parent();
+            const questionContent = $(this).next().text();
+
+            const url = '/api/profile/delete-question-history';
+            fetch(url, {
+                method: "POST",
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+                },
+                body: 'question_body=' + questionContent
+            }).then(function(res) {
+                if (res.status !== 200) {
+                    generateNotice('error', 'Failed to request, please try again later or contact us.');
+                    return;
+                } else {
+                    // success
+                    section.fadeOut('fast');
+                }
+            }).catch(function(err) {
+                generateNotice('error', err);
+            });
+        });
+    }
+
+    initQuestionDeleteBtnHandler();
+
+    // unfav question
+    $('.question-fav-btn').click(function() {
+        const $this = $(this);
+        const favQuestionBody = $(this).next().text();
+        const favAnswerBody = $(this).next().next().html();
+        const url = '/api/profile/unfav-question-history';
+        fetch(url, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: 'question_body=' + favQuestionBody
+        }).then(function(res) {
+            if (res.status !== 200) {
+                generateNotice('error', 'Failed to request, please try again later or contact us.');
+                return;
+            } else {
+                // success
+                $this.parent().fadeOut('slow', function() {
+                    $this.remove();
+                    // push back to regular question log with style
+                    let respond = "<li class=\"list-group-item text-left\">";
+                    respond += "<div class=\"question-history-delete-btn\"><i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></div>";
+                    respond += "<div class=\"question-log-question-body\"><p class=\"question-body\">" + favQuestionBody + "</p></div>";
+                    respond += "<div class=\"question-log-answer-body\">" + favAnswerBody + "</div>";
+                    respond += "</li>"
+                    $('#asked-question-list').append(respond);
+                    initQuestionDeleteBtnHandler();
+                });
+
+                // add read more handler
+                addReadmoreHandler();
+
+                // add ask answer related question handler
+                addAnswerRelatedQuestionHandler();
+            }
+        }).catch(function(err) {
+            generateNotice('error', err);
+        });
+    });
 })
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -747,6 +835,34 @@ $(() => {
     });
 });
 
+// main page fav btn handler
+const favoriteBtnHandler = () => {
+    $('.question-fav-btn-main').click(function() {
+        const answerPair = $(this).next().html(); // include style
+        const favQuestionBody = $('#user-question').text();
+        const url = '/api/profile/fav-question-answer';
+        fetch(url, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: 'question_body=' + favQuestionBody + '&answer=' + answerPair
+        }).then(function(res) {
+            if (res.status !== 200) {
+                generateNotice('error', 'Failed to request, please try again later or contact us.');
+                return;
+            } else {
+                // success
+                generateNotice('success', 'Successfully favorite this answer with you question.');
+            }
+        }).catch(function(err) {
+            generateNotice('error', err);
+        });
+    })
+}
+
 // fetch user interest and render word cloud to display
 const fetchAndRenderInterest = () => {
     const url = '/api/profile/get-interest';
@@ -777,8 +893,8 @@ const fetchAndRenderInterest = () => {
                         weightFactor: function(size) {
                             return Math.pow(size, 2.3) * $('#interest-canvas').width() / 500 + 10;
                         },
-                        minSize:10,
-                        clearCanvas:true,
+                        minSize: 10,
+                        clearCanvas: true,
                         rotateRatio: 0,
                         rotationSteps: 0
                     });

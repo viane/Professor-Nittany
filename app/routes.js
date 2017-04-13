@@ -70,6 +70,7 @@ module.exports = function(app, passport) {
                     if (err) {
                         return res.send({status: 302, type: 'error', information: err});
                     }
+                    req.session.userid = user;
                     return res.send({status: 200, type: 'success', information: "Login success"});
                 });
             }
