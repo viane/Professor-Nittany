@@ -488,13 +488,13 @@ $(() => {
                     respond += "</li>"
                     $('#asked-question-list').append(respond);
                     initQuestionDeleteBtnHandler();
+
+                    // add read more handler
+                    addReadmoreHandler();
+
+                    // add ask answer related question handler
+                    addAnswerRelatedQuestionHandler();
                 });
-
-                // add read more handler
-                addReadmoreHandler();
-
-                // add ask answer related question handler
-                addAnswerRelatedQuestionHandler();
             }
         }).catch(function(err) {
             generateNotice('error', err);
