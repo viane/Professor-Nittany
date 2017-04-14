@@ -41,8 +41,8 @@ const userSchema = mongoose.Schema({
                 type: Boolean,
                 default: false
             },
-            answer_body:{
-              type: String
+            answer_body: {
+                type: String
             },
             ask_time: {
                 type: Date,
@@ -121,7 +121,6 @@ const userSchema = mongoose.Schema({
             default: "student"
         },
 
-
         resetPasswordToken: {
             type: String,
             default: null
@@ -198,6 +197,7 @@ const userSchema = mongoose.Schema({
                 type: Date,
                 default: Date.now
             },
+            view_section: Array,
             question: Array,
             question_comment: Array,
             personality_evaluation: Array,
@@ -208,8 +208,18 @@ const userSchema = mongoose.Schema({
             introduction_comment: Array,
             reviewer: Array,
             comment_summary: Array,
-            advisor_viewed_current: Array,
-            advisor_viewed_before_user_last_check: Array
+            user_last_view_time: {
+                type: Date,
+                default: Date.now
+            },
+            advisor_last_comment_time: {
+                type: Date,
+                default: null
+            },
+            advisor_last_comment_list: {
+                type: Array,
+                default: []
+            }
         }
     ],
     received_assessment_history: [
@@ -218,7 +228,7 @@ const userSchema = mongoose.Schema({
             assessment_id: String
         }
     ],
-    inbox_trash:[mongoose.Schema.Types.Mixed]
+    inbox_trash: [mongoose.Schema.Types.Mixed]
 }, {strict: true});
 
 // checking if password is valid using bcrypt

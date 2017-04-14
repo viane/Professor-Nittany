@@ -7,8 +7,7 @@ const arrayUtility = require(appRoot + '/app/utility-function/array');
 // share session between socket.io and express
 const sharedsession = require('socket.io-express-session');
 
-module.exports = function(server, session) {
-    const io = require('socket.io').listen(server);
+module.exports = function(io, session) {
 
     // enable share session with express
     io.use(sharedsession(session));
@@ -30,7 +29,7 @@ module.exports = function(server, session) {
             user.type = data.type;
         });
 
-        io.to(socket.handshake.session.id).emit('dm', 'direct message');
+        //io.to(socket.id).emit('dm', 'direct message');
 
         // when the client emits 'new question', this listens and executes
         socket.on('question', function(data) {

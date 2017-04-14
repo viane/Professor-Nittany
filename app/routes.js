@@ -22,9 +22,9 @@ const phoneQA = require(appRoot + '/app/api/phone-question-answer');
 const smsQA = require(appRoot + '/app/api/sms-question-answer');
 const nodemailer = require('nodemailer');
 const smtpTransport = require('nodemailer-smtp-transport');
+const waterfall = require('async-waterfall');
 
-module.exports = function(app, passport) {
-
+module.exports = function(app, passport, io) {
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
@@ -518,6 +518,7 @@ module.exports = function(app, passport) {
     app.use('/api/testing/', testingAPIModule);
 
     // Profile APIs
+    profileAPI.setIO(io);
     app.use('/api/profile', loginChecking.isLoggedInRedirect, profileAPI);
 
     // Server status APIs

@@ -35,6 +35,8 @@ const formatter = require(appRoot + '/app/utility-function/formatter');
 
 const naturalLanguageUnderstanding = require(appRoot + '/app/natural-language-understanding');
 
+let _io;
+
 router.get('/get-interest-manual', (req, res) => {
     User.findById(req.user._id).exec().then((updateRecord, err) => {
         return res.send({
@@ -44,7 +46,7 @@ router.get('/get-interest-manual', (req, res) => {
         console.error(err);
         res.sendStatus(500);
     });
-})
+});
 
 router.post('/update-interest-manual', (req, res) => {
     User.findById(req.user._id).exec().then((updateRecord, err) => {
@@ -426,6 +428,73 @@ router.post('/like-question', (req, res) => {
     res.send({status: "success", information: "done!"});
 });
 
+router.post('/send-assessment', (req, res) => {
+    User.findById(req.user._id, (err, foundUser) => {
+        if (err) {
+            console.error(err);
+            res.sendStatus(500);
+        } else {
+            const viewSection = JSON.parse(req.body.advisor).viewSection;
+            const viewAdvisor = JSON.parse(req.body.advisor).receiveAdvisor;
+            if (viewSection.length < 1 || viewAdvisor.length < 1) {
+                return res.send({error: "You must select at least one of the section and advisor to be viewed for your assessment."});
+            }
+
+            let assessment = {
+                view_section: viewSection,
+                reviewer: viewAdvisor,
+                comment_summary: []
+            }
+
+            if (viewSection.includes('question')) {
+                assessment.question = foundUser.ask_history,
+                assessment.question_comment = []
+            }
+
+            if (viewSection.includes('personality')) {
+                assessment.personality_evaluation = foundUser.personality_assessement.evaluation,
+                assessment.personality_evaluation_comment = []
+            }
+
+            if (viewSection.includes('interest')) {
+                assessment.interest = {
+                    system_detect: foundUser.interest,
+                    manual_input: foundUser.interest_manual
+                }
+                assessment.interest_comment = []
+            }
+
+            if (viewSection.includes('introduction')) {
+                assessment.introduction = foundUser.personality_assessement.description_content,
+                assessment.introduction_comment = []
+            }
+
+            foundUser.submitted_assessment_history.unshift(assessment);
+            foundUser.save((err) => {
+                if (err) {
+                    console.log(err);
+                    return res.sendStatus(500);
+                }
+                res.sendStatus(200);
+            })
+
+        };
+
+    });
+});
+
+router.get('/get-last-assessment', (req, res) => {
+    User.findById(req.user._id, (err, foundUser) => {
+        if (err) {
+            console.error(err);
+            res.sendStatus(500);
+        } else {
+            const index = foundUser.submitted_assessment_history.length - 1;
+            res.send({assessment: foundUser.submitted_assessment_history[index]});
+        }
+    })
+})
+
 module.exports = router;
 
 const updateInterest = (user, analysis) => {
@@ -477,8 +546,12 @@ const updateInterest = (user, analysis) => {
         }
     });
 };
-
 module.exports.updateInterest = updateInterest;
+
+const setIO = (io) => {
+    _io = io;
+}
+module.exports.setIO = setIO;
 
 const updateUserSelfDescription = (user, description) => {
     const id = user._id;

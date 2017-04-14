@@ -84,11 +84,15 @@ app.use(express.static('views/FrontEnd'));
 
 const server = http.createServer(app);
 
+const io = require('socket.io').listen(server);
+require(appRoot + '/app/socket-io.js')(io, _session); //handle communication between client and server
+
 require(appRoot + '/config/passport')(passport); // pass passport for configuration
 
-require(appRoot + '/app/routes.js')(app, passport); // Routes
+require(appRoot + '/app/routes.js')(app, passport,io); // Routes
 
-require(appRoot + '/app/socket-io.js')(server, _session); //handle communication between client and server
+
+
 
 // loading questionFeeds from Disk
 serverStatus.initQuestionFeeds().then((result) => {

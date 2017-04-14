@@ -11,7 +11,7 @@ $(function() {
     const socket = io();
 
     socket.on('connect', function() {
-        console.log(socket.id); // 'G5p5...'
+        // console.log(socket.id); // 'G5p5...'
     });
 
     socket.on('dm', (message) => {
@@ -54,63 +54,20 @@ $(function() {
     socket.on('inbox', function(data) {});
 
     ////////////////////////////////////////////////////////////////////////
-    // Send assessment to advisor
+    // Feedback after send assessment
     ////////////////////////////////////////////////////////////////////////
-    $("#assessment-send-btn").click(() => {
-        let payload = {
-            senderID: "",
-            viewSection: [],
-            receiveAdvisor: []
-        }
+    // success
+    socket.on('success-submit-assessment', (data) => {
+        generateNotice('success', data.message);
+        setTimeout(() => {
+            $('#assessment-advisor-exit-btn').click();
+        }, 1400);
+    });
 
-        payload.senderID = $('#user-id').text();
-
-        // form open section to be viewed by advisor
-        $('.assessment-section-selection input:checked').each(function() {
-            payload.viewSection.unshift($(this).val());
-        })
-
-        // form receiving advisors array
-        $('.advisor-profile-wrapper input:checked').each(function() {
-            const receiverID = $(this).prev('div').data('advisor-id');
-            const receiverEmail = $(this).prev('div').data('advisor-email');
-            const receiverDisplayName = $(this).prev('div').data('advisor-displayname');
-            const receiverObj = {
-                id: receiverID,
-                email: receiverEmail,
-                displayName: receiverDisplayName
-            };
-            payload.receiveAdvisor.unshift(receiverObj);
-        });
-
-        // checking any missing field
-        if (payload.senderID === "") {
-            // empty user id
-            generateNotice('error', 'User login status invalid, please re-signin.');
-        } else if (payload.viewSection.length === 0) {
-            // empty assessment section
-            generateNotice('warning', 'Please select at least <b>1</b> section to be viewed by advisors');
-        } else if (payload.receiveAdvisor.length === 0) {
-            // no advisor select
-            generateNotice('warning', 'Please select at least <b>1</b> advisor to view your assessment');
-        } else {
-            // all good
-            socket.emit('client-send-assessment', payload);
-
-            // on feedback
-            // success
-            socket.on('success-submit-assessment', (data) => {
-                generateNotice('success', data.message);
-                setTimeout(() => {
-                    $('#assessment-advisor-exit-btn').click();
-                }, 1400);
-            })
-            // fail
-            socket.on('fail-submit-assessment', (err) => {
-                generateNotice('success', data.err);
-            })
-        }
-    })
+    // fail
+    socket.on('fail-submit-assessment', (err) => {
+        generateNotice('success', data.err);
+    });
 
     ////////////////////////////////////////////////////////////////////////
     // To Advisor receive an assessment (need fix)
@@ -184,63 +141,46 @@ $(function() {
         $('#answer-low-confidence-warning').addClass("hide");
 
         if (sender === "server") {
+
             const message = data.message;
             // data.confidence (bool) indicates either user's question is in the knowledge doman or not
 
-            // if quetion is asking within knowledge domain
-            if (data.confidence) {
-                // display 10 answers from server in order of confidence
-                message.map((answer, index) => {
-                    let respond;
-                    if (index == 0) {
-                        //form new DOM respond element
-                        respond = "<li class=\"list-group-item list-group-item-info text-left\">"
+            if (!data.confidence) {
 
-                    } else {
-                        //form new DOM respond element
-                        respond = "<li class=\"list-group-item text-left\">"
-                    }
-
-                    //add favorite btn to answer
-                    respond += "<div id=\"hearts-existing\" class=\"hearrrt question-fav-btn-main\" data-toggle=\"tooltip\" data-container=\"body\" data-placement=\"right\" title=\"Favorite!\"></div>"
-
-                    //add answer body and
-                    respond += "<div class=\"answer\"><p class=\"answer-body\">" + formatAnswerByTag(answer.body) + "</p></div>";
-
-                    //add rating btn
-                    respond += "<span id=\"stars-existing\" class=\"starrr\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Rate!\"></span>"
-
-                    //end adding, wrap up whole section
-                    respond += "</li>"
-
-                    chatWindow.append(respond);
-
-                })
-            } else {
                 // if question is not in the knowledge domain
 
                 // prompt a warning to user that answer might not accurate due to unsure knowledge domain
                 $('#answer-low-confidence-warning').removeClass("hide");
 
-                // only display top 1 answer
-                let respond;
-                respond = "<li class=\"list-group-item text-left\">"
+            }
 
-                // add favorite btn to answer
+            // display 10 answers from server in order of confidence
+            message.map((answer, index) => {
+                let respond;
+                if (index == 0) {
+                    //form new DOM respond element
+                    respond = "<li class=\"list-group-item list-group-item-info text-left\">"
+
+                } else {
+                    //form new DOM respond element
+                    respond = "<li class=\"list-group-item text-left\">"
+                }
+
+                //add favorite btn to answer
                 respond += "<div id=\"hearts-existing\" class=\"hearrrt question-fav-btn-main\" data-toggle=\"tooltip\" data-container=\"body\" data-placement=\"right\" title=\"Favorite!\"></div>"
 
-                // add answer body and
-                respond += "<div class=\"answer\"><p class=\"answer-body\">" + formatAnswerByTag(message[0].body) + "</p></div>";
+                //add answer body and
+                respond += "<div class=\"answer\"><p class=\"answer-body\">" + formatAnswerByTag(answer.body) + "</p></div>";
 
-                // add rating btn
+                //add rating btn
                 respond += "<span id=\"stars-existing\" class=\"starrr\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Rate!\"></span>"
 
-                // end adding, wrap up whole section
+                //end adding, wrap up whole section
                 respond += "</li>"
 
                 chatWindow.append(respond);
 
-            }
+            })
 
             //add fav btn handler
             favoriteBtnHandler();

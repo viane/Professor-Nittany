@@ -365,7 +365,7 @@ $(() => {
                         advisorDom += "</figure>";
                         $('.advisor-list-panel').append(advisorDom);
                     });
-                    $(".loader").css('display', 'none');
+                    $(".loader").fadeOut('fast');
                 })
             }
         }).catch(function(err) {
@@ -912,5 +912,96 @@ const fetchAndRenderInterest = () => {
         })
     }).catch(function(err) {
         generateNotice('error', err)
+    });
+};
+
+////////////////////////////////////////////////////////////////////////
+// Send assessment to advisor
+////////////////////////////////////////////////////////////////////////
+$(() => {
+    $("#assessment-send-btn").click(() => {
+        let payload = {
+            viewSection: [],
+            receiveAdvisor: []
+        }
+
+        // form open section to be viewed by advisor
+        $('.assessment-section-selection input:checked').each(function() {
+            payload.viewSection.unshift($(this).val());
+        })
+
+        // form receiving advisors array
+        $('.advisor-profile-wrapper input:checked').each(function() {
+            const receiverID = $(this).prev('div').data('advisor-id');
+            const receiverEmail = $(this).prev('div').data('advisor-email');
+            const receiverDisplayName = $(this).prev('div').data('advisor-displayname');
+            const receiverObj = {
+                id: receiverID,
+                email: receiverEmail,
+                displayName: receiverDisplayName
+            };
+            payload.receiveAdvisor.unshift(receiverObj);
+        });
+
+        // checking any missing field
+        if (payload.viewSection.length === 0) {
+            // empty assessment section
+            generateNotice('warning', 'Please select at least <b>1</b> section to be viewed by advisors');
+        } else if (payload.receiveAdvisor.length === 0) {
+            // no advisor select
+            generateNotice('warning', 'Please select at least <b>1</b> advisor to view your assessment');
+        } else {
+            // all good, post to API
+            const url = '/api/profile/send-assessment';
+
+            fetch(url, {
+                method: "POST",
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+                },
+                body: "advisor=" + JSON.stringify(payload)
+            }).then(function(res) {
+                if (res.status !== 200) {
+                    generateNotice('error', "Error, status code: " + res.status);
+                    return;
+                } else {
+                    generateNotice('success', 'Successfully generate your assessment and send to the advisor! You can download the <span id="getLastAssessment"><b>copy</b></span> of the assessment.');
+                    addRequestLastAssessmentHandler();
+                    setTimeout(() => {
+                        $('.close-modal').click();
+                    }, 1500);
+                }
+            }).catch(function(err) {
+                generateNotice('error', err)
+            });
+        }
+    })
+})
+
+const addRequestLastAssessmentHandler = () => {
+    $('#getLastAssessment').click(() => {
+        const url = '/api/profile/get-last-assessment';
+        fetch(url, {
+            method: "GET",
+            credentials: 'include'
+        }).then(function(res) {
+            if (res.status !== 200) {
+                return generateNotice('error', "Error");
+            } else {
+                res.json().then((result) => {
+                    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(result.assessment));
+                    const dlAnchorElem = document.getElementById('downloadAnchorElem');
+                    dlAnchorElem.setAttribute("href", dataStr);
+                    dlAnchorElem.setAttribute("download", "assessment.json");
+                    dlAnchorElem.click();
+                }).catch((err) => {
+                    console.error(err);
+                })
+            }
+        }).catch(function(err) {
+            generateNotice('error', err)
+        });
     });
 }
