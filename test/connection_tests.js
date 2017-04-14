@@ -13,7 +13,11 @@ const database = require(appRoot + '/config/database.js');
 
 var cookie;
 
-describe("Connection Tests", function() {
+describe("Connection Tests", function (done) {
+		after( function (done) {
+			done();
+		});
+		
 		it('should connect to localhost', function (done) {
 			request(app, function(error, response, body) {
 				expect(response.statusCode).to.equal(200);

@@ -86,6 +86,7 @@ router.post('/reset-password', (req, res) => {
                 to: user.local.email,
                 from: 'Intelligent Academic Advisor <IntelligentAcademicPlanner@outlook.com>',
                 subject: 'Intelligent Academic Advisor Password Reset',
+
                 html: '<html><body style="background-color:white; border-radius:3px; padding: 30px;"><h1>Intelligent Academic Planner Reset Password</h1><p>You are receiving this because you (or someone else) have requested the reset of the password for your account.</p><p>Please click on the following link to complete the process.</p><a href="http://' + req.headers.host + '/update-password/' + token + '"  style="display: block;width:200px;padding: 10px;line-height: 1.4;background-color: #94B8E9; color: #fff;text-decoration: none; text-align: center; margin: 0 auto;border-radius:4px;">Reset My Passowrd</a><p>Or manually paste the following link to your broswer: http://' + req.headers.host + '/update-password/' + token + '</p><p>If you did not request this, please ignore this email and your password will remain unchanged.</p></body></html>'
             };
             mailer.sendMail(mailOptions, (err) => {

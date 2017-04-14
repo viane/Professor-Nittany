@@ -19,7 +19,7 @@ const database = require(appRoot + '/config/database.js');
 const user = require(appRoot + '/app/models/user.js');
 const question = require(appRoot + '/app/models/question.js');
 
-describe('Unit Testing', function () {
+describe('Unit Testing', function (done) {
 	/* Called once before a describe */
 	before(function (done) {
 		mongoose.createConnection(database.userDB_URL);
@@ -33,11 +33,13 @@ describe('Unit Testing', function () {
 		});
 
 	afterEach( function (done) {
-    	//Removes users with email unittest@test.com
-    	user.find({'local.email': 'unittest@test.com'}).remove().exec(done);
+    	//Removes users with email intelligentacademicplanner@outlook.com
+    	user.find({'local.email': 'intelligentacademicplanner@outlook.com'}).remove( function() {
+    		done();
+    	});
 	});
 	describe('~!~!~!~!~Routes.js File~!~!~!~!~', function () {
-		describe('~~~~~Home Page~~~~~', function (done) {
+		describe('~~~~~Home Page~~~~~', function () {
 			it('Should access page / with no problems.', function (done) {
 				server.get('/').end(function (error, response) {
 					if (error) {
@@ -50,7 +52,7 @@ describe('Unit Testing', function () {
 				})
 				});
 			});
-		describe('~~~~~Login~~~~~', function (done) {
+		describe('~~~~~Login~~~~~', function () {
 			/* Called before every test (it call) in this describe */
 			beforeEach(function (done) {
 				createUser(done());
@@ -141,7 +143,7 @@ describe('Unit Testing', function () {
 					});
 				it('Should not log in user if password is incorrect', function (done) {
 					server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({
-						email: "unittest@test.com",
+						email: "intelligentacademicplanner@outlook.com",
 						password: 'incorrectPassword'}).end(function(err, res) {
 							if (err) {
 								return done(err);
@@ -156,7 +158,7 @@ describe('Unit Testing', function () {
 					});
 			it ('Should properly log in user if no problems', function (done) {
 				server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({
-					email: "unittest@test.com",
+					email: "intelligentacademicplanner@outlook.com",
 					password: 'Testing123'}).end(function(err, res) {
 						if (err) {
 							return done(err);
@@ -169,13 +171,13 @@ describe('Unit Testing', function () {
 					});
 				});
 				});
-		describe('~~~~~Signup~~~~~', function (done) {
+		describe('~~~~~Signup~~~~~', function () {
 			describe('------checkSignUpParameter Tests------', function (done) {
 				it('user cannot register with empty first name', function (done) {
 					server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
 						{first_name: "",
 						last_name: "Tester",
-						email: "unittest@test.com",
+						email: "intelligentacademicplanner@outlook.com",
 						password: "Testing123",
 						account_role: "Student",
 						account_status: "active"}).end(function(err, res) {
@@ -193,7 +195,7 @@ describe('Unit Testing', function () {
 					server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
 						{first_name: "Tester",
 						last_name: "",
-						email: "unittest@test.com",
+						email: "intelligentacademicplanner@outlook.com",
 						password: "Testing123",
 						account_role: "Student",
 						account_status: "active"}).end(function(err, res) {
@@ -229,7 +231,7 @@ describe('Unit Testing', function () {
 					server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
 						{first_name: "incorrectPassword",
 						last_name: "registerTest",
-						email: "unittest@test.com",
+						email: "intelligentacademicplanner@outlook.com",
 						password: "",
 						account_role: "Student",
 						account_status: "active"}).end(function(err, res) {
@@ -247,7 +249,7 @@ describe('Unit Testing', function () {
 					server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
 						{first_name: "incorrectPassword",
 						last_name: "registerTest",
-						email: "unittest@test.com",
+						email: "intelligentacademicplanner@outlook.com",
 						password: "Testing123",
 						account_role: "",
 						account_status: "active"}).end(function(err, res) {
@@ -265,7 +267,7 @@ describe('Unit Testing', function () {
 					server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
 						{first_name: "incorrectPassword",
 						last_name: "registerTest",
-						email: "unittest@test.com",
+						email: "intelligentacademicplanner@outlook.com",
 						password: "Testing123",
 						account_role: "Admin",
 						account_status: "active"}).end(function(err, res) {
@@ -283,7 +285,7 @@ describe('Unit Testing', function () {
 					server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
 						{first_name: "incorrectPassword",
 						last_name: "registerTest",
-						email: "unittest@test.com",
+						email: "intelligentacademicplanner@outlook.com",
 						password: "Testing123",
 						account_role: "Advisor",
 						account_status: "active"}).end(function(err, res) {
@@ -301,7 +303,7 @@ describe('Unit Testing', function () {
 					server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
 						{first_name: "incorrectPassword",
 						last_name: "registerTest",
-						email: "unittest@test.com",
+						email: "intelligentacademicplanner@outlook.com",
 						password: "Testing123",
 						account_role: "Admin",
 						account_status: "active",
@@ -321,7 +323,7 @@ describe('Unit Testing', function () {
 					server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
 						{first_name: "incorrectPassword",
 						last_name: "registerTest",
-						email: "unittest@test.com",
+						email: "intelligentacademicplanner@outlook.com",
 						password: "Testing123",
 						account_role: "Advisor",
 						account_status: "active",
@@ -361,7 +363,7 @@ describe('Unit Testing', function () {
 							server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
 							{first_name: "takenEmail",
 							last_name: "registerTest",
-							email: "unittest@test.com",
+							email: "intelligentacademicplanner@outlook.com",
 							password: "Testing123",
 							account_role: "Student",
 							account_status: "active"}).end(function(err, res) {
@@ -380,15 +382,14 @@ describe('Unit Testing', function () {
 						server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
 							{first_name: "noProblems",
 							last_name: "registerTest",
-							email: "unittest@test.com",
+							email: "intelligentacademicplanner@outlook.com",
 							password: "Testing123",
 							account_role: "Student",
 							account_status: "active"}).end(function(err, res) {
 								if (err) {
-									console.log(err);
 									return done(err);
 								} else {
-									user.findOne({'local.email': 'unittest@test.com'}).exec( function (err, newUser) {
+									user.findOne({'local.email': 'intelligentacademicplanner@outlook.com'}).exec( function (err, newUser) {
 										if (err) return done(err);
 										else {
 											expect(newUser.local.role).to.equal("student");
@@ -402,7 +403,7 @@ describe('Unit Testing', function () {
 						server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
 							{first_name: "noProblems",
 							last_name: "registerTest",
-							email: "unittest@test.com",
+							email: "intelligentacademicplanner@outlook.com",
 							password: "Testing123",
 							account_role: "Advisor",
 							account_status: "active",
@@ -411,7 +412,7 @@ describe('Unit Testing', function () {
 							if (err) {
 								return done(err);
 							} else {
-								user.findOne({'local.email': 'unittest@test.com'}).exec( function (err, newUser) {
+								user.findOne({'local.email': 'intelligentacademicplanner@outlook.com'}).exec( function (err, newUser) {
 									if (err) return done(err);
 									else {
 										expect(newUser.local.role).to.equal("advisor");
@@ -425,7 +426,7 @@ describe('Unit Testing', function () {
 						server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
 							{first_name: "noProblems",
 							last_name: "registerTest",
-							email: "unittest@test.com",
+							email: "intelligentacademicplanner@outlook.com",
 							password: "Testing123",
 							account_role: "Admin",
 							account_status: "active",
@@ -434,7 +435,7 @@ describe('Unit Testing', function () {
 							if (err) {
 								return done(err);
 							} else {
-								user.findOne({'local.email': 'unittest@test.com'}).exec( function (err, newUser) {
+								user.findOne({'local.email': 'intelligentacademicplanner@outlook.com'}).exec( function (err, newUser) {
 									if (err) return done(err);
 									else {
 										expect(newUser.local.role).to.equal("admin");
@@ -448,18 +449,18 @@ describe('Unit Testing', function () {
 						server.post('/signup').set('Content-Type', 'application/x-www-form-urlencoded').send(
 							{first_name: "noProblems",
 							last_name: "registerTest",
-							email: "unittest@test.com",
+							email: "intelligentacademicplanner@outlook.com",
 							password: "Testing123",
 							account_role: "Student",
 							account_status: "active"}).end(function(err, res) {
 								if (err) {
 									return done(err);
 								} else {
-									user.findOne({'local.email': 'unittest@test.com'}).exec( function (err, newUser) {
+									user.findOne({'local.email': 'intelligentacademicplanner@outlook.com'}).exec( function (err, newUser) {
 										if (err) return done(err);
 										else {
 											expect(newUser.local).to.not.equal(undefined);
-											expect(newUser.local.email).to.equal("unittest@test.com");
+											expect(newUser.local.email).to.equal("intelligentacademicplanner@outlook.com");
 											expect(newUser.password).to.equal(newUser.hashPassword("Testing123"));
 											expect(newUser.local.first_name).to.equal("noProblems");
 											expect(newUser.local.last_name).to.equal("registerTest");
@@ -477,7 +478,7 @@ describe('Unit Testing', function () {
 					});	
 				});
 			});
-		describe('~~~~~Profile~~~~~', function (done) {
+		describe('~~~~~Profile~~~~~', function () {
 				it('user should be redirected to login page if not logged in and accessing /profile', function (done) {
 					server.get('/profile').end(function (error, response) {
 					if (error) {
@@ -511,7 +512,7 @@ describe('Unit Testing', function () {
 					it ('/profile should return error for invalid type', function (done) {			
 							var newUser = new user();
 							newUser.type = "blah!";
-							newUser.local.email = "unittest@test.com";
+							newUser.local.email = "intelligentacademicplanner@outlook.com";
 							newUser.hashPassword("Testing123");
 							newUser.local.name = "Tester";
 							newUser.local.account_role = "Student";
@@ -532,7 +533,7 @@ describe('Unit Testing', function () {
 					});
 				});
 			});
-		describe('~~~~~NonLocal Login/SignUp~~~~~', function (done) {
+		describe('~~~~~NonLocal Login/SignUp~~~~~', function () {
 			it('should connect to facebook for auth', function (done) {
 				server.get('/auth/facebook').end( function (err, res) {
 					if (err) done(err);
@@ -574,7 +575,7 @@ describe('Unit Testing', function () {
 				});
 			});
 			});
-		describe('~~~~~Inbox~~~~~', function (done) {
+		describe('~~~~~Inbox~~~~~', function () {
 			it('user should be redirected to login page if not logged in and accessing /inbox', function (done) {
 					server.get('/inbox').end(function (error, response) {
 					if (error) {
@@ -604,7 +605,7 @@ describe('Unit Testing', function () {
 				});	
 			});
 			});
-		describe('~~~~~Advising~~~~~', function (done) {
+		describe('~~~~~Advising~~~~~', function () {
 			it('user should be redirected to login page if not logged in and accessing /advising', function (done) {
 					server.get('/advising').end(function (error, response) {
 					if (error) {
@@ -636,7 +637,7 @@ describe('Unit Testing', function () {
 			it('Should access page /advising with no problems if user is logged in as an advisor', function (done) {
 				var newUser = new user();
 				newUser.type = "local";
-				newUser.local.email = "unittest@test.com";
+				newUser.local.email = "intelligentacademicplanner@outlook.com";
 				newUser.hashPassword("Testing123");
 				newUser.local.displayName = "Tester";
 				newUser.local.role = "advisor";
@@ -655,7 +656,7 @@ describe('Unit Testing', function () {
 				});
 			});
 			});
-		describe('~~~~~Logout~~~~~', function (done) {
+		describe('~~~~~Logout~~~~~', function () {
 			it('Should logout with no problems', function (done) {
 				server.get('/logout').end(function (error, response) {
 					if (error) {
@@ -669,7 +670,7 @@ describe('Unit Testing', function () {
 				})
 				});
 			});
-		describe('~~~~~Admin~~~~~', function (done) {
+		describe('~~~~~Admin~~~~~', function () {
 			it('user should be redirected to login page if not logged in and accessing /admin', function (done) {
 					server.get('/admin').end(function (error, response) {
 					if (error) {
@@ -699,29 +700,22 @@ describe('Unit Testing', function () {
 				});
 			});
 			it('Should access page /admin with no problems if user is logged in as an admin', function (done) {
-				var newUser = new user();
-				newUser.type = "local";
-				newUser.local.email = "unittest@test.com";
-				newUser.hashPassword("Testing123");
-				newUser.local.displayName = "Tester";
-				newUser.local.role = "admin";
-				newUser.local.account_status = "active";
-				newUser.local['admin-token'] = "bwqlrEfvDofy7nZC8NLDXFlbh92rbL2moCxBSrXv8stqPcZjeGJCpbJ2QF2yh2iTBnWpEorY5ll2KTfl91FBEc5IEqnQboOfV319Js8fan6gRKHXSBwqbNPy3oRcKENfHQbTBPPCZSz2VaG4pLIB2K7VzL4AD93w7iKrDMfYeggwUGKJf0tX6xAAUyQwZQO5Wswn00aYtPYwst19WlKoFl3eEUQRQ05qFrLP5WwbG7ALmZSLztCnysBKGtUWyFa2";		
-				newUser.save();
-				logValidUserIn( function () {
-				server.get('/admin').end(function (error, response) {
-					if (error) {
-						return done(error);
-					}
-					else {
-						expect(response.statusCode).to.equal(200);
-						done();
-					}
+				createAdminUser( function() {
+					logValidUserIn( function () {
+					server.get('/admin').end(function (error, response) {
+						if (error) {
+							return done(error);
+						}
+						else {
+							expect(response.statusCode).to.equal(200);
+							done();
+						}
+						});
 					});
 				});
 			});
 			});
-	 	describe('~~~~~QAManagement~~~~~', function (done) {
+	 	describe('~~~~~QAManagement~~~~~', function () {
 			it('user should be redirected to login page if not logged in and accessing /QuestionAnswerManagement', function (done) {
 					server.get('/QuestionAnswerManagement').end(function (error, response) {
 					if (error) {
@@ -751,94 +745,89 @@ describe('Unit Testing', function () {
 				});
 			});
 			it('Should access page /QuestionAnswerManagement with no problems if user is logged in as an admin', function (done) {
-				var newUser = new user();
-				newUser.type = "local";
-				newUser.local.email = "unittest@test.com";
-				newUser.hashPassword("Testing123");
-				newUser.local.displayName = "Tester";
-				newUser.local.role = "admin";
-				newUser.local.account_status = "active";
-				newUser.save();
-				logValidUserIn( function () {
-				server.get('/QuestionAnswerManagement').end(function (error, response) {
-					if (error) {
-						return done(error);
-					}
-					else {
-						expect(response.statusCode).to.equal(200);
-						done();
-					}
+				createAdminUser( function() {
+					logValidUserIn( function () {
+					server.get('/QuestionAnswerManagement').end(function (error, response) {
+						if (error) {
+							return done(error);
+						}
+						else {
+							expect(response.statusCode).to.equal(200);
+							done();
+						}
+						});
 					});
 				});
 			});
 			});
-		describe('~~~~~postQA~~~~~', function (done) {
+		describe('~~~~~postQA~~~~~', function () {
 			afterEach( function (done) {
-				question.find({'question_body': 'What\'s unit testing'}).remove().exec(done);
+				question.find({'question_body': 'What\'s unit testing'}).remove(done);
 			});
 
-			it('should redirect user to login page if not logged in and accessing /postQuestionAnswer', function (){
+			it('should redirect user to login page if not logged in as admin and accessing /postQuestionAnswer', function (done){
 				server.post('/postQuestionAnswer').end ( function (err, res) {
 					if (err) done(err);
 					else {
 						expect(res.redirect).to.equal(true);
 						expect(res.statusCode).to.equal(302);
 						expect(res.headers.location).to.equal('/login');
+						done();
 					}
 				});
 			});
 			it('should return error if question is empty', function (done) {
-				createUser( function() {
-					logValidUserIn( function () {
-						server.post('/postQuestionAnswer').send({
-							question: '',
-							answer: 'Hi',
-							tag: 'Hi'
-						}).end( function (err, res) {
-							if (err) done(err);
-							else {
-								expect(res.statusCode).to.equal(200);
-								expect(res.text).to.include("Question can not be empty");
-								done();
-							}
+					createAdminUser( function() {
+						logValidUserIn( function () {
+							server.post('/postQuestionAnswer').send({
+								question: '',
+								answer: 'Hi',
+								tag: 'Hi'
+							}).end( function (err, res) {
+								if (err) done(err);
+								else {
+									expect(res.statusCode).to.equal(200);
+									expect(res.text).to.include("Question can not be empty");
+									done();
+								}
+							});
 						});
 					});
-				});
 			});
-			it('should find question in database', function () {
-				createUser( function() {
-					logValidUserIn( function() {
-						server.post('/postQuestionAnswer').send({
-							question: 'What\'s unit testing',
-							answer: 'Unit testing is checking code line-by-line for correctness'
-						}).end( function (err, res) {
-							if (err) done(err);
-							else {
-								var u;
-								user.findOne({'local.email': 'unittest@test.com'}).exec( function (err, newU) {
-									if (err) done(err);
-									else 
-										{
-											u = newU;
-											question.findOne({'question_body': 'What\'s unit testing'}).exec(function (err, newQ) {
-												expect(res.statusCode).to.equal(200);
-												expect(newQ.question_body).to.equal('What\'s unit testing');
-												expect(newQ.question_answer).to.equal('Unit testing is checking code line-by-line for correctness');
-												expect(newQ.question_submitter).to.equal(u._id);
-												expect(newQ.question_upload_method).to.equal("mannual");
-												expect(res.text).to.include("Successfully added entry");
-												done();
-											});
-										}
-								});
-								
-							}
+			it('should find question in database', function (done) {
+					createAdminUser( function() {
+						logValidUserIn( function() {
+							server.post('/postQuestionAnswer').send({
+								question: 'What\'s unit testing',
+								answer: 'Unit testing is checking code line-by-line for correctness'
+							}).end( function (err, res) {
+								if (err) done(err);
+								else {
+									var u;
+									user.findOne({'local.email': 'intelligentacademicplanner@outlook.com'}).exec( function (err, newU) {
+										if (err) done(err);
+										else 
+											{
+												 u = newU;
+												 question.findOne({'question_body': 'What\'s unit testing'}).exec(function (err, newQ) {
+													expect(res.statusCode).to.equal(200);
+													expect(newQ.question_body).to.equal('What\'s unit testing');
+													expect(newQ.question_answer).to.equal('Unit testing is checking code line-by-line for correctness');
+													expect(newQ.question_submitter.equals(u._id)).to.equal(true);
+													expect(newQ.question_upload_mothod).to.equal("mannual");
+													expect(res.text).to.include("Successfully added entry");
+												 	done();
+												 });
+											}
+									});
+									
+								}
+							});
 						});
 					});
-				});
 			});
 			});
-		describe('~~~~~SystemManagement~~~~~', function (done) {
+		describe('~~~~~SystemManagement~~~~~', function () {
 			it('user should be redirected to login page if not logged in and accessing /SystemManagement', function (done) {
 					server.get('/SystemManagement').end(function (error, response) {
 					if (error) {
@@ -852,7 +841,7 @@ describe('Unit Testing', function () {
 					}
 					});
 				});
-			it('should not access page if user is not an admin', function (done) {
+			it('should not access SystemManagement page if user is not an admin', function (done) {
 				createUser( function() {
 					logValidUserIn ( function () {
 						server.get('/SystemManagement').end(function (error, response) {
@@ -868,24 +857,18 @@ describe('Unit Testing', function () {
 				});
 			});
 			it('Should access page /SystemManagement with no problems if user is logged in as an admin', function (done) {
-				var newUser = new user();
-				newUser.type = "local";
-				newUser.local.email = "unittest@test.com";
-				newUser.hashPassword("Testing123");
-				newUser.local.displayName = "Tester";
-				newUser.local.role = "admin";
-				newUser.local.account_status = "active";
-				newUser.local['admin-token']= "bwqlrEfvDofy7nZC8NLDXFlbh92rbL2moCxBSrXv8stqPcZjeGJCpbJ2QF2yh2iTBnWpEorY5ll2KTfl91FBEc5IEqnQboOfV319Js8fan6gRKHXSBwqbNPy3oRcKENfHQbTBPPCZSz2VaG4pLIB2K7VzL4AD93w7iKrDMfYeggwUGKJf0tX6xAAUyQwZQO5Wswn00aYtPYwst19WlKoFl3eEUQRQ05qFrLP5WwbG7ALmZSLztCnysBKGtUWyFa2";
-				newUser.save();
-				logValidUserIn( function () {
-				server.get('/SystemManagement').end(function (error, response) {
-					if (error) {
-						return done(error);
-					}
-					else {
-						expect(response.statusCode).to.equal(200);
-						done();
-					}
+				createAdminUser( function () { 
+					logValidUserIn( function () {
+					server.get('/SystemManagement').end(function (error, response) {
+						if (error) {
+							return done(error);
+						}
+						else {
+							expect(response.redirect).to.equal(false);
+							expect(response.statusCode).to.equal(200);
+							done();
+						}
+						});
 					});
 				});
 			});
@@ -897,17 +880,27 @@ describe('Unit Testing', function () {
 function createUser(callback) {
 	var newUser = new user();
 	newUser.type = "local";
-	newUser.local.email = "unittest@test.com";
+	newUser.local.email = "intelligentacademicplanner@outlook.com";
 	newUser.hashPassword("Testing123");
 	newUser.local.displayName = "Tester";
 	newUser.local.role = "Student";
     newUser.local.account_status = "active";
-	newUser.save();
-	callback();
+	newUser.save(callback);
+}
+function createAdminUser(callback) {
+	var newUser = new user();
+	newUser.type = "local";
+	newUser.local.email = "intelligentacademicplanner@outlook.com";
+	newUser.hashPassword("Testing123");
+	newUser.local.displayName = "Tester";
+	newUser.local.role = "admin";
+	newUser.local.account_status = "active";
+	newUser.local['admin-token']= "bwqlrEfvDofy7nZC8NLDXFlbh92rbL2moCxBSrXv8stqPcZjeGJCpbJ2QF2yh2iTBnWpEorY5ll2KTfl91FBEc5IEqnQboOfV319Js8fan6gRKHXSBwqbNPy3oRcKENfHQbTBPPCZSz2VaG4pLIB2K7VzL4AD93w7iKrDMfYeggwUGKJf0tX6xAAUyQwZQO5Wswn00aYtPYwst19WlKoFl3eEUQRQ05qFrLP5WwbG7ALmZSLztCnysBKGtUWyFa2";
+	newUser.save(callback);
 }
 function logValidUserIn(callback) {
 	server.post('/login').set('Content-Type', 'application/x-www-form-urlencoded').send({
-		email: "unittest@test.com",
+		email: "intelligentacademicplanner@outlook.com",
 		password: 'Testing123'}).end(function (err, res) {
 			if (err) return err;
 			else callback();
