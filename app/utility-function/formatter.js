@@ -120,3 +120,13 @@ module.exports.convertPerspectsToAIReadable = (perspect_type, content) => {
 
     return AI_Read_String;
 }
+
+/////////////////////////////////////////////////////////////////////////////
+// Format user interest for wordClound2.js
+/////////////////////////////////////////////////////////////////////////////
+module.exports.convertUserInterestTowordCloud = function (interest) {
+  // [{term, value},...] to [[term, (int)value],...]
+  return interest.map((interest)=>{
+    return [interest.term, parseInt(interest.value,10)+1];
+  })
+};

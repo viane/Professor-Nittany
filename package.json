@@ -71,8 +71,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
-    "start": "node server.js",
-    "nodemon": "nodemon --ignore views/FrontEnd/js/"
+    "start": "nodemon server.js --ignore 'views/*'"
   },
   "keywords": [
     "ibm"

@@ -29,6 +29,102 @@ const loginChecking = require(appRoot + '/app/utility-function/login-checking');
 
 const wordToText = require(appRoot + '/app/utility-function/word-file-to-text');
 
+const arrayUtility = require(appRoot + '/app/utility-function/array');
+
+const formatter = require(appRoot + '/app/utility-function/formatter');
+
+const naturalLanguageUnderstanding = require(appRoot + '/app/natural-language-understanding');
+
+router.get('/get-interest-manual', (req,res)=>{
+  User.findById(req.user._id).exec().then((updateRecord, err) => {
+    return res.send({interestAry: [updateRecord.interest_manual]});
+  }).catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+  });
+})
+
+router.post('/update-interest-manual', (req, res) => {
+    User.findById(req.user._id).exec().then((updateRecord, err) => {
+        if (err) {
+            console.error(err);
+            return res.sendStatus(500);
+        }
+        // manual add current user max weight from AI recognized interest to the interest that user input by hand
+        let maxScore = 1.0;
+        for (let i = 0; i < updateRecord.interest.length; i++) {
+            if (maxScore < updateRecord.interest[i].value) {
+                maxScore = updateRecord.interest[i].value;
+            }
+        }
+        // form manual interest array has no duplicates with max weight
+        const interestAry = arrayUtility.arrayUnique(JSON.parse(req.body.interest_manual).map((interest) => {
+            if (interest.length<2) {
+              return res.sendStatus(300);
+            };
+            return {'term':interest.toString().trim(), value: maxScore}
+        }));
+        updateRecord.interest_manual = interestAry;
+        updateRecord.save((err, user) => {
+            if (err) {
+                console.error(err);
+                return res.sendStatus(500);
+            }
+            res.sendStatus(200);
+        })
+    }).catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+    });
+
+});
+
+router.post('/upload/update-introduction', (req, res) => {
+    updateUserSelfDescription(req.user, req.body.introdcution).then((query_report) => {
+        const dataText = req.body.introdcution;
+        // if user description is longer than 100 words, update persoanlity assessment and analysis
+        if (countWords(dataText) > 100) {
+            // update assessment and analysis
+            getAndUpdatePersonalityAssessment(req.user, dataText).then(() => {
+                // update interest
+                naturalLanguageUnderstanding.getAnalysis(dataText).then((analysis) => {
+                    updateInterest(req.user, analysis);
+                }).catch((err) => {
+                    console.error(err);
+                });
+                res.sendStatus(200);
+            }).catch((err) => {
+                console.error(err);
+                res.sendStatus(500);
+            });
+        } else {
+            // if less than 100 words, only update user description content to DB
+            User.update({
+                _id: req.user._id
+            }, {
+                $set: {
+                    'personality_assessement.description_content': dataText,
+                    'personality_assessement.evaluation': {}
+                }
+            }).exec().then(() => {
+                // update interest
+                naturalLanguageUnderstanding.getAnalysis(dataText, 20, 20, 20).then((analysis) => {
+                    updateInterest(req.user, analysis);
+                }).catch((err) => {
+                    console.error(err);
+                });
+                res.sendStatus(200);
+            }).catch((err) => {
+                console.error(err);
+                res.sendStatus(500);
+            });
+        }
+    }).catch(function(err) {
+        console.error(err);
+        res.sendStatus(300);
+    });
+});
+
 router.post('/upload/upload-description-text-file', busboy({
     limits: {
         fileSize: 4 * 1024 * 1024
@@ -45,24 +141,37 @@ router.post('/upload/upload-description-text-file', busboy({
             file.on('data', function(data) {
                 updateUserSelfDescription(req.user, data).then((query_report) => {
                     const dataText = data.toString();
-
-                    // if user description is longer than 100 words
+                    // if user description is longer than 100 words, update persoanlity assessment and analysis
                     if (countWords(dataText) > 100) {
+                        // update assessment and analysis
                         getAndUpdatePersonalityAssessment(req.user, dataText).then(() => {
+                            // update interest
+                            naturalLanguageUnderstanding.getAnalysis(dataText, 20, 20, 20).then((analysis) => {
+                                updateInterest(req.user, analysis);
+                            }).catch((err) => {
+                                console.error(err);
+                            });
                             res.sendStatus(200);
                         }).catch((err) => {
                             console.error(err);
-                            res.sendStatus(300);
+                            res.sendStatus(500);
                         });
                     } else {
-                        const updatePath = getUserDataPath(req.user.type);
+                        // if less than 100 words, only update user description content to DB
                         User.update({
                             _id: req.user._id
                         }, {
                             $set: {
-                                [updatePath.evaluation]: {}
+                                'personality_assessement.description_content': dataText,
+                                'personality_assessement.evaluation': {}
                             }
                         }).exec().then(() => {
+                            // update interest
+                            naturalLanguageUnderstanding.getAnalysis(dataText, 20, 20, 20).then((analysis) => {
+                                updateInterest(req.user, analysis);
+                            }).catch((err) => {
+                                console.error(err);
+                            });
                             res.sendStatus(200);
                         }).catch((err) => {
                             console.error(err);
@@ -103,21 +212,31 @@ router.post('/upload/upload-description-text-file', busboy({
                                 });
                                 if (countWords(fullDoc) > 100) {
                                     getAndUpdatePersonalityAssessment(req.user, fullDoc).then(() => {
+                                        // update interest
+                                        naturalLanguageUnderstanding.getAnalysis(fullDoc, 20, 20, 20).then((analysis) => {
+                                            updateInterest(req.user, analysis);
+                                        }).catch((err) => {
+                                            console.error(err);
+                                        });
                                         res.sendStatus(200);
                                     }).catch((err) => {
                                         console.error(err);
                                         res.sendStatus(300);
                                     });
                                 } else {
-                                    const updatePath = getUserDataPath(req.user.type);
                                     User.update({
                                         _id: req.user._id
                                     }, {
                                         $set: {
-                                            [updatePath.evaluation]: {
-                                            }
+                                            'personality_assessement.description_content': fullDoc,
+                                            'personality_assessement.evaluation': {}
                                         }
                                     }).exec().then(() => {
+                                        naturalLanguageUnderstanding.getAnalysis(fullDoc, 20, 20, 20).then((analysis) => {
+                                            updateInterest(req.user, analysis);
+                                        }).catch((err) => {
+                                            console.error(err);
+                                        });
                                         res.sendStatus(200);
                                     }).catch((err) => {
                                         console.error(err);
@@ -144,8 +263,19 @@ router.post('/upload/upload-description-text-file', busboy({
 // Get user interests
 router.get('/get-interest', (req, res) => {
     User.findById(req.user._id).exec().then((foundUser) => {
-        const interestPath = getUserRecordPathByAccountType(foundUser);
-        res.send({status: "success", information: "good", interest: foundUser[interestPath].interest});
+      let interestAry = [];
+      foundUser.interest_manual.map((interestObj)=>{
+        interestAry.unshift(interestObj)
+      });
+      foundUser.interest.map((interestObj)=>{
+        interestAry.unshift(interestObj)
+      })
+        // format interest array
+        res.send({
+            status: "success",
+            information: "good",
+            interest: formatter.convertUserInterestTowordCloud(interestAry)
+        });
     }).catch((err) => {
         throw err;
         res.send({type: 'error', information: err});
@@ -155,8 +285,7 @@ router.get('/get-interest', (req, res) => {
 // Get user introduction
 router.get('/get-introduction', (req, res) => {
     User.findById(req.user._id).exec().then((foundUser) => {
-        const path = getUserRecordPathByAccountType(foundUser);
-        res.send({status: "success", information: "Successfully load introduction.", introduction: foundUser[path].personality_assessement.description_content});
+        res.send({status: "success", information: "Successfully load introduction.", introduction: foundUser.personality_assessement.description_content});
     }).catch((err) => {
         throw err;
         res.send({type: 'error', information: err});
@@ -166,8 +295,7 @@ router.get('/get-introduction', (req, res) => {
 // Get user personaltity assessment
 router.get('/get-personalityAssessment', (req, res) => {
     User.findById(req.user._id).exec().then((foundUser) => {
-        const path = getUserRecordPathByAccountType(foundUser);
-        res.send({status: "success", information: "Successfully load assessment.", assessment: foundUser[path].personality_assessement.evaluation});
+        res.send({status: "success", information: "Successfully load assessment.", assessment: foundUser.personality_assessement.evaluation});
     }).catch((err) => {
         throw err;
         res.send({type: 'error', information: err});
@@ -242,54 +370,76 @@ router.post('/set-privacy', (req, res) => {
 
 router.post('/favorite-question', (req, res) => {
     const id = req.user._id;
-    console.log(req.user);
     res.send({status: "success", information: "done!"});
 });
 
 router.post('/like-question', (req, res) => {
     const id = req.user._id;
-    console.log(req.user);
     res.send({status: "success", information: "done!"});
 });
 
 module.exports = router;
 
-module.exports.updateInterest = (user, analysis)=>{
-  console.log(analysis);
+const updateInterest = (user, analysis) => {
+    // each part of analysis is in {text, realvence} json format
+    User.findById(user.id, (err, foundUser) => {
+        if (err) {
+            console.error(err);
+        } else {
+            // update interest array
+            // addup realvence if term exist, else push to array
+            analysis.keywords.map((keyword) => {
+                const trueIndex = arrayUtility.findIndexByKeyValue(foundUser.interest, 'term', keyword.text);
+                if (trueIndex != null) {
+                    foundUser.interest[trueIndex].value += keyword.relevance;
+                } else {
+                    foundUser.interest.unshift({term: keyword.text, value: keyword.relevance});
+                }
+            });
+            analysis.entities.map((entity) => {
+                const trueIndex = arrayUtility.findIndexByKeyValue(foundUser.interest, 'term', entity.text);
+                if (trueIndex != null) {
+                    foundUser.interest[trueIndex].value += entity.relevance;
+                } else {
+                    foundUser.interest.unshift({term: entity.text, value: entity.relevance});
+                }
+            });
+            analysis.concepts.map((concept) => {
+                const trueIndex = arrayUtility.findIndexByKeyValue(foundUser.interest, 'term', concept.text);
+                if (trueIndex != null) {
+                    foundUser.interest[trueIndex].value += concept.relevance;
+                } else {
+                    foundUser.interest.unshift({term: concept.text, value: concept.relevance});
+                }
+            });
+
+            User.findOneAndUpdate({
+                "_id": user.id
+            }, {
+                "$set": {
+                    "interest": foundUser.interest
+                }
+            }, {
+                "new": true
+            }, (err, update) => {
+                if (err) {
+                    console.error(err);
+                }
+            });
+        }
+    });
 };
 
-const getUserDataPath = (userType) => {
-    let path = "";
-    switch (userType) {
-        case "local":
-            path = "local.personality_assessement";
-            break;
-        case "twitter":
-            path = "twitter.personality_assessement";
-            break;
-        case "linkedin":
-            path = "linkedin.personality_assessement";
-            break;
-        case "facebook":
-            path = "facebook.personality_assessement";
-            break;
-        default:
-            throw new Error("System try to evaluate user personality but user type is unexcepted");
-            break;
-    }
-    return path;
-}
+module.exports.updateInterest = updateInterest;
 
 const updateUserSelfDescription = (user, description) => {
     const id = user._id;
-    const updatePath = getUserDataPath(user.type);
-
     return new Promise((resolve, reject) => {
         User.update({
             _id: id
         }, {
             $set: {
-                [updatePath]: {
+                personality_assessement: {
                     last_upload_time: new Date().toISOString(),
                     description_content: description.toString('utf8'),
                     evaluation: {}
@@ -306,15 +456,12 @@ const updateUserSelfDescription = (user, description) => {
 
 const updateUserPersonalityAssessment = (user, assessment) => {
     const id = user._id;
-    const updatePath = getUserDataPath(user.type) + ".evaluation";
-
     return new Promise((resolve, reject) => {
-
         User.update({
             _id: id
         }, {
             "$set": {
-                [updatePath]: assessment
+                'personality_assessement.evaluation': assessment
             }
         }).exec().then((query_report) => {
             resolve(query_report);

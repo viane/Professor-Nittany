@@ -37,17 +37,17 @@ module.exports.ask = function(user, input) {
             // analysis the concept, keyword, taxonomy, entities of the question
             processQuestion.NLUAnalysis(userInput).then(function(analysis) {
 
-                // update user interest from analysis
-                if (user) {
-                  profile.updateInterest(user, analysis);
-                }
-
                 // now process the question and rephrase to AI readable
                 const questionObj = processQuestion.parseQuestionObj(userInput, analysis);
 
                 if (user) {
                     // log question object to user DB
-                    processQuestion.logUserQuestion(user, questionObj);
+                    processQuestion.logUserQuestion(user, questionObj).then(()=>{
+                      // update user interest form question based on analysis
+                      profile.updateInterest(user, analysis);
+                    }).catch((err)=>{
+                      console.log(err);
+                    })
 
                     // update server question feeds with only user question string
                     processQuestion.updateQuestionToServerFeeds(questionObj.body);
