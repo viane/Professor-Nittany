@@ -428,6 +428,7 @@ router.post('/like-question', (req, res) => {
     res.send({status: "success", information: "done!"});
 });
 
+// user generate assessment and send to advisor(s)
 router.post('/send-assessment', (req, res) => {
     User.findById(req.user._id, (err, foundUser) => {
         if (err) {
@@ -470,11 +471,28 @@ router.post('/send-assessment', (req, res) => {
             }
 
             foundUser.submitted_assessment_history.unshift(assessment);
-            foundUser.save((err) => {
+            foundUser.save((err, updateUser) => {
                 if (err) {
                     console.log(err);
                     return res.sendStatus(500);
                 }
+                            console.log(foundUser.submitted_assessment_history);
+                // find advisor(s) id, send to assessment id to each to them's received_assessment_history with this assessment's id
+                const advisorReceiveAssessmentOBJ = {
+                    from_user_id: updateUser.id,
+                    assessment_id: updateUser.submitted_assessment_history[0].id
+                }
+                // promise.all...
+                viewAdvisor.map((advisor) => {
+                    User.findById(advisor.id, (err, foundAdvisor) => {
+                        if (err) {
+                            console.error(err);
+                            res.sendStatus(500);
+                        }
+                        foundAdvisor.received_assessment_history.unshift(advisorReceiveAssessmentOBJ);
+                        foundAdvisor.save();
+                    })
+                })
                 res.sendStatus(200);
             })
 
