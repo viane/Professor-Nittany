@@ -835,6 +835,116 @@ $(() => {
     });
 });
 
+//////////////////////////////////////////
+// Get user assessments in inbox page
+//////////////////////////////////////////
+$(() => {
+    if (location.href === "http://localhost:3000/inbox" || location.href === "https://intelligent-student-advisor.herokuapp.com/inbox") {
+        // inbox tab click handler
+        $('#inbox-navigation a').click(function(e) {
+            e.preventDefault();
+            $('.inbox-tab .content-container').css('display', 'none');
+            const toggleTabName = $(this).data('tab');
+            $('#' + toggleTabName).css('display', 'block');
+        });
+
+        // bind tab toggle handlers
+        $('#inbox-navigation a').each((index, element) => {
+            const targetBtn = $(element).data('tab');
+            switch (targetBtn) {
+                case "show-inbox":
+                    $(element).click(() => {
+                        getAndRenderUserInboxAssessment();
+                    });
+                    break;
+                case "show-trash":
+
+                    break;
+                default:
+
+            }
+
+        })
+        // mannual open first tab on load
+        $($('#inbox-navigation a')[0]).click();
+    }
+})
+
+const getAndRenderUserInboxAssessment = () => {
+    // clear previous assessments
+    $('#show-inbox .row .mail-list').empty();
+    // add loader
+    $('#show-inbox .row').append("<div class=\"loader\"></div>")
+    const url = '/api/profile/get-inbox-assessment';
+    fetch(url, {
+        method: "GET",
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+        }
+    }).then(function(res) {
+        if (res.status !== 200) {
+            generateNotice('error', 'Failed to get your assessment, please try again later or contact us.');
+            return;
+        } else {
+            res.json().then(function(result) {
+                let unreadCounter = 0;
+                result.inbox_assessment.map((assessment) => {
+                    console.log(assessment);
+                    let inboxItemWrapper = "<li><div class=\"container col-sm-12 mail-header\">";
+                    inboxItemWrapper += "<a href=\"/api/profile/assessment:" + assessment._id + "\">";
+                    inboxItemWrapper += "<span class=\"mail-titile\">Assessment of ";
+                    assessment.view_section.map((section, index) => {
+                        if (index > 0) {
+                            inboxItemWrapper += ' ,';
+                        }
+                        inboxItemWrapper += "<b>" + section.charAt(0).toUpperCase() + section.substring(1);;
+                        inboxItemWrapper += "</b>"
+                    });
+                    inboxItemWrapper += "</span></a>";
+                    inboxItemWrapper += "<span class=\"mail-date\">" + moment(assessment.request_time).format('MMMM Do YYYY') + "</span>";
+                    inboxItemWrapper += "<span class=\"mail-date\">" + moment(assessment.request_time).fromNow() + "</span>";
+                    if (!assessment.user_viewed_before_change) {
+                        unreadCounter++;
+                        inboxItemWrapper += "<span class=\"mail-comment-note-right\"> One or more advisor(s) made a new comment on this assessment!</span>";
+                        inboxItemWrapper += "<span class=\"mail-comment-time-right\">" + moment(assessment.advisor_last_comment_time).fromNow() + "</span>";
+                    }
+
+                    //////////////////////////////////////////
+                    // display summary of selected section in assessment
+                    //////////////////////////////////////////
+                    if (assessment.view_section.includes("introduction")) {
+                        inboxItemWrapper += "<span class=\"mail-introduction\"> Introduction: " + assessment.introduction + "</span>";
+                    }
+                    if (assessment.view_section.includes("interest")) {
+                        inboxItemWrapper += "<span class=\"mail-interest\"> Interest: " + assessment.interest + "</span>";
+                    }
+                    if (assessment.view_section.includes("personality")) {
+                        inboxItemWrapper += "<span class=\"mail-personality\"> Personality Analysis: " + assessment.personality + "</span>";
+                    }
+                    if (assessment.view_section.includes("introduction")) {
+                        inboxItemWrapper += "<span class=\"mail-question\"> Question History: " + assessment.question + "</span>";
+                    }
+
+                    inboxItemWrapper += "</div></li>";
+
+                    // end of wrapper
+                    $('#assessment-box-list').append(inboxItemWrapper);
+
+                });
+                if (unreadCounter > 0) {
+                    $('#inbox-in-badge').text(unreadCounter);
+                }
+                // remove loader
+                $('.loader').remove();
+            });
+        }
+    }).catch(function(err) {
+        generateNotice('error', err);
+    });
+}
+
 // main page fav btn handler
 const favoriteBtnHandler = () => {
     $('.question-fav-btn-main').click(function() {
@@ -967,9 +1077,16 @@ $(() => {
                     generateNotice('error', "Error, status code: " + res.status);
                     return;
                 } else {
-                    generateNotice('success', 'Successfully generate your assessment and send to the advisor! You can download the <span id="getLastAssessment"><b>copy</b></span> of the assessment.');
-                    addRequestLastAssessmentHandler();
+                    generateNotice('success', 'Successfully generate your assessment and send to the advisor!');
                     setTimeout(() => {
+                        // clear selected view profile sections
+                        $('.assessment-section-selection input:checked').each(function(index, input) {
+                            $(input).click()
+                        });
+                        // clear selected advisors
+                        $('.advisor-list-panel input:checked').each(function(index, input) {
+                            $(input).click()
+                        });
                         $('.close-modal').click();
                     }, 1500);
                 }

@@ -430,7 +430,7 @@ router.post('/like-question', (req, res) => {
 
 // user generate assessment and send to advisor(s)
 router.post('/send-assessment', (req, res) => {
-    User.findById(req.user._id, (err, foundUser) => {
+    User.findById(req.user._id, (err, foundStudent) => {
         if (err) {
             console.error(err);
             res.sendStatus(500);
@@ -448,52 +448,66 @@ router.post('/send-assessment', (req, res) => {
             }
 
             if (viewSection.includes('question')) {
-                assessment.question = foundUser.ask_history,
+                assessment.question = foundStudent.ask_history,
                 assessment.question_comment = []
             }
 
             if (viewSection.includes('personality')) {
-                assessment.personality_evaluation = foundUser.personality_assessement.evaluation,
+                assessment.personality_evaluation = foundStudent.personality_assessement.evaluation,
                 assessment.personality_evaluation_comment = []
             }
 
             if (viewSection.includes('interest')) {
                 assessment.interest = {
-                    system_detect: foundUser.interest,
-                    manual_input: foundUser.interest_manual
+                    system_detect: foundStudent.interest,
+                    manual_input: foundStudent.interest_manual
                 }
                 assessment.interest_comment = []
             }
 
             if (viewSection.includes('introduction')) {
-                assessment.introduction = foundUser.personality_assessement.description_content,
+                assessment.introduction = foundStudent.personality_assessement.description_content,
                 assessment.introduction_comment = []
             }
 
-            foundUser.submitted_assessment_history.unshift(assessment);
-            foundUser.save((err, updateUser) => {
+            foundStudent.submitted_assessment_history.unshift(assessment);
+            foundStudent.save((err, updateStudent) => {
                 if (err) {
                     console.log(err);
                     return res.sendStatus(500);
                 }
-                            console.log(foundUser.submitted_assessment_history);
-                // find advisor(s) id, send to assessment id to each to them's received_assessment_history with this assessment's id
+
                 const advisorReceiveAssessmentOBJ = {
-                    from_user_id: updateUser.id,
-                    assessment_id: updateUser.submitted_assessment_history[0].id
+                    assessment_type: "student_assessment",
+                    from_user_id: updateStudent.id,
+                    assessment_id: updateStudent.submitted_assessment_history[0].id
                 }
-                // promise.all...
-                viewAdvisor.map((advisor) => {
+
+                // push assessment obj to user inbox
+                updateStudent.inbox.unshift(advisorReceiveAssessmentOBJ);
+                updateStudent.save()
+
+                // push assessment obj to each advisor's received_assessment_history and inbox
+                viewAdvisor.map((advisor, index) => {
                     User.findById(advisor.id, (err, foundAdvisor) => {
                         if (err) {
                             console.error(err);
                             res.sendStatus(500);
                         }
                         foundAdvisor.received_assessment_history.unshift(advisorReceiveAssessmentOBJ);
-                        foundAdvisor.save();
+                        foundAdvisor.inbox.unshift(advisorReceiveAssessmentOBJ);
+                        foundAdvisor.save((err, updateAdvisor) => {
+                            if (err) {
+                                console.error(err);
+                                res.sendStatus(500);
+                            }
+                            if (!err && index + 1 === viewAdvisor.length) {
+                                res.sendStatus(200);
+                            }
+                        });
                     })
                 })
-                res.sendStatus(200);
+
             })
 
         };
@@ -509,6 +523,38 @@ router.get('/get-last-assessment', (req, res) => {
         } else {
             const index = foundUser.submitted_assessment_history.length - 1;
             res.send({assessment: foundUser.submitted_assessment_history[index]});
+        }
+    })
+});
+
+router.get('/get-inbox-assessment', (req, res) => {
+    User.findById(req.user._id, (err, foundUser) => {
+        if (err) {
+            console.error(err);
+            res.sendStatus(500);
+        } else {
+            let assessments = []
+            const assessmentsReference = foundUser.inbox;
+            foundUser.inbox.map((inboxItem, index) => {
+                if (inboxItem.assessment_type === "student_assessment") {
+                    const assessmentHolderID = inboxItem.from_user_id;
+                    const assessmentID = inboxItem.assessment_id;
+                    User.findById(assessmentHolderID, (err, foundUser) => {
+                        if (err) {
+                            console.error(err);
+                            res.sendStatus(500);
+                        } else {
+                            const assessmentIndex = arrayUtility.findIndexByKeyValue(foundUser.submitted_assessment_history, "id", assessmentID);
+                            if (assessmentIndex != null) {
+                                assessments.unshift(foundUser.submitted_assessment_history[assessmentIndex]);
+                            }
+                            if (index + 1 == foundUser.inbox.length) {
+                                res.send({inbox_assessment: assessments});
+                            }
+                        }
+                    })
+                }
+            });
         }
     })
 })
@@ -568,6 +614,7 @@ module.exports.updateInterest = updateInterest;
 
 const setIO = (io) => {
     _io = io;
+    console.log("√ Load socket.io in profile API.".green);
 }
 module.exports.setIO = setIO;
 

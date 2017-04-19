@@ -34,6 +34,8 @@ const serverStatus = require(appRoot + '/app/server-status');
 // for system status functions
 const systemStatus = require(appRoot + '/app/system-status');
 
+const profileAPI = require(appRoot+'/app/profile');
+
 // customize console.log font color
 const logColor = require('colors');
 
@@ -91,8 +93,7 @@ require(appRoot + '/config/passport')(passport); // pass passport for configurat
 
 require(appRoot + '/app/routes.js')(app, passport,io); // Routes
 
-
-
+profileAPI.setIO(io);
 
 // loading questionFeeds from Disk
 serverStatus.initQuestionFeeds().then((result) => {
@@ -109,7 +110,7 @@ systemStatus.initGetKnowledgeDomain().then((result) => {
 });
 
 server.listen(app.get('port') || 3000,function() {
-    console.log('Express server listening on port ' + app.get('port'))
+    console.log(('√ Server listening on port ' + app.get('port')).green)
 });
 
 module.exports = app;

@@ -76,22 +76,7 @@ const userSchema = mongoose.Schema({
     ],
     interest: [mongoose.Schema.Types.Mixed],
     interest_manual: [mongoose.Schema.Types.Mixed],
-    inbox: [
-        {
-            title: String,
-            date: {
-                type: Date,
-                default: Date.now
-            },
-            senderID: String,
-            senderDisplayName: String,
-            body: String,
-            isViewed: {
-                type: Boolean,
-                default: false
-            }
-        }
-    ],
+    inbox: [mongoose.Schema.Types.Mixed],
     personality_assessement: {
         last_upload_time: {
             type: Date,
@@ -197,6 +182,7 @@ const userSchema = mongoose.Schema({
                 type: Date,
                 default: Date.now
             },
+            user_viewed_before_change:{type:Boolean, default:true},
             view_section: Array,
             question: Array,
             question_comment: Array,
@@ -224,6 +210,7 @@ const userSchema = mongoose.Schema({
     ],
     received_assessment_history: [
         {
+            assessment_type: String,
             from_user_id: String,
             assessment_id: String
         }

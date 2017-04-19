@@ -23,7 +23,7 @@ const smsQA = require(appRoot + '/app/api/sms-question-answer');
 const nodemailer = require('nodemailer');
 const smtpTransport = require('nodemailer-smtp-transport');
 
-module.exports = function(app, passport, io) {
+module.exports = function(app, passport) {
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
@@ -517,7 +517,6 @@ module.exports = function(app, passport, io) {
     app.use('/api/testing/', testingAPIModule);
 
     // Profile APIs
-    profileAPI.setIO(io);
     app.use('/api/profile', loginChecking.isLoggedInRedirect, profileAPI);
 
     // Server status APIs

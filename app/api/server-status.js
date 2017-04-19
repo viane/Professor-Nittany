@@ -15,7 +15,8 @@ router.get('/get-question-feeds', (req, res) => {
 // get api for list advisors
 router.get('/get-advisor-list', loginChecking.isLoggedInRedirect, (req, res) => {
     User.find({
-        "local.role": "advisor"
+        "local.role": "advisor",
+        "local.account_activation_code":null
     }, (err, users) => {
         if (err) {
             console.error(err);
