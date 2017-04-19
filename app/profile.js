@@ -473,10 +473,9 @@ router.post('/send-assessment', (req, res) => {
             foundUser.submitted_assessment_history.unshift(assessment);
             foundUser.save((err, updateUser) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     return res.sendStatus(500);
                 }
-                            console.log(foundUser.submitted_assessment_history);
                 // find advisor(s) id, send to assessment id to each to them's received_assessment_history with this assessment's id
                 const advisorReceiveAssessmentOBJ = {
                     from_user_id: updateUser.id,

@@ -853,16 +853,29 @@ const formatAnswerByTag = (input) => {
 
     //for [extend]...[/extend] same step above but replace to
     //<span class="extend-btn">Read More</span><div class="extend-hide">...<div>
-    if (input.match("\\[extend\\].*?\\[/extend\\]")) {
+    while (input.match("\\[extend\\].*?\\[/extend\\]")) {
 
-        let extendText = input.match("\\[extend\\].*?\\[/extend\\]").toString();
+        let initExtendText = input.match("\\[extend\\].*?\\[/extend\\]").toString();
 
-        extendText = extendText.replace(new RegExp("\\[extend\\]", "g"), "");
+        let extendText = initExtendText.replace(new RegExp("\\[extend\\]", "g"), "");
 
         extendText = extendText.replace(new RegExp("\\[/extend\\]", "g"), "");
 
-        input = input.replace(new RegExp("\\[extend\\].*?\\[/extend\\]", "g"), "<div><span class=\"read-more btn btn-secondary\">Read More</span><div class=\"answer-body hide\">" + extendText + "</div></div>");
+        input = input.replace(initExtendText, "<div><span class=\"read-more btn btn-secondary\">Read More</span><div class=\"answer-body hide\">" + extendText + "</div></div>");
     }
+
+    while (input.match("\\[tip\\].*?\\[/tip\\]")) {
+        let initTipText = input.match("\\[tip\\].*?\\[/tip\\]").toString();
+
+        let tipText = initTipText.replace(new RegExp("\\[tip\\]", "g"), "");
+
+        tipText = tipText.replace(new RegExp("\\[/tip\\]", "g"), "");
+
+        tipText =  "</br></br><i>Tip: " + tipText + "</i>";
+
+        input = input.replace(initTipText, tipText);
+    }
+
 
     return input;
 }

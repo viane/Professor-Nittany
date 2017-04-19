@@ -319,7 +319,6 @@ module.exports = function(app, passport, io) {
     ///////////////////////////////////////////////////
 
     app.get('/inbox', loginChecking.isLoggedInRedirect, function(req, res) {
-        console.log(req.user);
         res.render(frontEndRoot + '/inbox.ejs', {user: req.user});
     });
 
@@ -376,7 +375,6 @@ module.exports = function(app, passport, io) {
         var questionContext = req.body.question;
         var answerContext = req.body.answer;
         var tagContext = req.body.tag;
-        console.log(req.user._id);
         if (questionContext.length == 0) {
             res.send({user: req.user, status: "302", type: 'warning', message: "Question can not be empty"})
         } else {
@@ -492,7 +490,6 @@ module.exports = function(app, passport, io) {
     // router for user ask questionn not on index page
     app.get('/external-ask', (req, res) => {
         const question = req.query.question;
-        console.log(req.query.question);
         req.external_question = question;
         res.render(frontEndRoot + 'index.ejs', {
             external_question: req.external_question,

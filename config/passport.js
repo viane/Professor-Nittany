@@ -222,7 +222,6 @@ module.exports = function(passport) {
     },
     // facebook will send back the token and profile
     function(token, refreshToken, profile, done) {
-        console.log(JSON.stringify(profile));
         // asynchronous
         process.nextTick(function() {
             // find the user in the database based on their facebook id
@@ -475,7 +474,6 @@ module.exports = function(passport) {
         clientSecret: configAuth.redditAuth.clientSecret,
         callbackURL: configAuth.redditAuth.callbackURL
     }, function(accessToken, refreshToken, profile, done) {
-        console.log(JSON.stringify(profile));
         // asynchronous
         process.nextTick(function() {
             // find the user in the database based on their twitter id
