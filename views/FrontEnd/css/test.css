@@ -987,3 +987,8 @@ button.adv-btn {
             transform: rotate(720deg);
   }
 }
+
+/* inbox assessment */
+.mail-owner-name{
+  float: right;
+}

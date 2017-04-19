@@ -891,47 +891,9 @@ const getAndRenderUserInboxAssessment = () => {
             res.json().then(function(result) {
                 let unreadCounter = 0;
                 result.inbox_assessment.map((assessment) => {
-                    console.log(assessment);
-                    let inboxItemWrapper = "<li><div class=\"container col-sm-12 mail-header\">";
-                    inboxItemWrapper += "<a href=\"/api/profile/assessment:" + assessment._id + "\">";
-                    inboxItemWrapper += "<span class=\"mail-titile\">Assessment of ";
-                    assessment.view_section.map((section, index) => {
-                        if (index > 0) {
-                            inboxItemWrapper += ' ,';
-                        }
-                        inboxItemWrapper += "<b>" + section.charAt(0).toUpperCase() + section.substring(1);;
-                        inboxItemWrapper += "</b>"
-                    });
-                    inboxItemWrapper += "</span></a>";
-                    inboxItemWrapper += "<span class=\"mail-date\">" + moment(assessment.request_time).format('MMMM Do YYYY') + "</span>";
-                    inboxItemWrapper += "<span class=\"mail-date\">" + moment(assessment.request_time).fromNow() + "</span>";
-                    if (!assessment.user_viewed_before_change) {
-                        unreadCounter++;
-                        inboxItemWrapper += "<span class=\"mail-comment-note-right\"> One or more advisor(s) made a new comment on this assessment!</span>";
-                        inboxItemWrapper += "<span class=\"mail-comment-time-right\">" + moment(assessment.advisor_last_comment_time).fromNow() + "</span>";
-                    }
-
-                    //////////////////////////////////////////
-                    // display summary of selected section in assessment
-                    //////////////////////////////////////////
-                    if (assessment.view_section.includes("introduction")) {
-                        inboxItemWrapper += "<span class=\"mail-introduction\"> Introduction: " + assessment.introduction + "</span>";
-                    }
-                    if (assessment.view_section.includes("interest")) {
-                        inboxItemWrapper += "<span class=\"mail-interest\"> Interest: " + assessment.interest + "</span>";
-                    }
-                    if (assessment.view_section.includes("personality")) {
-                        inboxItemWrapper += "<span class=\"mail-personality\"> Personality Analysis: " + assessment.personality + "</span>";
-                    }
-                    if (assessment.view_section.includes("introduction")) {
-                        inboxItemWrapper += "<span class=\"mail-question\"> Question History: " + assessment.question + "</span>";
-                    }
-
-                    inboxItemWrapper += "</div></li>";
-
+                    const inboxItemWrapper = parseInboxAssessment(assessment);
                     // end of wrapper
                     $('#assessment-box-list').append(inboxItemWrapper);
-
                 });
                 if (unreadCounter > 0) {
                     $('#inbox-in-badge').text(unreadCounter);
@@ -943,6 +905,53 @@ const getAndRenderUserInboxAssessment = () => {
     }).catch(function(err) {
         generateNotice('error', err);
     });
+}
+
+const parseInboxAssessment = (assessment) => {
+    let inboxItemWrapper = "<li><div class=\"container col-sm-12 mail-header\">";
+    // display assessment owner name for advisor only
+    if (assessment.owner_display_name) {
+      inboxItemWrapper += "<span class=\"mail-owner-name\">Student: " + assessment.owner_display_name + "</span>";
+    }
+    // display selected section in title with link to full assessment report
+    inboxItemWrapper += "<a href=\"/api/profile/get-assessment/" + assessment._id + "\">";
+    inboxItemWrapper += "<span class=\"mail-titile\">Assessment of ";
+    assessment.view_section.map((section, index) => {
+        if (index > 0) {
+            inboxItemWrapper += ', ';
+        }
+        inboxItemWrapper += "<b>" + section.charAt(0).toUpperCase() + section.substring(1);;
+        inboxItemWrapper += "</b>"
+    });
+    inboxItemWrapper += "</span></a>";
+    // display assessment generated time and how long ago
+    inboxItemWrapper += "<span class=\"mail-date\">" + moment(assessment.request_time).format('MMMM Do YYYY') + "</span>";
+    inboxItemWrapper += "<span class=\"mail-date\">" + moment(assessment.request_time).fromNow() + "</span>";
+    // display if advisor(s) has made change(s) before last user access the full report
+    if (!assessment.user_viewed_before_change) {
+        unreadCounter++;
+        inboxItemWrapper += "<span class=\"mail-comment-note-right\"> One or more advisor(s) made a new comment on this assessment!</span>";
+        inboxItemWrapper += "<span class=\"mail-comment-time-right\">" + moment(assessment.advisor_last_comment_time).fromNow() + "</span>";
+    }
+
+    //////////////////////////////////////////
+    // display summary of selected section in assessment
+    //////////////////////////////////////////
+    if (assessment.view_section.includes("introduction")) {
+        inboxItemWrapper += "<span class=\"mail-introduction\"> Introduction: " + assessment.introduction + "</span>";
+    }
+    if (assessment.view_section.includes("interest")) {
+        inboxItemWrapper += "<span class=\"mail-interest\"> Interest: " + assessment.interest + "</span>";
+    }
+    if (assessment.view_section.includes("personality")) {
+        inboxItemWrapper += "<span class=\"mail-personality\"> Personality Analysis: " + assessment.personality + "</span>";
+    }
+    if (assessment.view_section.includes("introduction")) {
+        inboxItemWrapper += "<span class=\"mail-question\"> Question History: " + assessment.question + "</span>";
+    }
+
+    inboxItemWrapper += "</div></li>";
+    return inboxItemWrapper;
 }
 
 // main page fav btn handler

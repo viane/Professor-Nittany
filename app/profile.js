@@ -35,6 +35,8 @@ const formatter = require(appRoot + '/app/utility-function/formatter');
 
 const naturalLanguageUnderstanding = require(appRoot + '/app/natural-language-understanding');
 
+const frontEndRoot = appRoot + '/views/FrontEnd/';
+
 let _io;
 
 router.get('/get-interest-manual', (req, res) => {
@@ -444,6 +446,7 @@ router.post('/send-assessment', (req, res) => {
             let assessment = {
                 view_section: viewSection,
                 reviewer: viewAdvisor,
+                owner_display_name: foundStudent[foundStudent['type']].displayName,
                 comment_summary: []
             }
 
@@ -530,35 +533,115 @@ router.get('/get-last-assessment', (req, res) => {
 });
 
 router.get('/get-inbox-assessment', (req, res) => {
-    User.findById(req.user._id, (err, foundUser) => {
+    User.findById(req.user._id, (err, foundRequestUser) => {
         if (err) {
             console.error(err);
             res.sendStatus(500);
         } else {
-            let assessments = []
-            const assessmentsReference = foundUser.inbox;
-            foundUser.inbox.map((inboxItem, index) => {
-                if (inboxItem.assessment_type === "student_assessment") {
-                    const assessmentHolderID = inboxItem.from_user_id;
-                    const assessmentID = inboxItem.assessment_id;
-                    User.findById(assessmentHolderID, (err, foundUser) => {
-                        if (err) {
-                            console.error(err);
-                            res.sendStatus(500);
-                        } else {
-                            const assessmentIndex = arrayUtility.findIndexByKeyValue(foundUser.submitted_assessment_history, "id", assessmentID);
-                            if (assessmentIndex != null) {
-                                assessments.unshift(foundUser.submitted_assessment_history[assessmentIndex]);
-                            }
-                            if (index + 1 == foundUser.inbox.length) {
-                                res.send({inbox_assessment: assessments});
-                            }
+            let assessments = [];
+            const parseAssessment = () => {
+                return new Promise(function(resolve, reject) {
+                    const assessmentsReference = foundRequestUser.inbox;
+                    assessmentsReference.map((inboxItem, index) => {
+                        if (inboxItem.assessment_type === "student_assessment") {
+                            const assessmentHolderID = inboxItem.from_user_id;
+                            const assessmentID = inboxItem.assessment_id;
+                            User.findById(assessmentHolderID, (err, foundAssessmentHolder) => {
+                                if (err) {
+                                    console.error(err);
+                                    res.sendStatus(500);
+                                } else {
+                                    const assessmentIndex = arrayUtility.findIndexByKeyValue(foundAssessmentHolder.submitted_assessment_history, "id", assessmentID);
+                                    if (assessmentIndex != null) {
+                                        const assessmentObj = foundAssessmentHolder.submitted_assessment_history[assessmentIndex];
+                                        if (foundRequestUser[foundRequestUser["type"]].role != "advisor") {
+                                            assessmentObj.owner_display_name = undefined;
+                                        }
+                                        assessments.unshift(assessmentObj);
+                                        if (index + 1 == foundAssessmentHolder.inbox.length) {
+                                            resolve();
+                                        }
+                                    }
+                                }
+                            })
                         }
-                    })
-                }
+                    });
+                });
+            };
+            parseAssessment().then(() => {
+                res.send({inbox_assessment: assessments});
             });
         }
     })
+});
+
+router.get('/get-assessment/:assessmentID', (req, res) => {
+    const assessmentID = req.params.assessmentID;
+    const requestUserID = req.user._id;
+    User.findById(requestUserID, (err, foundRequestUser) => {
+        if (err) {
+            return res.render(frontEndRoot + 'error.ejs', {
+                type: 'fetch assessment from DB.',
+                message: 'Please try again later, or contact us.'
+            });
+        }
+        // request made by advisor
+        if (foundRequestUser[foundRequestUser['type']].role === 'advisor') {
+            const referenceAssessmentInboxIndex = arrayUtility.findIndexByKeyValue(foundRequestUser.inbox, 'assessment_id', assessmentID);
+            if (referenceAssessmentInboxIndex != null) {
+                const assessmentHolderID = foundRequestUser.inbox[referenceAssessmentInboxIndex].from_user_id;
+                User.findById(assessmentHolderID, (err, foundAssessmentHolder) => {
+                    if (err) {
+                        console.error(err);
+                        return res.render(frontEndRoot + 'error.ejs', {
+                            type: 'fetch assessment from DB.',
+                            message: 'Please try again later, or contact us.'
+                        });
+                    }
+                    const assessmentIndex = arrayUtility.findIndexByKeyValue(foundAssessmentHolder.submitted_assessment_history, 'id', assessmentID);
+                    if (assessmentIndex != null) {
+                        return res.render(frontEndRoot + 'assessment-report.ejs', {assessment: foundAssessmentHolder.submitted_assessment_history[assessmentIndex]});
+                    }
+                    return res.render(frontEndRoot + 'error.ejs', {
+                        type: 'fetch assessment from DB.',
+                        message: 'Assessment does not exist.'
+                    });
+                });
+            } else {
+                console.log("Can find this assessment.");
+                return res.render(frontEndRoot + 'error.ejs', {
+                    type: 'fetch assessment from DB.',
+                    message: 'Can find this assessment.'
+                })
+            }
+        } else if (foundRequestUser[foundRequestUser['type']].role === 'student') {
+          // request made by student
+            User.findById(requestUserID, (err, foundAssessmentHolder) => {
+                if (err) {
+                    console.error(err);
+                    return res.render(frontEndRoot + 'error.ejs', {
+                        type: 'fetch assessment from DB.',
+                        message: 'Please try again later, or contact us.'
+                    });
+                }
+                const assessmentIndex = arrayUtility.findIndexByKeyValue(foundAssessmentHolder.submitted_assessment_history, 'id', assessmentID);
+                if (assessmentIndex != null) {
+                    return res.render(frontEndRoot + 'assessment-report.ejs', {assessment: foundAssessmentHolder.submitted_assessment_history[assessmentIndex]});
+                }
+                return res.render(frontEndRoot + 'error.ejs', {
+                    type: 'fetch assessment from DB.',
+                    message: 'Assessment does not exist.'
+                });
+            })
+        } else { // request user is either advisor or student
+            return res.render(frontEndRoot + 'error.ejs', {
+                type: 'fetch assessment from DB.',
+                message: 'Unindentified user type.'
+            });
+        }
+
+    })
+
 })
 
 module.exports = router;

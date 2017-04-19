@@ -205,7 +205,8 @@ const userSchema = mongoose.Schema({
             advisor_last_comment_list: {
                 type: Array,
                 default: []
-            }
+            },
+            owner_display_name:String
         }
     ],
     received_assessment_history: [
