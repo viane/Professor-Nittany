@@ -36,8 +36,6 @@ module.exports = function(io, session) {
 
             const currentInput = data.content;
 
-            console.log("Client sent a message : " + JSON.stringify(data));
-
             if (user.id && user.type) {
                 //socket.request.user && socket.request.user.logged_in
                 //login user block
@@ -50,7 +48,7 @@ module.exports = function(io, session) {
                             confidence: result.inDomain
                         });
                     }).catch(function(err) {
-                        console.log(err);
+                        console.error(err);
                     });
                 } else {
                     //maybe exploit

@@ -473,9 +473,11 @@ router.post('/send-assessment', (req, res) => {
             foundStudent.submitted_assessment_history.unshift(assessment);
             foundStudent.save((err, updateStudent) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     return res.sendStatus(500);
                 }
+
+                // find advisor(s) id, send to assessment id to each to them's received_assessment_history with this assessment's id
 
                 const advisorReceiveAssessmentOBJ = {
                     assessment_type: "student_assessment",

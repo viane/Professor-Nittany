@@ -71,7 +71,7 @@ describe('Ask Question Tests', function () {
 	});
 
 	it ('The system will respond with a relevant answer', function (done) {
-		expect(serverResponse.message[0].body).to.include("Computer Science");
+		expect(serverResponse.message[0].body.toUpperCase()).to.include("Computer Science".toUpperCase());
 		done();
 	});
 
@@ -81,20 +81,14 @@ describe('Ask Question Tests', function () {
 	});
 
 	it('The system should store data unique to the user', function (done) {
-		expect(createdUser.local.ask_history.length).to.be.above(0);
+		expect(createdUser.ask_history.length).to.be.above(0);
 		done();
 	});
 	it('The system should keep track of asked questions', function (done) {
-		expect(createdUser.local.ask_history[0].question_body).to.equal(q);
+		expect(createdUser.ask_history[0].question_body).to.equal(q);
 		done();
 	});
 
-	it('The user should be able to leave feedback for a question', function() {
-		//Don't know how this will be implemented, so cannot test it right now.
-		//Further testing needed here.
-		// expect(createdUser.local.ask_history[0].user_ratings[0].rating).to.equal(3);
-		// done();
-	});
 	it ('Should answer within 5 seconds', function (done) {
 		expect(timeTaken).to.be.below(5000);//Less than 5 seconds
 		done();

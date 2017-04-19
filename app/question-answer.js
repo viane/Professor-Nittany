@@ -46,7 +46,7 @@ module.exports.ask = function(user, input) {
                       // update user interest form question based on analysis
                       profile.updateInterest(user, analysis);
                     }).catch((err)=>{
-                      console.log(err);
+                      console.error(err);
                     })
 
                     // update server question feeds with only user question string
@@ -83,6 +83,14 @@ module.exports.ask = function(user, input) {
                         if (resultFromConversation[0] === 'not in the domain') {
                             resultFromRR.inDomain = false;
                         }
+                        resultFromRR.response.docs.sort( function(a, b) {
+                            return b['ranker.confidence'] - a['ranker.confidence'] ;
+                        });
+
+                        while (resultFromRR.response.docs.length > 10) {
+                            resultFromRR.response.docs.pop();
+                        }
+                        
                         resolve(resultFromRR);
                     }
                 }).catch(function(err) {
