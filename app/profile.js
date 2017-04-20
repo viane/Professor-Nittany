@@ -417,18 +417,6 @@ router.post('/update-avatar', loginChecking.isLoggedInRedirect, (req, res) => {
 
     });
 });
-router.post('/set-privacy', (req, res) => {
-    res.send({status: "success", information: "API not open yet"});
-});
-router.post('/favorite-question', (req, res) => {
-    const id = req.user._id;
-    res.send({status: "success", information: "done!"});
-});
-
-router.post('/like-question', (req, res) => {
-    const id = req.user._id;
-    res.send({status: "success", information: "done!"});
-});
 
 // user generate assessment and send to advisor(s)
 router.post('/send-assessment', (req, res) => {
@@ -580,8 +568,11 @@ router.get('/get-assessment/:assessmentID', (req, res) => {
     const requestUserID = req.user._id;
     User.findById(requestUserID, (err, foundRequestUser) => {
         if (err) {
-            return res.render(frontEndRoot + 'error.ejs', {
-                type: 'fetch assessment from DB.',
+            console.error(err);
+            return res.render(frontEndRoot + 'error/error.ejs', {
+                user: req.user,
+                error: 500,
+                type: 'Error on DB connection.',
                 message: 'Please try again later, or contact us.'
             });
         }
@@ -593,8 +584,10 @@ router.get('/get-assessment/:assessmentID', (req, res) => {
                 User.findById(assessmentHolderID, (err, foundAssessmentHolder) => {
                     if (err) {
                         console.error(err);
-                        return res.render(frontEndRoot + 'error.ejs', {
-                            type: 'fetch assessment from DB.',
+                        return res.render(frontEndRoot + 'error/error.ejs', {
+                            user: req.user,
+                            error: 500,
+                            type: 'Error on DB connection.',
                             message: 'Please try again later, or contact us.'
                         });
                     }
@@ -602,25 +595,30 @@ router.get('/get-assessment/:assessmentID', (req, res) => {
                     if (assessmentIndex != null) {
                         return res.render(frontEndRoot + 'assessment-report.ejs', {assessment: foundAssessmentHolder.submitted_assessment_history[assessmentIndex]});
                     }
-                    return res.render(frontEndRoot + 'error.ejs', {
-                        type: 'fetch assessment from DB.',
+                    return res.render(frontEndRoot + 'error/error.ejs', {
+                        user: req.user,
+                        error: 404,
+                        type: 'Error searching assessment.',
                         message: 'Assessment does not exist.'
                     });
                 });
             } else {
-                console.log("Can find this assessment.");
-                return res.render(frontEndRoot + 'error.ejs', {
-                    type: 'fetch assessment from DB.',
-                    message: 'Can find this assessment.'
-                })
+                return res.render(frontEndRoot + 'error/error.ejs', {
+                    user: req.user,
+                    error: 404,
+                    type: 'Error reference assessment.',
+                    message: 'This assessment has some issues.'
+                });
             }
         } else if (foundRequestUser[foundRequestUser['type']].role === 'student') {
-          // request made by student
+            // request made by student
             User.findById(requestUserID, (err, foundAssessmentHolder) => {
                 if (err) {
                     console.error(err);
-                    return res.render(frontEndRoot + 'error.ejs', {
-                        type: 'fetch assessment from DB.',
+                    return res.render(frontEndRoot + 'error/error.ejs', {
+                        user: req.user,
+                        error: 500,
+                        type: 'Error on DB connection.',
                         message: 'Please try again later, or contact us.'
                     });
                 }
@@ -628,14 +626,19 @@ router.get('/get-assessment/:assessmentID', (req, res) => {
                 if (assessmentIndex != null) {
                     return res.render(frontEndRoot + 'assessment-report.ejs', {assessment: foundAssessmentHolder.submitted_assessment_history[assessmentIndex]});
                 }
-                return res.render(frontEndRoot + 'error.ejs', {
-                    type: 'fetch assessment from DB.',
+                return res.render(frontEndRoot + 'error/error.ejs', {
+                    user: req.user,
+                    error: 404,
+                    type: 'Error searching assessment.',
                     message: 'Assessment does not exist.'
                 });
             })
-        } else { // request user is either advisor or student
-            return res.render(frontEndRoot + 'error.ejs', {
-                type: 'fetch assessment from DB.',
+        } else {
+            // request user is either advisor or student
+            return res.render(frontEndRoot + 'error/error.ejs', {
+                user: req.user,
+                error: 403,
+                type: 'Forbidden premission.',
                 message: 'Unindentified user type.'
             });
         }
