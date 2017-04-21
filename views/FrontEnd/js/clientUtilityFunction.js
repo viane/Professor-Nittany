@@ -877,5 +877,15 @@ const formatAnswerByTag = (input) => {
     }
 
 
+        while (input.match("\\[img\\].*?\\[/img\\]")) {
+            let initImgText = input.match("\\[img\\].*?\\[/img\\]").toString();
+
+            let imgSrc = initImgText.replace(new RegExp("\\[img\\]", "g"), "").replace(new RegExp("\\[/img\\]", "g"), "");
+
+            imgDomStr =  "</br><img src=\"" + imgSrc + "\"></br>";
+
+            input = input.replace(initImgText, imgDomStr);
+        }
+
     return input;
 }

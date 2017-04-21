@@ -24,6 +24,9 @@ const nodemailer = require('nodemailer');
 const smtpTransport = require('nodemailer-smtp-transport');
 
 module.exports = function(app, passport) {
+    //demo route
+    require(appRoot + '/app/demo-src/demo')(app);
+
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================

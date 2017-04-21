@@ -9,9 +9,9 @@ const serverStatus = require('./server-status');
 const stringChecking = require('./utility-function/string-checking');
 const profile = require(appRoot + '/app/profile');
 
-module.exports.ask = function(user, input) {
+module.exports.ask = (user, input) => {
 
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
 
         // if user input is less than 3 words
         if (stringChecking.countWords(input) <= 2) {
@@ -24,7 +24,7 @@ module.exports.ask = function(user, input) {
                         }
                     ]
                 },
-                "inDomain" : false
+                "inDomain": false
             })
         }
 
@@ -32,7 +32,28 @@ module.exports.ask = function(user, input) {
         const userInput = processQuestion.humanizeString(input);
 
         // handled by conversation
-        conversation.enterMessage(userInput).then(function(resultFromConversation) {
+        conversation.isInDomain(userInput).then((resultFromConversation) =>{
+            //////////////////
+            // demo use, for SE world campus schedule question only
+            conversation.askSEWorldCampusSchedule(userInput).then((resultFromConversation) =>{
+              console.log(resultFromConversation[0]);
+              if (resultFromConversation[0]==="positive") {
+                resolve({
+                    response: {
+                        docs: [
+                            {
+                                title: "Penn State World Campus Software Engineering Bachelor Degree Course Schedule",
+                                body: "Courses in the B.S. in Software Engineering program cover a wide array of software engineering topics including discrete mathematics, probability and statistics, and relevant topics in computer sciences and supporting disciplines for a comprehensive coverage of modern software and techniques. As a student, you can gain knowledge in areas such as computer programming, object-oriented methodology, software design, software validation and verification, software security, and computer networks.</br>[img]/world-campus-se-logo[/img]</br>View the detailed [a]Course List[/a].[link]/world-campus-software-engineering-schedule[/link]"
+                            }
+                        ]
+                    },
+                    "inDomain": true
+                })
+              }
+            }).catch((err)=>{
+              console.error(err);
+              reject(err)
+            })
 
             // analysis the concept, keyword, taxonomy, entities of the question
             processQuestion.NLUAnalysis(userInput).then(function(analysis) {
@@ -42,11 +63,11 @@ module.exports.ask = function(user, input) {
 
                 if (user) {
                     // log question object to user DB
-                    processQuestion.logUserQuestion(user, questionObj).then(()=>{
-                      // update user interest form question based on analysis
-                      profile.updateInterest(user, analysis);
-                    }).catch((err)=>{
-                      console.error(err);
+                    processQuestion.logUserQuestion(user, questionObj).then(() => {
+                        // update user interest form question based on analysis
+                        profile.updateInterest(user, analysis);
+                    }).catch((err) => {
+                        console.error(err);
                     })
 
                     // update server question feeds with only user question string
@@ -72,7 +93,7 @@ module.exports.ask = function(user, input) {
                                     }
                                 ]
                             },
-                            "inDomain" : false
+                            "inDomain": false
                         })
                     } else {
                         // question terms are in the current domain, return the answer directly
@@ -83,14 +104,14 @@ module.exports.ask = function(user, input) {
                         if (resultFromConversation[0] === 'not in the domain') {
                             resultFromRR.inDomain = false;
                         }
-                        resultFromRR.response.docs.sort( function(a, b) {
-                            return b['ranker.confidence'] - a['ranker.confidence'] ;
+                        resultFromRR.response.docs.sort(function(a, b) {
+                            return b['ranker.confidence'] - a['ranker.confidence'];
                         });
 
                         while (resultFromRR.response.docs.length > 10) {
                             resultFromRR.response.docs.pop();
                         }
-                        
+
                         resolve(resultFromRR);
                     }
                 }).catch(function(err) {
