@@ -37,7 +37,6 @@ router.get('/get-advisor-list', loginChecking.isLoggedInRedirect, (req, res) => 
                 advisorRecordTemplate.interest = users[index].interest_manual; //only show mannual inputed interest
                 advisorRecordTemplate.email = users[index].local.email;
                 advisorRecordTemplate.displayName = users[index].local.displayName;
-
                 advisorList.unshift(advisorRecordTemplate);
 
                 if (index == users.length - 1) {

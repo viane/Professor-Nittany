@@ -353,16 +353,22 @@ $(() => {
                         advisorDom += "<label class=\"checkbox checkbox--four\"><div style=\"display:none\" data-advisor-id=\"" + advisor.id + "\" data-advisor-email=\"" + advisor.email + "\" data-advisor-displayName=\"" + advisor.displayName + "\"></div><input class=\"advisor-check-input\" type=\"checkbox\" /><span></span></label>";
                         // displayName
                         advisorDom += "<h3>" + advisor.displayName + "</h3>";
-                        // email
-                        advisorDom += "<h4>" + advisor.email + "</h4>";
                         // interest
-                        let interestContent = "";
-                        advisor.interest.map((interest) => {
-                            interestContent += interest.toString();
-                        });
+                        let interestContent = "Specialty: ";
+                        if (advisor.interest.length>0) {
+                          advisor.interest.map((interest, index) => {
+                              interestContent += interest.term;
+                              if (index < advisor.interest.length -1) {
+                                interestContent += ", ";
+                              }
+                          })
+                        }else{
+                          interestContent += "Unknown";
+                        }
                         advisorDom += "<p>" + interestContent + "</p>";
                         advisorDom += "</figcaption>"
                         advisorDom += "</figure>";
+
                         $('.advisor-list-panel').append(advisorDom);
                     });
                     $(".loader").fadeOut('fast');

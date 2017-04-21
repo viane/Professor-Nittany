@@ -361,12 +361,13 @@ $(() => {
                         $('#introduction-content-p').text(res.introduction);
 
                         // re-render interest
-                        fetchAndRenderInterest();
+                        setTimeout(() => {
+                            fetchAndRenderInterest()
+                        }, 1000);
                     })
                 };
-
                 // change left text to the same high as dropzone, for better view
-                $('#introduction-content-p').css('height', $('.dropzone').height() + "px");
+                $('#introduction-content-p').css('height', $('.dropzone').height()+24 + "px");
             }).catch(function(err) {
                 generateNotice('error', err)
             });
@@ -463,10 +464,14 @@ $(document).ready(function() {
         const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");
         const password = $('#signup-form-password').val();
         if (!passwordValidRegex.test(password) || spcialCharRegex.test(password) || password.length == 0) {
-            generateNotice('error', 'Invalid password format, please check the rules of password.');
+           return generateNotice('error', 'Invalid password format, please check the rules of password.');
             $('.password-rule-list').fadeIn('fast').effect("shake");
-            return;
         }
+
+        // replace submit btn to loader animation before request
+        $("#signup-form button").fadeOut('fast');
+        $("#signup-form .loader").fadeIn('fast');
+
         // post signup request to server
         const url = '/signup';
         const $form = $(this),
@@ -484,8 +489,7 @@ $(document).ready(function() {
         }).then(function(res) {
             res.json().then(function(res) {
                 if (res.status !== 200) {
-                    generateNotice(res.type, "Error, " + res.information);
-                    return;
+                    return generateNotice(res.type, "Error, " + res.information);
                 } else {
                     generateNotice(res.type, res.information);
                     // empty signup form
@@ -494,6 +498,10 @@ $(document).ready(function() {
                     });
                 }
             })
+
+            // when finish (success) restore submit button and hide loader
+            $("#signup-form .loader").fadeOut('fast');
+            $("#signup-form button").fadeIn('fast');
         }).catch(function(err) {
             generateNotice('error', err)
         });
@@ -871,21 +879,20 @@ const formatAnswerByTag = (input) => {
 
         tipText = tipText.replace(new RegExp("\\[/tip\\]", "g"), "");
 
-        tipText =  "</br></br><i>Tip: " + tipText + "</i>";
+        tipText = "</br></br><i>Tip: " + tipText + "</i>";
 
         input = input.replace(initTipText, tipText);
     }
 
+    while (input.match("\\[img\\].*?\\[/img\\]")) {
+        let initImgText = input.match("\\[img\\].*?\\[/img\\]").toString();
 
-        while (input.match("\\[img\\].*?\\[/img\\]")) {
-            let initImgText = input.match("\\[img\\].*?\\[/img\\]").toString();
+        let imgSrc = initImgText.replace(new RegExp("\\[img\\]", "g"), "").replace(new RegExp("\\[/img\\]", "g"), "");
 
-            let imgSrc = initImgText.replace(new RegExp("\\[img\\]", "g"), "").replace(new RegExp("\\[/img\\]", "g"), "");
+        imgDomStr = "</br><img src=\"" + imgSrc + "\"></br>";
 
-            imgDomStr =  "</br><img src=\"" + imgSrc + "\"></br>";
-
-            input = input.replace(initImgText, imgDomStr);
-        }
+        input = input.replace(initImgText, imgDomStr);
+    }
 
     return input;
 }
