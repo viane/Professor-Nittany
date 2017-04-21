@@ -69,18 +69,25 @@ router.post('/reset-password', (req, res) => {
             });
         },
         (token, user, done) => {
-            const mailer = nodemailer.createTransport(smtpTransport({
-                service: 'gmail',
+            const mailer = nodemailer.createTransport({
+                host: "smtp-mail.outlook.com", // hostname
+                secureConnection: false, // TLS requires secureConnection to be false
+                port: 587, // port for secure SMTP
+                tls: {
+                    ciphers: 'SSLv3'
+                },
                 auth: {
-                    user: 'xiaoyuz2011@gmail.com',
-                    pass: 'Zsbqwacc1'
+                    user: 'IntelligentAcademicPlanner@outlook.com',
+                    pass: 'IAPGraduation2017'
                 }
-            }));
+            });
+
             const mailOptions = {
                 to: user.local.email,
-                from: 'Intelligent Academic Advisor <xpz5043@psu.edu>',
+                from: 'Intelligent Academic Advisor <IntelligentAcademicPlanner@outlook.com>',
                 subject: 'Intelligent Academic Advisor Password Reset',
-                html: '<html><body style="background-color:white; border-radius:3px; padding: 30px;"><h1>Intelligent Academic Planer Reset Password</h1><p>You are receiving this because you (or someone else) have requested the reset of the password for your account.</p><p>Please click on the following link to complete the process.</p><a href="http://' + req.headers.host + '/update-password/' + token + '"  style="display: block;width:200px;padding: 10px;line-height: 1.4;background-color: #94B8E9; color: #fff;text-decoration: none; text-align: center; margin: 0 auto;border-radius:4px;">Reset My Passowrd</a><p>Or mannually paste the following link to your broswer: http://' + req.headers.host + '/update-password/' + token + '</p><p>If you did not request this, please ignore this email and your password will remain unchanged.</p></body></html>'
+
+                html: '<html><body style="background-color:white; border-radius:3px; padding: 30px;"><h1>Intelligent Academic Planner Reset Password</h1><p>You are receiving this because you (or someone else) have requested the reset of the password for your account.</p><p>Please click on the following link to complete the process.</p><a href="http://' + req.headers.host + '/update-password/' + token + '"  style="display: block;width:200px;padding: 10px;line-height: 1.4;background-color: #94B8E9; color: #fff;text-decoration: none; text-align: center; margin: 0 auto;border-radius:4px;">Reset My Passowrd</a><p>Or manually paste the following link to your broswer: http://' + req.headers.host + '/update-password/' + token + '</p><p>If you did not request this, please ignore this email and your password will remain unchanged.</p></body></html>'
             };
             mailer.sendMail(mailOptions, (err) => {
                 if (err) {
@@ -103,7 +110,7 @@ router.post('/update-password', (req, res) => {
     }
     // password check valid password format
     if (!accountUtility.validPasswordFormat(req.body['password-primary'])) {
-      return res.send({type: 'error', information: 'Invalid password format, check the rule of making password.'});
+        return res.send({type: 'error', information: 'Invalid password format, check the rule of making password.'});
     }
     const password1 = req.body['password-primary'];
     const password2 = req.body['password-secondary'];
@@ -146,23 +153,28 @@ router.post('/update-password', (req, res) => {
             });
         },
         (user, done) => {
-            const mailer = nodemailer.createTransport(smtpTransport({
-                service: 'gmail',
+            const mailer = nodemailer.createTransport({
+                host: "smtp-mail.outlook.com", // hostname
+                secureConnection: false, // TLS requires secureConnection to be false
+                port: 587, // port for secure SMTP
+                tls: {
+                    ciphers: 'SSLv3'
+                },
                 auth: {
-                    user: 'xiaoyuz2011@gmail.com',
-                    pass: 'Zsbqwacc1'
+                    user: 'IntelligentAcademicPlanner@outlook.com',
+                    pass: 'IAPGraduation2017'
                 }
-            }));
+            });
             const mailOptions = {
                 to: user.local.email,
-                from: 'Intelligent Academic Advisor <xpz5043@psu.edu>',
-                subject: 'Intelligent Academic Advisor: Success Reset Password',
-                html: '<html><body style="background-color:white; border-radius:3px; padding: 30px;"><h1>Intelligent Academic Planer Reset Password</h1><p>This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.</p></body></html>'
+                from: 'Intelligent Academic Advisor <IntelligentAcademicPlanner@outlook.com>',
+                subject: 'Intelligent Academic Advisor: Successfully Reset Password',
+                html: '<html><body style="background-color:white; border-radius:3px; padding: 30px;"><h1>Intelligent Academic Planner Reset Password</h1><p>This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.</p></body></html>'
             };
             mailer.sendMail(mailOptions, (err) => {
                 if (err) {
                     console.error(err);
-                    return res.send({type: 'error', information: 'An error has occured, please try again later or contact us.'});
+                    return res.send({type: 'error', information: 'An error has occurred, please try again later or contact us.'});
                 }
                 return res.send({type: 'success', information: 'Successfully update your new password.'});
             });

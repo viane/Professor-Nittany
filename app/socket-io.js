@@ -2,11 +2,25 @@ const appRoot = require('app-root-path');
 const questionAnswer = require('./question-answer');
 const User = require(appRoot + '/app/models/user');
 const colors = require('colors');
+const arrayUtility = require(appRoot + '/app/utility-function/array');
 
-module.exports = function(server) {
-    const io = require('socket.io').listen(server);
+// share session between socket.io and express
+const sharedsession = require('socket.io-express-session');
+
+module.exports = function(io, session) {
+
+    // enable share session with express
+    io.use(sharedsession(session));
+
+    io.use(function(socket, next) {
+        session(socket.handshake, {}, next);
+    });
+
     //Socket.io handle user's input
     io.on('connection', function(socket) {
+        // socket.id => client socket id
+        // socket.handshake.session.id => express assigned session id
+
         let user = {};
 
         //when user init a socket from client side, record the user id and type for security purpose
@@ -15,12 +29,12 @@ module.exports = function(server) {
             user.type = data.type;
         });
 
+        //io.to(socket.id).emit('dm', 'direct message');
+
         // when the client emits 'new question', this listens and executes
         socket.on('question', function(data) {
 
             const currentInput = data.content;
-
-            console.log("Client sent a message : " + JSON.stringify(data));
 
             if (user.id && user.type) {
                 //socket.request.user && socket.request.user.logged_in
@@ -34,7 +48,7 @@ module.exports = function(server) {
                             confidence: result.inDomain
                         });
                     }).catch(function(err) {
-                        console.log(err);
+                        console.error(err);
                     });
                 } else {
                     //maybe exploit
@@ -57,8 +71,8 @@ module.exports = function(server) {
             ////////////////////////////////////////////////////////////
             if (data.sender.id === "58c636153cd0ab4e32155583") {
                 console.log("test user asked a question");
-                const alchemyAPI = require(appRoot + '/app/alchemyAPI');
-                alchemyAPI.getAnalysis(currentInput).then(function(analysis) {
+                const naturalLanguageUnderstanding = require(appRoot + '/app/natural-language-understanding');
+                naturalLanguageUnderstanding.getAnalysis(currentInput).then(function(analysis) {
                     socket.broadcast.emit('question-analysis', {analysis: analysis});
                 }).catch((err) => {
                     throw err;
@@ -167,7 +181,8 @@ module.exports = function(server) {
         });
 
         // when the user disconnects
-        socket.on('disconnect', function() {});
+        socket.on('disconnect', function(socket) {
+        });
     });
 };
 

@@ -29,6 +29,108 @@ const loginChecking = require(appRoot + '/app/utility-function/login-checking');
 
 const wordToText = require(appRoot + '/app/utility-function/word-file-to-text');
 
+const arrayUtility = require(appRoot + '/app/utility-function/array');
+
+const formatter = require(appRoot + '/app/utility-function/formatter');
+
+const naturalLanguageUnderstanding = require(appRoot + '/app/natural-language-understanding');
+
+const frontEndRoot = appRoot + '/views/FrontEnd/';
+
+let _io;
+
+router.get('/get-interest-manual', (req, res) => {
+    User.findById(req.user._id).exec().then((updateRecord, err) => {
+        return res.send({
+            interestAry: [updateRecord.interest_manual]
+        });
+    }).catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+    });
+});
+
+router.post('/update-interest-manual', (req, res) => {
+    User.findById(req.user._id).exec().then((updateRecord, err) => {
+        if (err) {
+            console.error(err);
+            return res.sendStatus(500);
+        }
+        // manual add current user max weight from AI recognized interest to the interest that user input by hand
+        let maxScore = 1.0;
+        for (let i = 0; i < updateRecord.interest.length; i++) {
+            if (maxScore < updateRecord.interest[i].value) {
+                maxScore = updateRecord.interest[i].value;
+            }
+        }
+        // form manual interest array has no duplicates with max weight
+        const interestAry = arrayUtility.arrayUnique(JSON.parse(req.body.interest_manual).map((interest) => {
+            if (interest.length < 2) {
+                return res.sendStatus(300);
+            };
+            return {'term': interest.toString().trim(), value: maxScore}
+        }));
+        updateRecord.interest_manual = interestAry;
+        updateRecord.save((err, user) => {
+            if (err) {
+                console.error(err);
+                return res.sendStatus(500);
+            }
+            res.sendStatus(200);
+        })
+    }).catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+    });
+
+});
+
+router.post('/upload/update-introduction', (req, res) => {
+    updateUserSelfDescription(req.user, req.body.introdcution).then((query_report) => {
+        const dataText = req.body.introdcution;
+        // if user description is longer than 100 words, update persoanlity assessment and analysis
+        if (countWords(dataText) > 100) {
+            // update assessment and analysis
+            getAndUpdatePersonalityAssessment(req.user, dataText).then(() => {
+                // update interest
+                naturalLanguageUnderstanding.getAnalysis(dataText).then((analysis) => {
+                    updateInterest(req.user, analysis);
+                }).catch((err) => {
+                    console.error(err);
+                });
+                res.sendStatus(200);
+            }).catch((err) => {
+                console.error(err);
+                res.sendStatus(500);
+            });
+        } else {
+            // if less than 100 words, only update user description content to DB
+            User.update({
+                _id: req.user._id
+            }, {
+                $set: {
+                    'personality_assessement.description_content': dataText,
+                    'personality_assessement.evaluation': {}
+                }
+            }).exec().then(() => {
+                // update interest
+                naturalLanguageUnderstanding.getAnalysis(dataText, 20, 20, 20).then((analysis) => {
+                    updateInterest(req.user, analysis);
+                }).catch((err) => {
+                    console.error(err);
+                });
+                res.sendStatus(200);
+            }).catch((err) => {
+                console.error(err);
+                res.sendStatus(500);
+            });
+        }
+    }).catch(function(err) {
+        console.error(err);
+        res.sendStatus(300);
+    });
+});
+
 router.post('/upload/upload-description-text-file', busboy({
     limits: {
         fileSize: 4 * 1024 * 1024
@@ -45,24 +147,37 @@ router.post('/upload/upload-description-text-file', busboy({
             file.on('data', function(data) {
                 updateUserSelfDescription(req.user, data).then((query_report) => {
                     const dataText = data.toString();
-
-                    // if user description is longer than 100 words
+                    // if user description is longer than 100 words, update persoanlity assessment and analysis
                     if (countWords(dataText) > 100) {
+                        // update assessment and analysis
                         getAndUpdatePersonalityAssessment(req.user, dataText).then(() => {
+                            // update interest
+                            naturalLanguageUnderstanding.getAnalysis(dataText, 20, 20, 20).then((analysis) => {
+                                updateInterest(req.user, analysis);
+                            }).catch((err) => {
+                                console.error(err);
+                            });
                             res.sendStatus(200);
                         }).catch((err) => {
                             console.error(err);
-                            res.sendStatus(300);
+                            res.sendStatus(500);
                         });
                     } else {
-                        const updatePath = getUserDataPath(req.user.type);
+                        // if less than 100 words, only update user description content to DB
                         User.update({
                             _id: req.user._id
                         }, {
                             $set: {
-                                [updatePath.evaluation]: {}
+                                'personality_assessement.description_content': dataText,
+                                'personality_assessement.evaluation': {}
                             }
                         }).exec().then(() => {
+                            // update interest
+                            naturalLanguageUnderstanding.getAnalysis(dataText, 20, 20, 20).then((analysis) => {
+                                updateInterest(req.user, analysis);
+                            }).catch((err) => {
+                                console.error(err);
+                            });
                             res.sendStatus(200);
                         }).catch((err) => {
                             console.error(err);
@@ -103,21 +218,31 @@ router.post('/upload/upload-description-text-file', busboy({
                                 });
                                 if (countWords(fullDoc) > 100) {
                                     getAndUpdatePersonalityAssessment(req.user, fullDoc).then(() => {
+                                        // update interest
+                                        naturalLanguageUnderstanding.getAnalysis(fullDoc, 20, 20, 20).then((analysis) => {
+                                            updateInterest(req.user, analysis);
+                                        }).catch((err) => {
+                                            console.error(err);
+                                        });
                                         res.sendStatus(200);
                                     }).catch((err) => {
                                         console.error(err);
                                         res.sendStatus(300);
                                     });
                                 } else {
-                                    const updatePath = getUserDataPath(req.user.type);
                                     User.update({
                                         _id: req.user._id
                                     }, {
                                         $set: {
-                                            [updatePath.evaluation]: {
-                                            }
+                                            'personality_assessement.description_content': fullDoc,
+                                            'personality_assessement.evaluation': {}
                                         }
                                     }).exec().then(() => {
+                                        naturalLanguageUnderstanding.getAnalysis(fullDoc, 20, 20, 20).then((analysis) => {
+                                            updateInterest(req.user, analysis);
+                                        }).catch((err) => {
+                                            console.error(err);
+                                        });
                                         res.sendStatus(200);
                                     }).catch((err) => {
                                         console.error(err);
@@ -144,8 +269,15 @@ router.post('/upload/upload-description-text-file', busboy({
 // Get user interests
 router.get('/get-interest', (req, res) => {
     User.findById(req.user._id).exec().then((foundUser) => {
-        const interestPath = getUserRecordPathByAccountType(foundUser);
-        res.send({status: "success", information: "good", interest: foundUser[interestPath].interest});
+        let interestAry = [];
+        foundUser.interest_manual.map((interestObj) => {
+            interestAry.unshift(interestObj)
+        });
+        foundUser.interest.map((interestObj) => {
+            interestAry.unshift(interestObj)
+        })
+        // format interest array
+        res.send({status: "success", information: "good", interest: formatter.convertUserInterestTowordCloud(interestAry)});
     }).catch((err) => {
         throw err;
         res.send({type: 'error', information: err});
@@ -155,8 +287,7 @@ router.get('/get-interest', (req, res) => {
 // Get user introduction
 router.get('/get-introduction', (req, res) => {
     User.findById(req.user._id).exec().then((foundUser) => {
-        const path = getUserRecordPathByAccountType(foundUser);
-        res.send({status: "success", information: "Successfully load introduction.", introduction: foundUser[path].personality_assessement.description_content});
+        res.send({status: "success", information: "Successfully load introduction.", introduction: foundUser.personality_assessement.description_content});
     }).catch((err) => {
         throw err;
         res.send({type: 'error', information: err});
@@ -166,12 +297,64 @@ router.get('/get-introduction', (req, res) => {
 // Get user personaltity assessment
 router.get('/get-personalityAssessment', (req, res) => {
     User.findById(req.user._id).exec().then((foundUser) => {
-        const path = getUserRecordPathByAccountType(foundUser);
-        res.send({status: "success", information: "Successfully load assessment.", assessment: foundUser[path].personality_assessement.evaluation});
+        res.send({status: "success", information: "Successfully load assessment.", assessment: foundUser.personality_assessement.evaluation});
     }).catch((err) => {
         throw err;
         res.send({type: 'error', information: err});
     })
+});
+
+// Delete question from quesion history
+router.post('/delete-question-history', loginChecking.isLoggedInRedirect, (req, res) => {
+    User.update({
+        _id: req.user._id
+    }, {
+        $pull: {
+            ask_history: {
+                'question_body': req.body.question_body
+            }
+        }
+    }).exec().then(() => {
+        res.sendStatus(200);
+    }).catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+    });
+});
+
+// unfav question from question history
+router.post('/unfav-question-history', loginChecking.isLoggedInRedirect, (req, res) => {
+    User.update({
+        _id: req.user._id,
+        'ask_history.question_body': req.body.question_body
+    }, {
+        '$set': {
+            'ask_history.$.favorite': false
+        }
+    }).exec().then(() => {
+        res.sendStatus(200);
+    }).catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+    });
+});
+
+// fav question with answer pair from main page
+router.post('/fav-question-answer', loginChecking.isLoggedInRedirect, (req, res) => {
+    User.update({
+        _id: req.user._id,
+        'ask_history.question_body': req.body.question_body
+    }, {
+        '$set': {
+            'ask_history.$.favorite': true,
+            'ask_history.$.answer_body': req.body.answer
+        }
+    }).exec().then(() => {
+        res.sendStatus(200);
+    }).catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+    });
 });
 
 // Post user avatar
@@ -233,63 +416,304 @@ router.post('/update-avatar', loginChecking.isLoggedInRedirect, (req, res) => {
         }
 
     });
-
-})
-
-router.post('/set-privacy', (req, res) => {
-    res.send({status: "success", information: "API not open yet"});
-})
-
-router.post('/favorite-question', (req, res) => {
-    const id = req.user._id;
-    console.log(req.user);
-    res.send({status: "success", information: "done!"});
 });
 
-router.post('/like-question', (req, res) => {
-    const id = req.user._id;
-    console.log(req.user);
-    res.send({status: "success", information: "done!"});
+// user generate assessment and send to advisor(s)
+router.post('/send-assessment', (req, res) => {
+    User.findById(req.user._id, (err, foundStudent) => {
+        if (err) {
+            console.error(err);
+            res.sendStatus(500);
+        } else {
+            const viewSection = JSON.parse(req.body.advisor).viewSection;
+            const viewAdvisor = JSON.parse(req.body.advisor).receiveAdvisor;
+            if (viewSection.length < 1 || viewAdvisor.length < 1) {
+                return res.send({error: "You must select at least one of the section and advisor to be viewed for your assessment."});
+            }
+
+            let assessment = {
+                view_section: viewSection,
+                reviewer: viewAdvisor,
+                owner_display_name: foundStudent[foundStudent['type']].displayName,
+                comment_summary: []
+            }
+
+            if (viewSection.includes('question')) {
+                assessment.question = foundStudent.ask_history,
+                assessment.question_comment = []
+            }
+
+            if (viewSection.includes('personality')) {
+                assessment.personality_evaluation = foundStudent.personality_assessement.evaluation,
+                assessment.personality_evaluation_comment = []
+            }
+
+            if (viewSection.includes('interest')) {
+                assessment.interest = {
+                    system_detect: foundStudent.interest,
+                    manual_input: foundStudent.interest_manual
+                }
+                assessment.interest_comment = []
+            }
+
+            if (viewSection.includes('introduction')) {
+                assessment.introduction = foundStudent.personality_assessement.description_content,
+                assessment.introduction_comment = []
+            }
+
+            foundStudent.submitted_assessment_history.unshift(assessment);
+            foundStudent.save((err, updateStudent) => {
+                if (err) {
+                    console.error(err);
+                    return res.sendStatus(500);
+                }
+
+                // find advisor(s) id, send to assessment id to each to them's received_assessment_history with this assessment's id
+
+                const advisorReceiveAssessmentOBJ = {
+                    assessment_type: "student_assessment",
+                    from_user_id: updateStudent.id,
+                    assessment_id: updateStudent.submitted_assessment_history[0].id
+                }
+
+                // push assessment obj to user inbox
+                updateStudent.inbox.unshift(advisorReceiveAssessmentOBJ);
+                updateStudent.save()
+
+                // push assessment obj to each advisor's received_assessment_history and inbox
+                viewAdvisor.map((advisor, index) => {
+                    User.findById(advisor.id, (err, foundAdvisor) => {
+                        if (err) {
+                            console.error(err);
+                            res.sendStatus(500);
+                        }
+                        foundAdvisor.received_assessment_history.unshift(advisorReceiveAssessmentOBJ);
+                        foundAdvisor.inbox.unshift(advisorReceiveAssessmentOBJ);
+                        foundAdvisor.save((err, updateAdvisor) => {
+                            if (err) {
+                                console.error(err);
+                                res.sendStatus(500);
+                            }
+                            if (!err && index + 1 === viewAdvisor.length) {
+                                res.sendStatus(200);
+                            }
+                        });
+                    })
+                })
+
+            })
+
+        };
+
+    });
 });
+
+router.get('/get-last-assessment', (req, res) => {
+    User.findById(req.user._id, (err, foundUser) => {
+        if (err) {
+            console.error(err);
+            res.sendStatus(500);
+        } else {
+            const index = foundUser.submitted_assessment_history.length - 1;
+            res.send({assessment: foundUser.submitted_assessment_history[index]});
+        }
+    })
+});
+
+router.get('/get-inbox-assessment', (req, res) => {
+    User.findById(req.user._id, (err, foundRequestUser) => {
+        if (err) {
+            console.error(err);
+            res.sendStatus(500);
+        } else {
+            let assessments = [];
+            const parseAssessment = () => {
+                return new Promise(function(resolve, reject) {
+                    const assessmentsReference = foundRequestUser.inbox;
+                    assessmentsReference.map((inboxItem, index) => {
+                        if (inboxItem.assessment_type === "student_assessment") {
+                            const assessmentHolderID = inboxItem.from_user_id;
+                            const assessmentID = inboxItem.assessment_id;
+                            User.findById(assessmentHolderID, (err, foundAssessmentHolder) => {
+                                if (err) {
+                                    console.error(err);
+                                    res.sendStatus(500);
+                                } else {
+                                    const assessmentIndex = arrayUtility.findIndexByKeyValue(foundAssessmentHolder.submitted_assessment_history, "id", assessmentID);
+                                    if (assessmentIndex != null) {
+                                        const assessmentObj = foundAssessmentHolder.submitted_assessment_history[assessmentIndex];
+                                        if (foundRequestUser[foundRequestUser["type"]].role != "advisor") {
+                                            assessmentObj.owner_display_name = undefined;
+                                        }
+                                        assessments.unshift(assessmentObj);
+                                        if (index + 1 == foundAssessmentHolder.inbox.length) {
+                                            resolve();
+                                        }
+                                    }
+                                }
+                            })
+                        }
+                    });
+                });
+            };
+            parseAssessment().then(() => {
+                res.send({inbox_assessment: assessments});
+            });
+        }
+    })
+});
+
+router.get('/get-assessment/:assessmentID', (req, res) => {
+    const assessmentID = req.params.assessmentID;
+    const requestUserID = req.user._id;
+    User.findById(requestUserID, (err, foundRequestUser) => {
+        if (err) {
+            console.error(err);
+            return res.render(frontEndRoot + 'error/error.ejs', {
+                user: req.user,
+                error: 500,
+                type: 'Error on DB connection.',
+                message: 'Please try again later, or contact us.'
+            });
+        }
+        // request made by advisor
+        if (foundRequestUser[foundRequestUser['type']].role === 'advisor') {
+            const referenceAssessmentInboxIndex = arrayUtility.findIndexByKeyValue(foundRequestUser.inbox, 'assessment_id', assessmentID);
+            if (referenceAssessmentInboxIndex != null) {
+                const assessmentHolderID = foundRequestUser.inbox[referenceAssessmentInboxIndex].from_user_id;
+                User.findById(assessmentHolderID, (err, foundAssessmentHolder) => {
+                    if (err) {
+                        console.error(err);
+                        return res.render(frontEndRoot + 'error/error.ejs', {
+                            user: req.user,
+                            error: 500,
+                            type: 'Error on DB connection.',
+                            message: 'Please try again later, or contact us.'
+                        });
+                    }
+                    const assessmentIndex = arrayUtility.findIndexByKeyValue(foundAssessmentHolder.submitted_assessment_history, 'id', assessmentID);
+                    if (assessmentIndex != null) {
+                        return res.render(frontEndRoot + 'assessment-report.ejs', {assessment: foundAssessmentHolder.submitted_assessment_history[assessmentIndex]});
+                    }
+                    return res.render(frontEndRoot + 'error/error.ejs', {
+                        user: req.user,
+                        error: 404,
+                        type: 'Error searching assessment.',
+                        message: 'Assessment does not exist.'
+                    });
+                });
+            } else {
+                return res.render(frontEndRoot + 'error/error.ejs', {
+                    user: req.user,
+                    error: 404,
+                    type: 'Error reference assessment.',
+                    message: 'This assessment has some issues.'
+                });
+            }
+        } else if (foundRequestUser[foundRequestUser['type']].role === 'student') {
+            // request made by student
+            User.findById(requestUserID, (err, foundAssessmentHolder) => {
+                if (err) {
+                    console.error(err);
+                    return res.render(frontEndRoot + 'error/error.ejs', {
+                        user: req.user,
+                        error: 500,
+                        type: 'Error on DB connection.',
+                        message: 'Please try again later, or contact us.'
+                    });
+                }
+                const assessmentIndex = arrayUtility.findIndexByKeyValue(foundAssessmentHolder.submitted_assessment_history, 'id', assessmentID);
+                if (assessmentIndex != null) {
+                    return res.render(frontEndRoot + 'assessment-report.ejs', {assessment: foundAssessmentHolder.submitted_assessment_history[assessmentIndex]});
+                }
+                return res.render(frontEndRoot + 'error/error.ejs', {
+                    user: req.user,
+                    error: 404,
+                    type: 'Error searching assessment.',
+                    message: 'Assessment does not exist.'
+                });
+            })
+        } else {
+            // request user is either advisor or student
+            return res.render(frontEndRoot + 'error/error.ejs', {
+                user: req.user,
+                error: 403,
+                type: 'Forbidden premission.',
+                message: 'Unindentified user type.'
+            });
+        }
+
+    })
+
+})
 
 module.exports = router;
 
-module.exports.updateInterest = (user, analysis)=>{
-  console.log(analysis);
-};
+const updateInterest = (user, analysis) => {
+    // each part of analysis is in {text, realvence} json format
+    User.findById(user.id, (err, foundUser) => {
+        if (err) {
+            console.error(err);
+        } else {
+            // update interest array
+            // addup realvence if term exist, else push to array
+            analysis.keywords.map((keyword) => {
+                const trueIndex = arrayUtility.findIndexByKeyValue(foundUser.interest, 'term', keyword.text);
+                if (trueIndex != null) {
+                    foundUser.interest[trueIndex].value += keyword.relevance;
+                } else {
+                    foundUser.interest.unshift({term: keyword.text, value: keyword.relevance});
+                }
+            });
+            analysis.entities.map((entity) => {
+                const trueIndex = arrayUtility.findIndexByKeyValue(foundUser.interest, 'term', entity.text);
+                if (trueIndex != null) {
+                    foundUser.interest[trueIndex].value += entity.relevance;
+                } else {
+                    foundUser.interest.unshift({term: entity.text, value: entity.relevance});
+                }
+            });
+            analysis.concepts.map((concept) => {
+                const trueIndex = arrayUtility.findIndexByKeyValue(foundUser.interest, 'term', concept.text);
+                if (trueIndex != null) {
+                    foundUser.interest[trueIndex].value += concept.relevance;
+                } else {
+                    foundUser.interest.unshift({term: concept.text, value: concept.relevance});
+                }
+            });
 
-const getUserDataPath = (userType) => {
-    let path = "";
-    switch (userType) {
-        case "local":
-            path = "local.personality_assessement";
-            break;
-        case "twitter":
-            path = "twitter.personality_assessement";
-            break;
-        case "linkedin":
-            path = "linkedin.personality_assessement";
-            break;
-        case "facebook":
-            path = "facebook.personality_assessement";
-            break;
-        default:
-            throw new Error("System try to evaluate user personality but user type is unexcepted");
-            break;
-    }
-    return path;
+            User.findOneAndUpdate({
+                "_id": user.id
+            }, {
+                "$set": {
+                    "interest": foundUser.interest
+                }
+            }, {
+                "new": true
+            }, (err, update) => {
+                if (err) {
+                    console.error(err);
+                }
+            });
+        }
+    });
+};
+module.exports.updateInterest = updateInterest;
+
+const setIO = (io) => {
+    _io = io;
+    console.log("√ Load socket.io in profile API.".green);
 }
+module.exports.setIO = setIO;
 
 const updateUserSelfDescription = (user, description) => {
     const id = user._id;
-    const updatePath = getUserDataPath(user.type);
-
     return new Promise((resolve, reject) => {
         User.update({
             _id: id
         }, {
             $set: {
-                [updatePath]: {
+                personality_assessement: {
                     last_upload_time: new Date().toISOString(),
                     description_content: description.toString('utf8'),
                     evaluation: {}
@@ -306,15 +730,12 @@ const updateUserSelfDescription = (user, description) => {
 
 const updateUserPersonalityAssessment = (user, assessment) => {
     const id = user._id;
-    const updatePath = getUserDataPath(user.type) + ".evaluation";
-
     return new Promise((resolve, reject) => {
-
         User.update({
             _id: id
         }, {
             "$set": {
-                [updatePath]: assessment
+                'personality_assessement.evaluation': assessment
             }
         }).exec().then((query_report) => {
             resolve(query_report);

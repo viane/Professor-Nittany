@@ -12,11 +12,11 @@ var rrparams = {
 
 var solrClient = retrieve_and_rank.createSolrClient(rrparams);
 
-var ranker_id = '766366x22-rank-2623';
+var ranker_id = '1eec74x28-rank-4480';
 
 exports.enterMessage = function(inputText, questionTopic) {
     return new Promise(function(resolve, reject) {
-        var rrquery = qs.stringify({q: inputText, ranker_id: ranker_id, fl: 'id,answer_id,score,confidence,title,body'});
+        var rrquery = qs.stringify({q: inputText, ranker_id: ranker_id, rows: 30, fl: 'id,answer_id,score,ranker.confidence,title,body'});
         //ask retrive and rank
         solrClient.get('fcselect', rrquery, function(err, searchResponse) {
             if (err) {

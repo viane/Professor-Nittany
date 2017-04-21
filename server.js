@@ -34,6 +34,8 @@ const serverStatus = require(appRoot + '/app/server-status');
 // for system status functions
 const systemStatus = require(appRoot + '/app/system-status');
 
+const profileAPI = require(appRoot+'/app/profile');
+
 // customize console.log font color
 const logColor = require('colors');
 
@@ -61,15 +63,17 @@ app.use(cookieParser()); // read cookies (needed for auth)
 app.set('view engine', 'ejs'); // set up ejs for templating
 
 // required for passport
-app.use(session({
-    secret: 'intellegent student planner',
+const _session = session({
+    secret: 'intellegent academic planner',
     maxAge: 3600000,
     resave: true,
     cookie: {
         maxAge: 3600000
     },
     saveUninitialized: true
-}));
+});
+app.use(_session);
+
 // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
@@ -82,11 +86,14 @@ app.use(express.static('views/FrontEnd'));
 
 const server = http.createServer(app);
 
+const io = require('socket.io').listen(server);
+require(appRoot + '/app/socket-io.js')(io, _session); //handle communication between client and server
+
 require(appRoot + '/config/passport')(passport); // pass passport for configuration
 
-require(appRoot + '/app/routes.js')(app, passport); // Routes
+require(appRoot + '/app/routes.js')(app, passport,io); // Routes
 
-require(appRoot + '/app/socket-io.js')(server); //handle communication between client and server
+profileAPI.setIO(io);
 
 // loading questionFeeds from Disk
 serverStatus.initQuestionFeeds().then((result) => {
@@ -103,7 +110,7 @@ systemStatus.initGetKnowledgeDomain().then((result) => {
 });
 
 server.listen(app.get('port') || 3000,function() {
-    console.log('Express server listening on port ' + app.get('port'))
+    console.log(('√ Server listening on port ' + app.get('port')).green)
 });
 
 module.exports = app;

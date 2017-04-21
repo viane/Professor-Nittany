@@ -4,7 +4,7 @@ const string = require('string');
 const serverStatus = require(appRoot + '/app/server-status');
 const formatter = require(appRoot + '/app/utility-function/formatter');
 let User = require(appRoot + '/app/models/user');
-const naturalLanguageUnderstanding = require(appRoot+'/app/natural-language-understanding');
+const naturalLanguageUnderstanding = require(appRoot + '/app/natural-language-understanding');
 
 module.exports.humanizeString = function(inputQuestionString) {
     const humanizedInput = string(inputQuestionString).humanize().toString().trim();
@@ -47,45 +47,29 @@ module.exports.updateQuestionToServerFeeds = (question) => {
 };
 
 module.exports.logUserQuestion = function(reqUser, questionObj) {
-    const user_id = reqUser.id;
-    const user_type = reqUser.type;
+    return new Promise((resolve, reject) => {
+        const user_id = reqUser.id;
+        const user_type = reqUser.type;
 
-    let path = "";
-    switch (user_type) {
-        case "local":
-            path = "local.ask_history";
-            break;
-        case "twitter":
-            path = "twitter.ask_history";
-            break;
-        case "linkedin":
-            path = "linkedin.ask_history";
-            break;
-        case "facebook":
-            path = "facebook.ask_history";
-            break;
-        default:
-            throw new Error("System try to log user question but user type is unexcepted");
-            break;
-    }
+        //need update newest asked time if question already exists
 
-    //need update newest asked time if question already exists
-
-    User.findOneAndUpdate({
-        "_id": user_id,
-        [path.user_question_body]: {
-            $ne: questionObj.body
-        }
-    }, {
-        "$addToSet": {
-            [path]: {
-                "question_body": questionObj.body
+        User.findOneAndUpdate({
+            "_id": user_id,
+            "ask_history.question_body": {
+                $ne: questionObj.body
             }
-        }
-    }, function(err, doc) {
-        if (err) {
-            throw err; // handle error;
-        }
+        }, {
+            "$push": {
+                "ask_history": {
+                    question_body: questionObj.body
+                }
+            }
+        }, function(err, doc) {
+            if (err) {
+                console.error(err);
+                reject(err);
+            }
+            resolve(doc);
+        });
     });
-
 }

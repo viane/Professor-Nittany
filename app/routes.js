@@ -24,6 +24,8 @@ const nodemailer = require('nodemailer');
 const smtpTransport = require('nodemailer-smtp-transport');
 
 module.exports = function(app, passport) {
+    //demo route
+    require(appRoot + '/app/demo-src/demo')(app);
 
     // =====================================
     // HOME PAGE (with login links) ========
@@ -70,6 +72,7 @@ module.exports = function(app, passport) {
                     if (err) {
                         return res.send({status: 302, type: 'error', information: err});
                     }
+                    req.session.userid = user;
                     return res.send({status: 200, type: 'success', information: "Login success"});
                 });
             }
@@ -94,7 +97,7 @@ module.exports = function(app, passport) {
                 if (err) {
                     return res.send({status: 302, type: 'error', information: err});
                 } else {
-                    return res.send({status: 200, type: 'success', information: "Successfully registered, a activation link has sent to your email."});
+                    return res.send({status: 200, type: 'success', information: "Successfully registered, an activation link has been sent to your email."});
                 }
             })(req, res, next)
         }
@@ -116,7 +119,7 @@ module.exports = function(app, passport) {
                 user.save((err, newUser) => {
                     if (err) {
                         console.error(err);
-                        return res.render(frontEndRoot + 'active-account.ejs', {system_error: 'There is an issue with system, please contact us.'});
+                        return res.render(frontEndRoot + 'active-account.ejs', {system_error: 'There is an issue with the system, please contact us.'});
                     }
                     req.logIn(newUser, function(err) {
                         if (err) {
@@ -124,18 +127,23 @@ module.exports = function(app, passport) {
                         }
                     });
                     // email notice account is activated
-                    const mailer = nodemailer.createTransport(smtpTransport({
-                        service: 'gmail',
+                    const mailer = nodemailer.createTransport({
+                        host: "smtp-mail.outlook.com", // hostname
+                        secureConnection: false, // TLS requires secureConnection to be false
+                        port: 587, // port for secure SMTP
+                        tls: {
+                            ciphers: 'SSLv3'
+                        },
                         auth: {
-                            user: 'xiaoyuz2011@gmail.com',
-                            pass: 'Zsbqwacc1'
+                            user: 'IntelligentAcademicPlanner@outlook.com',
+                            pass: 'IAPGraduation2017'
                         }
-                    }));
+                    });
                     const mailOptions = {
                         to: newUser.local.email,
-                        from: 'Intelligent Academic Advisor <xpz5043@psu.edu>',
+                        from: 'Intelligent Academic Advisor <IntelligentAcademicPlanner@outlook.com>',
                         subject: 'Intelligent Academic Advisor Account Activation',
-                        html: '<html><body style="background-color:white; border-radius:3px; padding: 30px;"><h1>Intelligent Academic Planer Reset Password</h1><p>This is a confirmation that your account ' + newUser.local.email + ' has just been activated.</p></body></html>'
+                        html: '<html><body style="background-color:white; border-radius:3px; padding: 30px;"><h1>Intelligent Academic Planner Account Activation</h1><p>This is a confirmation that your account ' + newUser.local.email + ' has just been activated.</p></body></html>'
                     };
                     mailer.sendMail(mailOptions, (err) => {
                         if (err) {
@@ -143,7 +151,7 @@ module.exports = function(app, passport) {
                         }
                     });
                     return res.render(frontEndRoot + 'active-account.ejs', {
-                        success: 'Your account is successfully activated now. You can now go to your <a href=\'/profile\'>Profile Page</a> now',
+                        success: 'Your account is successfully activated now. You can go to your <a href=\'/profile\'>Profile Page</a> now',
                         activation_email: newUser.local.email
                     });
                 })
@@ -189,39 +197,12 @@ module.exports = function(app, passport) {
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the loginChecking.isLoggedInRedirect function)
     app.get('/profile', loginChecking.isLoggedInRedirect, function(req, res) {
-        let path = "";
-
-        switch (req.user.type) {
-            case "local":
-                path = "local";
-                break;
-            case "twitter":
-                path = "twitter";
-                break;
-            case "linkedin":
-                path = "linkedin";
-                break;
-            case "facebook":
-                path = "facebook";
-                break;
-            case "google":
-                path = "google";
-                break;
-            default:
-                throw new Error("Request user type is unexcepted");
-                break;
-        };
-
         User.findById(req.user._id, function(err, foundUser) {
-            let personality = {};
-            if (foundUser[path].personality_assessement.evaluation) {
-                personality = foundUser[path].personality_assessement.evaluation.personality;
-            }
             res.render(frontEndRoot + 'profile.ejs', {
                 user: req.user, // get the user out of session and pass to template
-                introduction: foundUser[path].personality_assessement.description_content,
-                ask_history: foundUser[path].ask_history,
-                personality_assessement: foundUser[path].personality_assessement.evaluation,
+                introduction: foundUser.personality_assessement.description_content,
+                ask_history: foundUser.ask_history,
+                personality_assessement: foundUser.personality_assessement.evaluation,
                 privacy: foundUser.privacy
             });
         });
@@ -341,8 +322,7 @@ module.exports = function(app, passport) {
     ///////////////////////////////////////////////////
 
     app.get('/inbox', loginChecking.isLoggedInRedirect, function(req, res) {
-      console.log(req.user);
-        res.render(frontEndRoot + '/inbox.ejs',{user: req.user});
+        res.render(frontEndRoot + '/inbox.ejs', {user: req.user});
     });
 
     // =====================================
@@ -398,7 +378,6 @@ module.exports = function(app, passport) {
         var questionContext = req.body.question;
         var answerContext = req.body.answer;
         var tagContext = req.body.tag;
-        console.log(req.user._id);
         if (questionContext.length == 0) {
             res.send({user: req.user, status: "302", type: 'warning', message: "Question can not be empty"})
         } else {
@@ -514,7 +493,6 @@ module.exports = function(app, passport) {
     // router for user ask questionn not on index page
     app.get('/external-ask', (req, res) => {
         const question = req.query.question;
-        console.log(req.query.question);
         req.external_question = question;
         res.render(frontEndRoot + 'index.ejs', {
             external_question: req.external_question,

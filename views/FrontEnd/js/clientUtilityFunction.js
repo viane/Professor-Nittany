@@ -338,7 +338,7 @@ $(() => {
         };
 
         // for upload self description at /uploadPersonal
-        var myDropzone = new Dropzone("#upload-description-Text-File", {url: "/api/profile/upload/upload-description-text-file"});
+        const myDropzone = new Dropzone("#upload-description-Text-File", {url: "/api/profile/upload/upload-description-text-file"});
         myDropzone.on("success", function(file) {
             // prompt success upload
             generateNotice('success', 'Successfully upload your document.');
@@ -357,12 +357,17 @@ $(() => {
                     generateNotice(res.type, "Error, " + res.information);
                 } else {
                     res.json().then(function(res) {
+                        // refresh introduction
                         $('#introduction-content-p').text(res.introduction);
+
+                        // re-render interest
+                        setTimeout(() => {
+                            fetchAndRenderInterest()
+                        }, 1000);
                     })
                 };
-
                 // change left text to the same high as dropzone, for better view
-                $('#introduction-content-p').css('height', $('.dropzone').height() + "px");
+                $('#introduction-content-p').css('height', $('.dropzone').height()+24 + "px");
             }).catch(function(err) {
                 generateNotice('error', err)
             });
@@ -459,10 +464,14 @@ $(document).ready(function() {
         const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");
         const password = $('#signup-form-password').val();
         if (!passwordValidRegex.test(password) || spcialCharRegex.test(password) || password.length == 0) {
-          generateNotice('error','Invalid password format, please check the rules of password.');
-          $('.password-rule-list').fadeIn('fast').effect( "shake" );
-          return;
+           return generateNotice('error', 'Invalid password format, please check the rules of password.');
+            $('.password-rule-list').fadeIn('fast').effect("shake");
         }
+
+        // replace submit btn to loader animation before request
+        $("#signup-form button").fadeOut('fast');
+        $("#signup-form .loader").fadeIn('fast');
+
         // post signup request to server
         const url = '/signup';
         const $form = $(this),
@@ -480,14 +489,19 @@ $(document).ready(function() {
         }).then(function(res) {
             res.json().then(function(res) {
                 if (res.status !== 200) {
-                    generateNotice(res.type, "Error, " + res.information);
-                    return;
+                    return generateNotice(res.type, "Error, " + res.information);
                 } else {
                     generateNotice(res.type, res.information);
                     // empty signup form
-                    $('#signup-form input').each((index,element)=>{$(element).val("")});
+                    $('#signup-form input').each((index, element) => {
+                        $(element).val("")
+                    });
                 }
             })
+
+            // when finish (success) restore submit button and hide loader
+            $("#signup-form .loader").fadeOut('fast');
+            $("#signup-form button").fadeIn('fast');
         }).catch(function(err) {
             generateNotice('error', err)
         });
@@ -604,11 +618,13 @@ $(() => {
 // ask-question-module function
 //////////////////////////////////////////////
 
-$(function() {
-    if ($('#external_question').length) {
+$(() => {
+    if ($('#external_question').text().length > 0) {
         const external_question = $('#external_question').text();
         $('#userQueryInput').val(external_question);
-        $('#querySubmitBtn').click();
+        setTimeout(() => {
+            $('#querySubmitBtn').click();
+        }, 300);
     }
 })
 
@@ -845,15 +861,37 @@ const formatAnswerByTag = (input) => {
 
     //for [extend]...[/extend] same step above but replace to
     //<span class="extend-btn">Read More</span><div class="extend-hide">...<div>
-    if (input.match("\\[extend\\].*?\\[/extend\\]")) {
+    while (input.match("\\[extend\\].*?\\[/extend\\]")) {
 
-        let extendText = input.match("\\[extend\\].*?\\[/extend\\]").toString();
+        let initExtendText = input.match("\\[extend\\].*?\\[/extend\\]").toString();
 
-        extendText = extendText.replace(new RegExp("\\[extend\\]", "g"), "");
+        let extendText = initExtendText.replace(new RegExp("\\[extend\\]", "g"), "");
 
         extendText = extendText.replace(new RegExp("\\[/extend\\]", "g"), "");
 
-        input = input.replace(new RegExp("\\[extend\\].*?\\[/extend\\]", "g"), "<div><span class=\"read-more btn btn-secondary\">Read More</span><div class=\"answer-body hide\">" + extendText + "</div></div>");
+        input = input.replace(initExtendText, "<div><span class=\"read-more btn btn-secondary\">Read More</span><div class=\"answer-body hide\">" + extendText + "</div></div>");
+    }
+
+    while (input.match("\\[tip\\].*?\\[/tip\\]")) {
+        let initTipText = input.match("\\[tip\\].*?\\[/tip\\]").toString();
+
+        let tipText = initTipText.replace(new RegExp("\\[tip\\]", "g"), "");
+
+        tipText = tipText.replace(new RegExp("\\[/tip\\]", "g"), "");
+
+        tipText = "</br></br><i>Tip: " + tipText + "</i>";
+
+        input = input.replace(initTipText, tipText);
+    }
+
+    while (input.match("\\[img\\].*?\\[/img\\]")) {
+        let initImgText = input.match("\\[img\\].*?\\[/img\\]").toString();
+
+        let imgSrc = initImgText.replace(new RegExp("\\[img\\]", "g"), "").replace(new RegExp("\\[/img\\]", "g"), "");
+
+        imgDomStr = "</br><img src=\"" + imgSrc + "\"></br>";
+
+        input = input.replace(initImgText, imgDomStr);
     }
 
     return input;

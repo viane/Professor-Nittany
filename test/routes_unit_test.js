@@ -509,28 +509,6 @@ describe('Unit Testing', function (done) {
 						});
 						});
 					});
-					it ('/profile should return error for invalid type', function (done) {			
-							var newUser = new user();
-							newUser.type = "blah!";
-							newUser.local.email = "intelligentacademicplanner@outlook.com";
-							newUser.hashPassword("Testing123");
-							newUser.local.name = "Tester";
-							newUser.local.account_role = "Student";
-        					newUser.local.account_status = "active";
-							newUser.save();
-							logValidUserIn( function () {
-								server.get('/profile').end(function (error, response) {
-								if (error) {
-									return done(error);
-								}
-								else {
-									expect(response.statusCode).to.not.equal(200);
-									expect(response.text).to.include("Request user type is unexcepted");
-									done();
-								}
-							});
-						});
-					});
 				});
 			});
 		describe('~~~~~NonLocal Login/SignUp~~~~~', function () {

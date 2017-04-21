@@ -71,12 +71,12 @@
 					<div class="panel panel-primary">
 						<div class="bs-callout bs-callout-primary text-left">
 							<h4>Your words</h4>
-							<canvas id="interest-canvas" width="600" height="420"></canvas>
+							<canvas id="interest-canvas" width="800" height="420"></canvas>
 						</div>
 
 						<div class="bs-callout bs-callout-primary text-left">
 							<div class="row">
-								<div class="col-xs-12 col-md-9">
+								<div id="introduction-edit-section" class="col-xs-12 col-md-9">
 									<h4>Introduction</h4>
 									<p id="introduction-content-p" class="editable" contenteditable="true">
 										<% if(!introduction) { %>
@@ -87,6 +87,12 @@
 												<%- introduction  %>
 													<% } %>
 									</p>
+									<div class="edit-bar">
+										<div id="introduction-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div>
+										<div id="introduction-redo-btn"><i class="fa fa-repeat edit-btn" aria-hidden="true"><span> Redo</span></i></div>
+										<div id="introduction-undo-btn"><i class="fa fa-undo edit-btn" aria-hidden="true"><span> Undo</span></i></div>
+										<div id="introduction-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
+									</div>
 								</div>
 								<div class="col-xs-6 col-md-3">
 									<div id="uploadFileSection" class="text-center">
@@ -95,44 +101,51 @@
 									</div>
 								</div>
 							</div>
-							<div class="row text-center btn-row">
-								<button type="button" class="btn btn-success prof-btn-md" id="intro-save-btn">Save</button>
-								<button type="button" class="btn btn-danger prof-btn-md" id="intro-cancel-btn">Cancel</button>
-							</div>
 						</div>
 
 						<div class="bs-callout bs-callout-primary text-left">
-							<h4>Interests</h4>
-							<!-- http://vitalets.github.io/x-editable/demo-bs3.html -->
-							<p class="editable" contenteditable="true">
-								What we think you are interested in!
-							</p>
-							<div class="row text-center btn-row">
-								<button type="button" class="btn btn-success prof-btn-md" id="interests-save-btn">Save</button>
-								<button type="button" class="btn btn-danger prof-btn-md" id="interests-cancel-btn">Cancel</button>
+							<div class="row">
+								<div class="col-xs-12 col-md-9">
+									<h4>Interests</h4>
+									<!-- http://vitalets.github.io/x-editable/demo-bs3.html -->
+									<!-- <p id="user-interest-input" data-placeholder="Add your interests here, separated by comma" class="editable" contenteditable="true"></p> -->
+									<div id="user-interest-tags">
+										<input type="text" value="" placeholder="Tag by comma or return" />
+									</div>
+									<div class="edit-bar">
+										<!-- <div id="interest-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div> -->
+										<div id="interest-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
+									</div>
+								</div>
 							</div>
 						</div>
 						<div class="bs-callout bs-callout-primary text-left">
 							<h4>Personality</h4>
-							<div id="personality-assessement" <% if(personality_assessement) { %> style="height: 450px" <% } %>>
-								<p id="personality-assessement-insufficient-word-message">To get a personality assessment, please tell us more about yourself (at least 100 words)</p>
-								<% if(!personality_assessement) { %>
-									<p>Write an introduction to get your personality assessment</p>
-									<% } %>
+							<div id="personality-assessement" <% if(!personality_assessement) { %> style="height: 450px"
+								<% } %>>
+									<p id="personality-assessement-insufficient-word-message">To get a personality assessment, please write an introduction about yourself (at least 100 words)</p>
 							</div>
 						</div>
 						<script>
-							const questionHistory = <% if(ask_history) { %> <%- JSON.stringify(ask_history) %> <% }else{ %> [] <% } %> ;
-							let personality_assessement =  <% if(personality_assessement) { %>  <%- JSON.stringify(personality_assessement) %> <% }else{ %> [] <% } %> ;
+							const questionHistory = <% if(ask_history) { %>
+							<%- JSON.stringify(ask_history) %>
+							<% }else{ %> []
+							<% } %>;
+							let personality_assessement = <% if(personality_assessement) { %>
+							<%- JSON.stringify(personality_assessement) %>
+							<% }else{ %> []
+							<% } %>;
 						</script>
 
 						<div class="bs-callout bs-callout-info text-left">
-							<h4>Favorite</h4>
-							<div id="favorite-question-list"> </div>
+							<h4>Favorite Question and Answer</h4>
+							<% if(ask_history.length == 0) { %> Ask some questions and favorite them to fill here! <% } %>
+							<div id="favorite-question-list"></div>
 						</div>
 
 						<div class="bs-callout bs-callout-info text-left">
-							<h4>Question History</h4>
+							<h4>Other Question and History</h4>
+							<% if(ask_history.length == 0) { %> Ask some questions to leave a trace! <% } %>
 							<div id="asked-question-list"></div>
 						</div>
 					</div>

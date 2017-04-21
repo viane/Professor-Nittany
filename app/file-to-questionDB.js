@@ -52,7 +52,6 @@ router.post('/upload-by-text-file', busboy({
         fstream = fs.createWriteStream(appRoot + '/app/question-file/' + filename);
         file.pipe(fstream);
         fstream.on('close', function() {
-            console.log("Finished writting admin upload question files");
             // for each line in document
             fs.createReadStream(appRoot + '/app/question-file/' + filename).pipe(es.split()).pipe(es.mapSync(function(line) {
                 // do things with line here
@@ -62,7 +61,7 @@ router.post('/upload-by-text-file', busboy({
                 // Store in DB
             }).on('error', function(err) {
                 throw err;
-                console.log('Error while reading file.');
+                console.error('Error while reading file.');
             }).on('end', function() {
                 res.sendStatus(200);
             }));

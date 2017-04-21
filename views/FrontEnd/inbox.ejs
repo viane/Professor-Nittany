@@ -40,6 +40,7 @@
     background-color:#fff;
     padding:35px 20px;
     margin-bottom:20px;
+    display: none;
   }
   h1.content-title{
     font-size:32px;
@@ -66,7 +67,6 @@
   ul.mail-list li a{
     display:inline-block;
     border-bottom:1px dotted #CFCFCF;
-    padding:10px;
     text-decoration:none;
   }
   ul.mail-list li:last-child a{
@@ -108,19 +108,19 @@
 <!-- start navigation  -->
       <div class="col-sm-3">
         <div class="list-group" id="inbox-navigation">
-          <a href="#!show-inbox" class="list-group-item" id="inbox-in">Inbox <span class="badge" id="inbox-in-badge">1</span></a>
-          <a href="#!show-outbox" class="list-group-item" id="inbox-out">Outbox <span class="badge" id="inbox-out-badge"></span></a>
-          <a href="#!show-trash" class="list-group-item" id="inbox-trash">Trash <span class="badge" id="inbox-trash-badge"></span></a>
+          <a href="" data-tab="show-inbox" class="list-group-item" id="inbox-in">Assessment Box <span class="badge" id="inbox-in-badge"></span></a>
+          <!-- <a href="#!show-outbox" class="list-group-item" id="inbox-out">Outbox <span class="badge" id="inbox-out-badge"></span></a> -->
+          <a href="" data-tab="show-trash" class="list-group-item" id="inbox-trash">Trash <span class="badge" id="inbox-trash-badge"></span></a>
           <!-- <a href="#!show-assessments" class="list-group-item" id="inbox-assess">Assessments</a> -->
         </div>
       </div>
 <!-- end navigation -->
 <!--  start inbox  -->
-      <div class="col-sm-9">
+      <div class="col-sm-9 inbox-tab">
         <div class="content-container clearfix" id="show-inbox">
-          <h1 class="content-title">Inbox</h1><hr>
+          <h1 class="content-title">Assessment Box</h1><hr>
           <div class="row">
-            <ul class="mail-list text-left" id="inbox">
+            <ul class="mail-list text-left" id="assessment-box-list">
               <li>
                 <div class="container col-sm-12 mail-header">
                   <a href="">
@@ -133,7 +133,7 @@
             </ul>
           </div>
         </div>
-        <div class="content-container clearfix" id="show-outbox">
+        <!-- <div class="content-container clearfix" id="show-outbox">
           <h1 class="content-title">Outbox</h1><hr>
           <div class="row">
             <ul class="mail-list text-left" id="outbox">
@@ -148,7 +148,7 @@
               </li>
             </ul>
           </div>
-        </div>
+        </div> -->
         <div class="content-container clearfix" id="show-trash">
           <h1 class="content-title">Trash</h1><hr>
           <div class="row">
@@ -203,47 +203,5 @@
 </div>
   <!-- end of menu bar -->
   <%- include footer.ejs %>
-<script type="text/javascript">
-
-var links = document.getElementById('inbox-navigation').getElementsByTagName('a');
-for(var i = 0, link; link = links[i]; i++) {
-  link.onclick = showContent;
-  // Hide content divs by default
-  getContentDiv(link).style.display = 'none';
-}
-
-// Show the first content div
-if(links.length > 0) showContent.apply(links[0]);
-
-var current;
-
-function showContent() {
-
-  // hide old content
-  if(current) current.style.display = 'none';
-
-  current = getContentDiv(this);
-  if(!current) return true;
-
-  //current.innerHTML = "This is where the xml variable content should go";
-  current.style.display = 'block';
-
-  return true;
-
-}
-
-function getContentDiv(link) {
-
-  var linkTo = link.getAttribute('href');
-
-  // Make sure the link is meant to go to a div
-  if(linkTo.substring(0, 2) != '#!') return;
-  linkTo = linkTo.substring(2);
-
-  return document.getElementById(linkTo);
-
-}
-
-</script>
 </body>
 </html>

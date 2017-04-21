@@ -32,22 +32,59 @@ const userSchema = mongoose.Schema({
             default: false
         }
     },
-    inbox: [
+    ask_history: [
         {
-            title: String,
-            date: {
+            question_body: {
+                type: String
+            },
+            favorite: {
+                type: Boolean,
+                default: false
+            },
+            answer_body: {
+                type: String
+            },
+            ask_time: {
                 type: Date,
                 default: Date.now
             },
-            senderID: String,
-            senderDisplayName: String,
-            body: String,
-            isViewed: {
-                type: Boolean,
-                default: false
-            }
+            ask_count: {
+                type: Number,
+                default: 1
+            },
+            question_concept: [
+                {
+                    type: mongoose.Schema.Types.Mixed
+                }
+            ],
+            question_entitie: [
+                {
+                    type: mongoose.Schema.Types.Mixed
+                }
+            ],
+            question_taxonomy: [
+                {
+                    type: mongoose.Schema.Types.Mixed
+                }
+            ],
+            question_keyword: [
+                {
+                    type: mongoose.Schema.Types.Mixed
+                }
+            ]
         }
     ],
+    interest: [mongoose.Schema.Types.Mixed],
+    interest_manual: [mongoose.Schema.Types.Mixed],
+    inbox: [mongoose.Schema.Types.Mixed],
+    personality_assessement: {
+        last_upload_time: {
+            type: Date,
+            default: Date.now
+        },
+        description_content: String,
+        evaluation: mongoose.Schema.Types.Mixed
+    },
     local: {
         email: {
             type: String
@@ -68,54 +105,7 @@ const userSchema = mongoose.Schema({
             type: String,
             default: "student"
         },
-        ask_history: [
-            {
-                question_body: {
-                    type: String
-                },
-                favorite: {
-                    type: Boolean,
-                    default: false
-                },
-                ask_time: {
-                    type: Date,
-                    default: Date.now
-                },
-                ask_count: {
-                    type: Number,
-                    default: 1
-                },
-                question_concept: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_entitie: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_taxonomy: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_keyword: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ]
-            }
-        ],
-        interest: [mongoose.Schema.Types.Mixed],
-        personality_assessement: {
-            last_upload_time: {
-                type: Date,
-                default: Date.now
-            },
-            description_content: String,
-            evaluation: mongoose.Schema.Types.Mixed
-        },
+
         resetPasswordToken: {
             type: String,
             default: null
@@ -143,54 +133,6 @@ const userSchema = mongoose.Schema({
         role: {
             type: String,
             default: "student"
-        },
-        ask_history: [
-            {
-                question_body: {
-                    type: String
-                },
-                favorite: {
-                    type: Boolean,
-                    default: false
-                },
-                ask_time: {
-                    type: Date,
-                    default: Date.now
-                },
-                ask_count: {
-                    type: Number,
-                    default: 1
-                },
-                question_concept: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_entitie: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_taxonomy: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_keyword: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ]
-            }
-        ],
-        interest: [mongoose.Schema.Types.Mixed],
-        personality_assessement: {
-            last_upload_time: {
-                type: Date,
-                default: Date.now
-            },
-            description_content: String,
-            evaluation: mongoose.Schema.Types.Mixed
         }
     },
     twitter: {
@@ -202,54 +144,6 @@ const userSchema = mongoose.Schema({
         role: {
             type: String,
             default: "student"
-        },
-        ask_history: [
-            {
-                question_body: {
-                    type: String
-                },
-                favorite: {
-                    type: Boolean,
-                    default: false
-                },
-                ask_time: {
-                    type: Date,
-                    default: Date.now
-                },
-                ask_count: {
-                    type: Number,
-                    default: 1
-                },
-                question_concept: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_entitie: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_taxonomy: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_keyword: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ]
-            }
-        ],
-        interest: [mongoose.Schema.Types.Mixed],
-        personality_assessement: {
-            last_upload_time: {
-                type: Date,
-                default: Date.now
-            },
-            description_content: String,
-            evaluation: mongoose.Schema.Types.Mixed
         }
     },
     linkedin: {
@@ -262,54 +156,6 @@ const userSchema = mongoose.Schema({
         role: {
             type: String,
             default: "student"
-        },
-        ask_history: [
-            {
-                question_body: {
-                    type: String
-                },
-                favorite: {
-                    type: Boolean,
-                    default: false
-                },
-                ask_time: {
-                    type: Date,
-                    default: Date.now
-                },
-                ask_count: {
-                    type: Number,
-                    default: 1
-                },
-                question_concept: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_entitie: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_taxonomy: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_keyword: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ]
-            }
-        ],
-        interest: [mongoose.Schema.Types.Mixed],
-        personality_assessement: {
-            last_upload_time: {
-                type: Date,
-                default: Date.now
-            },
-            description_content: String,
-            evaluation: mongoose.Schema.Types.Mixed
         }
     },
     google: {
@@ -324,54 +170,6 @@ const userSchema = mongoose.Schema({
         role: {
             type: String,
             default: "student"
-        },
-        ask_history: [
-            {
-                question_body: {
-                    type: String
-                },
-                favorite: {
-                    type: Boolean,
-                    default: false
-                },
-                ask_time: {
-                    type: Date,
-                    default: Date.now
-                },
-                ask_count: {
-                    type: Number,
-                    default: 1
-                },
-                question_concept: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_entitie: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_taxonomy: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ],
-                question_keyword: [
-                    {
-                        type: mongoose.Schema.Types.Mixed
-                    }
-                ]
-            }
-        ],
-        interest: [mongoose.Schema.Types.Mixed],
-        personality_assessement: {
-            last_upload_time: {
-                type: Date,
-                default: Date.now
-            },
-            description_content: String,
-            evaluation: mongoose.Schema.Types.Mixed
         }
     },
     submitted_assessment_history: [
@@ -384,6 +182,8 @@ const userSchema = mongoose.Schema({
                 type: Date,
                 default: Date.now
             },
+            user_viewed_before_change:{type:Boolean, default:true},
+            view_section: Array,
             question: Array,
             question_comment: Array,
             personality_evaluation: Array,
@@ -394,17 +194,29 @@ const userSchema = mongoose.Schema({
             introduction_comment: Array,
             reviewer: Array,
             comment_summary: Array,
-            advisor_viewed_current: Array,
-            advisor_viewed_before_user_last_check: Array
+            user_last_view_time: {
+                type: Date,
+                default: Date.now
+            },
+            advisor_last_comment_time: {
+                type: Date,
+                default: null
+            },
+            advisor_last_comment_list: {
+                type: Array,
+                default: []
+            },
+            owner_display_name:String
         }
     ],
     received_assessment_history: [
         {
+            assessment_type: String,
             from_user_id: String,
             assessment_id: String
         }
     ],
-    inbox_trash:[mongoose.Schema.Types.Mixed]
+    inbox_trash: [mongoose.Schema.Types.Mixed]
 }, {strict: true});
 
 // checking if password is valid using bcrypt
