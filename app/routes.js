@@ -20,6 +20,7 @@ const system = require(appRoot + '/app/api/system');
 const loginChecking = require(appRoot + '/app/utility-function/login-checking');
 const phoneQA = require(appRoot + '/app/api/phone-question-answer');
 const smsQA = require(appRoot + '/app/api/sms-question-answer');
+const externalQA = require(appRoot + '/app/api/ask-question');
 const nodemailer = require('nodemailer');
 const smtpTransport = require('nodemailer-smtp-transport');
 
@@ -525,11 +526,14 @@ module.exports = function(app, passport) {
     // system AI APIs
     app.use('/api/system', loginChecking.isAdminRedirect, system);
 
-    // phone system
+    // phone call system api
     app.use('/api/phone-question-answer', phoneQA);
 
-    // sms system
+    // sms system api
     app.use('/api/sms-question-answer', smsQA);
+
+    // 3rd party ask api
+    app.use('/api/ask-question', externalQA);
 };
 
 function checkSignUpParameter(req, res) {
