@@ -7,9 +7,10 @@ let User = require(appRoot + '/app/models/user');
 const questionAnswer = require(appRoot + '/app/question-answer');
 
 router.post('/visitor/ask', (req, res) => {
+    const question = req.body.question;
     // ask IAP as visitor
-    questionAnswer.ask(null, req.body.questionBody).then(function(result) {
-        res.send(result);
+    questionAnswer.ask(null, question).then(function(result) {
+        res.send(result.response.docs);
     }).catch(function(err) {
         console.error(err);
         res.send(err);
