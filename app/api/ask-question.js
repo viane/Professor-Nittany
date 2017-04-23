@@ -8,7 +8,7 @@ const questionAnswer = require(appRoot + '/app/question-answer');
 
 router.post('/visitor/ask', (req, res) => {
     // ask IAP as visitor
-    questionAnswer.ask(null, req.body.Body).then(function(result) {
+    questionAnswer.ask(null, req.body.questionBody).then(function(result) {
         res.send(result);
     }).catch(function(err) {
         console.error(err);
