@@ -880,12 +880,24 @@ button.adv-btn {
   width:auto;
 }
 
-.question-log-question-body:before{
+/*.question-log-question-body:before{
   content: "Q: ";
 }
 
 .question-log-answer-body:before{
   content: "A: ";
+}*/
+
+.question-fav-btn,.question-history-delete-btn{
+  float: right;
+}
+
+.question-answer-separartor{
+  margin-top: 15px;
+    margin-bottom: 10px;
+  height: 10px;
+border: 0;
+box-shadow: 0 10px 10px -10px #8c8b8b inset;
 }
 
 /* default loader animation*/
