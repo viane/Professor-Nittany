@@ -850,7 +850,7 @@ $(() => {
 // Get user assessments in inbox page
 //////////////////////////////////////////
 $(() => {
-  if (location.href.match(/http:\/\/localhost:3000\/inbox.*/gi) || location.href.match(/http[s*]:\/\/intelligent-student-advisor.herokuapp.com\/inbox.*/gi)) {
+  if (location.href.match(/localhost:3000\/inbox.*/gi) || location.href.match(/http[s*]:\/\/intelligent-student-advisor.herokuapp.com\/inbox.*/gi)) {
     // inbox tab click handler
     $('#inbox-navigation a').click(function(e) {
       e.preventDefault();
@@ -900,14 +900,22 @@ const getAndRenderUserInboxAssessment = () => {
       return;
     } else {
       res.json().then(function(result) {
-        let unreadCounter = 0;
-        result.inbox_assessment.map((assessment) => {
-          const inboxItemWrapper = parseInboxAssessment(assessment);
-          // end of wrapper
-          $('#assessment-box-list').append(inboxItemWrapper);
-        });
-        if (unreadCounter > 0) {
-          $('#inbox-in-badge').text(unreadCounter);
+        if (result.inbox_assessment.length === 0) {
+          $('#assessment-box-list').append("<li><div \"container col-sm-12 mail-header\">Your Inbox is empty</div></li>");
+        }else{
+          let unreadCounter = 0;
+          result.inbox_assessment.map((assessment) => {
+            const inboxItemWrapper = parseInboxAssessment(assessment);
+            // end of wrapper
+            $('#assessment-box-list').append(inboxItemWrapper);
+            // add unread counter
+            if (!assessment.user_viewed_before_change) {
+              unreadCounter++;
+            }
+          });
+          if (unreadCounter > 0) {
+            $('#inbox-in-badge').text(unreadCounter);
+          }
         }
         // remove loader
         $('.loader').remove();
@@ -948,17 +956,18 @@ const parseInboxAssessment = (assessment) => {
   //////////////////////////////////////////
   // display summary of selected section in assessment
   //////////////////////////////////////////
+  inboxItemWrapper += "<i class=\"fa fa-eye\" aria-hidden=\"true\"></i>";
   if (assessment.view_section.includes("introduction")) {
-    inboxItemWrapper += "<span class=\"mail-introduction\"> Introduction: " + assessment.introduction + "</span>";
+    inboxItemWrapper += "<span class=\"mail-introduction\"> Introduction </span>";
   }
   if (assessment.view_section.includes("interest")) {
-    inboxItemWrapper += "<span class=\"mail-interest\"> Interest: " + assessment.interest + "</span>";
+    inboxItemWrapper += "<span class=\"mail-interest\"> Interest </span>";
   }
   if (assessment.view_section.includes("personality")) {
-    inboxItemWrapper += "<span class=\"mail-personality\"> Personality Analysis: " + assessment.personality + "</span>";
+    inboxItemWrapper += "<span class=\"mail-personality\"> Personality Analysis</span>";
   }
-  if (assessment.view_section.includes("introduction")) {
-    inboxItemWrapper += "<span class=\"mail-question\"> Question History: " + assessment.question + "</span>";
+  if (assessment.view_section.includes("question")) {
+    inboxItemWrapper += "<span class=\"mail-question\"> Question History</span>";
   }
 
   inboxItemWrapper += "</div></li>";

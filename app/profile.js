@@ -433,6 +433,7 @@ router.post('/send-assessment', (req, res) => {
             let assessment = {
                 view_section: viewSection,
                 reviewer: viewAdvisor,
+                user_viewed_before_change:true,
                 owner_display_name: foundStudent[foundStudent['type']].displayName,
                 comment_summary: []
             }
@@ -529,6 +530,9 @@ router.get('/get-inbox-assessment', (req, res) => {
             const parseAssessment = () => {
                 return new Promise(function(resolve, reject) {
                     const assessmentsReference = foundRequestUser.inbox;
+                    if (foundRequestUser.inbox.length === 0) {
+                       return res.send({inbox_assessment: []});
+                    }
                     assessmentsReference.map((inboxItem, index) => {
                         if (inboxItem.assessment_type === "student_assessment") {
                             const assessmentHolderID = inboxItem.from_user_id;
@@ -541,7 +545,7 @@ router.get('/get-inbox-assessment', (req, res) => {
                                     const assessmentIndex = arrayUtility.findIndexByKeyValue(foundAssessmentHolder.submitted_assessment_history, "id", assessmentID);
                                     if (assessmentIndex != null) {
                                         const assessmentObj = foundAssessmentHolder.submitted_assessment_history[assessmentIndex];
-                                        if (foundRequestUser[foundRequestUser["type"]].role != "advisor") {
+                                        if (foundRequestUser[foundRequestUser["type"]].role === "student") {
                                             assessmentObj.owner_display_name = undefined;
                                         }
                                         assessments.unshift(assessmentObj);

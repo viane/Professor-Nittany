@@ -194,10 +194,6 @@ const userSchema = mongoose.Schema({
             introduction_comment: Array,
             reviewer: Array,
             comment_summary: Array,
-            user_last_view_time: {
-                type: Date,
-                default: Date.now
-            },
             advisor_last_comment_time: {
                 type: Date,
                 default: null
