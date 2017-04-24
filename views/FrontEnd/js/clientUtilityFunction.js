@@ -124,7 +124,7 @@ $(document).ready(function() {
             res.json().then(function(result) {
                 generateNotice(result.type, result.information);
                 setInterval(function() {
-                    window.location.href = "/admin"
+                    location.href = "/admin"
                 }, 2500);
             })
         }).catch(function(err) {
@@ -145,9 +145,9 @@ $(function() {
     $("#upload-Question-Text-File").dropzone({url: "/api/admin/upload/upload-by-text-file"});
 });
 
-// display personality assessement on profile game
+// display personality assessement on profile page
 $(() => {
-    if (location.href === "http://localhost:3000/profile" || location.href === "https://intelligent-student-advisor.herokuapp.com/profile") {
+    if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) || location.href.match(/http[s*]:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
 
         var svg = d3.select("#personality-assessement").append("svg").append("g")
 
@@ -538,7 +538,7 @@ $(document).ready(function() {
                 } else {
                     generateNotice(res.type, res.information);
                     setTimeout(function() {
-                        window.location.href = '/profile';
+                        location.href = '/profile';
                     }, 1000);
                 }
             })
