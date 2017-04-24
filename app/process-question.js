@@ -7,7 +7,7 @@ let User = require(appRoot + '/app/models/user');
 const naturalLanguageUnderstanding = require(appRoot + '/app/natural-language-understanding');
 
 module.exports.humanizeString = function(inputQuestionString) {
-    const humanizedInput = string(inputQuestionString).humanize().toString().trim();
+    const humanizedInput = inputQuestionString.toString().trim();
     return humanizedInput;
 };
 
