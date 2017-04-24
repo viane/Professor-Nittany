@@ -1,6 +1,6 @@
 // load word cloud canvas only on profile page, wordCloud, wordcloud
 $(() => {
-  if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) || location.href.match(/http[s*]:\/\/intelligent-student-advisor.herokuapp.com\/inbox.*/gi)) {
+  if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) || location.href.match(/http[s*]:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
     if (WordCloud.isSupported) {
       fetchAndRenderInterest();
     } else {
