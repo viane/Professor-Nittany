@@ -98,7 +98,7 @@
                 </a>
             </li>
             <!-- Generate assessment only available for student -->
-            <% if (user.type === "local" && user.local.role != "advisor") { %>
+            <% if (user[user.type].role === "student") { %>
             <li>
                 <a rel="modal:open" class="sb-links-sm" href="#assessment-section"><i class="fa fa-file-text-o"></i> Generate Assessment</a>
             </li>
