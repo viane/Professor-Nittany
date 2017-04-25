@@ -7,6 +7,9 @@ app/models/.Rhistory
 node_modules
 
 app/log/console_log.txt
-config/server-status.json
+
 *.db
+
 *.log
+
+config/server-status.json
