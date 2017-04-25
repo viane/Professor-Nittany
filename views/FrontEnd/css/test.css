@@ -47,7 +47,6 @@ pre {
   width: 50%;
 }
 
-
 /* Dropzone CSS */
 
 @-webkit-keyframes passing-through {
@@ -905,7 +904,7 @@ button.adv-btn {
   float: right;
 }
 
-.question-answer-separartor {
+.separartor, .question-answer-separartor {
   margin-top: 15px;
   margin-bottom: 10px;
   height: 10px;

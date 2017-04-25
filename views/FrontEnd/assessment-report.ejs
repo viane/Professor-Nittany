@@ -80,9 +80,9 @@
         <%# student info%>
         <div class="bs-callout bs-callout-primary text-left">
           <h4> Student Information </h4>
-          Name: <%- locals.assessment.owner_display_name %>
+          	<div id="owner-display-name">Name: <%- locals.assessment.owner_display_name %></div>
           </br>
-          Request TIme: <%- locals.assessment.request_time %>
+          	<div id="request-time">Request TIme: <%- locals.assessment.request_time %></div>
         </div>
         <%# interest%>
         <% if(locals.assessment.interest.length > 0) { %>

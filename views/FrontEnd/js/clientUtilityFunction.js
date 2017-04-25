@@ -367,7 +367,7 @@ $(() => {
                     })
                 };
                 // change left text to the same high as dropzone, for better view
-                $('#introduction-content-p').css('height', $('.dropzone').height()+24 + "px");
+                $('#introduction-content-p').css('height', $('.dropzone').height() + 24 + "px");
             }).catch(function(err) {
                 generateNotice('error', err)
             });
@@ -464,7 +464,7 @@ $(document).ready(function() {
         const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");
         const password = $('#signup-form-password').val();
         if (!passwordValidRegex.test(password) || spcialCharRegex.test(password) || password.length == 0) {
-           return generateNotice('error', 'Invalid password format, please check the rules of password.');
+            return generateNotice('error', 'Invalid password format, please check the rules of password.');
             $('.password-rule-list').fadeIn('fast').effect("shake");
         }
 
@@ -601,8 +601,12 @@ $(() => {
         }
     }).then(function(res) {
         res.json().then((result) => {
-            result.feeds.map((feed) => {
-                const feedHtmlListElement = "<li><a href=\"#\" id=\"question-feed-content\">" + feed + "</a></li>";
+            result.feeds.map((feed, index) => {
+                let trendingIcon = '';
+                if (index < 3) {
+                    trendingIcon = "<i class=\"fa fa-signal\" aria-hidden=\"true\"></i>&nbsp&nbsp";
+                }
+                const feedHtmlListElement = "<li>"+"<a href=\"#\" class=\"question-feed-content\">"+ trendingIcon + feed + "</a></li>";
                 $('#question-feed-list').append(feedHtmlListElement);
             })
 
