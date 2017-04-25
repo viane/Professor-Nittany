@@ -149,8 +149,9 @@ $(function() {
 
                 // if question is not in the knowledge domain
 
-                // prompt a warning to user that answer might not accurate due to unsure knowledge domain
-                $('#answer-low-confidence-warning').removeClass("hide");
+                // prompt user to ask same question in detected domain
+
+                //$('#answer-low-confidence-warning').removeClass("hide");
 
             }
 
