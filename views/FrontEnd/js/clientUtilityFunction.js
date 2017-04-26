@@ -147,7 +147,9 @@ $(function() {
 
 // display personality assessement on profile page
 $(() => {
-    if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) || location.href.match(/http[s*]:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
+    if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) ||
+     location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi) ||
+     location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
 
         var svg = d3.select("#personality-assessement").append("svg").append("g")
 
