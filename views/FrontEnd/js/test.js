@@ -387,7 +387,9 @@ $(() => {
 // Display question history on profile page
 //////////////////////////////////////////////
 $(() => {
-  if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) || location.href.match(/http[s*]:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
+  if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) ||
+   location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi) ||
+   location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
     questionHistory.map((logedQuestionObj) => {
 
       let respond = "<li class=\"list-group-item text-left\">"
@@ -608,7 +610,9 @@ $(() => {
 // handler for tag for interest on profile page
 //////////////////////////////////////////////////////////////////////////////////
 $(() => {
-  if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) || location.href.match(/http[s*]:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
+  if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) ||
+   location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi) ||
+   location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
     // on profile load, load interest from server
     const url = '/api/profile/get-interest-manual';
     fetch(url, {
@@ -852,7 +856,9 @@ $(() => {
 // Get user assessments in inbox page
 //////////////////////////////////////////
 $(() => {
-  if (location.href.match(/localhost:3000\/inbox.*/gi) || location.href.match(/http[s*]:\/\/intelligent-student-advisor.herokuapp.com\/inbox.*/gi)) {
+  if (location.href.match(/localhost:3000\/inbox.*/gi) ||
+   location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/inbox.*/gi) ||
+   location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
     // inbox tab click handler
     $('#inbox-navigation a').click(function(e) {
       e.preventDefault();
