@@ -2,7 +2,9 @@
   transform: translate(-50%, 0);
   left: 50%;
 }
-
+#user-question,#sys-tip{
+      font-weight: 300;
+}
 #add-questionAnswer-submit-btn {
   color: #5342ca;
   border: 1px solid #5342ca;

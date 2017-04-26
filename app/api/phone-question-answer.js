@@ -33,7 +33,7 @@ let QACopyAry = [];
 // API for accepting user call in, record voice to twilio server then callback to /api/phone/recording
 router.post('/voice-in', (req, res) => {
     const twiml = new twilio.TwimlResponse();
-    twiml.say("Hello! Thanks for calling the Intelligent Academic Planer, please go ahead tell me your question and press any key when finished.", {voice: 'alice'});
+    twiml.say("Hello! Thanks for calling the Intelligent Academic Advisor, please tell me your question and press any key when finished.", {voice: 'alice'});
 
     // record user question, audio file will be stored in twilio server
     twiml.record({
@@ -196,7 +196,7 @@ router.post('/feedback-on-selection-start', (req, res) => {
 // regular QA
 router.post('/qa-loop', (req, res) => {
     const twiml = new twilio.TwimlResponse();
-    twiml.say("Please go ahead tell me your question and press any key when finished.", {voice: 'alice'});
+    twiml.say("Please tell me your question and press any key when finished.", {voice: 'alice'});
 
     // record user question, audio file will be stored in twilio server
     twiml.record({
