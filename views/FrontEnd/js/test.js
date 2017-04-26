@@ -4,7 +4,6 @@ $(() => {
    location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi) ||
    location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi )) {
     if (WordCloud.isSupported) {
-      console.log("fetching");
       fetchAndRenderInterest();
     } else {
       generateNotice('warning', "Your browser doesn't support displaying interests");
