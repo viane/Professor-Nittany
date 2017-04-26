@@ -858,7 +858,7 @@ $(() => {
 $(() => {
   if (location.href.match(/localhost:3000\/inbox.*/gi) ||
    location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/inbox.*/gi) ||
-   location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
+   location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/inbox.*/gi)) {
     // inbox tab click handler
     $('#inbox-navigation a').click(function(e) {
       e.preventDefault();
