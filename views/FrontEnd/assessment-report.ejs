@@ -50,134 +50,124 @@
 
 <body>
 	<%- include header.ejs %>
-  <!-- interest cloud -->
-  <script src="/js/wordcloud2.js"></script>
-  <!-- import d3 for display personality assessment -->
-  <script src="https://d3js.org/d3.v3.min.js" type="text/javascript" charset="utf-8"></script>
-  <!-- nav bar -->
-  <script>
-    const questionHistory = <% if(locals.assessment.question.length > 0) { %>
-    <%- JSON.stringify(locals.assessment.question) %>
-    <% }else{ %> []
-    <% } %>;
-    const personality_assessement = <% if(locals.assessment.personality_evaluation.length > 0) { %>
-    <%- JSON.stringify(locals.assessment.personality_evaluation) %>
-    <% }else{ %> []
-    <% } %>;
-    const introduction = <% if(locals.assessment.introduction) { %>
-    <%- JSON.stringify(locals.assessment.introduction) %>
-    <% }else{ %> ""
-    <% } %>;
-    const interest = <% if(locals.assessment.interest.length > 0) { %>
-    <%- JSON.stringify(locals.assessment.interest) %>
-    <% }else{ %> []
-    <% } %>;
-  </script>
-  <div class="container-fluid">
-    <div class="col-sm-9 mid-positive-fix">
-      <!-- resumt -->
-      <div class="panel panel-primary">
-        <%# student info%>
-        <div class="bs-callout bs-callout-primary text-left">
-          <h4> Student Information </h4>
-          	<div id="owner-display-name">Name: <%- locals.assessment.owner_display_name %></div>
-          </br>
-          	<div id="request-time">Request TIme: <%- locals.assessment.request_time %></div>
-        </div>
-        <%# interest%>
-        <% if(locals.assessment.interest.length > 0) { %>
-          <%# cloud%>
-          <div class="bs-callout bs-callout-primary text-left">
-            <h4>Interest Cloud</h4>
-            <canvas id="interest-canvas" width="800" height="420"></canvas>
+		<!-- interest cloud -->
+		<script src="/js/wordcloud2.js"></script>
+		<!-- import d3 for display personality assessment -->
+		<script src="https://d3js.org/d3.v3.min.js" type="text/javascript" charset="utf-8"></script>
+		<!-- nav bar -->
+		<script>
+			const questionHistory = <% if(locals.assessment.question.length > 0) { %>
+			<%- JSON.stringify(locals.assessment.question) %>
+			<% }else{ %> []
+			<% } %>;
+			const personality_assessement = <% if(locals.assessment.personality_evaluation.length > 0) { %>
+			<%- JSON.stringify(locals.assessment.personality_evaluation) %>
+			<% }else{ %> []
+			<% } %>;
+			const introduction = <% if(locals.assessment.introduction) { %>
+			<%- JSON.stringify(locals.assessment.introduction) %>
+			<% }else{ %>
+			""
+			<% } %>;
+			const interest = <% if(locals.assessment.interest.length > 0) { %>
+			<%- JSON.stringify(locals.assessment.interest) %>
+			<% }else{ %> []
+			<% } %>;
+		</script>
+		<div class="container-fluid">
+			<div class="col-sm-9 mid-positive-fix">
+				<!-- resumt -->
+				<div class="panel panel-primary">
+					<div class="bs-callout bs-callout-primary text-left">
+						<h4> Student Information </h4>
+						<h2 id="owner_display_name">Student: </h2>
+						<h2 id="request_time">Request on: </h2>
+					</div>
 
-            <%# full list%>
-            <div id="interest-full"></div>
+					<div id="interest_div" style="display:none" class="bs-callout bs-callout-primary text-left">
+						<h4>Interest Cloud</h4>
+						<canvas id="interest-canvas" width="800" height="420"></canvas>
+						<div id="interest-full"></div>
 
-            <%# comment%>
-            <div id="interest-comment-section">
-              <p id="interest-comment-p" class="editable" contenteditable="true"></p>
-              <div class="edit-bar">
-                <div id="introduction-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div>
-                <div id="introduction-redo-btn"><i class="fa fa-repeat edit-btn" aria-hidden="true"><span> Redo</span></i></div>
-                <div id="introduction-undo-btn"><i class="fa fa-undo edit-btn" aria-hidden="true"><span> Undo</span></i></div>
-                <div id="introduction-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
-              </div>
-            </div>
-          </div>
-        <% } %>
+						<div id="interest-comment-section">
+							<ol id="interest-terms-sys"></ol>
+							<ol id="interest-terms-man"></ol>
+							<div id="interest_comment" class="edit-bar">
+								<div id="introduction-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div>
+								<div id="introduction-redo-btn"><i class="fa fa-repeat edit-btn" aria-hidden="true"><span> Redo</span></i></div>
+								<div id="introduction-undo-btn"><i class="fa fa-undo edit-btn" aria-hidden="true"><span> Undo</span></i></div>
+								<div id="introduction-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
+							</div>
+						</div>
+					</div>
 
-        <%# introduction%>
-        <% if(locals.assessment.introduction) { %>
-          <div class="bs-callout bs-callout-primary text-left">
-              <div id="introduction-edit-section">
-                <h4>Introduction</h4>
-                <p id="introduction-content-p" class="editable" contenteditable="true">
-                  <%- locals.assessment.introduction %>
-                </p>
-              </div>
-              <div id="introduction-comment-section">
-                <p id="introduction-comment-p" class="editable" contenteditable="true"></p>
-                <div class="edit-bar">
-                  <div id="introduction-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div>
-                  <div id="introduction-redo-btn"><i class="fa fa-repeat edit-btn" aria-hidden="true"><span> Redo</span></i></div>
-                  <div id="introduction-undo-btn"><i class="fa fa-undo edit-btn" aria-hidden="true"><span> Undo</span></i></div>
-                  <div id="introduction-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
-                </div>
-              </div>
-          </div>
-        <% } %>
+					<div id="intro_div" style="display:none" class="bs-callout bs-callout-primary text-left">
+						<div>
+							<h4>Introduction</h4>
+							<p id="intro_paragraph"></p>
+							</p>
+						</div>
+						<div id="introduction-comment-section">
+							<p id="intro_comment" class="editable" contenteditable="true"></p>
+							<div class="edit-bar">
+								<div id="introduction-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div>
+								<div id="introduction-redo-btn"><i class="fa fa-repeat edit-btn" aria-hidden="true"><span> Redo</span></i></div>
+								<div id="introduction-undo-btn"><i class="fa fa-undo edit-btn" aria-hidden="true"><span> Undo</span></i></div>
+								<div id="introduction-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
+							</div>
+						</div>
+					</div>
 
-        <%# personality%>
-        <% if(locals.assessment.personality_evaluation.length>0) { %>
-          <div class="bs-callout bs-callout-primary text-left">
-            <h4>Personality</h4>
-            <%# chart%>
-            <div id="personality-assessement-chart"></div>
+					<div id="personality_div" style="display:none" class="bs-callout bs-callout-primary text-left">
+						<h4>Personality Evaluation</h4>
+						<div id="personality-assessement-chart"></div>
+						<h3>Values</h3>
+						<ol id="values_list"></ol>
+						<h3>Big 5</h3>
+						<h4 id="openness"></h4>
+						<ol id="big5-open"></ol>
+						<h4 id="conscientiousness"></h4>
+						<ol id="big5-consc"></ol>
+						<h4 id="extraversion"></h4>
+						<ol id="big5-extra"></ol>
+						<h4 id="agreeableness"></h4>
+						<ol id="big5-agree"></ol>
+						<h4 id="emotionality"></h4>
+						<ol id="big5-emotion"></ol>
+						<div id="personality_comment"></div>
 
-            <%# full list%>
-            <div id="personality-assessement-full"></div>
+						<div id="personality-comment-section">
+							<p id="personality-comment-p" class="editable" contenteditable="true"></p>
+							<div class="edit-bar">
+								<div id="introduction-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div>
+								<div id="introduction-redo-btn"><i class="fa fa-repeat edit-btn" aria-hidden="true"><span> Redo</span></i></div>
+								<div id="introduction-undo-btn"><i class="fa fa-undo edit-btn" aria-hidden="true"><span> Undo</span></i></div>
+								<div id="introduction-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
+							</div>
+						</div>
+					</div>
 
-            <%# comment%>
-            <div id="personality-comment-section">
-              <p id="personality-comment-p" class="editable" contenteditable="true"></p>
-              <div class="edit-bar">
-                <div id="introduction-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div>
-                <div id="introduction-redo-btn"><i class="fa fa-repeat edit-btn" aria-hidden="true"><span> Redo</span></i></div>
-                <div id="introduction-undo-btn"><i class="fa fa-undo edit-btn" aria-hidden="true"><span> Undo</span></i></div>
-                <div id="introduction-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
-              </div>
-            </div>
-          </div>
-        <% } %>
+					<div id="question_div" style="display:none" class="bs-callout bs-callout-info text-left">
+						<h4>Favorite Question</h4>
+						<div id="questions">
+						</div>
+						<h4>Other Question and History</h4>
 
-        <%# question history%>
-        <% if(locals.assessment.question.length > 0) { %>
-          <div class="bs-callout bs-callout-info text-left">
-            <h4>Favorite Question</h4>
+						<p id="question_comments" class="editable" contenteditable="true"></p>
+						<div class="edit-bar">
+							<div id="introduction-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div>
+							<div id="introduction-redo-btn"><i class="fa fa-repeat edit-btn" aria-hidden="true"><span> Redo</span></i></div>
+							<div id="introduction-undo-btn"><i class="fa fa-undo edit-btn" aria-hidden="true"><span> Undo</span></i></div>
+							<div id="introduction-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="assessment-report-btn-group">
+				<button type="button" class="btn btn-primary">Print</button>
+				<button type="button" class="btn btn-primary">Email</button>
+				<button type="button" class="btn btn-success">Save</button>
+			</div>
 
-            <h4>Other Question and History</h4>
-
-
-
-            <p id="question-comment-p" class="editable" contenteditable="true"></p>
-            <div class="edit-bar">
-              <div id="introduction-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div>
-              <div id="introduction-redo-btn"><i class="fa fa-repeat edit-btn" aria-hidden="true"><span> Redo</span></i></div>
-              <div id="introduction-undo-btn"><i class="fa fa-undo edit-btn" aria-hidden="true"><span> Undo</span></i></div>
-              <div id="introduction-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
-            </div>
-        <% } %>
-      </div>
-    </div>
-  </div>
-  <div class="assessment-report-btn-group">
-    <button type="button" class="btn btn-primary">Print</button>
-    <button type="button" class="btn btn-success">Save</button>
-  </div>
-  <%- include footer.ejs %>
-</body>
-
-</html>
-
+<%- include footer.ejs %>
 <!-- <pre><%- JSON.stringify(locals.assessment, null, 4) %></pre> -->
