@@ -82,7 +82,6 @@
 					<li><a href="/profile" class="btn"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
 					<li><a href="/inbox" class="btn"><span class="glyphicon glyphicon-envelope"></span> Inbox</a></li>
 					<% if (locals.user && locals.user[user.type].role == "admin") { %> <li><a href="/admin" class="btn"><i class="fa fa-cogs" aria-hidden="true"></i> Console</a></li> <% } %>
-					<%# <% if (locals.user && locals.user[user.type].role === "advisor") { %> <li><a href="/advising" class="btn"><i class="fa fa-quote-left" aria-hidden="true"></i> Advising</a></li> <% } %> %>
 					<li><a href="/logout" class="btn"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 				</ul>
 			</li>
