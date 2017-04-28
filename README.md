@@ -1,4 +1,7 @@
 # Intelligent Academic Planner
+
+[![Build Status](https://travis-ci.com/viane/Intelligent-Academic-Planner.svg?token=XgfkcuxVwTbc4rLjo63E&branch=master)](https://travis-ci.com/viane/Intelligent-Academic-Planner)
+
 >A virtual agent that answer questions based on training materials of academic information. Uses Node.JS and IBM Watson's API.
 
 ### Mongo Database URL
