@@ -526,13 +526,13 @@ router.get('/get-inbox-assessment', (req, res) => {
             console.error(err);
             res.sendStatus(500);
         } else {
-            let assessments = [];
             const parseAssessment = () => {
                 return new Promise(function(resolve, reject) {
                     const assessmentsReference = foundRequestUser.inbox;
                     if (foundRequestUser.inbox.length === 0) {
                        return res.send({inbox_assessment: []});
                     }
+                    let assessments = [];
                     assessmentsReference.map((inboxItem, index) => {
                         if (inboxItem.assessment_type === "student_assessment") {
                             const assessmentHolderID = inboxItem.from_user_id;
@@ -542,15 +542,17 @@ router.get('/get-inbox-assessment', (req, res) => {
                                     console.error(err);
                                     res.sendStatus(500);
                                 } else {
+
                                     const assessmentIndex = arrayUtility.findIndexByKeyValue(foundAssessmentHolder.submitted_assessment_history, "id", assessmentID);
                                     if (assessmentIndex != null) {
                                         const assessmentObj = foundAssessmentHolder.submitted_assessment_history[assessmentIndex];
+
                                         if (foundRequestUser[foundRequestUser["type"]].role === "student") {
                                             assessmentObj.owner_display_name = undefined;
                                         }
                                         assessments.unshift(assessmentObj);
-                                        if (index + 1 == foundAssessmentHolder.inbox.length) {
-                                            resolve();
+                                        if (index + 1 == foundRequestUser.inbox.length) {
+                                            resolve(assessments);
                                         }
                                     }
                                 }
@@ -559,7 +561,7 @@ router.get('/get-inbox-assessment', (req, res) => {
                     });
                 });
             };
-            parseAssessment().then(() => {
+            parseAssessment().then((assessments) => {
                 res.send({inbox_assessment: assessments});
             });
         }

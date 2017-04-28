@@ -12,8 +12,8 @@ $(() => {
 // test only, delete before productlize
 $(() => {
   if (location.href.match(/http:\/\/localhost:3000\/login.*/gi)) {
-    $('#form-username').val("xiaoyuz2011@gmail.com");
-    $('#form-password').val("Zsbqwacc0");
+    $('#form-username').val("kye5098@psu.edu");
+    $('#form-password').val("Testing123");
   }
 })
 
