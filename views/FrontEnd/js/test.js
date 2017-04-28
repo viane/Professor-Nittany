@@ -1029,99 +1029,11 @@ $(() => {
           $("#request_time").text(moment(assessment.request_time).format('MMMM Do YYYY'));
 
           ////////////////////////////////////////////////////////////
-          // introduction
-          ////////////////////////////////////////////////////////////
-          if (assessment.view_section.includes("introduction")) {
-            $("#intro_paragraph").text(assessment.introduction);
-
-            // output each comment with advisor's name
-            if (assessment.introduction_comment.length > 0) {
-              let intro_comment_dom = "<ul class=\"list-no-style\">";
-              assessment.introduction_comment.map((commentObj) => {
-                intro_comment_dom += "<li class=\"assessment-list-element\">";
-                intro_comment_dom += "<p class=\"assessment-advisor-comment\">" + commentObj.comment_body;
-                intro_comment_dom += "<span class=\"assessment-advisor-name\">" + commentObj.advisor_name + "</span></p>";
-                intro_comment_dom += "</li>"
-
-              })
-              intro_comment_dom += "</ul>";
-              $('#introduction-comment-section').append(intro_comment_dom);
-            }
-            // show intro section
-            $("#intro_div").css('display', 'block');
-          }
-
-          ////////////////////////////////////////////////////////////
-          // personality
-          ////////////////////////////////////////////////////////////
-          // if personality is included in report
-          if (assessment.view_section.includes("personality")) {
-            // sort values
-            assessment.personality_evaluation[0].values.sort((a, b) => {
-              return parseFloat(b.percentile) - parseFloat(a.percentile);
-            })
-            // append value to list
-            assessment.personality_evaluation[0].values.map((interest) => {
-              $('#values_list').append('<li>' + interest.name + " " + (interest.percentile * 100).toPrecision(3) + "%" + '</li>')
-            })
-
-            // sort all big5 personality
-            assessment.personality_evaluation[0].personality.map((subPersonality) => {
-              subPersonality.children.sort((a, b) => {
-                return b.percentile - a.percentile;
-              })
-            });
-
-            // display big 5 traits and subtraits
-            // big5-open
-            $("#openness").text(assessment.personality_evaluation[0].personality[0].name + " " + (assessment.personality_evaluation[0].personality[0].percentile * 100).toPrecision(2) + "%");
-            assessment.personality_evaluation[0].personality[0].children.map((persoanlityChild) => {
-              $('#big5-open').append('<li>' + persoanlityChild.name + " " + (persoanlityChild.percentile * 100).toPrecision(2) + "%" + '</li>')
-            })
-
-            // big5-conscientiousness
-            $("#conscientiousness").text(assessment.personality_evaluation[0].personality[1].name + " " + (assessment.personality_evaluation[0].personality[1].percentile * 100).toPrecision(2) + "%");
-            assessment.personality_evaluation[0].personality[1].children.map((persoanlityChild) => {
-              $('#big5-consc').append('<li>' + persoanlityChild.name + " " + (persoanlityChild.percentile * 100).toPrecision(2) + "%" + '</li>')
-            })
-
-            // big5-extraversion
-            $("#extraversion").text(assessment.personality_evaluation[0].personality[2].name + " " + (assessment.personality_evaluation[0].personality[2].percentile * 100).toPrecision(2) + "%");
-            assessment.personality_evaluation[0].personality[2].children.map((persoanlityChild) => {
-              $('#big5-extra').append('<li>' + persoanlityChild.name + " " + (persoanlityChild.percentile * 100).toPrecision(2) + "%" + '</li>')
-            })
-
-            // big5-agreeableness
-            $("#agreeableness").text(assessment.personality_evaluation[0].personality[3].name + " " + (assessment.personality_evaluation[0].personality[3].percentile * 100).toPrecision(2) + "%");
-            assessment.personality_evaluation[0].personality[3].children.map((persoanlityChild) => {
-              $('#big5-agree').append('<li>' + persoanlityChild.name + " " + (persoanlityChild.percentile * 100).toPrecision(2) + "%" + '</li>')
-            })
-
-            // big5-emotionality
-            $("#emotionality").text(assessment.personality_evaluation[0].personality[4].name + " " + (assessment.personality_evaluation[0].personality[4].percentile * 100).toPrecision(2) + "%");
-            assessment.personality_evaluation[0].personality[4].children.map((persoanlityChild) => {
-              $('#big5-emotion').append('<li>' + persoanlityChild.name + " " + (persoanlityChild.percentile * 100).toPrecision(2) + "%" + '</li>')
-            })
-
-            // output each comment with advisor's name
-            if (assessment.personality_evaluation_comment.length > 0) {
-              let personality_comment_dom = "<ul class=\"list-no-style\">";
-              assessment.personality_evaluation_comment.map((commentObj) => {
-                personality_comment_dom += "<li class=\"assessment-list-element\">";
-                personality_comment_dom += "<p class=\"assessment-advisor-comment\">" + commentObj.comment_body;
-                personality_comment_dom += "<span class=\"assessment-advisor-name\">" + commentObj.advisor_name + "</span></p>";
-                personality_comment_dom += "</li>"
-              })
-              personality_comment_dom += "</ul>";
-              $('#personality-comment-section').append(personality_comment_dom);
-            }
-            $("#personality_div").css('display', 'block');
-          }
-
-          ////////////////////////////////////////////////////////////
           // interests
           ////////////////////////////////////////////////////////////
           if (assessment.view_section.includes("interest")) {
+            // add section to navigation
+            $('#assessment-section-navigation').append('<li><button data-anchor="interest_div" type="button" class=\"btn btn-info\">Interest</button></li>');
             //sort
             assessment.interest[0].system_detect.sort((a, b) => {
               return b.value - a.value;
@@ -1189,10 +1101,108 @@ $(() => {
           }
 
           ////////////////////////////////////////////////////////////
+          // introduction
+          ////////////////////////////////////////////////////////////
+          if (assessment.view_section.includes("introduction")) {
+            // content
+            $("#intro_paragraph").text(assessment.introduction);
+
+            // add section to navigation
+            $('#assessment-section-navigation').append('<li><button data-anchor="intro_div" type="button" class=\"btn btn-info\">Introduction</button></li>');
+
+            // output each comment with advisor's name
+            if (assessment.introduction_comment.length > 0) {
+              let intro_comment_dom = "<ul class=\"list-no-style\">";
+              assessment.introduction_comment.map((commentObj) => {
+                intro_comment_dom += "<li class=\"assessment-list-element\">";
+                intro_comment_dom += "<p class=\"assessment-advisor-comment\">" + commentObj.comment_body;
+                intro_comment_dom += "<span class=\"assessment-advisor-name\">" + commentObj.advisor_name + "</span></p>";
+                intro_comment_dom += "</li>"
+
+              })
+              intro_comment_dom += "</ul>";
+              $('#introduction-comment-section').append(intro_comment_dom);
+            }
+            // show intro section
+            $("#intro_div").css('display', 'block');
+          }
+
+          ////////////////////////////////////////////////////////////
+          // personality
+          ////////////////////////////////////////////////////////////
+          // if personality is included in report
+          if (assessment.view_section.includes("personality")) {
+            // add section to navigation
+            $('#assessment-section-navigation').append('<li><button data-anchor="personality_div" type="button" class=\"btn btn-info\">Personality Evaluation</button></li>');
+            // sort values
+            assessment.personality_evaluation[0].values.sort((a, b) => {
+              return parseFloat(b.percentile) - parseFloat(a.percentile);
+            })
+            // append value to list
+            assessment.personality_evaluation[0].values.map((interest) => {
+              $('#values_list').append('<li>' + interest.name + " " + (interest.percentile * 100).toPrecision(3) + "%" + '</li>')
+            })
+
+            // sort all big5 personality
+            assessment.personality_evaluation[0].personality.map((subPersonality) => {
+              subPersonality.children.sort((a, b) => {
+                return b.percentile - a.percentile;
+              })
+            });
+
+            // display big 5 traits and subtraits
+            // big5-open
+            $("#openness").text(assessment.personality_evaluation[0].personality[0].name + " " + (assessment.personality_evaluation[0].personality[0].percentile * 100).toPrecision(2) + "%");
+            assessment.personality_evaluation[0].personality[0].children.map((persoanlityChild) => {
+              $('#big5-open').append('<li>' + persoanlityChild.name + " " + (persoanlityChild.percentile * 100).toPrecision(2) + "%" + '</li>')
+            })
+
+            // big5-conscientiousness
+            $("#conscientiousness").text(assessment.personality_evaluation[0].personality[1].name + " " + (assessment.personality_evaluation[0].personality[1].percentile * 100).toPrecision(2) + "%");
+            assessment.personality_evaluation[0].personality[1].children.map((persoanlityChild) => {
+              $('#big5-consc').append('<li>' + persoanlityChild.name + " " + (persoanlityChild.percentile * 100).toPrecision(2) + "%" + '</li>')
+            })
+
+            // big5-extraversion
+            $("#extraversion").text(assessment.personality_evaluation[0].personality[2].name + " " + (assessment.personality_evaluation[0].personality[2].percentile * 100).toPrecision(2) + "%");
+            assessment.personality_evaluation[0].personality[2].children.map((persoanlityChild) => {
+              $('#big5-extra').append('<li>' + persoanlityChild.name + " " + (persoanlityChild.percentile * 100).toPrecision(2) + "%" + '</li>')
+            })
+
+            // big5-agreeableness
+            $("#agreeableness").text(assessment.personality_evaluation[0].personality[3].name + " " + (assessment.personality_evaluation[0].personality[3].percentile * 100).toPrecision(2) + "%");
+            assessment.personality_evaluation[0].personality[3].children.map((persoanlityChild) => {
+              $('#big5-agree').append('<li>' + persoanlityChild.name + " " + (persoanlityChild.percentile * 100).toPrecision(2) + "%" + '</li>')
+            })
+
+            // big5-emotionality
+            $("#emotionality").text(assessment.personality_evaluation[0].personality[4].name + " " + (assessment.personality_evaluation[0].personality[4].percentile * 100).toPrecision(2) + "%");
+            assessment.personality_evaluation[0].personality[4].children.map((persoanlityChild) => {
+              $('#big5-emotion').append('<li>' + persoanlityChild.name + " " + (persoanlityChild.percentile * 100).toPrecision(2) + "%" + '</li>')
+            })
+
+            // output each comment with advisor's name
+            if (assessment.personality_evaluation_comment.length > 0) {
+              let personality_comment_dom = "<ul class=\"list-no-style\">";
+              assessment.personality_evaluation_comment.map((commentObj) => {
+                personality_comment_dom += "<li class=\"assessment-list-element\">";
+                personality_comment_dom += "<p class=\"assessment-advisor-comment\">" + commentObj.comment_body;
+                personality_comment_dom += "<span class=\"assessment-advisor-name\">" + commentObj.advisor_name + "</span></p>";
+                personality_comment_dom += "</li>"
+              })
+              personality_comment_dom += "</ul>";
+              $('#personality-comment-section').append(personality_comment_dom);
+            }
+            $("#personality_div").css('display', 'block');
+          }
+
+          ////////////////////////////////////////////////////////////
           // questions
           ////////////////////////////////////////////////////////////
           // if questions are included in report
           if (assessment.view_section.includes("question")) {
+            // add section to navigation
+            $('#assessment-section-navigation').append('<li><button data-anchor="question_div" type="button" class=\"btn btn-info\">Question History</button></li>');
             assessment.question.map((question)=>{
               if (question.favorite) {
                 $('#question_fav').append('<li>'+question.question_body+'</li>');
@@ -1231,8 +1241,18 @@ $(() => {
               summary_comment_dom += "</ul>";
               $('#summary_comments').append(summary_comment_dom).css('display', 'block');
           }
-
+          // add handler to btns in navigation
+          $('#assessment-section-navigation button').each((index,button)=>{
+            $(button).click(()=> {
+              $('body').animate({
+                  scrollTop: $('#'+$(button).data("anchor")).offset().top-270
+              }, 2000);
+            });
+          });
+          //remove loader animation
           $('.loader').remove();
+          // display navigation and report body
+          $('#assessment-section-navigation').fadeIn('fast');
           $('.panel-primary').fadeIn('fast');
         });
       }

@@ -1048,11 +1048,28 @@ button.adv-btn {
 
 
 /* assessment */
+#assessment-section-navigation{
+  margin: 12% 0 0 40px;
+  position: fixed;
+  border-left: 5px solid #19b9e7;
+}
+#assessment-section-navigation li{
+  margin-top: 10px;
+}
+#assessment-section-navigation button{
+  width: 100%;
+}
 .list-no-style{
   list-style: none;
   padding: 0;
 }
-
+.assessment-section-navigation-title{
+  height: 70px;
+    background-color: indigo;
+    color: white;
+    padding: 20px;
+    border-radius: 4px;
+}
 .assessment-advisor-name{
   float: right;
 }

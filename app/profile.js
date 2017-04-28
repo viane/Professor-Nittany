@@ -628,7 +628,88 @@ router.get('/get-assessment/:assessmentID', (req, res) => {
                 const assessmentIndex = arrayUtility.findIndexByKeyValue(foundAssessmentHolder.submitted_assessment_history, 'id', assessmentID);
                 if (assessmentIndex != null) {
                     return res.send({assessment: foundAssessmentHolder.submitted_assessment_history[assessmentIndex]});
+                }
+                return res.render(frontEndRoot + 'error/error.ejs', {
+                    user: req.user,
+                    error: 404,
+                    type: 'Error searching assessment.',
+                    message: 'Assessment does not exist.'
+                });
+            })
+        } else {
+            // request user is either advisor or student
+            return res.render(frontEndRoot + 'error/error.ejs', {
+                user: req.user,
+                error: 403,
+                type: 'Forbidden premission.',
+                message: 'Unindentified user type.'
+            });
+        }
+    })
+});
 
+router.get('/delete-assessment', (req, res) => {
+    const assessmentID = req.assessmentID;
+    const requestUserID = req.user._id;
+    User.findById(requestUserID, (err, foundRequestUser) => {
+        if (err) {
+            console.error(err);
+            return res.render(frontEndRoot + 'error/error.ejs', {
+                user: req.user,
+                error: 500,
+                type: 'Error on DB connection.',
+                message: 'Please try again later, or contact us.'
+            });
+        }
+        // request made by advisor
+        if (foundRequestUser[foundRequestUser['type']].role === 'advisor') {
+            const referenceAssessmentInboxIndex = arrayUtility.findIndexByKeyValue(foundRequestUser.inbox, 'assessment_id', assessmentID);
+            if (referenceAssessmentInboxIndex != null) {
+                const assessmentHolderID = foundRequestUser.inbox[referenceAssessmentInboxIndex].from_user_id;
+                User.findById(assessmentHolderID, (err, foundAssessmentHolder) => {
+                    if (err) {
+                        console.error(err);
+                        return res.render(frontEndRoot + 'error/error.ejs', {
+                            user: req.user,
+                            error: 500,
+                            type: 'Error on DB connection.',
+                            message: 'Please try again later, or contact us.'
+                        });
+                    }
+                    const assessmentIndex = arrayUtility.findIndexByKeyValue(foundAssessmentHolder.submitted_assessment_history, 'id', assessmentID);
+                    if (assessmentIndex != null) {
+                        return res.render(frontEndRoot + 'assessment-report.ejs', {assessment: foundAssessmentHolder.submitted_assessment_history[assessmentIndex], user:req.user});
+                    }
+                    return res.render(frontEndRoot + 'error/error.ejs', {
+                        user: req.user,
+                        error: 404,
+                        type: 'Error searching assessment.',
+                        message: 'Assessment does not exist.'
+                    });
+                });
+            } else {
+                return res.render(frontEndRoot + 'error/error.ejs', {
+                    user: req.user,
+                    error: 404,
+                    type: 'Error reference assessment.',
+                    message: 'This assessment has some issues.'
+                });
+            }
+        } else if (foundRequestUser[foundRequestUser['type']].role === 'student') {
+            // request made by student
+            User.findById(requestUserID, (err, foundAssessmentHolder) => {
+                if (err) {
+                    console.error(err);
+                    return res.render(frontEndRoot + 'error/error.ejs', {
+                        user: req.user,
+                        error: 500,
+                        type: 'Error on DB connection.',
+                        message: 'Please try again later, or contact us.'
+                    });
+                }
+                const assessmentIndex = arrayUtility.findIndexByKeyValue(foundAssessmentHolder.submitted_assessment_history, 'id', assessmentID);
+                if (assessmentIndex != null) {
+                    return res.send({assessment: foundAssessmentHolder.submitted_assessment_history[assessmentIndex]});
                 }
                 return res.render(frontEndRoot + 'error/error.ejs', {
                     user: req.user,
