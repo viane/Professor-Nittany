@@ -925,18 +925,9 @@ const parseInboxAssessment = (assessment) => {
     inboxItemWrapper += "<span class=\"mail-owner-name\">Student: " + assessment.owner_display_name + "</span>";
   }
   // display selected section in title with link to full assessment report
-  inboxItemWrapper += "<a href=\"/api/profile/get-assessment/" + assessment._id + "\">";
-  inboxItemWrapper += "<span class=\"mail-titile\">Assessment of ";
-  assessment.view_section.map((section, index) => {
-    if (index > 0) {
-      inboxItemWrapper += ', ';
-    }
-    inboxItemWrapper += "<b>" + section.charAt(0).toUpperCase() + section.substring(1);;
-    inboxItemWrapper += "</b>"
-  });
-  inboxItemWrapper += "</span></a>";
+  inboxItemWrapper += "<a href=\"/profile/assessment-report/" + assessment._id + "\">";
+  inboxItemWrapper += "<h2 class=\"mail-titile\">Assessment on " + moment(assessment.request_time).format('MMMM Do YYYY') + "</h2></a>";
   // display assessment generated time and how long ago
-  inboxItemWrapper += "<span class=\"mail-date\">" + moment(assessment.request_time).format('MMMM Do YYYY') + "</span>";
   inboxItemWrapper += "<span class=\"mail-date\">" + moment(assessment.request_time).fromNow() + "</span>";
   // display if advisor(s) has made change(s) before last user access the full report
   if (!assessment.user_viewed_before_change) {
@@ -949,16 +940,50 @@ const parseInboxAssessment = (assessment) => {
   // display summary of selected section in assessment
   //////////////////////////////////////////
   if (assessment.view_section.includes("introduction")) {
-    inboxItemWrapper += "<span class=\"mail-introduction\"> Introduction: " + assessment.introduction + "</span>";
+    if (assessment.introduction.trim().split(/\s+/).length > 100) {
+      assessment.introduction = assessment.introduction.split(/\s+/).slice(0, 99).join(" ");
+      assessment.introduction += "...";
+    }
+    inboxItemWrapper += "<span class=\"mail-introduction\"> <h3>Introduction</h3> " + assessment.introduction + "</span>";
   }
   if (assessment.view_section.includes("interest")) {
-    inboxItemWrapper += "<span class=\"mail-interest\"> Interest: " + assessment.interest + "</span>";
+    inboxItemWrapper += "<span class=\"mail-interest\"> <h3>Interest</h3> <ul>";
+    // sort by value
+    assessment.interest[0].system_detect.sort((a, b) => {
+      return parseFloat(a.value) - parseFloat(b.value);
+    });
+
+    for (let i = 0; i < assessment.interest[0].system_detect.length; i++) {
+      inboxItemWrapper += "<li>" + assessment.interest[0].system_detect[i].term + "</li>";
+      if (i > 7) {
+        inboxItemWrapper += "...";
+        break;
+      }
+    }
+
+    inboxItemWrapper += "</ul></span>";
   }
   if (assessment.view_section.includes("personality")) {
-    inboxItemWrapper += "<span class=\"mail-personality\"> Personality Analysis: " + assessment.personality + "</span>";
+    inboxItemWrapper += "<span class=\"mail-interest\"> <h3>Personality Analysis</h3> <ul>";
+    if (assessment.personality_evaluation.length > 0) {
+      for (let i = 0; i < assessment.personality_evaluation[0].personality.length; i++) {
+        inboxItemWrapper += "<li>" + assessment.personality_evaluation[0].personality[i].name + " " + (assessment.personality_evaluation[0].personality[i].percentile * 100).toFixed(2) + "%" + "</li>";
+      }
+    }
+    inboxItemWrapper += "</ul></span>";
   }
-  if (assessment.view_section.includes("introduction")) {
-    inboxItemWrapper += "<span class=\"mail-question\"> Question History: " + assessment.question + "</span>";
+  if (assessment.view_section.includes("question")) {
+    inboxItemWrapper += "<span class=\"mail-interest\"> <h3>Question History</h3> <ul>";
+    if (assessment.question.length > 0) {
+      for (let i = 0; i < assessment.question.length; i++) {
+        inboxItemWrapper += "<li>" + assessment.question[i].question_body + "</li>";
+        if (i > 5) {
+          inboxItemWrapper += "...";
+          break;
+        }
+      }
+    }
+    inboxItemWrapper += "</ul></span>";
   }
 
   inboxItemWrapper += "</div></li>";
