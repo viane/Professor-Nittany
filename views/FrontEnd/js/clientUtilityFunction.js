@@ -145,6 +145,7 @@ $(function() {
     $("#upload-Question-Text-File").dropzone({url: "/api/admin/upload/upload-by-text-file"});
 });
 
+
 // display personality assessement on profile page
 $(() => {
     if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) ||
@@ -434,7 +435,6 @@ $(function() {
 const addLikeBtnHandler = function(answerSequenceNumber) {
     $($('.answer-like-btn')[answerSequenceNumber]).on('click', function() {
         const targetAnswer = $('[data-answer-seq=' + answerSequenceNumber + ']').text();
-        console.log(targetAnswer);
     });
 };
 
@@ -656,7 +656,6 @@ var checkDOM = function(ElementName) {
     if ($(ElementName)) {
         return true;
     } else {
-        console.log("DOM element : " + ElementName + "does not exists.");
         return false;
     }
 }

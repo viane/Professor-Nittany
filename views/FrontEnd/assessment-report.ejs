@@ -55,50 +55,34 @@
 		<!-- import d3 for display personality assessment -->
 		<script src="https://d3js.org/d3.v3.min.js" type="text/javascript" charset="utf-8"></script>
 		<!-- nav bar -->
-		<script>
-			const questionHistory = <% if(locals.assessment.question.length > 0) { %>
-			<%- JSON.stringify(locals.assessment.question) %>
-			<% }else{ %> []
-			<% } %>;
-			const personality_assessement = <% if(locals.assessment.personality_evaluation.length > 0) { %>
-			<%- JSON.stringify(locals.assessment.personality_evaluation) %>
-			<% }else{ %> []
-			<% } %>;
-			const introduction = <% if(locals.assessment.introduction) { %>
-			<%- JSON.stringify(locals.assessment.introduction) %>
-			<% }else{ %>
-			""
-			<% } %>;
-			const interest = <% if(locals.assessment.interest.length > 0) { %>
-			<%- JSON.stringify(locals.assessment.interest) %>
-			<% }else{ %> []
-			<% } %>;
-		</script>
+    <div id="assessment_id" style="display:none"><%- locals.assessment.id %></div>
 		<div class="container-fluid">
 			<div class="col-sm-9 mid-positive-fix">
 				<!-- resumt -->
-				<div class="panel panel-primary">
+				<div class="panel panel-primary" style="display:none">
 					<div class="bs-callout bs-callout-primary text-left">
-						<h4> Student Information </h4>
-						<h2 id="owner_display_name">Student: </h2>
-						<h2 id="request_time">Request on: </h2>
+					  <h2 id="owner_display_name">Student Name </h2>
+						<span id="request_time">Request Time </span>
+              <% if (locals.user[locals.user.type].role=="advisor") { %>
+                <button type="button" class="btn btn-success assessment-utility-function">Save</button>
+              <% }else{ %>
+                <button type="button" class="btn btn-danger assessment-utility-function">Delete</button>
+              <% } %>
+              <button type="button" class="btn btn-info assessment-utility-function">Email</button>
+              <button type="button" class="btn btn-info assessment-utility-function">Print</button>
 					</div>
 
 					<div id="interest_div" style="display:none" class="bs-callout bs-callout-primary text-left">
 						<h4>Interest Cloud</h4>
 						<canvas id="interest-canvas" width="800" height="420"></canvas>
-						<div id="interest-full"></div>
-
-						<div id="interest-comment-section">
-							<ol id="interest-terms-sys"></ol>
-							<ol id="interest-terms-man"></ol>
-							<div id="interest_comment" class="edit-bar">
-								<div id="introduction-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div>
-								<div id="introduction-redo-btn"><i class="fa fa-repeat edit-btn" aria-hidden="true"><span> Redo</span></i></div>
-								<div id="introduction-undo-btn"><i class="fa fa-undo edit-btn" aria-hidden="true"><span> Undo</span></i></div>
-								<div id="introduction-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
-							</div>
-						</div>
+            <div class="interest-list-full-section">
+              <h4 class="list-title-small">Intelligent Academic Advisor Detect</h4>
+  						<ul id="interest-terms-sys" class="list-no-style wrap-5-col"></ul>
+              <h4 class="list-title-small">Student Input</h4>
+  						<ul id="interest-terms-man" class="list-no-style"></ul>
+            </div>
+            <div class="separator"></div>
+            <div id="interest-comment-section"></div>
 					</div>
 
 					<div id="intro_div" style="display:none" class="bs-callout bs-callout-primary text-left">
@@ -107,67 +91,60 @@
 							<p id="intro_paragraph"></p>
 							</p>
 						</div>
+            <div class="separator"></div>
 						<div id="introduction-comment-section">
-							<p id="intro_comment" class="editable" contenteditable="true"></p>
-							<div class="edit-bar">
-								<div id="introduction-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div>
-								<div id="introduction-redo-btn"><i class="fa fa-repeat edit-btn" aria-hidden="true"><span> Redo</span></i></div>
-								<div id="introduction-undo-btn"><i class="fa fa-undo edit-btn" aria-hidden="true"><span> Undo</span></i></div>
-								<div id="introduction-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
-							</div>
 						</div>
 					</div>
 
 					<div id="personality_div" style="display:none" class="bs-callout bs-callout-primary text-left">
 						<h4>Personality Evaluation</h4>
 						<div id="personality-assessement-chart"></div>
-						<h3>Values</h3>
-						<ol id="values_list"></ol>
+            <div class="element-float-left">
+  						<h3>Values</h3>
+  						<ul id="values_list" class="list-no-style"></ul>
+            </div>
+            <div class="element-float-left">
 						<h3>Big 5</h3>
-						<h4 id="openness"></h4>
-						<ol id="big5-open"></ol>
-						<h4 id="conscientiousness"></h4>
-						<ol id="big5-consc"></ol>
-						<h4 id="extraversion"></h4>
-						<ol id="big5-extra"></ol>
-						<h4 id="agreeableness"></h4>
-						<ol id="big5-agree"></ol>
-						<h4 id="emotionality"></h4>
-						<ol id="big5-emotion"></ol>
-						<div id="personality_comment"></div>
+						<ul id="big5-open" class="list-no-style element-float-left">
+						<h4 id="openness" class="list-title-small"></h4>
+            </ul>
 
-						<div id="personality-comment-section">
-							<p id="personality-comment-p" class="editable" contenteditable="true"></p>
-							<div class="edit-bar">
-								<div id="introduction-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div>
-								<div id="introduction-redo-btn"><i class="fa fa-repeat edit-btn" aria-hidden="true"><span> Redo</span></i></div>
-								<div id="introduction-undo-btn"><i class="fa fa-undo edit-btn" aria-hidden="true"><span> Undo</span></i></div>
-								<div id="introduction-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
-							</div>
-						</div>
+						<ul id="big5-consc" class="list-no-style element-float-left">
+						<h4 id="conscientiousness" class="list-title-small"></h4>
+            </ul>
+
+						<ul id="big5-extra" class="list-no-style element-float-left">
+						<h4 id="extraversion" class="list-title-small"></h4>
+            </ul>
+
+						<ul id="big5-agree" class="list-no-style element-float-left">
+						<h4 id="agreeableness" class="list-title-small"></h4>
+            </ul>
+
+						<ul id="big5-emotion" class="list-no-style element-float-left">
+						<h4 id="emotionality" class="list-title-small"></h4>
+            </ul>
+            </div>
+            <div class="separator"></div>
+						<div id="personality-comment-section" style="clear: both;"></div>
 					</div>
 
-					<div id="question_div" style="display:none" class="bs-callout bs-callout-info text-left">
+					<div id="question_div" style="display:none" class="bs-callout bs-callout-primary text-left">
 						<h4>Favorite Question</h4>
-						<div id="questions">
-						</div>
-						<h4>Other Question and History</h4>
-
-						<p id="question_comments" class="editable" contenteditable="true"></p>
-						<div class="edit-bar">
-							<div id="introduction-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div>
-							<div id="introduction-redo-btn"><i class="fa fa-repeat edit-btn" aria-hidden="true"><span> Redo</span></i></div>
-							<div id="introduction-undo-btn"><i class="fa fa-undo edit-btn" aria-hidden="true"><span> Undo</span></i></div>
-							<div id="introduction-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
-						</div>
+						<ul id="question_fav" class="list-no-style">
+						</ul>
+						<h4>Other</h4>
+            <ul id="question_other" class="list-no-style">
+						</ul>
+            <div class="separator"></div>
+						<div id="question_comments"></div>
 					</div>
+
+          <div id="summary_div" style="display:none" class="bs-callout bs-callout-primary text-left">
+            <div id="summary_comments"></div>
+          </div>
 				</div>
 			</div>
-			<div class="assessment-report-btn-group">
-				<button type="button" class="btn btn-primary">Print</button>
-				<button type="button" class="btn btn-primary">Email</button>
-				<button type="button" class="btn btn-success">Save</button>
-			</div>
+
 
 <%- include footer.ejs %>
-<!-- <pre><%- JSON.stringify(locals.assessment, null, 4) %></pre> -->

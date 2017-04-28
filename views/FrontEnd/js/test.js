@@ -1,8 +1,6 @@
 // load word cloud canvas only on profile page, wordCloud, wordcloud
 $(() => {
-  if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) ||
-   location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi) ||
-   location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi )) {
+  if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) || location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi) || location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
     if (WordCloud.isSupported) {
       fetchAndRenderInterest();
     } else {
@@ -387,9 +385,7 @@ $(() => {
 // Display question history on profile page
 //////////////////////////////////////////////
 $(() => {
-  if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) ||
-   location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi) ||
-   location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
+  if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) || location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi) || location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
     questionHistory.map((logedQuestionObj) => {
 
       let respond = "<li class=\"list-group-item text-left\">"
@@ -610,9 +606,7 @@ $(() => {
 // handler for tag for interest on profile page
 //////////////////////////////////////////////////////////////////////////////////
 $(() => {
-  if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) ||
-   location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi) ||
-   location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
+  if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) || location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi) || location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
     // on profile load, load interest from server
     const url = '/api/profile/get-interest-manual';
     fetch(url, {
@@ -856,9 +850,7 @@ $(() => {
 // Get user assessments in inbox page
 //////////////////////////////////////////
 $(() => {
-  if (location.href.match(/localhost:3000\/inbox.*/gi) ||
-   location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/inbox.*/gi) ||
-   location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/inbox.*/gi)) {
+  if (location.href.match(/localhost:3000\/inbox.*/gi) || location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/inbox.*/gi) || location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/inbox.*/gi)) {
     // inbox tab click handler
     $('#inbox-navigation a').click(function(e) {
       e.preventDefault();
@@ -910,7 +902,7 @@ const getAndRenderUserInboxAssessment = () => {
       res.json().then(function(result) {
         if (result.inbox_assessment.length === 0) {
           $('#assessment-box-list').append("<li><div \"container col-sm-12 mail-header\">Your Inbox is empty</div></li>");
-        }else{
+        } else {
           let unreadCounter = 0;
           result.inbox_assessment.map((assessment) => {
             const inboxItemWrapper = parseInboxAssessment(assessment);
@@ -941,10 +933,12 @@ const parseInboxAssessment = (assessment) => {
     inboxItemWrapper += "<span class=\"mail-owner-name\">Student: " + assessment.owner_display_name + "</span>";
   }
   // display selected section in title with link to full assessment report
-  inboxItemWrapper += "<a href=\"/profile/assessment-report/" + assessment._id + "\">";
+  inboxItemWrapper += "<a href=\"/assessment-report/" + assessment._id + "\">";
   inboxItemWrapper += "<h2 class=\"mail-titile\">Assessment on " + moment(assessment.request_time).format('MMMM Do YYYY') + "</h2></a>";
   // display assessment generated time and how long ago
   inboxItemWrapper += "<span class=\"mail-date\">" + moment(assessment.request_time).fromNow() + "</span>";
+  // mail, print, delete btn
+  inboxItemWrapper += "<div class=\"inbox-assessment-btn-group\"><i class=\"fa fa-reply inbox-assessment-btn\" aria-hidden=\"true\"></i><i class=\"fa fa-print inbox-assessment-btn\" aria-hidden=\"true\"></i><i class=\"fa fa-trash-o inbox-assessment-btn\" aria-hidden=\"true\"></i></div>";
   // display if advisor(s) has made change(s) before last user access the full report
   if (!assessment.user_viewed_before_change) {
     unreadCounter++;
@@ -955,7 +949,6 @@ const parseInboxAssessment = (assessment) => {
   //////////////////////////////////////////
   // display summary of selected section in assessment
   //////////////////////////////////////////
-  inboxItemWrapper += "<i class=\"fa fa-eye\" aria-hidden=\"true\"></i>";
   if (assessment.view_section.includes("introduction")) {
     if (assessment.introduction.trim().split(/\s+/).length > 100) {
       assessment.introduction = assessment.introduction.split(/\s+/).slice(0, 99).join(" ");
@@ -1006,6 +999,248 @@ const parseInboxAssessment = (assessment) => {
   inboxItemWrapper += "</div></li>";
   return inboxItemWrapper;
 }
+
+//////////////////////////////////////////
+// Full assessment report page
+//////////////////////////////////////////
+$(() => {
+  if (location.href.match(/localhost:3000\/assessment-report.*/gi) || location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/assessment-report.*/gi) || location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/assessment-report.*/gi)) {
+    const assessmentID = $('#assessment_id').text();
+    const url = '/api/profile/get-assessment/' + assessmentID;
+    $('body').append("<div class=\"loader\"></div>");
+
+    fetch(url, {
+      method: "GET",
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+      }
+    }).then(function(res) {
+      if (res.status !== 200) {
+        generateNotice('error', 'Failed to get your assessment, please try again later or contact us.');
+        return;
+      } else {
+        res.json().then(function(result) {
+          const assessment = result.assessment;
+
+          // assessment and owner info
+          $("#owner_display_name").text(assessment.owner_display_name);
+          $("#request_time").text(moment(assessment.request_time).format('MMMM Do YYYY'));
+
+          ////////////////////////////////////////////////////////////
+          // introduction
+          ////////////////////////////////////////////////////////////
+          if (assessment.view_section.includes("introduction")) {
+            $("#intro_paragraph").text(assessment.introduction);
+
+            // output each comment with advisor's name
+            if (assessment.introduction_comment.length > 0) {
+              let intro_comment_dom = "<ul class=\"list-no-style\">";
+              assessment.introduction_comment.map((commentObj) => {
+                intro_comment_dom += "<li class=\"assessment-list-element\">";
+                intro_comment_dom += "<p class=\"assessment-advisor-comment\">" + commentObj.comment_body;
+                intro_comment_dom += "<span class=\"assessment-advisor-name\">" + commentObj.advisor_name + "</span></p>";
+                intro_comment_dom += "</li>"
+
+              })
+              intro_comment_dom += "</ul>";
+              $('#introduction-comment-section').append(intro_comment_dom);
+            }
+            // show intro section
+            $("#intro_div").css('display', 'block');
+          }
+
+          ////////////////////////////////////////////////////////////
+          // personality
+          ////////////////////////////////////////////////////////////
+          // if personality is included in report
+          if (assessment.view_section.includes("personality")) {
+            // sort values
+            assessment.personality_evaluation[0].values.sort((a, b) => {
+              return parseFloat(b.percentile) - parseFloat(a.percentile);
+            })
+            // append value to list
+            assessment.personality_evaluation[0].values.map((interest) => {
+              $('#values_list').append('<li>' + interest.name + " " + (interest.percentile * 100).toPrecision(3) + "%" + '</li>')
+            })
+
+            // sort all big5 personality
+            assessment.personality_evaluation[0].personality.map((subPersonality) => {
+              subPersonality.children.sort((a, b) => {
+                return b.percentile - a.percentile;
+              })
+            });
+
+            // display big 5 traits and subtraits
+            // big5-open
+            $("#openness").text(assessment.personality_evaluation[0].personality[0].name + " " + (assessment.personality_evaluation[0].personality[0].percentile * 100).toPrecision(2) + "%");
+            assessment.personality_evaluation[0].personality[0].children.map((persoanlityChild) => {
+              $('#big5-open').append('<li>' + persoanlityChild.name + " " + (persoanlityChild.percentile * 100).toPrecision(2) + "%" + '</li>')
+            })
+
+            // big5-conscientiousness
+            $("#conscientiousness").text(assessment.personality_evaluation[0].personality[1].name + " " + (assessment.personality_evaluation[0].personality[1].percentile * 100).toPrecision(2) + "%");
+            assessment.personality_evaluation[0].personality[1].children.map((persoanlityChild) => {
+              $('#big5-consc').append('<li>' + persoanlityChild.name + " " + (persoanlityChild.percentile * 100).toPrecision(2) + "%" + '</li>')
+            })
+
+            // big5-extraversion
+            $("#extraversion").text(assessment.personality_evaluation[0].personality[2].name + " " + (assessment.personality_evaluation[0].personality[2].percentile * 100).toPrecision(2) + "%");
+            assessment.personality_evaluation[0].personality[2].children.map((persoanlityChild) => {
+              $('#big5-extra').append('<li>' + persoanlityChild.name + " " + (persoanlityChild.percentile * 100).toPrecision(2) + "%" + '</li>')
+            })
+
+            // big5-agreeableness
+            $("#agreeableness").text(assessment.personality_evaluation[0].personality[3].name + " " + (assessment.personality_evaluation[0].personality[3].percentile * 100).toPrecision(2) + "%");
+            assessment.personality_evaluation[0].personality[3].children.map((persoanlityChild) => {
+              $('#big5-agree').append('<li>' + persoanlityChild.name + " " + (persoanlityChild.percentile * 100).toPrecision(2) + "%" + '</li>')
+            })
+
+            // big5-emotionality
+            $("#emotionality").text(assessment.personality_evaluation[0].personality[4].name + " " + (assessment.personality_evaluation[0].personality[4].percentile * 100).toPrecision(2) + "%");
+            assessment.personality_evaluation[0].personality[4].children.map((persoanlityChild) => {
+              $('#big5-emotion').append('<li>' + persoanlityChild.name + " " + (persoanlityChild.percentile * 100).toPrecision(2) + "%" + '</li>')
+            })
+
+            // output each comment with advisor's name
+            if (assessment.personality_evaluation_comment.length > 0) {
+              let personality_comment_dom = "<ul class=\"list-no-style\">";
+              assessment.personality_evaluation_comment.map((commentObj) => {
+                personality_comment_dom += "<li class=\"assessment-list-element\">";
+                personality_comment_dom += "<p class=\"assessment-advisor-comment\">" + commentObj.comment_body;
+                personality_comment_dom += "<span class=\"assessment-advisor-name\">" + commentObj.advisor_name + "</span></p>";
+                personality_comment_dom += "</li>"
+              })
+              personality_comment_dom += "</ul>";
+              $('#personality-comment-section').append(personality_comment_dom);
+            }
+            $("#personality_div").css('display', 'block');
+          }
+
+          ////////////////////////////////////////////////////////////
+          // interests
+          ////////////////////////////////////////////////////////////
+          if (assessment.view_section.includes("interest")) {
+            //sort
+            assessment.interest[0].system_detect.sort((a, b) => {
+              return b.value - a.value;
+            });
+
+            // WordCloud
+            const wordCloudList = assessment.interest[0].system_detect.map((interestObj)=>{
+              return [interestObj.term, parseInt(interestObj.value*2)];
+            })
+            WordCloud($('#interest-canvas')[0], {
+              list: wordCloudList,
+              color: 'random-dark',
+              hover: window.drawBox,
+              fontFamily: 'Helvetica, sans-serif',
+              click: function(item) {
+                console.log(item[0] + ': ' + item[1]);
+              },
+              gridSize: Math.round(16 * $('#interest-canvas').width() / 400),
+              weightFactor: function(size) {
+                return Math.pow(size, 2.3) * $('#interest-canvas').width() / 200 + 10;
+              },
+              minSize: 10,
+              clearCanvas: true,
+              rotateRatio: 0,
+              rotationSteps: 0
+            });
+            // System generated interest percentile chart
+            // get reletive 100%
+            const reletiveMaxScore = assessment.interest[0].system_detect[0].value;
+            assessment.interest[0].system_detect.map((interest) => {
+              let listDom = '<li>';
+              // score bar
+              listDom += "<div class=\"skillbar clearfix \" data-percent=\"" + (interest.value / reletiveMaxScore * 100).toFixed(2) + "%\">";
+              listDom += "<div class=\"skillbar-title\" style=\"background: #00a8ff;\"><span>" + interest.term + "</span></div>";
+              listDom += "<div class=\"skillbar-bar\" style=\"background: #00a8ff;\"></div>";
+              listDom += "<div class=\"skill-bar-percent\">" + (interest.value / reletiveMaxScore * 100).toFixed(2) + "%</div>";
+              listDom += '</div></li>';
+              $('#interest-terms-sys').append(listDom);
+            });
+            // animation of score bar
+            $('.skillbar').each(function() {
+              $(this).find('.skillbar-bar').animate({
+                width: $(this).attr('data-percent')
+              }, 2000);
+            });
+
+            // display user manual input interest
+            assessment.interest[0].manual_input.map((interest) => {
+              $('#interest-terms-man').append('<li class="sliding-middle-out tag">'+ interest.term + '</li>');
+            })
+
+            // output each comment with advisor's name
+            if (assessment.interest_comment.length > 0) {
+              let interest_comment_dom = "<ul class=\"list-no-style\">";
+              assessment.interest_comment.map((commentObj) => {
+                interest_comment_dom += "<li class=\"assessment-list-element\">";
+                interest_comment_dom += "<p class=\"assessment-advisor-comment\">" + commentObj.comment_body;
+                interest_comment_dom += "<span class=\"assessment-advisor-name\">" + commentObj.advisor_name + "</span></p>";
+                interest_comment_dom += "</li>"
+              })
+              interest_comment_dom += "</ul>";
+              $('#interest-comment-section').append(interest_comment_dom);
+            }
+            $("#interest_div").css('display', 'block');
+          }
+
+          ////////////////////////////////////////////////////////////
+          // questions
+          ////////////////////////////////////////////////////////////
+          // if questions are included in report
+          if (assessment.view_section.includes("question")) {
+            assessment.question.map((question)=>{
+              if (question.favorite) {
+                $('#question_fav').append('<li>'+question.question_body+'</li>');
+              }else {
+                $('#question_other').append('<li>'+question.question_body+'</li>');
+              }
+            })
+
+            // output each comment with advisor's name
+            if (assessment.question_comment.length > 0) {
+              let question_comment_dom = "<ul class=\"list-no-style\">";
+              assessment.question_comment.map((commentObj) => {
+                question_comment_dom += "<li class=\"assessment-list-element\">";
+                question_comment_dom += "<p class=\"assessment-advisor-comment\">" + commentObj.comment_body;
+                question_comment_dom += "<span class=\"assessment-advisor-name\">" + commentObj.advisor_name + "</span></p>";
+                question_comment_dom += "</li>"
+              })
+              question_comment_dom += "</ul>";
+              $('#question_comments').append(question_comment_dom);
+            }
+
+            $("#question_div").css('display', 'block');
+          }
+
+          ////////////////////////////////////////////////////////////
+          // Summary comments
+          ////////////////////////////////////////////////////////////
+          if (assessment.comment_summary.length>0) {
+              let summary_comment_dom = "<ul class=\"list-no-style\">";
+              assessment.comment_summary.map((commentObj) => {
+                summary_comment_dom += "<li class=\"assessment-list-element\">";
+                summary_comment_dom += "<p class=\"assessment-advisor-comment\">" + commentObj.comment_body;
+                summary_comment_dom += "<span class=\"assessment-advisor-name\">" + commentObj.advisor_name + "</span></p>";
+                summary_comment_dom += "</li>"
+              })
+              summary_comment_dom += "</ul>";
+              $('#summary_comments').append(summary_comment_dom).css('display', 'block');
+          }
+
+          $('.loader').remove();
+          $('.panel-primary').fadeIn('fast');
+        });
+      }
+    }).catch(function(err) {
+      generateNotice('error', err);
+    });
+  }
+})
 
 // main page fav btn handler
 const favoriteBtnHandler = () => {
@@ -1061,9 +1296,9 @@ const fetchAndRenderInterest = () => {
             click: function(item) {
               console.log(item[0] + ': ' + item[1]);
             },
-            gridSize: Math.round(16 * $('#interest-canvas').width() / 1200),
+            gridSize: Math.round(16 * $('#interest-canvas').width() / 1000),
             weightFactor: function(size) {
-              return Math.pow(size, 2.3) * $('#interest-canvas').width() / 500 + 10;
+              return Math.pow(size, 2.3) * $('#interest-canvas').width() / 150 + 10;
             },
             minSize: 10,
             clearCanvas: true,

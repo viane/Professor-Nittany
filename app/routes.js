@@ -502,8 +502,8 @@ module.exports = function(app, passport) {
     });
 
     // router for assessment report page
-    app.get('/profile/assessment-report/:assessmentID',loginChecking.isLoggedInRedirect,(req,res)=>{
-      res.render(frontEndRoot + 'assessment-report.ejs', {assessment: [],user: req.user});
+    app.get('/assessment-report/:assessmentID',loginChecking.isLoggedInRedirect,(req,res)=>{
+      res.render(frontEndRoot + 'assessment-report.ejs', {assessment:{id: req.params.assessmentID},user: req.user});
     })
     ///////////////////////////////////////////////////
     /// API
