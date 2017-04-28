@@ -1023,7 +1023,6 @@ $(() => {
       } else {
         res.json().then(function(result) {
           const assessment = result.assessment;
-
           // assessment and owner info
           $("#owner_display_name").text(assessment.owner_display_name);
           $("#request_time").text(moment(assessment.request_time).format('MMMM Do YYYY'));

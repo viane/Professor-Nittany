@@ -596,7 +596,7 @@ router.get('/get-assessment/:assessmentID', (req, res) => {
                     }
                     const assessmentIndex = arrayUtility.findIndexByKeyValue(foundAssessmentHolder.submitted_assessment_history, 'id', assessmentID);
                     if (assessmentIndex != null) {
-                        return res.render(frontEndRoot + 'assessment-report.ejs', {assessment: foundAssessmentHolder.submitted_assessment_history[assessmentIndex], user:req.user});
+                        return res.send({assessment: foundAssessmentHolder.submitted_assessment_history[assessmentIndex]});
                     }
                     return res.render(frontEndRoot + 'error/error.ejs', {
                         user: req.user,
