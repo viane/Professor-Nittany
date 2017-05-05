@@ -1,3 +1,4 @@
+'use strict';
 const appRoot = require('app-root-path');
 const questionAnswer = require('./question-answer');
 const User = require(appRoot + '/app/models/user');

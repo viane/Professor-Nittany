@@ -1,3 +1,4 @@
+'use strict';
 module.exports.validPasswordFormat = function (password) {
   const passwordValidRegex = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
   const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");

@@ -1,3 +1,4 @@
+'use strict';
 // For combine document converion result
 
 module.exports.combineResult = (response) => {
