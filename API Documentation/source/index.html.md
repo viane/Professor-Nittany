@@ -33,41 +33,27 @@ curl "intelligent-student-advisor.herokuapp.com/api/account/login"
 ```javascript
 const IAA = require('intelligent-student-advisor');
 
-let api = IAA.authorize({username:'xxxxx', password:'xxxxxx'});
+let api = IAA.authorize({'Authorization': 'xxxxxxxxx'});
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+> Make sure to replace `xxxxxxxxx` with your API key.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+IAP uses API keys to allow access to the API. You can register a new IAP API key at our [developer portal](http://intelligent-student-advisor.herokuapp.com/developers).
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+IAP expects for the API key to be included in all API requests to the server in a header that looks like the following:
 
-`Authorization: meowmeowmeow`
+`Authorization: xxxxxxxxx`
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>xxxxxxxxx</code> with your personal API key.
 </aside>
 
-# Kittens
+# API
 
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
+## Profile
 
 ```shell
-curl "http://example.com/api/kittens"
+curl "http://intelligent-student-advisor.herokuapp.com/api/profile"
   -H "Authorization: meowmeowmeow"
 ```
 
@@ -99,7 +85,7 @@ let kittens = api.kittens.get();
 ]
 ```
 
-This endpoint retrieves all kittens.
+This endpoint interact with user's profile information.
 
 ### HTTP Request
 
