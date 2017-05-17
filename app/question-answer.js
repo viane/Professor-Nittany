@@ -33,8 +33,9 @@ module.exports.ask = (user, input) => {
 
         // handled by conversation
         conversation.isInDomain(userInput).then((resultFromConversation) =>{
-            //////////////////
+            ////////////////////////////////////////////////////////////////////////
             // demo use, for SE world campus schedule question only
+            ////////////////////////////////////////////////////////////////////////
             conversation.askSEWorldCampusSchedule(userInput).then((resultFromConversation) =>{
               console.log(resultFromConversation[0]);
               if (resultFromConversation[0]==="positive") {
@@ -70,10 +71,12 @@ module.exports.ask = (user, input) => {
                         console.error(err);
                     })
 
+                    // fix this to log to DB instead to fs
                     // update server question feeds with only user question string
                     processQuestion.updateQuestionToServerFeeds(questionObj.body);
                 }
 
+                // fix this too
                 serverStatus.updateStatsFromQuestionObj(questionObj);
 
                 // ask retrieve and rank
