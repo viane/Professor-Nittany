@@ -1,0 +1,15 @@
+Common Mistakes:
+	- At the time of making use cases, you know nothing about how the system is going to be implemented. Therefore, you cannot say any specific information such as the user presses a button, or go back a page. This is because this is SPECIFIC information specifying HOW it should be implemented, which is NOT what a use case is for. You only specify WHAT. 
+		- Ex: In View Assessment, you had "Back to page for requesting view assessment", this tells the system how it should do it. Instead, you can say "Student's assessment is not displayed" (the opposite of the sucess guarantee) which explains what the system should do, but not how.
+
+	- Scope of the use case is always the box that the bubble is in on the Use Case Diagram. In our case, all of our bubbles are found in the IPA System box.
+	- The Trigger is almost always the first step of the use case as well.
+	- If there are 3 or less steps, the level of the use case is usually a sub-task rather than a primary.
+	- The only time a specific actor should be mentioned in the Use Case is under the "Primary Actor" section. Otherwise, "User" and "System" should be the only words used.
+	- Use full sentences
+	- Be careful not to increase the scope of the use case to include functionality that was not discussed.
+		- Ex. The ability to display a histogram instead of the question log.
+	- KISS (Keep It Simple, Stupid). The use cases are there to help us develop the product, write them in a way that will help you remember what you wanted to do with this specific requirement.
+
+
+	

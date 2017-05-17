@@ -1,3 +1,4 @@
+'use strict';
 // app/models/QuestionAnswerPair.js
 // user for admin upload questions from either single submission or file submission
 
