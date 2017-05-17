@@ -499,8 +499,12 @@ module.exports = function(app, passport) {
             external_question: req.external_question,
             user: req.user
         });
-    })
+    });
 
+    // router for assessment report page
+    app.get('/assessment-report/:assessmentID',loginChecking.isLoggedInRedirect,(req,res)=>{
+      res.render(frontEndRoot + 'assessment-report.ejs', {assessment:{id: req.params.assessmentID},user: req.user});
+    })
     ///////////////////////////////////////////////////
     /// API
     ///////////////////////////////////////////////////

@@ -145,9 +145,12 @@ $(function() {
     $("#upload-Question-Text-File").dropzone({url: "/api/admin/upload/upload-by-text-file"});
 });
 
+
 // display personality assessement on profile page
 $(() => {
-    if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) || location.href.match(/http[s*]:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
+    if (location.href.match(/http:\/\/localhost:3000\/profile.*/gi) ||
+     location.href.match(/http:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi) ||
+     location.href.match(/https:\/\/intelligent-student-advisor.herokuapp.com\/profile.*/gi)) {
 
         var svg = d3.select("#personality-assessement").append("svg").append("g")
 
@@ -367,7 +370,7 @@ $(() => {
                     })
                 };
                 // change left text to the same high as dropzone, for better view
-                $('#introduction-content-p').css('height', $('.dropzone').height()+24 + "px");
+                $('#introduction-content-p').css('height', $('.dropzone').height() + 24 + "px");
             }).catch(function(err) {
                 generateNotice('error', err)
             });
@@ -432,7 +435,6 @@ $(function() {
 const addLikeBtnHandler = function(answerSequenceNumber) {
     $($('.answer-like-btn')[answerSequenceNumber]).on('click', function() {
         const targetAnswer = $('[data-answer-seq=' + answerSequenceNumber + ']').text();
-        console.log(targetAnswer);
     });
 };
 
@@ -464,7 +466,7 @@ $(document).ready(function() {
         const spcialCharRegex = new RegExp("(?=.*[!@#\$%\^&\*])");
         const password = $('#signup-form-password').val();
         if (!passwordValidRegex.test(password) || spcialCharRegex.test(password) || password.length == 0) {
-           return generateNotice('error', 'Invalid password format, please check the rules of password.');
+            return generateNotice('error', 'Invalid password format, please check the rules of password.');
             $('.password-rule-list').fadeIn('fast').effect("shake");
         }
 
@@ -601,8 +603,12 @@ $(() => {
         }
     }).then(function(res) {
         res.json().then((result) => {
-            result.feeds.map((feed) => {
-                const feedHtmlListElement = "<li><a href=\"#\" id=\"question-feed-content\">" + feed + "</a></li>";
+            result.feeds.map((feed, index) => {
+                let trendingIcon = '';
+                if (index < 3) {
+                    trendingIcon = "<i class=\"fa fa-signal\" aria-hidden=\"true\"></i>&nbsp&nbsp";
+                }
+                const feedHtmlListElement = "<li>"+"<a href=\"#\" class=\"question-feed-content\">"+ trendingIcon + feed + "</a></li>";
                 $('#question-feed-list').append(feedHtmlListElement);
             })
 
@@ -650,7 +656,6 @@ var checkDOM = function(ElementName) {
     if ($(ElementName)) {
         return true;
     } else {
-        console.log("DOM element : " + ElementName + "does not exists.");
         return false;
     }
 }
@@ -777,6 +782,7 @@ const addAnswerRelatedQuestionHandler = () => {
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
+
 
 //////////////////////////////////////////////////
 // answer text flag(tag) extraction and formation

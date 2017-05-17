@@ -27,7 +27,7 @@ body > .container {
 }
 
 .page-header{
-  text-align: center;    
+  text-align: center;
 }
 
 a.sb-links {
@@ -48,10 +48,6 @@ a.sb-links {
     border-width: 1px 1px 1px 5px;
     margin-bottom: 5px;
     padding: 20px;
-}
-.bs-callout
-:last-child {
-    margin-bottom: 0px;
 }
 
 .bs-callout h4 {
@@ -74,4 +70,3 @@ a.sb-links {
 .bs-callout-info h4{
     color: #5bc0de;
 }
-
