@@ -33,8 +33,9 @@ module.exports.ask = (user, input) => {
 
         // handled by conversation
         conversation.isInDomain(userInput).then((resultFromConversation) =>{
-            //////////////////
+            ////////////////////////////////////////////////////////////////////////
             // demo use, for SE world campus schedule question only
+            ////////////////////////////////////////////////////////////////////////
             conversation.askSEWorldCampusSchedule(userInput).then((resultFromConversation) =>{
               console.log(resultFromConversation[0]);
               if (resultFromConversation[0]==="positive") {
