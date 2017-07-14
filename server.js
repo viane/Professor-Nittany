@@ -1,7 +1,5 @@
 'use strict';
 
-require('@risingstack/trace'); //for heorku tracking addon
-require('./config/console'); //overide global console.log function
 const opbeat = require('opbeat'); // tracing new release
 global.Promise = require("bluebird");
 
@@ -33,8 +31,6 @@ const serverStatus = require(appRoot + '/app/server-status');
 
 // for system status functions
 const systemStatus = require(appRoot + '/app/system-status');
-
-const profileAPI = require(appRoot+'/app/profile');
 
 // customize console.log font color
 const logColor = require('colors');
@@ -86,14 +82,9 @@ app.use(express.static('views/FrontEnd'));
 
 const server = http.createServer(app);
 
-const io = require('socket.io').listen(server);
-require(appRoot + '/app/socket-io.js')(io, _session); //handle communication between client and server
-
 require(appRoot + '/config/passport')(passport); // pass passport for configuration
 
-require(appRoot + '/app/routes.js')(app, passport,io); // Routes
-
-profileAPI.setIO(io);
+require(appRoot + '/app/routes.js')(app, passport); // Routes
 
 // loading questionFeeds from Disk
 serverStatus.initQuestionFeeds().then((result) => {

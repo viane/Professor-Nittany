@@ -13,14 +13,14 @@ const accountManage = require(appRoot + '/app/api/account');
 const uploadQuestionByTextFile = require('./file-to-questionDB');
 const User = require(appRoot + "/app/models/user");
 const testingAPIModule = require(appRoot + '/app/testing/testAPI');
-const profileAPI = require(appRoot + '/app/profile');
+const profileAPI = require(appRoot + '/app/api/profile');
 const validator = require("email-validator");
 const serverStatusAPI = require(appRoot + '/app/api/server-status');
 const system = require(appRoot + '/app/api/system');
 const loginChecking = require(appRoot + '/app/utility-function/login-checking');
 const phoneQA = require(appRoot + '/app/api/phone-question-answer');
 const smsQA = require(appRoot + '/app/api/sms-question-answer');
-const externalQA = require(appRoot + '/app/api/ask-question');
+const QA = require(appRoot + '/app/api/ask-question');
 const nodemailer = require('nodemailer');
 const smtpTransport = require('nodemailer-smtp-transport');
 
@@ -536,8 +536,8 @@ module.exports = function(app, passport) {
     // sms system api
     app.use('/api/sms-question-answer', smsQA);
 
-    // 3rd party ask api
-    app.use('/api/ask-question', externalQA);
+    // normal ask api
+    app.use('/api/question-answer', QA);
 };
 
 function checkSignUpParameter(req, res) {
