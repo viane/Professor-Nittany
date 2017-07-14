@@ -1031,8 +1031,11 @@ $(() => {
             });
 
             // WordCloud
-            const wordCloudList = assessment.interest[0].system_detect.map((interestObj)=>{
-              return [interestObj.term, parseInt(interestObj.value*2)];
+            const wordCloudList = assessment.interest[0].system_detect.map((interestObj) => {
+              return [
+                interestObj.term,
+                parseInt(interestObj.value * 2)
+              ];
             })
             WordCloud($('#interest-canvas')[0], {
               list: wordCloudList,
@@ -1073,7 +1076,7 @@ $(() => {
 
             // display user manual input interest
             assessment.interest[0].manual_input.map((interest) => {
-              $('#interest-terms-man').append('<li class="sliding-middle-out tag">'+ interest.term + '</li>');
+              $('#interest-terms-man').append('<li class="sliding-middle-out tag">' + interest.term + '</li>');
             })
 
             // output each comment with advisor's name
@@ -1194,11 +1197,11 @@ $(() => {
           if (assessment.view_section.includes("question")) {
             // add section to navigation
             $('#assessment-section-navigation').append('<li><button data-anchor="question_div" type="button" class=\"btn btn-info\">Question History</button></li>');
-            assessment.question.map((question)=>{
+            assessment.question.map((question) => {
               if (question.favorite) {
-                $('#question_fav').append('<li>'+question.question_body+'</li>');
-              }else {
-                $('#question_other').append('<li>'+question.question_body+'</li>');
+                $('#question_fav').append('<li>' + question.question_body + '</li>');
+              } else {
+                $('#question_other').append('<li>' + question.question_body + '</li>');
               }
             })
 
@@ -1221,22 +1224,22 @@ $(() => {
           ////////////////////////////////////////////////////////////
           // Summary comments
           ////////////////////////////////////////////////////////////
-          if (assessment.comment_summary.length>0) {
-              let summary_comment_dom = "<ul class=\"list-no-style\">";
-              assessment.comment_summary.map((commentObj) => {
-                summary_comment_dom += "<li class=\"assessment-list-element\">";
-                summary_comment_dom += "<p class=\"assessment-advisor-comment\">" + commentObj.comment_body;
-                summary_comment_dom += "<span class=\"assessment-advisor-name\">" + commentObj.advisor_name + "</span></p>";
-                summary_comment_dom += "</li>"
-              })
-              summary_comment_dom += "</ul>";
-              $('#summary_comments').append(summary_comment_dom).css('display', 'block');
+          if (assessment.comment_summary.length > 0) {
+            let summary_comment_dom = "<ul class=\"list-no-style\">";
+            assessment.comment_summary.map((commentObj) => {
+              summary_comment_dom += "<li class=\"assessment-list-element\">";
+              summary_comment_dom += "<p class=\"assessment-advisor-comment\">" + commentObj.comment_body;
+              summary_comment_dom += "<span class=\"assessment-advisor-name\">" + commentObj.advisor_name + "</span></p>";
+              summary_comment_dom += "</li>"
+            })
+            summary_comment_dom += "</ul>";
+            $('#summary_comments').append(summary_comment_dom).css('display', 'block');
           }
           // add handler to btns in navigation
-          $('#assessment-section-navigation button').each((index,button)=>{
-            $(button).click(()=> {
+          $('#assessment-section-navigation button').each((index, button) => {
+            $(button).click(() => {
               $('body').animate({
-                  scrollTop: $('#'+$(button).data("anchor")).offset().top-270
+                scrollTop: $('#' + $(button).data("anchor")).offset().top - 270
               }, 2000);
             });
           });

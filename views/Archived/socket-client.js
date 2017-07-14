@@ -24,10 +24,6 @@ $(function() {
         addMessageElement($el, options);
     }
 
-    // Prevents input from having injected markup
-    function cleanInput(input) {
-        return $('<div/>').text(input).text();
-    }
 
     // Socket events
 
@@ -109,31 +105,31 @@ $(function() {
     var chatWindow = $('#answer-list'); //main chat window
 
     // send message to server by use emit api form socket io
-    $('#querySubmitBtn').click(function() {
+    // $('#querySubmitBtn').click(function() {
+    //
+    //     // clear previous results
+    //     $('#answer-list').empty();
 
-        // clear previous results
-        $('#answer-list').empty();
-
-        var $inputMessage = $('#userQueryInput'); // Input message input box
-
-        // Prevent markup from being injected into the message
-        var message = {};
-        message.sender = {};
-        if ($("#user-id").text().trim())
-            message.sender.id = $("#user-id").text().trim();
-        if ($("#user-type").text().trim())
-            message.sender.type = $("#user-type").text().trim();
-        if (cleanInput($inputMessage.val()))
-            message.content = cleanInput($inputMessage.val());
-
-        // if there is a non-empty message and a socket connection
-        if (message.content) {
-
-            // tell server to execute 'new message' and send along one parameter
-            socket.emit('question', message);
-            addChatMessage("client", message.content);
-        }
-    });
+    //     var $inputMessage = $('#userQueryInput'); // Input message input box
+    //
+    //     // Prevent markup from being injected into the message
+    //     var message = {};
+    //     message.sender = {};
+    //     if ($("#user-id").text().trim())
+    //         message.sender.id = $("#user-id").text().trim();
+    //     if ($("#user-type").text().trim())
+    //         message.sender.type = $("#user-type").text().trim();
+    //     if (cleanInput($inputMessage.val()))
+    //         message.content = cleanInput($inputMessage.val());
+    //
+    //     // if there is a non-empty message and a socket connection
+    //     if (message.content) {
+    //
+    //         // tell server to execute 'new message' and send along one parameter
+    //         socket.emit('question', message);
+    //         addChatMessage("client", message.content);
+    //     }
+    // });
 
     //update display message function
     var addChatMessage = function(sender, data) {
