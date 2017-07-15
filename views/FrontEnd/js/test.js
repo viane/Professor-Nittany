@@ -1433,3 +1433,8 @@ const addRequestLastAssessmentHandler = () => {
     });
   });
 }
+
+// jQuery Chosen for signup page, major input
+$(()=>{
+  $(".select-major").chosen({"placeholder_text_multiple":"Enter majors, sparate by comma",no_results_text: "No major found!"});
+})
