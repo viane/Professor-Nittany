@@ -212,6 +212,12 @@ const userSchema = mongoose.Schema({
             assessment_id: String
         }
     ],
+    major:[{
+        type:String
+    }],
+    attention:[{
+        type:mongoose.Schema.Types.Mixed
+    }],
     inbox_trash: [mongoose.Schema.Types.Mixed]
 }, {strict: true});
 

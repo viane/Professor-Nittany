@@ -15,7 +15,14 @@
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
             <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
             <![endif]-->
-
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="./js/chosen.jquery.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="./css/chosen.min.css"/>
+    <script> $(document).ready(function(){
+            $(".select-major").chosen();
+            console.log("hah!");
+    });</script>
 </head>
 
 <body>
@@ -123,6 +130,14 @@
                                         <div class="form-group">
                                             <label class="sr-only" for="form-last-name">Last name</label>
                                             <input type="text" name="last_name" placeholder="Last name" class="form-last-name form-control" id="form-last-name">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="form-acct-type">Major</label>
+                                            <select class="select-major form-control" multiple="true" id="form-major" name="Major">
+                                                <option>Computer Science</option>
+                                                <option>Computer Engineering</option>
+                                                <option>Software Engineering</option>
+                                            </select>
                                         </div>
                                         <div class="form-group">
                                             <label class="sr-only" for="form-email">Email</label>

@@ -129,7 +129,9 @@ module.exports = function(passport) {
                         var newUser = new User();
 
                         newUser.type = "local";
-
+                        if(req.body.major.length>0){
+                            newUser.major = req.body.major.split(",");
+                        }
                         // set up account information
                         if (req.body.account_role === "Student") {
                             newUser.local.role = "student";

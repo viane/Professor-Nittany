@@ -199,8 +199,9 @@ module.exports = function(app, passport) {
     // we will use route middleware to verify this (the loginChecking.isLoggedInRedirect function)
     app.get('/profile', loginChecking.isLoggedInRedirect, function(req, res) {
         User.findById(req.user._id, function(err, foundUser) {
+            console.log(foundUser);
             res.render(frontEndRoot + 'profile.ejs', {
-                user: req.user, // get the user out of session and pass to template
+                user: foundUser, // get the user out of session and pass to template
                 introduction: foundUser.personality_assessement.description_content,
                 ask_history: foundUser.ask_history,
                 personality_assessement: foundUser.personality_assessement.evaluation,
