@@ -213,7 +213,9 @@ const userSchema = mongoose.Schema({
         }
     ],
     major:[{
-        type:String
+            "degree_name": String,
+            "degree_level": String,
+            "dgree_option": String
     }],
     attention:[{
         type:mongoose.Schema.Types.Mixed

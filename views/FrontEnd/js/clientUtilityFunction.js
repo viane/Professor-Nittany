@@ -475,8 +475,9 @@ $(document).ready(function() {
     const url = '/signup';
     const $form = $(this),
       $formId = $form.attr('id');
+    
     const query = $("#" + $formId).serialize();
-
+    console.log(query);
     fetch(url, {
       method: "POST",
       credentials: 'include',

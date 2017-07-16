@@ -198,9 +198,11 @@ module.exports = function(app, passport) {
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the loginChecking.isLoggedInRedirect function)
     app.get('/profile', loginChecking.isLoggedInRedirect, function(req, res) {
-        User.findById(req.user._id, function(err, foundUser) {
-            console.log(foundUser);
-            res.render(frontEndRoot + 'profile.ejs', {
+        User.findById(req.user._id) 
+            .populate('major')
+            .exec(function(err, foundUser) {
+                console.log(foundUser);
+                res.render(frontEndRoot + 'profile.ejs', {
                 user: foundUser, // get the user out of session and pass to template
                 introduction: foundUser.personality_assessement.description_content,
                 ask_history: foundUser.ask_history,

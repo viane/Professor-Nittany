@@ -6,11 +6,20 @@ const appRoot = require('app-root-path');
 const serverStatus = require(appRoot + '/app/server-status');
 const loginChecking = require(appRoot + '/app/utility-function/login-checking');
 const User = require(appRoot + '/app/models/user');
-
+const UDs = require('../models/major-list');
 // get api for server questionFeeds
 router.get('/get-question-feeds', (req, res) => {
     res.send({feeds: serverStatus.getRecentAskedQuestions()});
 });
+
+// get api for major/degree list
+router.route('/get-major-list')
+.get(function(req,res,next){
+  UDs.find({"utility_type":"degree"}, function (err,UDs){
+    if (err) console.log(err);
+    res.json(UDs);
+  });
+})
 
 // get api for list advisors
 router.get('/get-advisor-list', loginChecking.isLoggedInRedirect, (req, res) => {

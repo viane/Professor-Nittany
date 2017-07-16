@@ -1435,6 +1435,36 @@ const addRequestLastAssessmentHandler = () => {
 }
 
 // jQuery Chosen for signup page, major input
-$(()=>{
-  $(".select-major").chosen({"placeholder_text_multiple":"Enter majors, sparate by comma",no_results_text: "No major found!"});
+$(()=>{ 
+  const url='/api/server-status/get-major-list';
+  fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+      }
+    })
+    .then((res)=>{
+      res.json().then((data)=>{
+        let majors;
+        console.log(data);
+        for(let i=0; i<data.length; i++){
+          majors+='<option value='+data[i]._id+'>'+data[i].degree_level+'-'+data[i].degree_name;
+          if(data[i].degree_option){
+            majors += '-<span>'+data[i].degree_option+'</span></option>';
+          }
+          else{
+            majors += '</option>'
+          }
+        }
+        $(".select-major").append(majors);
+        console.log($(".select-major"));
+        $(".select-major").chosen({"placeholder_text_multiple":"Enter majors, sparate by comma",no_results_text: "No major found!"});
+      });
+    })
+    .catch(function(error) {  
+      console.log('Major Request failed', error)  
+    });
 })
+
+

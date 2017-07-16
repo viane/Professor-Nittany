@@ -24,6 +24,7 @@ const bcrypt = require('bcrypt-nodejs');
 const crypto = require('crypto');
 // load up the user model
 const User = require(appRoot + '/app/models/user');
+const UDs = require(appRoot + '/app/models/major-list');
 
 // load the auth variables
 const configAuth = require(appRoot + '/config/auth');
@@ -129,8 +130,15 @@ module.exports = function(passport) {
                         var newUser = new User();
 
                         newUser.type = "local";
-                        if(req.body.major.length>0){
-                            newUser.major = req.body.major.split(",");
+
+                        if(req.body.major.length){
+                            for(let i=0; i<req.body.major.length; i++){
+                                //console.log(UDs.find({_id: req.body.major[i]}, {_id: 1}).limit(1));
+                                if(UDs.find({_id: req.body.major[i]}, {_id: 1}).limit(1)=="None"){
+                                    return done("Invalid Major Entered", false, req.flash('signupMessage', 'Invalid Major Entered'));
+                                }
+                                newUser.major.push(req.body.major[i]);
+                            }                            
                         }
                         // set up account information
                         if (req.body.account_role === "Student") {
