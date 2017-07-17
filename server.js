@@ -27,10 +27,7 @@ const flash = require('connect-flash');
 const passport = require('passport');
 
 // for server status functions
-const serverStatus = require(appRoot + '/app/server-status');
-
-// for system status functions
-const systemStatus = require(appRoot + '/app/system-status');
+const serverStatus = require('/app/server-status');
 
 // customize console.log font color
 const logColor = require('colors');
@@ -82,9 +79,9 @@ app.use(express.static('views/FrontEnd'));
 
 const server = http.createServer(app);
 
-require(appRoot + '/config/passport')(passport); // pass passport for configuration
+require('./config/passport')(passport); // pass passport for configuration
 
-require(appRoot + '/app/routes.js')(app, passport); // Routes
+require('./app/routes.js')(app, passport); // Routes
 
 // loading questionFeeds from Disk
 serverStatus.initQuestionFeeds().then((result) => {

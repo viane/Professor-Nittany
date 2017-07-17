@@ -2,8 +2,6 @@
 
 // Not currently in use
 
-const appRoot = require('app-root-path');
-
 module.exports.logAnswers = function(input) {};
 
 module.exports.final = function(answer) {

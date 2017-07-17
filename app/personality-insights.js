@@ -2,11 +2,10 @@
 
 const PersonalityInsightsV3 = require('watson-developer-cloud/personality-insights/v3');
 const loadJsonFile = require('load-json-file');
-const appRoot = require('app-root-path');
 
 const initPersonalityAPI = () => {
     return new Promise(function(resolve, reject) {
-        loadJsonFile(appRoot + '/config/credential.json').then(credential => {
+        loadJsonFile('../config/credential.json').then(credential => {
             resolve(new PersonalityInsightsV3({
                 username: credential.personality_insights_credential.username,
                 password: credential.personality_insights_credential.password,

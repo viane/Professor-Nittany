@@ -1,13 +1,13 @@
 'use strict'
 
-const appRoot = require('app-root-path');
+
 const conversation = require('./watson-conversation');
 const retrieveRank = require('./watson-retrieve-rank');
 const processAnswer = require('./process-answer');
 const processQuestion = require('./process-question');
 const serverStatus = require('./server-status');
 const stringChecking = require('./utility-function/string-checking');
-const profile = require(appRoot + '/app/profile');
+const profile = require('./profile');
 
 module.exports.ask = (user, input) => {
 

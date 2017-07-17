@@ -2,8 +2,6 @@
 // take input text file, batch process questions line by line to question DB
 'use strict'
 
-const appRoot = require('app-root-path');
-
 const express = require('express');
 
 const router = express.Router();
@@ -15,7 +13,7 @@ const fs = require('fs');
 const stream = require('stream'),
     es = require('event-stream');
 
-const Question = require(appRoot + '/app/models/question');
+const Question = require('./models/question');
 
 // router.post('/upload-by-text-file', function (req, res, next) {
 //   var question = new Question();
@@ -49,11 +47,11 @@ router.post('/upload-by-text-file', busboy({
     let fstream;
     req.pipe(req.busboy);
     req.busboy.on('file', function(fieldname, file, filename) {
-        fstream = fs.createWriteStream(appRoot + '/app/question-file/' + filename);
+        fstream = fs.createWriteStream('./question-file/' + filename);
         file.pipe(fstream);
         fstream.on('close', function() {
             // for each line in document
-            fs.createReadStream(appRoot + '/app/question-file/' + filename).pipe(es.split()).pipe(es.mapSync(function(line) {
+            fs.createReadStream('./question-file/' + filename).pipe(es.split()).pipe(es.mapSync(function(line) {
                 // do things with line here
                 // console.log(line);
                 // go thru alchemyAPI

@@ -1,10 +1,9 @@
 'use strict'
-const appRoot = require('app-root-path');
 const string = require('string');
-const serverStatus = require(appRoot + '/app/server-status');
-const formatter = require(appRoot + '/app/utility-function/formatter');
-let User = require(appRoot + '/app/models/user');
-const naturalLanguageUnderstanding = require(appRoot + '/app/natural-language-understanding');
+const serverStatus = require('./server-status');
+const formatter = require('./utility-function/formatter');
+let User = require('./app/models/user');
+const naturalLanguageUnderstanding = require('./natural-language-understanding');
 
 module.exports.humanizeString = function(inputQuestionString) {
     const humanizedInput = inputQuestionString.toString().trim();
