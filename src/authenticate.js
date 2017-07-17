@@ -5,7 +5,7 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var User = require('./models/user');
 var config = require('./config');
 
-exports.local = passport.use(new LocalStrategy(User.authenticate()));
+exports.local = passport.use(new LocalStrategy({'usernameField':'email'},User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 

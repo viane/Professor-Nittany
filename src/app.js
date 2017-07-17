@@ -20,12 +20,8 @@ db.once('open', function () {
     console.log("Connected correctly to server");
 });
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var questionRouter = require('./routes/question-router');
-var majorListRouter = require('./routes/major-list-router');
-
 var app = express();
+
 
 app.all('*', function(req, res, next){
   console.log('req start: ',req.secure, req.hostname, req.url, app.get('port'));
@@ -47,11 +43,7 @@ app.use(cookieParser());
 app.use(passport.initialize());
 
 app.use(express.static(path.join(__dirname, 'views')));
-
-app.use('/', routes);
-app.use('/users', users);
-app.use('/questions', questionRouter);
-app.use('/major-list',majorListRouter);
+require('./routes/index')(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -59,6 +51,7 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
+
 
 // error handlers
 // development error handler
@@ -82,5 +75,8 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+
+// init routes
+
 
 module.exports = app;

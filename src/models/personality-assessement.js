@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 var Assessement = new Schema({
     description_content:String,
     evaluation:{
-        type: mongoose.Schema.type.Mixed
+        type: mongoose.Schema.Types.Mixed
     }
 },
 {

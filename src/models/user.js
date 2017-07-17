@@ -3,10 +3,6 @@ var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 
 var User = new Schema({
-    username: {
-        type: String,
-        unique: true
-    },
     password: String,
     OauthId: String,
     OauthToken: String,
@@ -37,7 +33,7 @@ var User = new Schema({
     interest: [{
         type: mongoose.Schema.Types.Mixed
     }],
-    interest_mamual:[{
+    interest_manual:[{
         type:mongoose.Schema.Types.Mixed
     }],
     inbox:[{
@@ -62,6 +58,6 @@ User.methods.getName = function() {
     return (this.firstname + ' ' + this.lastname);
 };
 
-User.plugin(passportLocalMongoose);
+User.plugin(passportLocalMongoose,{'usernameField':'email'});
 
 module.exports = mongoose.model('User', User);
