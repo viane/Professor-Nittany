@@ -1,15 +1,9 @@
-#views/FrontEnd/avatar
-
 .DS_Store
 
-app/models/.Rhistory
-
 node_modules
-
-app/log/console_log.txt
 
 *.db
 
 *.log
 
-config/server-status.json
+public
