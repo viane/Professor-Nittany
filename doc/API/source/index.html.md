@@ -1,9 +1,9 @@
 ---
 title: IAA API Reference
 language_tabs:
-  - NodeJS
+  - Javascript
 toc_footers:
-  - '<a href=''#''>Sign Up for a Developer Key</a>'
+  - '<a href=''#''>Home</a>'
   - '<a href=''https://github.com/tripit/slate''>Documentation Powered by Slate</a>'
 includes:
   - errors
@@ -16,7 +16,9 @@ Welcome to the IAA API! You can use our API to access IAA API endpoints.
 
 We have language bindings in NodeJS! You can view code examples in the dark area to the right.
 
-# Authentication
+# Uers
+
+## SignIn
 
 > To sign in a user, use this code:
 
@@ -30,26 +32,43 @@ We have language bindings in NodeJS! You can view code examples in the dark area
     credentials: 'include'
   }).then(response=>{return response.json()})
   .then(json=> {
-    // {
-    //    status: "Login successful!", success: true,
-    //    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1O…kxMn0.Y9YU6ZnvWR38Pk_s-lsfm5z0fC8vlSzy_Qiz8SQTkVk"
-    // }
+    // response message will be in json
   });
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+The sign in API requires 2 parameters
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+Parameter | Description
+--------- | --------------------------------
+email     | The email of the account
+password  | The password of account
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+The response are either success or error.
 
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+<aside class="success">
+`token: xxxx...` is logined user identifier for all requests.
 </aside>
 
-# Kittens
+### Example response of error:
+
+```json
+{
+    "err": {
+        "name": "IncorrectPasswordError",
+        "message": "Password or username are incorrect"
+    }
+}
+```
+
+### Example response of successful login:
+
+```json
+{
+    "status": "Login successful!",
+    "success": true,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTZkM2E3YmRiNjExZjRjYTBmNTJmMzgiLCJpYXQiOjE1MDAzMzQxMzcsImV4cCI6MTUwMDMzNzczN30.g-NvrjfPadduuSomMBXBW8NJ9i2_6_bNJyELO4vAK-o"
+}
+```
 
 ## Get All Kittens
 
