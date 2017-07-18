@@ -60,6 +60,13 @@ The response are either success or error.
 }
 ```
 
+Property    | Description
+---------   | --------------------------------
+err.name    | Error type
+err.message | Error description
+
+
+
 ### Example response of successful login:
 
 ```json
@@ -69,6 +76,14 @@ The response are either success or error.
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTZkM2E3YmRiNjExZjRjYTBmNTJmMzgiLCJpYXQiOjE1MDAzMzQxMzcsImV4cCI6MTUwMDMzNzczN30.g-NvrjfPadduuSomMBXBW8NJ9i2_6_bNJyELO4vAK-o"
 }
 ```
+
+Property    | Description
+---------   | --------------------------------
+status      | Show login status
+success     | Boolen flag
+token       | Access token
+
+
 
 ## Get All Kittens
 
