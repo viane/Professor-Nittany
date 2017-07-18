@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./public/bin/www",
+    "start":"node ./public/bin/www",
+    "dev-start": "npm run build && nodemon ./public/bin/www",
     "watch": "babel --watch src --out-dir public --source-maps inline --copy-files",
     "build": "babel src --out-dir public --source-maps inline --copy-files"
   },
