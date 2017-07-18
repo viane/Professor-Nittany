@@ -94,12 +94,44 @@ router.get('/logout', function(req, res) {
 });
 
 //user faceback login api : get /user/facebook
-router.get('/facebook', passport.authenticate('facebook'),
+router.get('/facebook', passport.authenticate('facebook',{ scope: 'email'}),
   function(req, res){});
 
 //usesr facebook callback api: get /facebook/callback
 router.get('/facebook/callback', function(req,res,next){
   passport.authenticate('facebook', function(err, user, info) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.status(401).json({
+        err: info
+      });
+    }
+
+    req.logIn(user, function(err) {
+      if (err) {
+        return res.status(500).json({
+          err: 'Could not log in user'
+        });
+      }
+      var token = Verify.getToken({"username":user.username, "_id":user._id, "admin":user.admin});
+      res.status(200).json({
+        status: 'Login successful!',
+        success: true,
+        token: token
+      });
+    });
+  })(req,res,next);
+});
+
+//API user linkedin login: get /linkedin
+router.get('/linkedin', passport.authenticate('linkedin'),
+  function(req, res){});
+
+//API usesr linkedin callback: get /linkedin/callback
+router.get('/linkedin/callback', function(req,res,next){
+  passport.authenticate('linkedin', function(err, user, info) {
     if (err) {
       return next(err);
     }
@@ -114,7 +146,7 @@ router.get('/facebook/callback', function(req,res,next){
           err: 'Could not log in user'
         });
       }
-      var token = Verify.getToken(user);
+      var token = Verify.getToken({"username":user.username, "_id":user._id, "admin":user.admin});
       res.status(200).json({
         status: 'Login successful!',
         success: true,
@@ -123,5 +155,73 @@ router.get('/facebook/callback', function(req,res,next){
     });
   })(req,res,next);
 });
+
+//API user twitter login: get /twitter
+router.get('/twitter', passport.authenticate('twitter'),
+  function(req, res){});
+
+//API usesr twitter callback: get /twitter/callback
+router.get('/twitter/callback', function(req,res,next){
+  passport.authenticate('twitter', function(err, user, info) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.status(401).json({
+        err: info
+      });
+    }
+    req.logIn(user, function(err) {
+      if (err) {
+        return res.status(500).json({
+          err: 'Could not log in user'
+        });
+      }
+      var token = Verify.getToken({"username":user.username, "_id":user._id, "admin":user.admin});
+      res.status(200).json({
+        status: 'Login successful!',
+        success: true,
+        token: token
+      });
+    });
+  })(req,res,next);
+});
+
+
+
+//API user google login: get /google
+router.get('/google', passport.authenticate('google',
+  { scope:
+    [ 'https://www.googleapis.com/auth/plus.login',
+      'https://www.googleapis.com/auth/plus.profile.emails.read' ] },
+  function(req, res){}));
+
+//API usesr google callback: get /google/callback
+router.get('/google/callback', function(req,res,next){
+  passport.authenticate('google', function(err, user, info) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.status(401).json({
+        err: info
+      });
+    }
+    req.logIn(user, function(err) {
+      if (err) {
+        return res.status(500).json({
+          err: 'Could not log in user'
+        });
+      }
+      var token = Verify.getToken({"username":user.username, "_id":user._id, "admin":user.admin});
+      res.status(200).json({
+        status: 'Login successful!',
+        success: true,
+        token: token
+      });
+    });
+  })(req,res,next);
+});
+
 
 module.exports = router;

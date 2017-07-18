@@ -4,7 +4,10 @@ var passportLocalMongoose = require('passport-local-mongoose');
 
 var User = new Schema({
     password: String,
-    OauthId: String,
+    facebook_OauthId: String,
+    linkedin_OauthId: String,
+    twitter_OauthId: String,
+    google_OauthId: String,
     OauthToken: String,
     first_name: {
         type: String,
