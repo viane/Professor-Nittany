@@ -18,9 +18,9 @@ We have language bindings in NodeJS! You can view code examples in the dark area
 
 # Uers
 
-## SignIn
+## Local SignIn
 
-> To sign in a user, use this code:
+> To locally sign in a user, use this code:
 
 ```javascript
   fetch("https://localhost:3443/users/signin", {  
@@ -49,6 +49,7 @@ The response are either success or error.
 `token: xxxx...` is logined user identifier for all requests.
 </aside>
 
+
 ### Example response of error:
 
 ```json
@@ -67,7 +68,7 @@ err.message | Error description
 
 
 
-### Example response of successful login:
+### Example response of successful signin:
 
 ```json
 {
@@ -82,6 +83,256 @@ Property    | Description
 status      | Show login status
 success     | Boolen flag
 token       | Access token
+
+## Local Signup
+
+> To locally sign up a user, use this code:
+
+```javascript
+  fetch("https://localhost:3443/users/signup", {  
+    method: 'post',  
+    headers: {  
+      "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"  
+    },  
+    body: 'email={email}&password={password}&first_name={first_name}&last_name={last_name}&account_role={account_role}',
+    credentials: 'include'
+  }).then(response=>{return response.json()})
+  .then(json=> {
+    // response message will be in json
+  });
+```
+
+The local sign up API requires 5 parameters
+
+Parameter | Description
+--------- | --------------------------------
+first_name| The first_name of the user
+last_name | The last_name of the user
+account_role| the role of the account
+email     | The email of the account
+password  | The password of account
+
+The response are either success or error.
+
+
+### Example response of error:
+#### Signup email address existed 
+```json
+{
+    "err": {
+        "name": "UserExistsError",
+        "message": "A user with the given username is already registered"
+    }
+}
+```
+
+Property    | Description
+---------   | --------------------------------
+err.name    | Error type
+err.message | Error description
+
+#### Signup password is not valid
+```json
+{
+    "err": {
+        "name": "InvalidPasswordFormat",
+        "message": "Invalid password format, check the rule of making password."
+    }
+}
+```
+
+Property    | Description
+---------   | --------------------------------
+err.name    | Error type
+err.message | Error description
+
+#### Signup required information is missing
+```json
+{
+    "err": {
+        "name": "MissRequiredInformation",
+        "message": "Miss requireed signup infomation."
+    }
+}
+```
+
+Property    | Description
+---------   | --------------------------------
+err.name    | Error type
+err.message | Error description
+
+### Example response of successful singup:
+
+```json
+{
+    "status": "Successfully registered, check actvition email."
+}
+```
+
+Property    | Description
+---------   | --------------------------------
+status      | Show login status
+success     | Boolen flag
+token       | Access token
+
+## Facebook SignIn
+
+> To sign in a facebook user, make a http request:
+`get https://localhost:3443/users/facebook`
+
+The response are either success or error.
+
+<aside class="success">
+`token: xxxx...` is logined user identifier for all requests.
+</aside>
+
+
+### Example response of error:
+
+User login error will be handled on the facebook's login page
+
+
+
+### Example response of successful signin:
+
+```json
+{
+    "status": "Login successful!",
+    "success": true,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTZkM2E3YmRiNjExZjRjYTBmNTJmMzgiLCJpYXQiOjE1MDAzMzQxMzcsImV4cCI6MTUwMDMzNzczN30.g-NvrjfPadduuSomMBXBW8NJ9i2_6_bNJyELO4vAK-o"
+}
+```
+
+Property    | Description
+---------   | --------------------------------
+status      | Show login status
+success     | Boolen flag
+token       | Access token
+
+## Google SignIn
+
+> To sign in a google user, make a http request:
+`get https://localhost:3443/users/google`
+
+The response are either success or error.
+
+<aside class="success">
+`token: xxxx...` is logined user identifier for all requests.
+</aside>
+
+
+### Example response of error:
+
+User login error will be handled on the google's login page
+
+
+
+### Example response of successful signin:
+
+```json
+{
+    "status": "Login successful!",
+    "success": true,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTZkM2E3YmRiNjExZjRjYTBmNTJmMzgiLCJpYXQiOjE1MDAzMzQxMzcsImV4cCI6MTUwMDMzNzczN30.g-NvrjfPadduuSomMBXBW8NJ9i2_6_bNJyELO4vAK-o"
+}
+```
+
+Property    | Description
+---------   | --------------------------------
+status      | Show login status
+success     | Boolen flag
+token       | Access token
+
+## Linkedin SignIn
+
+> To sign in a linkedin user, make a http request:
+`get https://localhost:3443/users/linkedin`
+
+The response are either success or error.
+
+<aside class="success">
+`token: xxxx...` is logined user identifier for all requests.
+</aside>
+
+
+### Example response of error:
+
+User login error will be handled on the linkedin's login page
+
+
+
+### Example response of successful signin:
+
+```json
+{
+    "status": "Login successful!",
+    "success": true,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTZkM2E3YmRiNjExZjRjYTBmNTJmMzgiLCJpYXQiOjE1MDAzMzQxMzcsImV4cCI6MTUwMDMzNzczN30.g-NvrjfPadduuSomMBXBW8NJ9i2_6_bNJyELO4vAK-o"
+}
+```
+
+Property    | Description
+---------   | --------------------------------
+status      | Show login status
+success     | Boolen flag
+token       | Access token
+
+
+## Twitter SignIn (Currently Disabled)
+
+> To sign in a twitter user, make a http request:
+`get https://127.0.0.1:3443/users/twitter`
+
+The response are either success or error.
+
+<aside class="success">
+`token: xxxx...` is logined user identifier for all requests.
+</aside>
+
+
+### Example response of error:
+
+User login error will be handled on the twitter's login page
+
+
+
+### Example response of successful signin:
+
+```json
+{
+    "status": "Login successful!",
+    "success": true,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTZkM2E3YmRiNjExZjRjYTBmNTJmMzgiLCJpYXQiOjE1MDAzMzQxMzcsImV4cCI6MTUwMDMzNzczN30.g-NvrjfPadduuSomMBXBW8NJ9i2_6_bNJyELO4vAK-o"
+}
+```
+
+Property    | Description
+---------   | --------------------------------
+status      | Show login status
+success     | Boolen flag
+token       | Access token
+
+
+## Logout
+
+> To logout a user, use this code:
+
+```javascript
+  fetch("https://localhost:3443/users/logout", {  
+    method: 'get',  
+    headers: {  
+      "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"  
+    },  
+    body: 'email={email}&password={password}',
+    credentials: 'include'
+  }).then(response=>{return response.json()})
+  .then(json=> {
+    // response message will be in json
+  });
+```
+Client side should discard the token.
+
+The logout in API does not require any parameters.
 
 
 
