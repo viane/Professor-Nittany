@@ -16,6 +16,8 @@ $(document).ready(function() {
 
     // Update the first Watson message
     $("#Watson-Time").html('Watson | ' + getDateAndTime());
+
+    $('#myModal').modal('toggle');
 });
 
 // when the user wants to see more answers, they can click on the buttons
@@ -41,9 +43,9 @@ function getDateAndTime() {
         minutes = '0' + minutes;
 
     if (hour > 12)
-        time = hour - 12 + ':' + minutes + 'pm';
+        time = hour - 12 + ':' + minutes + ' pm';
     else
-        time = hour + ':' + minutes + 'am';
+        time = hour + ':' + minutes + ' am';
     
     month = months[month];
 
@@ -95,7 +97,20 @@ function addUserChat() {
 function test() {
     $('.current-message').attr('class', 'media-text');
     $('.other-answers').remove();
-    let data = 'This is just a test<br>';
+    data[0] = 'This is just a test';
 
-    $('#chat').append(htmlWBefore + data + '</p><small class="text-muted">Watson | ' + getDateAndTime() + htmlWAfter);
+    $('#chat').append(htmlWBefore + data[0] + '</p><small class="text-muted">Watson | ' + getDateAndTime() + htmlWAfter);
+}
+
+function sendServerQuestion(question) {
+    $.ajax ({
+        url: "",
+        type: "POST",
+        success: function(data) {
+            // do stuff with the data
+        },
+        error: function (req, text_status, error) {
+            console.log('Error: ' + error.message);
+        }
+    });
 }

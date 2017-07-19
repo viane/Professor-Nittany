@@ -6,11 +6,17 @@
     text-align: center;
 }
 
+p {
+    font-size: 1.5rem;
+}
+
 /* ------------------- SIDE BAR CSS ------------------- */
 
 .side-bar {
     background-color: #0F7DC2;
     height: 100vh;
+    /* I need this so that the side-bar doesn't overlap the chat */
+    min-height: 800px;
 }
 
 .title > img {
@@ -74,6 +80,7 @@
     overflow: auto;
     /* the number is weird but it makes the footer sit where it needs to */
     height: 88.25vh;
+    min-height: 650px;
     width: auto;
     margin-bottom: 20px;
 }
@@ -135,4 +142,27 @@
 
 .other-answers {
     margin-left: 75px;
+}
+
+/* USED FOR CHAT.HTML */
+.side-options:visited, .side-options:link, .side-options:hover {
+    color: whitesmoke;
+    text-decoration: none;
+    font-size: 36px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 75%;
+}
+
+.side-nav > hr  {
+    display: block;
+    height: 1px;
+    width: 75%;
+    border: 0;
+    border-top: 2px solid black;
+    margin: 1em 0;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0; 
 }
