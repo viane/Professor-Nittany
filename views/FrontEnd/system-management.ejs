@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Intelligent Academic Planner - System Management</title>
+</head>
+
+<body>
+    <%- include header.ejs %>
+
+        <div id="uploadFileSection" class="white-container-mid bs-callout-primary bs-callout bs-callout-info text-left">
+            <h4>Upload AI Learning Document</h4>
+            <form class="dropzone" id="upload-system-learning-document" name="upload-file"></form>
+        </div>
+
+
+        <div class="col-sm-3">
+            <%- include user-card-module.ejs %>
+                <%- include question-feed-module.ejs %>
+        </div>
+
+
+        <%- include footer.ejs %>
+</body>
+
+</html>

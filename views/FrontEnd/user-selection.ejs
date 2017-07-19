@@ -1,0 +1,21 @@
+<!-- <% if (user.type === "local") { %>
+	<img class="img-avatar" id="user-avatar" src="<%= user.local.avatar %>"></img>
+<% } %>
+<% if (user.type === "facebook") { %>
+	<img class="img-avatar" id="user-avatar" src="<%= user.facebook.avatar %>"></img>
+<% } %>
+<% if (user.type === "twitter") { %>
+	<img class="img-avatar" id="user-avatar" src="<%= user.twitter.avatar %>"></img>
+<% } %>
+<% if (user.type === "linkedin") { %>
+	<img class="img-avatar" id="user-avatar" src="<%= user.linkedin.avatar %>"></img>
+<% } %>
+<% if (user.type === "google") { %>
+	<img class="img-avatar" id="user-avatar" src="<%= user.google.avatar %>"></img>
+<% } %> -->
+
+<% if (!user) { %>
+	<li class="active">
+		<a href="/login" style="color:#19b9e7"><span class="glyphicon glyphicon-user"></span> Login/Register</a>
+	</li>
+<% } %>

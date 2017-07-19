@@ -1,0 +1,735 @@
+{
+           "owner_display_name": "Xiaoyu Zhou",
+           "introduction": "no-title. It's been almost one year since I left from college. At the beginning of self challenging then became desperate deal with suspicions of my capability, the only thing on top of my mind now is: go back to college and continue to explore. My story started from St.Joseph High School, where I met Thomas, my classmate and a close friend, also a decent team leader. We hanged out every weekend. At first the conversation was about personal interests and then we found out that we shared same interest on computer technologies such like video games, hardwares benchmarks, and write scripts. I gave him the story about what happened between Lockheed Martin and Boeing, a campaign of designing Joint Strike Fighter Program (JSF) since 1993. The winner received hundreds of millions dollars contract from the Pentagon and signed their name to the subsequent era of US best flight jet factory. The world most advanced flight jet F-35 almost lost the chance to demonstrate itself to the world back in 2000, when the debut flight took place on Florida's desert, F-35's opponent X-32 from Boeing has exact same performance and even better potential by Boeing's highly accurate computer technique (Lockheed Martin use human force design) and left a good impression to the analyzers in the pentagon, however, Boeing's first flight jet doesn't have the same advanced software and system to drive it, without enough time to debug and complete the critical system, a crash nearly destroyed the plane during it's final test elevator hover landing (vertical landing). This is one of the stories made me a fan of computer sciences and programing is such an indispensable business in today's world we living. Few weeks after, one day he came to me and said:\" Hey. I like you to see something I made. It's pretty cool! I call it Lehgo[1].\" What he did was a social network platform with advance server system structure, it was the time when Myspace lost its market territory and Facebook just started impacting teenagers, when I compare between Lehgo and Facebook the first impression is, it's amazingly fast! He asked me if I'm interesting in this project and join to his group and code with him, I couldn't say yes because I know nothing about web development programing, he simply replied me by 5 things, \"front-end design(UI), database, G-Wan, Nginx and server languages\", although it doesn't look like that much from the words, it did take my entire free time to figure out them and yet I'm still learning, also I joined his team after a year later during my high school senior year. So during the weekdays I'm just a high school student, and every weekends me and Thomas would sit together share the idea how to make Lehgo becomes better, for couple hours we would have pen and piece of paper in hand, drew down the better looking user interface that we both agreed and use twenty minutes turn them into code; next couple of hours we would go through every single function that what Lehgo needs to be improved or we want to add on, then spent rest of time checking reference, such like open source projects, structures efficiency benchmark, structures security and database protection, compatibility between major browsers. Sometimes straight of successes work made time flies, next time I looked up to the clock usually would be 4 or 5 in the morning, we went down to the basement find a couch to sleep (no place to sleep in his room because its full or computers and hardwares), or we could get stick into some malfunctions, kept trying until sunup but still ended up as fail and continued on next day, next week or maybe next month. Even though we only work at weekends, however, consistently 2 years of programing mean thousands lines of codes, countless practices and experiences, then I graduated from St.Joseph. After leaving my high school, Thomas chose not to attend college and fully committed to Lehgo. I went part-time work with him while waited for colleges' offer. During the summer, we finished building up our first own desktop Dev server quickly. Fortunately we also got some free replaced servers from high school to store data. Soon we had installed Nginx and launched Lehgo publicly, pushed it to some undergraduate St.Joseph's students and some computer teachers. In the first few weeks, we already had dozens of users from St.Joseph. Thomas told me this was an excellent start. Meanwhile, I went to a mid rank college for 2 years and finished an associate degree. Then I made a decision to take a semester off, first because there is not too much left for me even I stay in that college for 2 more years, I could do most things by my own with online resource at that time, second because, I want to keep enhancing Lehgo, from my own perspective, it has huge potential in education uses, (at that time Facebook was still struggling with privacy invasion and mess application censorship), if Lehgo could be the one use in between students and teachers or schools, for sharing open source educational materials, that will make it much more recognized and valuable, also that could be the main feature of it. I told Thomas about my idea, he turned me down by staying silent while he ensuring that his original plan comes true: sell to companies and charges them for advertisements. That was first time a disagreement and serious talk between me and Thomas, the argument is short and ended fast, main reason for him was he doesn't want to make his work for free, he has enough patience and faith that the opportunity will show up soon, for me, I thought although Lehgo is a beautiful work but still not good enough for commercial use, it lacks compatibility of development, if any company wants to use it as a matured social network tool, it has to have a larger team support behind, but at this moment, there were only 4 people knew the server structure, and most of us were spending part time coding; also, it's security was too easy to break too, one day I tried shutting down the website twice from my laptop, safety and privacy always are sensitive priority for all information holder to jeopardized, no one like to speak to someone that they don't trust . Even Thomas admits it, but he still insisted ran his plan, ever since that he was contacting me less and less. Today we haven't had communication for months. I had to move on because off school wasn't easy for anyone, at beginning I did feel more freedom and less pressure compared between make my own agenda and prepare exams in school, with not much difficulty I found myself a job as a technician work in a warfare by testing and fixing pre-owned monitors during the week, rest of time I take another job in frozen department in ShopRite of Edison, after work time are used to write some websites to get extra pay and at the weekends I was always trying work on Lehgo. I still couldn't forget my first project Oesllc.us[2], it\u2019s for the warfare I have worked, today when I look back either the code or the appearance of it I can only see the ugliness, but I will never forget how interest I had dived in deep and how excite when I finished my first website. After that everytime I wrote a site made me more and more experienced and demonstrative, 6 months ago I build my own dev website server[3] for testing codes and storing files, all spendings were from my part-time job incomes and those websites that I wrote, also I got enough money remaining to pay my living costs, phone, gas, room rent etc\u2026Up until now, I'm still try working on Lehgo when possible, whether or not Lehgo will get investors, doesn't attract me any more, I told Thomas, \"For now I'm happy that I can just programing.\" While everything is going the way it is for so long makes me feel that I ain't going any further, like fear of claustrophobia; sometimes I do thinking that it\u2019s not things are not moving or maybe just because I can't move, without going through college. Those days out of school taught me how precious and important the college is, and the first step for me should be return to college to achieve a bachelor's degree or higher degrees. Rutgers is always the best place to pursue my goal, 2 years ago I didn't get the chance to get into. Yet I'm trying again. It's one of the best science school in New Jersey, top 50 computer sciences ranking major in the US, a public Ivy college and Jersey dream for me. Four and half years living in New Jersey out of total 5 years in US, I know how challenge to be a CS major student in Rutgers and the final certification is worth to achieve. And when I graduate from Rutgers, I want to go back talk to Thomas, at that time he might accept my idea and I'm still willing to keep optimizing Lehgo's security for commercial use, maybe each other of us step back a bit will find us the solution we wanted, like nick vujicic said, \"Get up or give up\", I will never be the one who give up first, like Julian Assange and Daniel Berg from best partner to life-time enemy[4]. I cannot wait to get away back to college to find out how much I can do and how much I can learn, and how much I can tell Thomas we missed in college.  ",
+           "advisor_last_comment_list": [],
+           "advisor_last_comment_time": null,
+           "comment_summary": [],
+           "reviewer": [
+               {
+                   "displayName": "Allen Zhou",
+                   "email": "xpz5043@psu.edu",
+                   "id": "58f6a32a125776be9cbf6700"
+               }
+           ],
+           "introduction_comment": [],
+           "interest_comment": [],
+           "interest": [
+               {
+                   "manual_input": [],
+                   "system_detect": [
+                       {
+                           "term": "Middle school",
+                           "value": 0.397801
+                       },
+                       {
+                           "term": "High School",
+                           "value": 0.427355
+                       },
+                       {
+                           "term": "Computer",
+                           "value": 0.442784
+                       },
+                       {
+                           "term": "Secondary school",
+                           "value": 0.446467
+                       },
+                       {
+                           "term": "Part-time",
+                           "value": 0.455679
+                       },
+                       {
+                           "term": "Secondary education",
+                           "value": 0.461609
+                       },
+                       {
+                           "term": "Full-time",
+                           "value": 0.50175
+                       },
+                       {
+                           "term": "Twelfth grade",
+                           "value": 0.504588
+                       },
+                       {
+                           "term": "College",
+                           "value": 0.64015
+                       },
+                       {
+                           "term": "F-35 Lightning II",
+                           "value": 0.643117
+                       },
+                       {
+                           "term": "High school",
+                           "value": 0.976285
+                       },
+                       {
+                           "term": "Julian Assange",
+                           "value": 0.277851
+                       },
+                       {
+                           "term": "Florida",
+                           "value": 0.2829
+                       },
+                       {
+                           "term": "nick vujicic",
+                           "value": 0.290147
+                       },
+                       {
+                           "term": "Myspace",
+                           "value": 0.294439
+                       },
+                       {
+                           "term": "Ivy college",
+                           "value": 0.307788
+                       },
+                       {
+                           "term": "team leader",
+                           "value": 0.316076
+                       },
+                       {
+                           "term": "Pentagon",
+                           "value": 0.322879
+                       },
+                       {
+                           "term": "Lockheed Martin",
+                           "value": 0.738174
+                       },
+                       {
+                           "term": "New Jersey",
+                           "value": 0.33063
+                       },
+                       {
+                           "term": "US",
+                           "value": 0.333298
+                       },
+                       {
+                           "term": "Rutgers",
+                           "value": 0.359229
+                       },
+                       {
+                           "term": "Boeing",
+                           "value": 0.396183
+                       },
+                       {
+                           "term": "Facebook",
+                           "value": 0.410651
+                       },
+                       {
+                           "term": "test elevator hover",
+                           "value": 0.756361
+                       },
+                       {
+                           "term": "desktop Dev server",
+                           "value": 0.757252
+                       },
+                       {
+                           "term": "human force design",
+                           "value": 0.759791
+                       },
+                       {
+                           "term": "public Ivy college",
+                           "value": 0.762055
+                       },
+                       {
+                           "term": "open source",
+                           "value": 0.762405
+                       },
+                       {
+                           "term": "mid rank college",
+                           "value": 0.762626
+                       },
+                       {
+                           "term": "social network",
+                           "value": 0.76296
+                       },
+                       {
+                           "term": "best science school",
+                           "value": 0.763632
+                       },
+                       {
+                           "term": "best flight jet",
+                           "value": 0.765239
+                       },
+                       {
+                           "term": "Thomas",
+                           "value": 1.6514229999999999
+                       },
+                       {
+                           "term": "decent team leader",
+                           "value": 0.772066
+                       },
+                       {
+                           "term": "flight jet F-35",
+                           "value": 0.772472
+                       },
+                       {
+                           "term": "entire free time",
+                           "value": 0.781107
+                       },
+                       {
+                           "term": "web development programing",
+                           "value": 0.7908
+                       },
+                       {
+                           "term": "time",
+                           "value": 0.792416
+                       },
+                       {
+                           "term": "Lehgo",
+                           "value": 2.174254
+                       },
+                       {
+                           "term": "flight jet",
+                           "value": 0.806849
+                       },
+                       {
+                           "term": "St.Joseph High School",
+                           "value": 1.251882
+                       },
+                       {
+                           "term": "high school",
+                           "value": 0.945795
+                       },
+                       {
+                           "value": 0.74525,
+                           "term": "Sam and Irene Black School of Business"
+                       },
+                       {
+                           "value": 0.799811,
+                           "term": "Penn State Erie, The Behrend College"
+                       },
+                       {
+                           "value": 0.94962,
+                           "term": "Pennsylvania State University"
+                       },
+                       {
+                           "value": 1.3231680000000001,
+                           "term": "Penn State Behrend"
+                       },
+                       {
+                           "term": "tuition",
+                           "value": 0.753543
+                       },
+                       {
+                           "term": "Behrend",
+                           "value": 1.264839
+                       },
+                       {
+                           "value": 0.86595,
+                           "term": "Mathematics"
+                       },
+                       {
+                           "value": 0.947707,
+                           "term": "Computer science"
+                       },
+                       {
+                           "value": 1.64675,
+                           "term": "Science"
+                       },
+                       {
+                           "value": 0.943467,
+                           "term": "math"
+                       },
+                       {
+                           "term": "Software engineering",
+                           "value": 0.911546
+                       },
+                       {
+                           "term": "Software Engineering",
+                           "value": 0.33
+                       },
+                       {
+                           "term": "degree",
+                           "value": 0.318362
+                       },
+                       {
+                           "term": "Software Engineering online",
+                           "value": 0.907132
+                       },
+                       {
+                           "value": 0.96341,
+                           "term": "CSSE"
+                       }
+                   ]
+               }
+           ],
+           "personality_evaluation_comment": [],
+           "personality_evaluation": [
+               {
+                   "warnings": [],
+                   "values": [
+                       {
+                           "raw_score": 0.6136652211265694,
+                           "percentile": 0.12517753683973226,
+                           "category": "values",
+                           "name": "Conservation",
+                           "trait_id": "value_conservation"
+                       },
+                       {
+                           "raw_score": 0.7394210322183504,
+                           "percentile": 0.12241270388347814,
+                           "category": "values",
+                           "name": "Openness to change",
+                           "trait_id": "value_openness_to_change"
+                       },
+                       {
+                           "raw_score": 0.5949608459353384,
+                           "percentile": 0.012497300167086056,
+                           "category": "values",
+                           "name": "Hedonism",
+                           "trait_id": "value_hedonism"
+                       },
+                       {
+                           "raw_score": 0.6367060371153571,
+                           "percentile": 0.05625788886648364,
+                           "category": "values",
+                           "name": "Self-enhancement",
+                           "trait_id": "value_self_enhancement"
+                       },
+                       {
+                           "raw_score": 0.8236465963806536,
+                           "percentile": 0.2837525845736123,
+                           "category": "values",
+                           "name": "Self-transcendence",
+                           "trait_id": "value_self_transcendence"
+                       }
+                   ],
+                   "needs": [
+                       {
+                           "raw_score": 0.7322605554894115,
+                           "percentile": 0.5042361697644216,
+                           "category": "needs",
+                           "name": "Challenge",
+                           "trait_id": "need_challenge"
+                       },
+                       {
+                           "raw_score": 0.7035959987284877,
+                           "percentile": 0.021570195696163807,
+                           "category": "needs",
+                           "name": "Closeness",
+                           "trait_id": "need_closeness"
+                       },
+                       {
+                           "raw_score": 0.8185527422484913,
+                           "percentile": 0.5288129844829539,
+                           "category": "needs",
+                           "name": "Curiosity",
+                           "trait_id": "need_curiosity"
+                       },
+                       {
+                           "raw_score": 0.5811492244959366,
+                           "percentile": 0.09510799396703135,
+                           "category": "needs",
+                           "name": "Excitement",
+                           "trait_id": "need_excitement"
+                       },
+                       {
+                           "raw_score": 0.7573937483821168,
+                           "percentile": 0.06654982456477193,
+                           "category": "needs",
+                           "name": "Harmony",
+                           "trait_id": "need_harmony"
+                       },
+                       {
+                           "raw_score": 0.6713466126527267,
+                           "percentile": 0.339176677707718,
+                           "category": "needs",
+                           "name": "Ideal",
+                           "trait_id": "need_ideal"
+                       },
+                       {
+                           "raw_score": 0.7092934409571845,
+                           "percentile": 0.23374906619263341,
+                           "category": "needs",
+                           "name": "Liberty",
+                           "trait_id": "need_liberty"
+                       },
+                       {
+                           "raw_score": 0.6966660916817412,
+                           "percentile": 0.06944182033366547,
+                           "category": "needs",
+                           "name": "Love",
+                           "trait_id": "need_love"
+                       },
+                       {
+                           "raw_score": 0.7236250940611441,
+                           "percentile": 0.4238720107640229,
+                           "category": "needs",
+                           "name": "Practicality",
+                           "trait_id": "need_practicality"
+                       },
+                       {
+                           "raw_score": 0.6053937524237095,
+                           "percentile": 0.02174699008199843,
+                           "category": "needs",
+                           "name": "Self-expression",
+                           "trait_id": "need_self_expression"
+                       },
+                       {
+                           "raw_score": 0.7216825304258608,
+                           "percentile": 0.34425804471301685,
+                           "category": "needs",
+                           "name": "Stability",
+                           "trait_id": "need_stability"
+                       },
+                       {
+                           "raw_score": 0.7270049244504667,
+                           "percentile": 0.873132877509873,
+                           "category": "needs",
+                           "name": "Structure",
+                           "trait_id": "need_structure"
+                       }
+                   ],
+                   "personality": [
+                       {
+                           "children": [
+                               {
+                                   "raw_score": 0.5069767672391027,
+                                   "percentile": 0.5242041360358458,
+                                   "category": "personality",
+                                   "name": "Adventurousness",
+                                   "trait_id": "facet_adventurousness"
+                               },
+                               {
+                                   "raw_score": 0.6052533476310772,
+                                   "percentile": 0.11768608394965069,
+                                   "category": "personality",
+                                   "name": "Artistic interests",
+                                   "trait_id": "facet_artistic_interests"
+                               },
+                               {
+                                   "raw_score": 0.6256525011176579,
+                                   "percentile": 0.290153330959551,
+                                   "category": "personality",
+                                   "name": "Emotionality",
+                                   "trait_id": "facet_emotionality"
+                               },
+                               {
+                                   "raw_score": 0.6832266425521903,
+                                   "percentile": 0.14928747601115505,
+                                   "category": "personality",
+                                   "name": "Imagination",
+                                   "trait_id": "facet_imagination"
+                               },
+                               {
+                                   "raw_score": 0.6927318699992854,
+                                   "percentile": 0.9676152301279161,
+                                   "category": "personality",
+                                   "name": "Intellect",
+                                   "trait_id": "facet_intellect"
+                               },
+                               {
+                                   "raw_score": 0.5666610821191189,
+                                   "percentile": 0.841658248011815,
+                                   "category": "personality",
+                                   "name": "Authority-challenging",
+                                   "trait_id": "facet_liberalism"
+                               }
+                           ],
+                           "raw_score": 0.7532218896939051,
+                           "percentile": 0.5569117004311344,
+                           "category": "personality",
+                           "name": "Openness",
+                           "trait_id": "big5_openness"
+                       },
+                       {
+                           "children": [
+                               {
+                                   "raw_score": 0.7223451284296563,
+                                   "percentile": 0.7392955627978874,
+                                   "category": "personality",
+                                   "name": "Achievement striving",
+                                   "trait_id": "facet_achievement_striving"
+                               },
+                               {
+                                   "raw_score": 0.5759911159551447,
+                                   "percentile": 0.9070889432827938,
+                                   "category": "personality",
+                                   "name": "Cautiousness",
+                                   "trait_id": "facet_cautiousness"
+                               },
+                               {
+                                   "raw_score": 0.6817862875901076,
+                                   "percentile": 0.8249805877842614,
+                                   "category": "personality",
+                                   "name": "Dutifulness",
+                                   "trait_id": "facet_dutifulness"
+                               },
+                               {
+                                   "raw_score": 0.444694190559652,
+                                   "percentile": 0.06551992758131919,
+                                   "category": "personality",
+                                   "name": "Orderliness",
+                                   "trait_id": "facet_orderliness"
+                               },
+                               {
+                                   "raw_score": 0.5658140008190662,
+                                   "percentile": 0.4595401813624957,
+                                   "category": "personality",
+                                   "name": "Self-discipline",
+                                   "trait_id": "facet_self_discipline"
+                               },
+                               {
+                                   "raw_score": 0.7830866580883564,
+                                   "percentile": 0.8030793290752161,
+                                   "category": "personality",
+                                   "name": "Self-efficacy",
+                                   "trait_id": "facet_self_efficacy"
+                               }
+                           ],
+                           "raw_score": 0.6333955962980004,
+                           "percentile": 0.5456150875242343,
+                           "category": "personality",
+                           "name": "Conscientiousness",
+                           "trait_id": "big5_conscientiousness"
+                       },
+                       {
+                           "children": [
+                               {
+                                   "raw_score": 0.597356414532086,
+                                   "percentile": 0.8672556574063333,
+                                   "category": "personality",
+                                   "name": "Activity level",
+                                   "trait_id": "facet_activity_level"
+                               },
+                               {
+                                   "raw_score": 0.6986857922131717,
+                                   "percentile": 0.8627489499418792,
+                                   "category": "personality",
+                                   "name": "Assertiveness",
+                                   "trait_id": "facet_assertiveness"
+                               },
+                               {
+                                   "raw_score": 0.5754715412415767,
+                                   "percentile": 0.10179481220506775,
+                                   "category": "personality",
+                                   "name": "Cheerfulness",
+                                   "trait_id": "facet_cheerfulness"
+                               },
+                               {
+                                   "raw_score": 0.5599030842652479,
+                                   "percentile": 0.1513437685113645,
+                                   "category": "personality",
+                                   "name": "Excitement-seeking",
+                                   "trait_id": "facet_excitement_seeking"
+                               },
+                               {
+                                   "raw_score": 0.5379259791638347,
+                                   "percentile": 0.3264079905261684,
+                                   "category": "personality",
+                                   "name": "Outgoing",
+                                   "trait_id": "facet_friendliness"
+                               },
+                               {
+                                   "raw_score": 0.3506916780061951,
+                                   "percentile": 0.022928485303552792,
+                                   "category": "personality",
+                                   "name": "Gregariousness",
+                                   "trait_id": "facet_gregariousness"
+                               }
+                           ],
+                           "raw_score": 0.46622158537447844,
+                           "percentile": 0.028716906091400207,
+                           "category": "personality",
+                           "name": "Extraversion",
+                           "trait_id": "big5_extraversion"
+                       },
+                       {
+                           "children": [
+                               {
+                                   "raw_score": 0.7083589609793245,
+                                   "percentile": 0.5371267066290797,
+                                   "category": "personality",
+                                   "name": "Altruism",
+                                   "trait_id": "facet_altruism"
+                               },
+                               {
+                                   "raw_score": 0.5985703878318082,
+                                   "percentile": 0.6248994107274234,
+                                   "category": "personality",
+                                   "name": "Cooperation",
+                                   "trait_id": "facet_cooperation"
+                               },
+                               {
+                                   "raw_score": 0.42819100775699065,
+                                   "percentile": 0.35103496374067455,
+                                   "category": "personality",
+                                   "name": "Modesty",
+                                   "trait_id": "facet_modesty"
+                               },
+                               {
+                                   "raw_score": 0.6130752675053731,
+                                   "percentile": 0.3936132301756974,
+                                   "category": "personality",
+                                   "name": "Uncompromising",
+                                   "trait_id": "facet_morality"
+                               },
+                               {
+                                   "raw_score": 0.6783277863788171,
+                                   "percentile": 0.6513217465387591,
+                                   "category": "personality",
+                                   "name": "Sympathy",
+                                   "trait_id": "facet_sympathy"
+                               },
+                               {
+                                   "raw_score": 0.6211344892736437,
+                                   "percentile": 0.804456491469959,
+                                   "category": "personality",
+                                   "name": "Trust",
+                                   "trait_id": "facet_trust"
+                               }
+                           ],
+                           "raw_score": 0.6590114623192389,
+                           "percentile": 0.018196281256535496,
+                           "category": "personality",
+                           "name": "Agreeableness",
+                           "trait_id": "big5_agreeableness"
+                       },
+                       {
+                           "children": [
+                               {
+                                   "raw_score": 0.4860680373473237,
+                                   "percentile": 0.18197353515423725,
+                                   "category": "personality",
+                                   "name": "Fiery",
+                                   "trait_id": "facet_anger"
+                               },
+                               {
+                                   "raw_score": 0.5754299232345039,
+                                   "percentile": 0.392065067429091,
+                                   "category": "personality",
+                                   "name": "Prone to worry",
+                                   "trait_id": "facet_anxiety"
+                               },
+                               {
+                                   "raw_score": 0.480450267767889,
+                                   "percentile": 0.6933629002070502,
+                                   "category": "personality",
+                                   "name": "Melancholy",
+                                   "trait_id": "facet_depression"
+                               },
+                               {
+                                   "raw_score": 0.46801371920315143,
+                                   "percentile": 0.19831997325571754,
+                                   "category": "personality",
+                                   "name": "Immoderation",
+                                   "trait_id": "facet_immoderation"
+                               },
+                               {
+                                   "raw_score": 0.578023018025891,
+                                   "percentile": 0.724077714936111,
+                                   "category": "personality",
+                                   "name": "Self-consciousness",
+                                   "trait_id": "facet_self_consciousness"
+                               },
+                               {
+                                   "raw_score": 0.46996633269177823,
+                                   "percentile": 0.5146773604564865,
+                                   "category": "personality",
+                                   "name": "Susceptible to stress",
+                                   "trait_id": "facet_vulnerability"
+                               }
+                           ],
+                           "raw_score": 0.5073631221580683,
+                           "percentile": 0.7610015624469728,
+                           "category": "personality",
+                           "name": "Emotional range",
+                           "trait_id": "big5_neuroticism"
+                       }
+                   ],
+                   "processed_language": "en",
+                   "word_count": 1627
+               }
+           ],
+           "question_comment": [],
+           "question": [
+               {
+                   "question_body": "What is CSSE?",
+                   "_id": {
+                       "$oid": "58ff9db7947740300f6eec4d"
+                   },
+                   "question_keyword": [],
+                   "question_taxonomy": [],
+                   "question_entitie": [],
+                   "question_concept": [],
+                   "ask_count": 1,
+                   "ask_time": {
+                       "$date": "2017-04-25T19:04:23.546Z"
+                   },
+                   "favorite": false
+               },
+               {
+                   "question_body": "What courses will I learn with a Software Engineering online degree?",
+                   "_id": {
+                       "$oid": "58ff9dce947740300f6eec4e"
+                   },
+                   "question_keyword": [],
+                   "question_taxonomy": [],
+                   "question_entitie": [],
+                   "question_concept": [],
+                   "ask_count": 1,
+                   "ask_time": {
+                       "$date": "2017-04-25T19:04:46.563Z"
+                   },
+                   "favorite": false
+               },
+               {
+                   "question_body": "Do I need to be good at math for Computer Science?",
+                   "_id": {
+                       "$oid": "58ff9dff947740300f6eec4f"
+                   },
+                   "question_keyword": [],
+                   "question_taxonomy": [],
+                   "question_entitie": [],
+                   "question_concept": [],
+                   "ask_count": 1,
+                   "ask_time": {
+                       "$date": "2017-04-25T19:05:35.808Z"
+                   },
+                   "favorite": false
+               },
+               {
+                   "question_body": "What is the tuition at Behrend?",
+                   "_id": {
+                       "$oid": "58ff9eb8947740300f6eec50"
+                   },
+                   "answer_body": "<p class=\"answer-body\">Behrend is expensive, like any other private college. But, to give you numbers\u2026 If you are currently living in Pennsylvania, the cost of tuition is approximately $6,934 per semester. If you are not in Pennsylvania, the cost of tuition is approximately $10,937 per semester. But don\u2019t forget about rent, food, or books which are another $6,535 per semester if living on-campus!<\/p>",
+                   "question_keyword": [],
+                   "question_taxonomy": [],
+                   "question_entitie": [],
+                   "question_concept": [],
+                   "ask_count": 1,
+                   "ask_time": {
+                       "$date": "2017-04-25T19:08:40.824Z"
+                   },
+                   "favorite": true
+               },
+               {
+                   "question_body": "Tell me more about Penn State Behrend.",
+                   "_id": {
+                       "$oid": "58ff9eea947740300f6eec51"
+                   },
+                   "question_keyword": [],
+                   "question_taxonomy": [],
+                   "question_entitie": [],
+                   "question_concept": [],
+                   "ask_count": 1,
+                   "ask_time": {
+                       "$date": "2017-04-25T19:09:30.720Z"
+                   },
+                   "favorite": false
+               }
+           ],
+           "view_section": [
+               "question",
+               "personality",
+               "interest",
+               "introduction"
+           ],
+           "user_viewed_before_change": true,
+           "request_time": {
+               "$date": "2017-04-25T19:11:22.890Z"
+           },
+           "_id": {
+               "$oid": "58ff9f5a947740300f6eec52"
+           }
+       }

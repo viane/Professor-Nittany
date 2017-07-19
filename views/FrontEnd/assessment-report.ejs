@@ -1,0 +1,152 @@
+<!-- frontend -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Intelligent Academic Planner - Assessment Report</title>
+	<style>
+		.editable:hover {
+			text-decoration: underline;
+		}
+
+		#borderimg2 {
+			border: 15px solid transparent;
+			padding: 15px;
+			border-image-source: url(images/edit-border.png);
+			border-image-repeat: repeat;
+			background-color: #eee;
+		}
+		/* for d3 personality display style*/
+
+		svg {
+			width: 100%;
+			height: 100%;
+		}
+
+		path.slice {
+			stroke-width: 2px;
+		}
+
+		polyline {
+			opacity: .3;
+			stroke: black;
+			stroke-width: 2px;
+			fill: none;
+		}
+	</style>
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+</head>
+
+<body>
+	<%- include header.ejs %>
+		<!-- interest cloud -->
+		<script src="/js/wordcloud2.js"></script>
+		<!-- import d3 for display personality assessment -->
+		<script src="https://d3js.org/d3.v3.min.js" type="text/javascript" charset="utf-8"></script>
+		<!-- nav bar -->
+    <div id="assessment_id" style="display:none"><%- locals.assessment.id %></div>
+		<ul id="assessment-section-navigation" class="list-no-style" style="display:none">
+			<div class="assessment-section-navigation-title">Navigation</div>
+		</ul>
+		<div class="container-fluid">
+			<div class="col-sm-9 mid-positive-fix">
+				<!-- resumt -->
+				<div class="panel panel-primary" style="display:none">
+					<div class="bs-callout bs-callout-primary text-left">
+					  <h2 id="owner_display_name">Student Name </h2>
+						<span id="request_time">Request Time </span>
+              <% if (locals.user[locals.user.type].role=="advisor") { %>
+                <button type="button" class="btn btn-success assessment-utility-function">Save</button>
+              <% }else{ %>
+                <button type="button" class="btn btn-danger assessment-utility-function">Delete</button>
+              <% } %>
+              <button type="button" class="btn btn-info assessment-utility-function">Email</button>
+              <button type="button" class="btn btn-info assessment-utility-function">Print</button>
+					</div>
+
+					<div id="interest_div" style="display:none" class="bs-callout bs-callout-primary text-left">
+						<h4>Interest Cloud</h4>
+						<canvas id="interest-canvas" width="800" height="420"></canvas>
+            <div class="interest-list-full-section">
+              <h4 class="list-title-small">Intelligent Academic Advisor Detect</h4>
+  						<ul id="interest-terms-sys" class="list-no-style wrap-5-col"></ul>
+              <h4 class="list-title-small">Student Input</h4>
+  						<ul id="interest-terms-man" class="list-no-style"></ul>
+            </div>
+            <div class="separator"></div>
+            <div id="interest-comment-section"></div>
+					</div>
+
+					<div id="intro_div" style="display:none" class="bs-callout bs-callout-primary text-left">
+						<div>
+							<h4>Introduction</h4>
+							<p id="intro_paragraph"></p>
+							</p>
+						</div>
+            <div class="separator"></div>
+						<div id="introduction-comment-section">
+						</div>
+					</div>
+
+					<div id="personality_div" style="display:none" class="bs-callout bs-callout-primary text-left">
+						<h4>Personality Evaluation</h4>
+						<div id="personality-assessement-chart"></div>
+            <div class="element-float-left">
+  						<h3>Values</h3>
+  						<ul id="values_list" class="list-no-style"></ul>
+            </div>
+            <div class="element-float-left">
+						<h3>Big 5</h3>
+						<ul id="big5-open" class="list-no-style element-float-left">
+						<h4 id="openness" class="list-title-small"></h4>
+            </ul>
+
+						<ul id="big5-consc" class="list-no-style element-float-left">
+						<h4 id="conscientiousness" class="list-title-small"></h4>
+            </ul>
+
+						<ul id="big5-extra" class="list-no-style element-float-left">
+						<h4 id="extraversion" class="list-title-small"></h4>
+            </ul>
+
+						<ul id="big5-agree" class="list-no-style element-float-left">
+						<h4 id="agreeableness" class="list-title-small"></h4>
+            </ul>
+
+						<ul id="big5-emotion" class="list-no-style element-float-left">
+						<h4 id="emotionality" class="list-title-small"></h4>
+            </ul>
+            </div>
+            <div class="separator"></div>
+						<div id="personality-comment-section" style="clear: both;"></div>
+					</div>
+
+					<div id="question_div" style="display:none" class="bs-callout bs-callout-primary text-left">
+						<h4>Favorite Question</h4>
+						<ul id="question_fav" class="list-no-style">
+						</ul>
+						<h4>Other</h4>
+            <ul id="question_other" class="list-no-style">
+						</ul>
+            <div class="separator"></div>
+						<div id="question_comments"></div>
+					</div>
+
+          <div id="summary_div" style="display:none" class="bs-callout bs-callout-primary text-left">
+            <div id="summary_comments"></div>
+          </div>
+				</div>
+			</div>
+
+
+<%- include footer.ejs %>
