@@ -9,6 +9,7 @@ import string from '../system/utility/string';
 const PersonalityAssessment = require('../models/personality-assessement');
 import profileUtility from '../system/utility/profile';
 import naturalLanguageUnderstanding from '../system/watson/natural-language-understanding';
+import busboy from 'connect-busboy';
 
 profileRouter.use(bodyParser.json());
 
@@ -118,6 +119,141 @@ profileRouter.post('/update-introduction', Verify.verifyOrdinaryUser, (req, res)
     console.error(err);
     res.status(302).json(err)
   })
+})
+
+// API POST /profile/upload-description-text-file
+router.post('/upload-description-text-file', busboy({
+    limits: {
+        fileSize: 4 * 1024 * 1024
+    }
+}), (req, res, next) => {
+    if (!req.busboy)
+        return next('route');
+
+    let fstream;
+    req.pipe(req.busboy);
+    req.busboy.on('file', (fieldname, file, filename) => {
+        if (path.extname(filename) === ".txt") {
+            file.on('data', function(data) {
+                profile.updateUserSelfDescription(req.user, data).then((query_report) => {
+                    const dataText = data.toString();
+                    // if user description is longer than 100 words, update persoanlity assessment and analysis
+                    if (stringChecking.countWords(dataText) > 100) {
+                        // update assessment and analysis
+                        profile.getAndUpdatePersonalityAssessment(req.user, dataText).then(() => {
+                            // update interest
+                            naturalLanguageUnderstanding.getAnalysis(dataText, 20, 20, 20).then((analysis) => {
+                                profile.updateInterest(req.user, analysis);
+                            }).catch((err) => {
+                                console.error(err);
+                            });
+                            res.sendStatus(200);
+                        }).catch((err) => {
+                            console.error(err);
+                            res.sendStatus(500);
+                        });
+                    } else {
+                        // if less than 100 words, only update user description content to DB
+                        User.update({
+                            _id: req.user._id
+                        }, {
+                            $set: {
+                                'personality_assessement.description_content': dataText,
+                                'personality_assessement.evaluation': {}
+                            }
+                        }).exec().then(() => {
+                            // update interest
+                            naturalLanguageUnderstanding.getAnalysis(dataText, 20, 20, 20).then((analysis) => {
+                                profile.updateInterest(req.user, analysis);
+                            }).catch((err) => {
+                                console.error(err);
+                            });
+                            res.sendStatus(200);
+                        }).catch((err) => {
+                            console.error(err);
+                            res.sendStatus(300);
+                        });
+                    }
+                }).catch(function(err) {
+                    console.error(err);
+                    res.sendStatus(300);
+                });
+
+            });
+        } else if (path.extname(filename) === ".doc" || path.extname(filename) === ".docx") {
+            // if user upload a word file, write to temp folder and named by it's id, then parse and upload to DB
+            const filePath = appRoot + '/app/word-file-temp-folder/' + req.user.id + path.extname(filename);
+            fstream = fs.createWriteStream(filePath);
+            // write file to temp folder
+            file.pipe(fstream);
+            fstream.on('close', function() {
+                loadJsonFile(appRoot + '/config/api-configuration.json').then(json => {
+                    // using watson documention conversion
+                    document_conversion.convert({
+                        file: fs.createReadStream(filePath),
+                        conversion_target: document_conversion.conversion_target.ANSWER_UNITS,
+                        word: json.document_conversion_config
+                    }, (err, response) => {
+                        if (err) {
+                            console.error(err);
+                            res.sendStatus(300);
+                        } else {
+
+                            const fullDoc = wordToText.combineResult(response);
+
+                            profile.updateUserSelfDescription(req.user, fullDoc).then(() => {
+                                // done write to DB, delete file
+                                del.promise([filePath]).then(() => {}).catch((err) => {
+                                    throw err;
+                                });
+                                if (stringChecking.countWords(fullDoc) > 100) {
+                                    profile.getAndUpdatePersonalityAssessment(req.user, fullDoc).then(() => {
+                                        // update interest
+                                        naturalLanguageUnderstanding.getAnalysis(fullDoc, 20, 20, 20).then((analysis) => {
+                                            profile.updateInterest(req.user, analysis);
+                                        }).catch((err) => {
+                                            console.error(err);
+                                        });
+                                        res.sendStatus(200);
+                                    }).catch((err) => {
+                                        console.error(err);
+                                        res.sendStatus(300);
+                                    });
+                                } else {
+                                    User.update({
+                                        _id: req.user._id
+                                    }, {
+                                        $set: {
+                                            'personality_assessement.description_content': fullDoc,
+                                            'personality_assessement.evaluation': {}
+                                        }
+                                    }).exec().then(() => {
+                                        naturalLanguageUnderstanding.getAnalysis(fullDoc, 20, 20, 20).then((analysis) => {
+                                            profile.updateInterest(req.user, analysis);
+                                        }).catch((err) => {
+                                            console.error(err);
+                                        });
+                                        res.sendStatus(200);
+                                    }).catch((err) => {
+                                        console.error(err);
+                                        res.sendStatus(300);
+                                    });
+                                }
+
+                            }).catch(function(err) {
+                                // if error on write to DB, leave the file in the folder for further examnaton
+                                throw err;
+                                res.sendStatus(300);
+                            });
+                            // personality analysis only takes input that is more than 100 words
+
+                        }
+                    });
+                });
+            });
+
+        }
+    });
 })
 
 module.exports = profileRouter;

@@ -23,8 +23,11 @@
 #to install all dependency
 npm install
 
-#to start the server
-npm start
+#to start the server in developer mode
+npm run dev-start
+
+#to watch files on change
+npm run watch
 ```
 ### Demo
 [Demo](https://intelligent-student-advisor.herokuapp.com/)
