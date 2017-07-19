@@ -1,5 +1,6 @@
 module.exports = {
   'secretKey': '12345-67890-09876-54321',
+  'secret':'94838472',
   'mongoUrl': 'mongodb://Pb7TdS:qyW3g8LLAqaCELzB@ds033056.mlab.com:33056/intelligent_academic_planner',
   'facebook': {
     clientID: '1962035640700088',
@@ -7,9 +8,9 @@ module.exports = {
     callbackURL: 'https://localhost:3443/users/facebook/callback'
   },
   'twitter' : {
-    'consumerKey'     : 'NEKSGvDlA6Hz63BFaPYfshOEA',
-    'consumerSecret'  : 'lxw7wAvKo90IW0zZXi9qKqlKXyyWRxV8gEPgE5ylknIlbV2Y0n',
-    'callbackURL'     : 'https://localhost:3443/users/twitter/callback'
+    'consumerKey'     : '3LMDaxawNk2L71KDz0qFfyovW',
+    'consumerSecret'  : 'K4ifsbzDPS3lh0sLBPF5vh43lSmnYM0EcJtLBB5Emji0iGcAz4',
+    'callbackURL'     : 'https://127.0.0.1:3443/users/twitter/callback'
   },
 
   'google' : {
