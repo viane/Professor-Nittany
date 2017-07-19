@@ -36,9 +36,10 @@ var User = new Schema({
     interest: [{
         type: mongoose.Schema.Types.Mixed
     }],
-    interest_manual:[{
-        type:mongoose.Schema.Types.Mixed
-    }],
+    interest_manual:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ManualInterest'
+    },
     inbox:[{
         type:mongoose.Schema.Types.Mixed
     }],
