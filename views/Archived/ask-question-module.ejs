@@ -1,0 +1,24 @@
+<!-- Ask a question -->
+<style>
+    .affix {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, 20%);
+      width: 98%;
+      z-index: 1;
+    }
+    .affix + .container-fluid {
+      padding-top: 70px;
+    }
+</style>
+<div class="panel-body">
+    <form action="/external-ask" method="GET">
+       <div class="form-group input-group" data-spy="affix" data-offset-top="49">
+        <input id="external-ask-bar-input" name="question" type="text" class="form-control" placeholder="Eg. 'What is Computer Science?'">
+          <span class="input-group-btn">
+            <button id="external-ask-bar-btn" class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></button>
+          </span>
+      </div>
+    </form>
+</div>

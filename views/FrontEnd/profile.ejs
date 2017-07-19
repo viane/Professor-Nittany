@@ -1,0 +1,164 @@
+<!-- frontend -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Intelligent Academic Planner - Profile</title>
+	<style>
+		.editable:hover {
+			text-decoration: underline;
+		}
+
+		#borderimg2 {
+			border: 15px solid transparent;
+			padding: 15px;
+			border-image-source: url(images/edit-border.png);
+			border-image-repeat: repeat;
+			background-color: #eee;
+		}
+		/* for d3 personality display style*/
+
+		svg {
+			width: 100%;
+			height: 100%;
+		}
+
+		path.slice {
+			stroke-width: 2px;
+		}
+
+		polyline {
+			opacity: .3;
+			stroke: black;
+			stroke-width: 2px;
+			fill: none;
+		}
+	</style>
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+</head>
+
+<body>
+	<%- include header.ejs %>
+
+		<!-- interest cloud -->
+		<script src="/js/wordcloud2.js"></script>
+
+		<!-- display advisors panel for sending assessment -->
+		<script src="js/jquery.modal.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="css/jquery.modal.css" type="text/css" media="screen" />
+
+		<!-- import d3 for display personality assessment -->
+		<script src="https://d3js.org/d3.v3.min.js" type="text/javascript" charset="utf-8"></script>
+
+		<%- include search-bar-module.ejs %>
+
+			<!-- nav bar -->
+			<div class="container-fluid">
+
+				<div class="col-sm-9">
+					<!-- resumt -->
+					<div class="panel panel-primary">
+						<div class="bs-callout bs-callout-primary text-left">
+							<h4>Your words</h4>
+							<canvas id="interest-canvas" width="800" height="420"></canvas>
+						</div>
+
+						<div class="bs-callout bs-callout-primary text-left">
+							<div class="row">
+								<div id="introduction-edit-section" class="col-xs-12 col-md-9">
+									<h4>Introduction</h4>
+									<p id="introduction-content-p" class="editable" contenteditable="true">
+										<% if(!introduction) { %>
+											Write something about yourself here!
+											</br>
+											Or upload a descriptive text!
+											<% } else { %>
+												<%- introduction  %>
+													<% } %>
+									</p>
+									<div class="edit-bar">
+										<div id="introduction-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div>
+										<div id="introduction-redo-btn"><i class="fa fa-repeat edit-btn" aria-hidden="true"><span> Redo</span></i></div>
+										<div id="introduction-undo-btn"><i class="fa fa-undo edit-btn" aria-hidden="true"><span> Undo</span></i></div>
+										<div id="introduction-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
+									</div>
+								</div>
+								<div class="col-xs-6 col-md-3">
+									<div id="uploadFileSection" class="text-center">
+										<h4>Upload Document</h4>
+										<form class="dropzone" id="upload-description-Text-File" name="upload-file"></form>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="bs-callout bs-callout-primary text-left">
+							<div class="row">
+								<div class="col-xs-12 col-md-9">
+									<h4>Interests</h4>
+									<!-- http://vitalets.github.io/x-editable/demo-bs3.html -->
+									<!-- <p id="user-interest-input" data-placeholder="Add your interests here, separated by comma" class="editable" contenteditable="true"></p> -->
+									<div id="user-interest-tags">
+										<input type="text" value="" placeholder="Tag by comma or return" />
+									</div>
+									<div class="edit-bar">
+										<!-- <div id="interest-cancel-btn"><i class="fa fa-times edit-btn" aria-hidden="true"><span> Cancel</span></i></div> -->
+										<div id="interest-save-btn"><i class="fa fa-floppy-o edit-btn" aria-hidden="true"><span> Save</span></i></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="bs-callout bs-callout-primary text-left">
+							<h4>Personality</h4>
+							<div id="personality-assessement" <% if(!personality_assessement) { %> style="height: 450px"
+								<% } %>>
+									<p id="personality-assessement-insufficient-word-message">To get a personality assessment, please write an introduction about yourself (at least 100 words)</p>
+							</div>
+						</div>
+						<script>
+							const questionHistory = <% if(ask_history) { %>
+							<%- JSON.stringify(ask_history) %>
+							<% }else{ %> []
+							<% } %>;
+							let personality_assessement = <% if(personality_assessement) { %>
+							<%- JSON.stringify(personality_assessement) %>
+							<% }else{ %> []
+							<% } %>;
+						</script>
+
+						<div class="bs-callout bs-callout-info text-left">
+							<h4>Favorite Question and Answer</h4>
+							<% if(ask_history.length == 0) { %> Ask some questions and favorite them to fill here! <% } %>
+							<div id="favorite-question-list"></div>
+						</div>
+
+						<div class="bs-callout bs-callout-info text-left">
+							<h4>Other Question and History</h4>
+							<% if(ask_history.length == 0) { %> Ask some questions to leave a trace! <% } %>
+							<div id="asked-question-list"></div>
+						</div>
+					</div>
+				</div>
+				<!-- resume -->
+				<div class="col-sm-3">
+					<%- include user-card-module.ejs %>
+						<%- include question-feed-module.ejs %>
+				</div>
+
+			</div>
+
+			<%- include footer.ejs %>
+</body>
+
+</html>
