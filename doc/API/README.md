@@ -1,10 +1,10 @@
 # Getting Set Up
 
-1. `cd ../doc/API`
+1. `cd slate`
 2. Initialize, you can do this locally to test:
 
 ```shell
-# update to ruby 2.4.0
+# update ruby 2.4.0
 
 # install gem
 
@@ -16,11 +16,3 @@ bundle exec middleman server
 ```
 
 You can now see the docs at http://localhost:4567
-
-# Edit API Document
-
-Open
-
-> ../doc/API/source/index.html.md
-
-and follow the markdown syntax in there, then refresh the page to see the changes.

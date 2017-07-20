@@ -16,7 +16,6 @@
 >b2aP7l3PMqjnL1cZNDGIyWBoM5i2BW22oyUAFxEZo3Afv0vtGzRPt1mcrcNLPqoxxqDJunVWbie4CZ6hDXRwVMF1YMDGMHjXP5nCXb2UF1VY3K1cpefpKEoAzyeaKzTT
 
 ### APIs
-Read API [Document](https://github.com/viane/Intelligent-Academic-Advisor/blob/master/doc/API/README.md)
 
 ### How to use
 
@@ -24,11 +23,11 @@ Read API [Document](https://github.com/viane/Intelligent-Academic-Advisor/blob/m
 #to install all dependency
 npm install
 
-#to auto compile on file change, this will let babel compile once to public folder
-npm run watch
+#to start the server in developer mode
+npm run dev-start
 
-#to start the server
-npm start
+#to watch files on change
+npm run watch
 ```
 ### Demo
 [Demo](https://intelligent-student-advisor.herokuapp.com/)

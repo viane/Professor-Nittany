@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
+//var session = require ('express-session'); //commented because twitter signin disabled
 var authenticate = require('./authenticate');
 var config = require('./config');
 
@@ -40,8 +41,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // passport config
+//app.use(session({secret:config.secret, resave: false, saveUninitialized:false}));//commented because twitter signin disabled
 app.use(passport.initialize());
-
+//app.use(passport.session());//commented because twitter signin disabled
 app.use(express.static(path.join(__dirname, 'views')));
 require('./routes/index')(app);
 
