@@ -36,7 +36,7 @@ mongoose.Promise = global.Promise;
 //     timestamps: true
 // });
 
-// define the schema for our user model
+// define the schema for our question model
 var questionSchema = new Schema({
     body: String,
     feature: [{
