@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var usersRouter = require('./users');
-var questionRouter = require('./question');
+var questionRouter = require('./questions');
 var majorListRouter = require('./major-list');
 const profileRouter = require('./profile');
 
@@ -12,7 +12,7 @@ module.exports = function(app) {
   });
 
   app.use('/users', usersRouter);
-  app.use('/question', questionRouter);
+  app.use('/questions', questionRouter);
   app.use('/major-list',majorListRouter);
   app.use('/profile', profileRouter);
 }

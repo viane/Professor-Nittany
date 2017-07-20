@@ -56,7 +56,7 @@ exports.verifyAdminUser = function (req, res, next) {
                 }
                 else{
                     var err = new Error('You are not authenticated to perform this operation!');
-                    err.status = 401;
+                    err.status = 302;
                     return next(err);
                 }
 

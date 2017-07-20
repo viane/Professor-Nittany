@@ -2,17 +2,13 @@
 
 const watson = require('watson-developer-cloud');
 const qs = require('qs'); //  Use a querystring parser to encode output.
+const config = require('../../config');
 
-const retrieve_and_rank = watson.retrieve_and_rank({username: 'a658754c-09f3-4cc4-a8a1-198a25cd295e', password: 'KTldeBICAwNp', version: 'v1'});
+const retrieve_and_rank = watson.retrieve_and_rank(config.watson.retrieve_and_rank);
 
-const rrparams = {
-    cluster_id: 'scd1a4815e_895b_4a51_b8da_239255267abd',
-    collection_name: 'Intelligent-Academic-Planner-Collection'
-};
+const solrClient = retrieve_and_rank.createSolrClient(config.watson.rrparams);
 
-const solrClient = retrieve_and_rank.createSolrClient(rrparams);
-
-const ranker_id = '1eec74x28-rank-4480';
+const ranker_id = config.watson.ranker_id;
 
 exports.enterMessage = function(inputText, questionTopic) {
     return new Promise(function(resolve, reject) {
