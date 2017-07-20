@@ -1,5 +1,6 @@
 'use strict';
 const User = require('../../models/user');
+import Interest from '../../models/interest';
 const PersonalityAssessment = require('../../models/personality-assessement');
 import PersonalityInsightsV3 from '../watson/personality-insights';
 import arrayUtility from './array';
@@ -71,40 +72,72 @@ module.exports.updateInterest = (userID, analysis) => {
         console.error(err);
         reject(err);
       } else {
-        // update interest array
-        // addup realvence if term exist, else push to array
-        analysis.keywords.map((keyword) => {
-          const trueIndex = arrayUtility.findIndexByKeyValue(foundUser.interest, 'term', keyword.text);
-          if (trueIndex != null) {
-            foundUser.interest[trueIndex].value += keyword.relevance;
-          } else {
-            foundUser.interest.unshift({term: keyword.text, value: keyword.relevance});
-          }
-        });
-        analysis.entities.map((entity) => {
-          const trueIndex = arrayUtility.findIndexByKeyValue(foundUser.interest, 'term', entity.text);
-          if (trueIndex != null) {
-            foundUser.interest[trueIndex].value += entity.relevance;
-          } else {
-            foundUser.interest.unshift({term: entity.text, value: entity.relevance});
-          }
-        });
-        analysis.concepts.map((concept) => {
-          const trueIndex = arrayUtility.findIndexByKeyValue(foundUser.interest, 'term', concept.text);
-          if (trueIndex != null) {
-            foundUser.interest[trueIndex].value += concept.relevance;
-          } else {
-            foundUser.interest.unshift({term: concept.text, value: concept.relevance});
-          }
-        });
+        // if first time create interest
+        if (!foundUser.interest || foundUser.interest === null) {
+          // create interest, fills content, assign ID to foundUser.interest
+          const interest = new Interest();
+          // addup realvence if term exist, else push to array
+          analysis.keywords.map((keyword) => {
+            interest.interest.unshift({term: keyword.text, value: keyword.relevance});
+          });
+          analysis.entities.map((entity) => {
+            interest.interest.unshift({term: entity.text, value: entity.relevance});
+          });
+          analysis.concepts.map((concept) => {
+            interest.interest.unshift({term: concept.text, value: concept.relevance});
+          })
+          interest.save().then((record) => {
+            foundUser.interest = record._id;
+            foundUser.save().then(() => {
+              resolve()
+            }).catch((err) => {
+              console.error(err);
+              reject(err)
+            })
+          }).catch((err) => {
+            console.error(err);
+            reject(err)
+          })
+        } else {
+          // only update interest
+          Interest.findById(foundUser.interest,(err, record)=>{
+            if (err) {
+              console.error(err);
+              reject(err);
+            }
+            analysis.keywords.map((keyword) => {
+              const trueIndex = arrayUtility.findIndexByKeyValue(record.interest, 'term', keyword.text);
+              if (trueIndex != null) {
+                record.interest[trueIndex].value += keyword.relevance;
+              } else {
+                record.interest.unshift({term: keyword.text, value: keyword.relevance});
+              }
+            });
+            analysis.entities.map((entity) => {
+              const trueIndex = arrayUtility.findIndexByKeyValue(record.interest, 'term', entity.text);
+              if (trueIndex != null) {
+                record.interest[trueIndex].value += entity.relevance;
+              } else {
+                record.interest.unshift({term: entity.text, value: entity.relevance});
+              }
+            });
+            analysis.concepts.map((concept) => {
+              const trueIndex = arrayUtility.findIndexByKeyValue(record.interest, 'term', concept.text);
+              if (trueIndex != null) {
+                record.interest[trueIndex].value += concept.relevance;
+              } else {
+                record.interest.unshift({term: concept.text, value: concept.relevance});
+              }
+            })
+            record.save().then(()=>{
+              resolve()
+            }).catch((err)=>{
+              reject(err)
+            })
+          })
 
-        foundUser.save().then((newProfile) => {
-          resolve(newProfile)
-        }).catch((err) => {
-          console.error(err);
-          reject(err)
-        })
+        }
       }
-    });
-  });
-};
+    })
+  })
+}

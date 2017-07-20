@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var UDs = require('../models/major-list');
 
-var Verify = require('./verify');
+const Verify = require('../system/utility/verify');
 
 majorListRouter.route('/')
 .get(function(req,res,next){

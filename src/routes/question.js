@@ -1,11 +1,10 @@
 const express = require('express');
 const questionRouter = express.Router();
 const bodyParser = require('body-parser');
-
 const mongoose = require('mongoose');
 const Questions = require('../models/question');
 const config = require('../config');
-const Verify = require('./verify');
+const Verify = require('../system/utility/verify');
 import processQuestion from '../system/utility/process-question';
 import retrieve_and_rank from '../system/watson/retrieve-rank';
 
