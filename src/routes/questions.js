@@ -99,7 +99,7 @@ questionRouter.route('/ask')
 });
 
 //API lite-version send new question to retrive-rank: post /question/ask
-questionRouter.route('/lite-ask')
+questionRouter.route('/ask-lite')
 .post(function(req, res, next) {
   // analysis the concept, keyword, taxonomy, entities of the question
   processQuestion.NLUAnalysis(req.body.question).then((analysis) => {
