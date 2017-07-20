@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Register</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+    <!-- Used for some quick client side validation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/additional-methods.min.js"></script>
+
+    <script src="js/register.js"></script>
+    <link href="css/register.css" rel="stylesheet" type="text/css">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <div class="container-fluid page-content">
+        <div class="full-body">
+            <nav class="navbar navbar-default header">
+                <h1 class="nav-text">
+                    Intelligent Academic Advisor
+                </h1>
+            </nav>
+
+            <!-- CONTENT -->
+            <div class="content col-md-12">
+                <div class="centering col-md-6">
+                    <div class="image">
+                        <img src="images/logo.png">
+                    </div>
+                </div>
+                <div class="forms col-md-6 ">
+                    <form class="form-horizontal col-md-8" id="signup-form">
+                        <h2 class="form-header">
+                            Register
+                        </h2>
+                        <div class="form-group">
+                            <label for="inputFName">First Name</label>
+                            <input type="text" class="form-control" name="first" id="inputFName" placeholder="First Name" data-error=".error-first">
+                            <div class="error error-first left"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputLName">Last Name</label>
+                            <input type="text" class="form-control" name="last" id="inputLName" placeholder="Last Name" data-error=".error-last">
+                            <div class="error error-last left"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail">Email</label>
+                            <input type="email" class="form-control" id="inputEmail" placeholder="Email" data-error=".error-email">
+                            <div class="error error-email left"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword">Password</label>
+                            <input type="password" class="form-control" name="password" id="inputPassword" placeholder="Password" data-error=".error-pass">
+                            <div class="error error-pass left"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" class="form-control" name="cpassword" id="confirmPassword" placeholder="Confirm Password" data-error=".error-cpass">
+                            <div class="error error-cpass left"></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-1 col-sm-10 submit-button">
+                                <p class="already-registered">
+                                    Already registered? Sign in
+                                </p>
+                                <button type="submit" class="btn btn-default">Register</button>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <p style="text-align:center">
+                                Or register with
+                            </p>
+                            <div class="centering">
+                                <div class="row">
+                                    <img class="icon" src="images/facebook-icon.png">
+                                    <img class="icon" src="images/linkedin-icon.png">
+                                    <img class="icon" src="images/twitter-icon.png">
+                                    <img class="icon" src="images/google-logo.png">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <nav class="navbar navbar-default navbar-fixed-bottom footer">
+                <p class="footer-text">
+                    Copyright &copy 2017 | <a href="">Contact</a>
+                </p>
+            </nav>
+        </div>
+    </div>
+</body>
