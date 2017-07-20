@@ -273,6 +273,6 @@ error.status | 302                                 | Indicate user should be red
 ```
 Property                    | Description
 -------------------------   | --------------------------------
-res.response.doc            | An array of answers
+res.response.docs           | An array of answers
 res.response.numFound       | Total number of found answers 
 res.response.maxScore       | The maximum score of an answer 
