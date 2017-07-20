@@ -5,40 +5,12 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
 
-// var answerSchema = new Schema({
-//     body: String,
-//     title: String,
-//     confidence: String,
-//     score: String,
-//     feature: [{
-//         concept: [
-//             {
-//                 type:mongoose.Schema.Types.Mixed
-//             }
-//         ],
-//         entitie: [
-//             {
-//                 type:mongoose.Schema.Types.Mixed
-//             }
-//         ],
-//         taxonomy: [
-//             {
-//                 type:mongoose.Schema.Types.Mixed
-//             }
-//         ],
-//         keyword: [
-//             {
-//                 type:mongoose.Schema.Types.Mixed
-//             }
-//         ]
-//     }]
-// }, {
-//     timestamps: true
-// });
-
 // define the schema for our user model
-var questionSchema = new Schema({
+var answerSchema = new Schema({
     body: String,
+    title: String,
+    confidence: String,
+    score: String,
     feature: [{
         concept: [
             {
@@ -61,13 +33,11 @@ var questionSchema = new Schema({
             }
         ]
     }],
-    submitter: {
+    pair_question:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: "Question"
     }
-}, {
-    timestamps: true
 });
 
 // create the model for users and expose it to our app
-module.exports = mongoose.model('Question', questionSchema);
+module.exports = mongoose.model('Answer', answerSchema);
