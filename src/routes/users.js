@@ -15,7 +15,7 @@ router.route('/')
     .populate('interest_manual')
     .populate('inbox')
     .populate('personality_evaluation')
-    //.populate('assessement') //Schema hasn't been registered for model {Assessement}
+    .populate('assessement') //Schema hasn't been registered for model {Assessement}
     .exec(function (err,user){
     if (err) return next(err);
     res.json(user);

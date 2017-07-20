@@ -1,0 +1,168 @@
+.container-fluid {
+    padding: 0px;
+}
+
+.lite-header {
+    text-align: center;
+}
+
+p {
+    font-size: 1.5rem;
+}
+
+/* ------------------- SIDE BAR CSS ------------------- */
+
+.side-bar {
+    background-color: #0F7DC2;
+    height: 100vh;
+    /* I need this so that the side-bar doesn't overlap the chat */
+    min-height: 800px;
+}
+
+.title > img {
+    max-height: 100%;
+    max-width: 100%;
+    margin: auto;
+    display: block;
+}
+
+.side-bar-footer {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    left: 0px;
+}
+
+.side-bar-footer > hr {
+    display: block;
+    height: 1px;
+    width: 75%;
+    border: 0;
+    border-top: 2px solid black;
+    margin: 1em 0;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0; 
+}
+
+.text-benefits {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.text-benefits > p {
+    color: white;
+    display: inline-block;
+    text-align: left;
+}
+
+.buttons {
+    padding: 5px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+}
+
+.login button {
+    width: 100%;
+}
+
+.register button {
+    width: 100%;
+}
+
+/* ------------------- CHAT AREA CSS ------------------- */
+
+.current-chat-area {
+    padding-top: 5px;
+    overflow: auto;
+    /* the number is weird but it makes the footer sit where it needs to */
+    height: 88.25vh;
+    min-height: 650px;
+    width: auto;
+    margin-bottom: 20px;
+}
+
+.current-chat-footer {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    right: 0px;
+    margin-top: 10px;
+}
+
+.scroll-chat {
+    margin-left: 10px;
+    margin-top: 70vh;
+    margin-bottom: 30px;
+}
+
+/* ------------------- CHAT MESSAGE CSS ------------------- */
+
+.media-list {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.pull-left > img {
+    width: 80px;
+    height: 90px;
+}
+
+.pull-right > img {
+    width: 80px;
+    height: 80px;
+}
+
+.media-watson-info {
+    max-width: 90%;
+    border-left: 2px solid;
+    border-radius: 10px;
+    background-color: #f0f0f0;
+    margin-top: 15px;
+    padding: 10px;
+    float: left;
+}
+
+.media-user-info {
+    max-width: 90%;
+    border-right: 2px solid;
+    border-radius: 10px;
+    background-color: #f0f0f0;
+    margin-right: 10px;
+    padding: 10px;
+    float: right;
+}
+
+.media-text {
+    margin-bottom: 0px;
+}
+
+.other-answers {
+    margin-left: 75px;
+}
+
+/* USED FOR CHAT.HTML */
+.side-options:visited, .side-options:link, .side-options:hover {
+    color: whitesmoke;
+    text-decoration: none;
+    font-size: 36px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 75%;
+}
+
+.side-nav > hr  {
+    display: block;
+    height: 1px;
+    width: 75%;
+    border: 0;
+    border-top: 2px solid black;
+    margin: 1em 0;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0; 
+}

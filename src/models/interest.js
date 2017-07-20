@@ -6,6 +6,6 @@ var interest = new Schema({
   "value": Number
 }, {_id: false})
 
-var ManualInterest = new Schema({interest: [interest]});
+var Interest = new Schema({interest: [interest]});
 
-module.exports = mongoose.model('ManualInterest', ManualInterest);
+module.exports = mongoose.model('Interest', Interest);

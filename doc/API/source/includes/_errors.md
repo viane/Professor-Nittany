@@ -4,6 +4,8 @@ The IAA API uses the following error codes:
 
 Error Code | Meaning
 ---------- | -------
+205 | Reset content -- The content user made in request is invalid
+302 | Redirect -- The response is a redirection
 400 | Bad Request -- Your request sucks
 401 | Unauthorized -- Your token is wrong
 403 | Forbidden -- The API requested is hidden for administrators only
