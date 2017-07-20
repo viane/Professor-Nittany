@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
 
-// define the schema for our user model
+// define the schema for our answer model
 var answerSchema = new Schema({
     body: String,
     title: String,

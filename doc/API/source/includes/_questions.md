@@ -33,23 +33,6 @@ question           | A question should be in the request body
 The response are either success or error due to invalid token.
 </aside>
 
-### Example response of error:
-
-```json
-// error due to incorrect token
-{
-    "message": "You are not authenticated!",
-    "error": {
-        "status": 302
-    }
-}
-```
-
-Property     | Eesponse                            | Description
------------- | ----------------------------------- | ---------------
-message      | You are not authenticated!          | User signin token is invalid
-error.status | 302                                 | Indicate user should be redirected to signin page
-
 ### Example response of successful signin:
 
 ```json
@@ -154,7 +137,7 @@ res.response.maxScore       | The maximum score of an answer
 > To get answers to a question, use this code:
 
 ```javascript
-fetch("/question/ask-lite", {  
+fetch("/question/ask", {  
   method: 'post',  
   headers: {  
     "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
