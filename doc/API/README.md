@@ -1,7 +1,6 @@
 # Getting Set Up
 
-1. `cd slate`
-2. Initialize, you can do this locally to test:
+Initialize, you can do this locally to test:
 
 ```shell
 # update ruby 2.4.0
