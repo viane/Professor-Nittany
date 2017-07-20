@@ -4,12 +4,12 @@
 
 ### HTTP Request
 
-`post /question/ask-lite`
+`post /questions/ask-lite`
 
 > To get an answer to a question, use this code:
 
 ```javascript
-fetch("/question/ask-lite", {  
+fetch("https://localhost:3443/questions/ask-lite", {  
   method: 'post',  
   headers: {  
     "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
@@ -132,12 +132,12 @@ res.response.maxScore       | The maximum score of an answer
 
 ### HTTP Request
 
-`post /question/ask`
+`post /questions/ask`
 
 > To get answers to a question, use this code:
 
 ```javascript
-fetch("/question/ask", {  
+fetch("https://localhost:3443/questions/ask", {  
   method: 'post',  
   headers: {  
     "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",

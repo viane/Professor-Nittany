@@ -1,7 +1,8 @@
 'use strict'
 
+const config = require('../../config');
 const NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-language-understanding/v1.js');
-const natural_language_understanding = new NaturalLanguageUnderstandingV1({'username': 'c9d48fc2-7b13-46ef-99cb-a8b819a79963', 'password': 'Eg57mMPqQE5R', 'version_date': '2017-02-27'});
+const natural_language_understanding = new NaturalLanguageUnderstandingV1(config.watson.NaturalLanguageUnderstanding);
 
 module.exports.getAnalysis = function(inputString,entityGetLimit = 5, keywordGetLimit= 10, conceptGetLimit= 3) {
 
