@@ -1,12 +1,13 @@
 'use strict'
 
+const config = require('../../config');
 const watson = require('watson-developer-cloud');
 
 let dialog_stack = ["root"],
     dialog_turn_counter = 1,
     dialog_request_counter = 1;
 
-const conversation = watson.conversation({username: '2b2e38a3-e4b9-4602-a9eb-8be58f235fca', password: 'YXyHpjWJXbLf', version: 'v1', version_date: '2016-07-11'});
+const conversation = watson.conversation(config.watson.conversation);
 
 exports.isInDomain = (inputText)=> {
     return new Promise((resolve, reject) =>{

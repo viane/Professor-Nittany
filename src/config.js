@@ -76,6 +76,12 @@ module.exports = {
       "password": "wjtexpGgwOPr",
       "username": "4aff3f32-8f56-4c94-9fe5-24250db70592"
     },
+    "conversation" : {
+      "username": '2b2e38a3-e4b9-4602-a9eb-8be58f235fca', 
+      "password": 'YXyHpjWJXbLf', 
+      "version": 'v1', 
+      "version_date": '2016-07-11'
+    },
     "document_conversion": {
       "username":"d1f406ed-2958-472b-80d6-f1f5a8f176f1",
       "password":"hiJHDXkxq16o",
