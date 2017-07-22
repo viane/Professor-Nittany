@@ -1,4 +1,8 @@
 module.exports = {
+  'server_url': {
+    'public': 'https://5eee40c0.ngrok.io',
+    'local': 'localhost:3000/'
+  },
   'secretKey': '12345-67890-09876-54321',
   'secret': '94838472',
   'mongoUrl': 'mongodb://Pb7TdS:qyW3g8LLAqaCELzB@ds033056.mlab.com:33056/intelligent_academic_planner',
@@ -51,6 +55,10 @@ module.exports = {
     'callbackURL': 'https://intelligent-student-advisor.herokuapp.com/auth/wechat/callback',
     'avatar': '/img/wechat-icon.png'
   },
+  'twilio': {
+    "accountSid": "AC986df3d5c5b5185f845ac46499758075",
+    "authToken": "8953462aa58c2dfaf97835ef40b26fc5"
+  },
   'watson': {
     retrieve_and_rank: {
       username: 'a658754c-09f3-4cc4-a8a1-198a25cd295e',
@@ -76,17 +84,22 @@ module.exports = {
       "password": "wjtexpGgwOPr",
       "username": "4aff3f32-8f56-4c94-9fe5-24250db70592"
     },
-    "conversation" : {
-      "username": '2b2e38a3-e4b9-4602-a9eb-8be58f235fca', 
-      "password": 'YXyHpjWJXbLf', 
-      "version": 'v1', 
+    "text_to_speech": {
+      "url": "https://stream.watsonplatform.net/text-to-speech/api",
+      "username": "8e6365d0-31a1-472c-b486-13a1b67fc4e0",
+      "password": "kp733VHdahQH"
+    },
+    "conversation": {
+      "username": '2b2e38a3-e4b9-4602-a9eb-8be58f235fca',
+      "password": 'YXyHpjWJXbLf',
+      "version": 'v1',
       "version_date": '2016-07-11'
     },
     "document_conversion": {
-      "username":"d1f406ed-2958-472b-80d6-f1f5a8f176f1",
-      "password":"hiJHDXkxq16o",
-      "version":"v1",
-      "version_date":"2015-12-15",
+      "username": "d1f406ed-2958-472b-80d6-f1f5a8f176f1",
+      "password": "hiJHDXkxq16o",
+      "version": "v1",
+      "version_date": "2015-12-15",
       "config": {
         "word": {
           "heading": {

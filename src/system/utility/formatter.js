@@ -122,6 +122,14 @@ module.exports.convertPerspectsToAIReadable = (perspect_type, content) => {
     return AI_Read_String;
 }
 
+module.exports.removeTagsAndRelateInfoFromSMSAnswer = (answerText)=>{
+  let answer = answerText;
+  // use RegExp remove targeted tags and content between tags
+  // rules:
+  // 1. remove [a][/a],[extend][/extend],[email][/email] tags
+  // 2. remove tags and whats in between of following tags: [link][/link],[email-addr][/email-addr],[img][/img]
+  return answer;
+}
 /////////////////////////////////////////////////////////////////////////////
 // Format user interest for wordClound2.js
 /////////////////////////////////////////////////////////////////////////////
