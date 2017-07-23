@@ -203,7 +203,7 @@ questionRouter.route('/ask-phone/callback').post(function(req, res, next) {
       );
       if (error) {
         console.error(error);
-        twiml.say(systemErrorMSG, {voice: 'alice'});
+        twiml.play(config.server_url.public + '/audio/system-error.wav');
         twiml.pause();
         twiml.say("Good Bye!", {voice: 'alice'});
         return res.send(twiml.toString());
@@ -269,9 +269,8 @@ questionRouter.route('/ask-phone/callback').post(function(req, res, next) {
             QACopyAry.unshift({callSid: req.body.CallSid, question: questionTranscript, answer: answerBody});
           }).catch(function(err) {
             console.error(err);
-            twiml.say(systemErrorMSG, {voice: 'alice'});
+            twiml.play(config.server_url.public + '/audio/system-error.wav');
             twiml.pause();
-            twiml.say("Good Bye!", {voice: 'alice'});
             res.send(twiml.toString());
           });
         }
