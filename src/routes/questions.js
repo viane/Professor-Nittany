@@ -50,6 +50,7 @@ questionRouter.route('/ask').post(Verify.verifyOrdinaryUser, function(req, res, 
     newQuestion.feature.keywords = analysis.keywords;
     newQuestion.feature.entities = analysis.entities;
     newQuestion.submitter = req.decoded._id;
+    
     retrieve_and_rank.enterMessage(req.body.question + questionObj.AI_Read_Body).then((searchResponse) => {
       console.log(searchResponse);
       console.log(newQuestion);
@@ -236,6 +237,7 @@ questionRouter.route('/ask-phone/callback').post(function(req, res, next) {
               twiml.redirect('/questions/ask-phone/qa-loop');
             }
             const answerBody = formatter.removeTagsAndRelateInfoFromSMSAnswer(result.response.docs[0].body);
+            console.log(answerBody);
             const TTS_Params = {
               text: answerBody,
               voice: 'en-US_AllisonVoice',
