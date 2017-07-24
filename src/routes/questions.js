@@ -38,17 +38,18 @@ questionRouter.route('/').get(Verify.verifyOrdinaryUser, function(req, res, next
   });
 });
 
-var context = {};
-questionRouter.route('/send-lite').post(function(req, res, next){
-  conversation.questionCheck(req.body.question, context)
-  .then((data) =>{
+questionRouter.route('/send-lite').post(function(req, res, next) {
+  let context = {};
+  if (req.body.hasOwnProperty('context')) {
+    context = req.body.context;
+  }
+  conversation.questionCheck(req.body.question, context).then((data) => {
     console.log(data);
-    if(data.output.text=="Sorry I didn't understand that. Try rephrasing and ask me again."
-      ||data.output.text=="Can you reword your statement? I'm not quite sure I understand that."){
-      retrieve_and_rank.enterMessage(req.body.question)
-      .then((searchResponse)=>{
+    // if question is general, ask RR
+    if (data.output.text === "-genereal question") {
+      retrieve_and_rank.enterMessage(req.body.question).then((searchResponse) => {
+        searchResponse.context = null;
         if (searchResponse.response.numFound === 0) {
-          context = {};
           // no answer was found in retrieve and rank
           res.status(200).json({
             response: {
@@ -60,88 +61,31 @@ questionRouter.route('/send-lite').post(function(req, res, next){
               ]
             }
           });
-        } 
-        else {
+        } else {
           // sort by confidence
           searchResponse.response.docs.sort(function(a, b) {
             return b['ranker.confidence'] - a['ranker.confidence'];
           });
-          context={};
           return res.status(200).json(searchResponse);
         }
-      })
-      .catch((err)=>{
+      }).catch((err) => {
         console.error(err);
         return res.status(302).json(err)
       })
-    }
-    else if(data.intents[0].intent=="Ask_New_Question"){
-      context = {};
+    } else {
       return res.status(200).json({
-            response: {
-              docs: [
-                {
-                  title: "Ask a New Question",
-                  body: "Alright, go ahead ask me any questions about Penn State World Campus!"
-                }
-              ]
+        context: data.context,
+        response: {
+          docs: [
+            {
+              title: "Conversation continue",
+              body: data.output.text
             }
-      });
-    }
-    else if(data.output.result){
-      // let question;
-      // if(data.output.nodes_visited[0]=="Q_My_Schedule"){
-      //   question = "Schedule for";
-      // }
-      // else if(data.output.nodes_visited[0]=="Q_My_Tuition"){
-      //   question = "Tuition for";
-      // }
-      console.log(data.output.text);
-      context = {};
-      retrieve_and_rank.enterMessage(data.output.text[0])
-      .then((searchResponse)=>{
-        if (searchResponse.response.numFound === 0) {
-          // no answer was found in retrieve and rank
-          return res.status(200).json({
-            response: {
-              docs: [
-                {
-                  title: "No answer found",
-                  body: "Sorry I can't find any answer for this question, please ask a different question."
-                }
-              ]
-            }
-          });
-        } 
-        else {
-          // sort by confidence
-          searchResponse.response.docs.sort(function(a, b) {
-            return b['ranker.confidence'] - a['ranker.confidence'];
-          });
-          context={};
-          return res.status(200).json(searchResponse);
+          ]
         }
-      })
-      .catch((err)=>{
-        console.error(err);
-        return res.status(302).json(err)
-      })
-    }
-    else{
-      context=data.context;
-      return res.status(200).json({
-            response: {
-              docs: [
-                {
-                  title: "From Watson Conversation",
-                  body: data.output.text
-                }
-              ]
-            }
       });
     }
-  })
-  .catch((err) =>{
+  }).catch((err) => {
     console.log(err);
     return res.status(302).json(err)
   });
