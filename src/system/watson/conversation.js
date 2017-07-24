@@ -9,6 +9,24 @@ let dialog_stack = ["root"],
 
 const conversation = watson.conversation(config.watson.conversation);
 
+
+
+exports.questionCheck = (inputText,context) =>{
+    return new Promise((resolve, reject) => {
+        conversation.message({
+        workspace_id: 'edae601d-c944-4187-9d3f-92b01caaa18c',
+        input: {'text': inputText},
+        context: context
+        }, function(err, response){
+            if (err)
+                reject(err);
+            else
+                context = response.context;
+                resolve(response);
+        });
+    });
+}
+
 exports.isInDomain = (inputText)=> {
     return new Promise((resolve, reject) =>{
         conversation.message({
