@@ -17,6 +17,7 @@ import retrieve_and_rank from '../system/watson/retrieve-rank';
 import path from 'path';
 import formatter from '../system/utility/formatter';
 import TextToSpeechV1 from 'watson-developer-cloud/text-to-speech/v1';
+import conversation from '../system/watson/conversation';
 
 const text_to_speech = new TextToSpeechV1({username: config.watson.text_to_speech.username, password: config.watson.text_to_speech.password});
 
@@ -37,6 +38,116 @@ questionRouter.route('/').get(Verify.verifyOrdinaryUser, function(req, res, next
   });
 });
 
+var context = {};
+questionRouter.route('/send-lite').post(function(req, res, next){
+  conversation.questionCheck(req.body.question, context)
+  .then((data) =>{
+    console.log(data);
+    if(data.output.text=="Sorry I didn't understand that. Try rephrasing and ask me again."
+      ||data.output.text=="Can you reword your statement? I'm not quite sure I understand that."){
+      retrieve_and_rank.enterMessage(req.body.question)
+      .then((searchResponse)=>{
+        if (searchResponse.response.numFound === 0) {
+          context = {};
+          // no answer was found in retrieve and rank
+          res.status(200).json({
+            response: {
+              docs: [
+                {
+                  title: "No answer found",
+                  body: "Sorry I can't find any answer for this question, please ask a different question."
+                }
+              ]
+            }
+          });
+        } 
+        else {
+          // sort by confidence
+          searchResponse.response.docs.sort(function(a, b) {
+            return b['ranker.confidence'] - a['ranker.confidence'];
+          });
+          context={};
+          return res.status(200).json(searchResponse);
+        }
+      })
+      .catch((err)=>{
+        console.error(err);
+        return res.status(302).json(err)
+      })
+    }
+    else if(data.intents[0].intent=="Ask_New_Question"){
+      context = {};
+      return res.status(200).json({
+            response: {
+              docs: [
+                {
+                  title: "Ask a New Question",
+                  body: "Alright, go ahead ask me any questions about Penn State World Campus!"
+                }
+              ]
+            }
+      });
+    }
+    else if(data.output.result){
+      // let question;
+      // if(data.output.nodes_visited[0]=="Q_My_Schedule"){
+      //   question = "Schedule for";
+      // }
+      // else if(data.output.nodes_visited[0]=="Q_My_Tuition"){
+      //   question = "Tuition for";
+      // }
+      console.log(data.output.text);
+      context = {};
+      retrieve_and_rank.enterMessage(data.output.text[0])
+      .then((searchResponse)=>{
+        if (searchResponse.response.numFound === 0) {
+          // no answer was found in retrieve and rank
+          return res.status(200).json({
+            response: {
+              docs: [
+                {
+                  title: "No answer found",
+                  body: "Sorry I can't find any answer for this question, please ask a different question."
+                }
+              ]
+            }
+          });
+        } 
+        else {
+          // sort by confidence
+          searchResponse.response.docs.sort(function(a, b) {
+            return b['ranker.confidence'] - a['ranker.confidence'];
+          });
+          context={};
+          return res.status(200).json(searchResponse);
+        }
+      })
+      .catch((err)=>{
+        console.error(err);
+        return res.status(302).json(err)
+      })
+    }
+    else{
+      context=data.context;
+      return res.status(200).json({
+            response: {
+              docs: [
+                {
+                  title: "From Watson Conversation",
+                  body: data.output.text
+                }
+              ]
+            }
+      });
+    }
+  })
+  .catch((err) =>{
+    console.log(err);
+    return res.status(302).json(err)
+  });
+
+});
+
 //API send new question to retrive-rank: post /question/ask
 questionRouter.route('/ask').post(Verify.verifyOrdinaryUser, function(req, res, next) {
   // analysis the concept, keyword, taxonomy, entities of the question
@@ -52,8 +163,8 @@ questionRouter.route('/ask').post(Verify.verifyOrdinaryUser, function(req, res, 
     newQuestion.submitter = req.decoded._id;
 
     retrieve_and_rank.enterMessage(req.body.question + questionObj.AI_Read_Body).then((searchResponse) => {
-      console.log(searchResponse);
-      console.log(newQuestion);
+      //console.log(searchResponse);
+      //console.log(newQuestion);
       if (searchResponse.response.numFound === 0) {
         // no answer was found in retrieve and rank
         res.status(200).json({
