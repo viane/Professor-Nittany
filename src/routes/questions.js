@@ -50,7 +50,7 @@ questionRouter.route('/ask').post(Verify.verifyOrdinaryUser, function(req, res, 
     newQuestion.feature.keywords = analysis.keywords;
     newQuestion.feature.entities = analysis.entities;
     newQuestion.submitter = req.decoded._id;
-    
+
     retrieve_and_rank.enterMessage(req.body.question + questionObj.AI_Read_Body).then((searchResponse) => {
       console.log(searchResponse);
       console.log(newQuestion);
@@ -208,7 +208,7 @@ questionRouter.route('/ask-phone/callback').post(function(req, res, next) {
         twiml.say("Good Bye!", {voice: 'alice'});
         return res.send(twiml.toString());
       } else {
-        console.log(JSON.stringify(resultTranscript, null, 2));
+        // console.log(JSON.stringify(resultTranscript, null, 2));
         // STT transcript (question body)
         if (resultTranscript.results.length == 0) {
           twiml.say("Sorry I didn't hear anything", {voice: 'alice'});
@@ -237,7 +237,7 @@ questionRouter.route('/ask-phone/callback').post(function(req, res, next) {
               twiml.redirect('/questions/ask-phone/qa-loop');
             }
             const answerBody = formatter.removeTagsAndRelateInfoFromSMSAnswer(result.response.docs[0].body);
-            console.log(answerBody);
+            // console.log(answerBody);
             const TTS_Params = {
               text: answerBody,
               voice: 'en-US_AllisonVoice',
@@ -247,14 +247,14 @@ questionRouter.route('/ask-phone/callback').post(function(req, res, next) {
             const answerFilePath = path.join(__dirname, '../views/audio/') + req.body.RecordingSid + "-answer.wav";
             const answerURL = config.server_url.public + '/audio/' + req.body.RecordingSid + "-answer.wav";
             text_to_speech.synthesize(TTS_Params).on('error', function(error) {
-              console.log('Error:', error);
+              console.error(error);
               twiml.play(config.server_url.public + '/audio/system-error.wav');
               twiml.pause();
               res.send(twiml.toString());
             }).pipe(fs.createWriteStream(answerFilePath)).on('finish', () => {
               twiml.play(answerURL);
               twiml.pause();
-              //ask if user wants save a copy of QA or keep asking different question
+              // ask if user wants save a copy of QA or keep asking different question
               const gather = twiml.gather({timeout: 3, numDigits: 1, action: '/questions/ask-phone/feedback'});
               if (req.body.Caller === 'client:Anonymous') {
                 gather.play(config.server_url.public + '/audio/reask-or-hangup.wav');
@@ -291,7 +291,7 @@ questionRouter.route('/ask-phone/callback').post(function(req, res, next) {
 questionRouter.route('/ask-phone/feedback').post(function(req, res, next) {
   const twiml = new twilio.twiml.VoiceResponse();
   // If the user entered digits, process their request
-  console.log(req.body);
+  // console.log(req.body);
   if (req.body.Digits) {
     if (req.body.Digits === '1' && req.body.Caller != 'client:Anonymous') {
       twiml.say('Sending a copy of your question and answer to your phone!', {voice: 'alice'})
@@ -305,7 +305,7 @@ questionRouter.route('/ask-phone/feedback').post(function(req, res, next) {
           return QA;
         }
       })[0];
-      console.log(QAObject);
+      // console.log(QAObject);
       const smsBody = "Question: " + QAObject.question + "." + "\n" + "Answer: " + QAObject.answer;
       twilioSMS.messages.create({
         to: req.body.From,
