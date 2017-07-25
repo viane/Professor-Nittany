@@ -56,7 +56,7 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
         console.error(err);
         return res.status(302).json(err)
       });
-    } 
+    }
     else if(data.intents[0].intent == "Ask_New_Question"){
       return res.status(200).json({
         context:{},
@@ -64,7 +64,7 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
           docs: [
             {
               title: "a new question",
-              body: "Alright, just ask your new question."
+              body: "Sure, just ask your new question."
             }
           ]
         }
@@ -131,7 +131,7 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
           });
         });
 
-      } 
+      }
       else if(data.intents[0].intent == "Ask_New_Question"){
         return res.status(200).json({
           context:{},
@@ -139,7 +139,7 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
             docs: [
               {
                 title: "a new question",
-                body: "Alright, just ask your new question."
+                body: "Sure, just ask your new question."
               }
             ]
           }
