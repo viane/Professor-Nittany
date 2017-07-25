@@ -115,21 +115,30 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
     //   context.PSU_ID = user.psu_id;
     // }
     conversation.questionCheck(req.body.question, context).then((data) => {
-      console.log(data);
+      //console.log(data);
       // if question is general, ask RR
       if (data.output.text[0] == "-genereal question") {
         var newQuestion = new Questions();
         newQuestion.body = req.body.question;
         newQuestion.submitter = req.decoded._id;
-        newQuestion.save(function(err, resp){
-          retrieve_and_rank.enterMessage(req.body.question).then((searchResponse) => {
-            searchResponse.context = {};
-            return res.status(200).json(searchResponse);
-          }).catch((err) => {
-            console.error(err);
-            return res.status(302).json(err)
+        processQuestion.NLUAnalysis(req.body.question).then((analysis) => {
+          //console.log(analysis);
+          newQuestion.feature.concepts = analysis.concepts;
+          newQuestion.feature.keywords = analysis.keywords;
+          newQuestion.feature.entities = analysis.entities;
+          newQuestion.save(function(err, resp){
+            if(err) return next(err);
+            retrieve_and_rank.enterMessage(req.body.question).then((searchResponse) => {
+              searchResponse.context = {};
+              return res.status(200).json(searchResponse);
+            }).catch((err) => {
+              console.error(err);
+              return res.status(302).json(err)
+            });
           });
+
         });
+        
 
       }
       else if(data.intents[0].intent == "Ask_New_Question"){
