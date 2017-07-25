@@ -1,8 +1,8 @@
-# Send Messages (Questions)
+# Questions
 
 We implement Watson Conversation System with Retrivement and Rank to get a smooth conversation.
 
-## Send a Message in Lite Version
+## Send a Question in Lite Version
 
 ### HTTP Request
 
@@ -105,9 +105,7 @@ res.response.maxScore       | The maximum score of a response
         "docs": [
             {
                 "title": "Conversation continue",
-                "body": [
-                    "Could you provide me with your PSU ID to look up your schedule?"
-                ]
+                "body": "Could you provide me with your PSU ID to look up your schedule?"
             }
         ]
     }
@@ -165,7 +163,7 @@ res.context                 | An object track the conversation need to be sent b
 
 
 
-## Send a Message in Full Version
+## Send a Question in Full Version
 
 ### HTTP Request
 
@@ -183,7 +181,8 @@ fetch("http://localhost:3000/questions/send", {
   body: JSON.stringify({
         'question': ''(question),
         'context' : {} (context obejct)
-  })
+  }),
+  credentials: 'include'
 }).then(response=>{return response.json()})
 .then(json=> {
   //json contains responses
