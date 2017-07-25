@@ -24,7 +24,6 @@ html, body {
 .side-bar {
     background-color: #0F7DC2;
     height: 100vh;
-    /* I need this so that the side-bar doesn't overlap the chat */
 }
 
 
@@ -90,7 +89,7 @@ html, body {
 
 @media only screen and (max-width: 991px) {
     .side-bar {
-        min-height: 920px;
+        min-height: 980px;
     }
     .side-bar-footer {
         position: relative;
@@ -106,7 +105,6 @@ html, body {
     padding-top: 5px;
     overflow: auto;
     height: 89vh;
-    min-height: 650px;
     width: auto;
 }
 
