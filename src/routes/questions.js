@@ -38,48 +38,59 @@ questionRouter.route('/').get(Verify.verifyOrdinaryUser, function(req, res, next
   });
 });
 
+//API lite-version send new question to conversation and retrive-rank: post /question/send-lite
 questionRouter.route('/send-lite').post(function(req, res, next) {
-  let context = {};
-  if (req.body.hasOwnProperty('context')) {
+  var context;
+  if (req.body.context) {
     context = req.body.context;
   }
+  console.log(req.body.context);
   conversation.questionCheck(req.body.question, context).then((data) => {
     console.log(data);
     // if question is general, ask RR
-    if (data.output.text === "-genereal question") {
+    if (data.output.text[0] == "-genereal question") {
       retrieve_and_rank.enterMessage(req.body.question).then((searchResponse) => {
-        searchResponse.context = null;
-        if (searchResponse.response.numFound === 0) {
-          // no answer was found in retrieve and rank
-          res.status(200).json({
-            response: {
-              docs: [
-                {
-                  title: "No answer found",
-                  body: "Sorry I can't find any answer for this question, please ask a different question."
-                }
-              ]
-            }
-          });
-        } else {
-          // sort by confidence
-          searchResponse.response.docs.sort(function(a, b) {
-            return b['ranker.confidence'] - a['ranker.confidence'];
-          });
-          return res.status(200).json(searchResponse);
-        }
+        searchResponse.context = {};
+        return res.status(200).json(searchResponse);
       }).catch((err) => {
         console.error(err);
         return res.status(302).json(err)
-      })
-    } else {
+      });
+    } 
+    else if(data.intents[0].intent == "Ask_New_Question"){
+      return res.status(200).json({
+        context:{},
+        response: {
+          docs: [
+            {
+              title: "a new question",
+              body: "Alright, just ask your new question."
+            }
+          ]
+        }
+      });
+    }
+    else if(data.output.result){
+      return res.status(200).json({
+        context:{},
+        response: {
+          docs: [
+            {
+              title: "personal question information",
+              body: data.output.text[0]
+            }
+          ]
+        }
+      });
+    }
+    else {
       return res.status(200).json({
         context: data.context,
         response: {
           docs: [
             {
               title: "Conversation continue",
-              body: data.output.text
+              body: data.output.text[0]
             }
           ]
         }
@@ -92,13 +103,97 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
 
 });
 
+//API full-version send new question to conversation and retrive-rank: post /question/send-lite
+questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res, next) {
+  Users.findById(req.decoded._id, function(err, user) {
+    if(err) return next(err);
+    let context = {};
+    if (req.body.hasOwnProperty('context')) {
+      context = req.body.context;
+    }
+    // if(user.psu_id != null){        //disabled because we are not sure if the user wanna change their psu id
+    //   context.PSU_ID = user.psu_id;
+    // }
+    conversation.questionCheck(req.body.question, context).then((data) => {
+      console.log(data);
+      // if question is general, ask RR
+      if (data.output.text[0] == "-genereal question") {
+        var newQuestion = new Questions();
+        newQuestion.body = req.body.question;
+        newQuestion.submitter = req.decoded._id;
+        newQuestion.save(function(err, resp){
+          retrieve_and_rank.enterMessage(req.body.question).then((searchResponse) => {
+            searchResponse.context = {};
+            return res.status(200).json(searchResponse);
+          }).catch((err) => {
+            console.error(err);
+            return res.status(302).json(err)
+          });
+        });
+
+      } 
+      else if(data.intents[0].intent == "Ask_New_Question"){
+        return res.status(200).json({
+          context:{},
+          response: {
+            docs: [
+              {
+                title: "a new question",
+                body: "Alright, just ask your new question."
+              }
+            ]
+          }
+        });
+      }
+      else if(data.output.result){
+        if(data.context.hasOwnProperty('PSU_ID')){
+          user.psu_id = data.context.PSU_ID;
+        }
+        user.save(function(err,resp){
+          if (err) return next(err);
+          return res.status(200).json({
+            context:{},
+            response: {
+              docs: [
+                {
+                  title: "personal question information",
+                  body: data.output.text[0]
+                }
+              ]
+            }
+          });
+        });
+      }
+      else {
+        return res.status(200).json({
+          context: data.context,
+          response: {
+            docs: [
+              {
+                title: "Conversation continue",
+                body: data.output.text[0]
+              }
+            ]
+          }
+        });
+      }
+    }).catch((err) => {
+      console.log(err);
+      return res.status(302).json(err)
+    });
+  });
+
+
+});
+
+
 //API send new question to retrive-rank: post /question/ask
 questionRouter.route('/ask').post(Verify.verifyOrdinaryUser, function(req, res, next) {
   // analysis the concept, keyword, taxonomy, entities of the question
-  var newQuestion = new Questions();
-  newQuestion.body = req.body.question;
   processQuestion.NLUAnalysis(req.body.question).then((analysis) => {
     // now process the question and rephrase to AI readable
+    var newQuestion = new Questions();
+    newQuestion.body = req.body.question;
     console.log(analysis);
     const questionObj = processQuestion.parseQuestionObj(req.body.question, analysis);
     newQuestion.feature.concepts = analysis.concepts;

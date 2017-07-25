@@ -9,7 +9,7 @@
 > To locally sign in a user, use this code:
 
 ```javascript
-  fetch("https://localhost:3443/users/signin", {  
+  fetch("http://localhost:3000/users/signin", {  
     method: 'post',  
     headers: {  
       "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"  
@@ -78,7 +78,7 @@ token       | Access token
 > To locally sign up a user, use this code:
 
 ```javascript
-  fetch("https://localhost:3443/users/signup", {  
+  fetch("http://localhost:3000/users/signup", {  
     method: 'post',  
     headers: {  
       "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"  
