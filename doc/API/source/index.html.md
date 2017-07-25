@@ -8,7 +8,7 @@ toc_footers:
 includes:
   - introductions
   - users
-  - send_messages
+  - questions
   - profiles
   - errors
 search: true
