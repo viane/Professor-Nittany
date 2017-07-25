@@ -19,8 +19,26 @@ exports.enterMessage = function(inputText, questionTopic) {
                 console.error(err);
                 reject(err);
             } else {
-                resolve(searchResponse);
+                if (searchResponse.response.numFound === 0) {
+                    // no answer was found in retrieve and rank
+                    return resolve({
+                        response: {
+                                docs: [
+                                        {
+                                            title: "No answer found",
+                                            body: "Sorry I can't find any answer for this question, please ask a different question."
+                                        }
+                                ]
+                        }
+                    });
+                } else {
+                    // sort by confidence
+                    searchResponse.response.docs.sort(function(a, b) {
+                        return b['ranker.confidence'] - a['ranker.confidence'];
+                    });
+                    resolve (searchResponse);
+                }
             }
         });
     });
-}
+};
