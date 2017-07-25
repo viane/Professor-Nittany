@@ -17,6 +17,10 @@ var User = new Schema({
     type: String,
     required: true
   },
+  psu_id:{
+    type: String,
+    default:null
+  },
   major: [
     {
       type: mongoose.Schema.Types.ObjectId,
