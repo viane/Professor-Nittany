@@ -39,28 +39,28 @@ mongoose.Promise = global.Promise;
 // define the schema for our question model
 var questionSchema = new Schema({
     body: String,
-    feature: [{
-        concept: [
+    feature: {
+        concepts: [
             {
                 type:mongoose.Schema.Types.Mixed
             }
         ],
-        entitie: [
+        entities: [
             {
                 type:mongoose.Schema.Types.Mixed
             }
         ],
-        taxonomy: [
+        taxonomys: [
             {
                 type:mongoose.Schema.Types.Mixed
             }
         ],
-        keyword: [
+        keywords: [
             {
                 type:mongoose.Schema.Types.Mixed
             }
         ]
-    }],
+    },
     submitter: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
