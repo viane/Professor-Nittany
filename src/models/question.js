@@ -64,6 +64,19 @@ var questionSchema = new Schema({
     submitter: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
+    },
+    trained:{
+        type: Boolean,
+        default: false
+    },
+    match: {
+        log: {
+            type: Boolean,
+            default: false
+        },
+        answer: String,
+        match_level: String,
+        match_percent: String
     }
 }, {
     timestamps: true
