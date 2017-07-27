@@ -1,12 +1,15 @@
 <head>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <style>
+  .draft{
+    padding: 20px;
+    border:1px solid black;
+  }
     span {
       opacity: 0;
     }
 
     .progress-indicator {
-      float: left;
       width: 120px;
       height: 120px;
       position: relative;
@@ -129,9 +132,6 @@
 
 
 <div class="progress-section">
-  <div class="previous-step"><</div>
-  <div class="step-content"></div>
-  <div class="next-step">></div>
   <div class="progress-indicator">
     <div class="circle">
       <div class="mask full">
@@ -144,6 +144,9 @@
     </div>
     <div class="inset"><span class='current-step-number'></span><span class='total-step-number'></span></div>
   </div>
+  <div class="previous-step draft"><</div>
+  <div class="step-content draft"></div>
+  <div class="next-step draft">></div>
 </div>
 
 <script>
