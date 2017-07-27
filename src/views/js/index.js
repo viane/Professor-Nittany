@@ -105,7 +105,7 @@ function test() {
 }
 
 function sendServerQuestion(question) {
-    fetch("http://localhost:3000/questions/send-lite", {
+    fetch("/questions/send-lite", {
         method: 'post',
         headers: {
             "Content-type": "application/json"

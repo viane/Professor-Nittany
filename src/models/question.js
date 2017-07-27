@@ -69,14 +69,14 @@ var questionSchema = new Schema({
         type: Boolean,
         default: false
     },
-    match: {
-        log: {
+    low_confidence: {
+        mark: {
             type: Boolean,
             default: false
         },
         answer: String,
-        match_level: String,
-        match_percent: String
+        relevance_level: String,
+        relevance_percent: Number
     }
 }, {
     timestamps: true
