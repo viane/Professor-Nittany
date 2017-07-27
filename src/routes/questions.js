@@ -132,7 +132,7 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
   }
   //console.log(req.body.context);
   conversation.questionCheck(req.body.question, context).then((data) => {
-    //console.log(data);
+    console.log(data);
     // if question is general, ask RR
     if (data.output.text[0] == "-genereal question") {
       retrieve_and_rank.enterMessage(req.body.question).then((searchResponse) => {

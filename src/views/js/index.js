@@ -263,10 +263,10 @@ function sendServerQuestion(question) {
 
             // don't want the buttons popping up if there is only one response from the server
             if (json.response.docs.length == 1) {
-                 $('#chat').html(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + getDateAndTime() + htmlWAfterNoButtons);
+                 $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + getDateAndTime() + htmlWAfterNoButtons);
             }
             else {
-                $('#chat').html(htmlWBefore + watsonChatClassNumerous + data[0] + '</p><small class="text-muted">Watson | ' + getDateAndTime() + htmlWAfter);
+                $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p><small class="text-muted">Watson | ' + getDateAndTime() + htmlWAfter);
             }
             addReadmoreHandler();
             $('.current-chat-area').animate({ scrollTop: $(".scroll-chat").height() });
