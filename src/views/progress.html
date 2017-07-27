@@ -1,0 +1,172 @@
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <style>
+  .draft{
+    padding: 20px;
+    border:1px solid black;
+  }
+    span {
+      opacity: 0;
+    }
+
+    .progress-indicator {
+      width: 120px;
+      height: 120px;
+      position: relative;
+      background-color: #d7d7d7;
+      border-radius: 50%;
+    }
+
+    @media (max-width: 480px) {
+      .progress-indicator {
+        width: 85px;
+        height: 85px;
+      }
+    }
+
+    .progress-indicator .circle .mask,
+    .progress-indicator .circle .fill,
+    .progress-indicator .circle .shadow {
+      width: 120px;
+      height: 120px;
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    @media (max-width: 480px) {
+      .progress-indicator .circle .mask,
+      .progress-indicator .circle .fill,
+      .progress-indicator .circle .shadow {
+        width: 85px;
+        height: 85px;
+      }
+    }
+
+    .progress-indicator .circle .mask,
+    .progress-indicator .circle .fill {
+      -webkit-backface-visibility: hidden;
+      transition: -webkit-transform 1s;
+      transition: -ms-transform 1s;
+      transition: transform 1s;
+    }
+
+    .progress-indicator .circle .mask.reanimate,
+    .progress-indicator .circle .fill.reanimate {
+      transition: -webkit-transform 0s;
+      transition: -ms-transform 0s;
+      transition: transform 0s;
+    }
+
+    .progress-indicator .circle .mask.reset,
+    .progress-indicator .circle .fill.reset {
+      -webkit-transform: rotate(0deg) !important;
+      -ms-transform: rotate(0deg) !important;
+      transform: rotate(0deg) !important;
+    }
+
+    .progress-indicator .circle .mask {
+      clip: rect(0px, 120px, 120px, 60px);
+    }
+
+    @media (max-width: 480px) {
+      .progress-indicator .circle .mask {
+        clip: rect(0px, 85px, 85px, 42.5px);
+      }
+    }
+
+    .progress-indicator .circle .mask .fill {
+      clip: rect(0px, 60px, 120px, 0px);
+      background-color: #EA463D;
+    }
+
+    @media (max-width: 480px) {
+      .progress-indicator .circle .mask .fill {
+        clip: rect(0px, 42.5px, 85px, 0px);
+      }
+    }
+
+    .progress-indicator .inset {
+      width: 100px !important;
+      height: 100px !important;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -50px 0 0 -50px !important;
+      background-color: #fbfbfb;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 100px;
+    }
+
+    @media (max-width: 480px) {
+      .progress-indicator .inset {
+        width: 66px !important;
+        height: 66px !important;
+        margin: -33px 0 0 -33px !important;
+        line-height: 90px;
+      }
+    }
+
+    .progress-indicator .total-step-number {
+      font-size: 26px;
+      color: #d7d7d7;
+    }
+
+    @media (max-width: 480px) {
+      .progress-indicator .total-step-number {
+        font-size: 18px;
+      }
+    }
+
+    .progress-indicator .current-step-number {
+      font-size: 37px;
+    }
+
+    @media (max-width: 480px) {
+      .progress-indicator .current-step-number {
+        font-size: 27px;
+      }
+    }
+  </style>
+</head>
+
+
+<div class="progress-section">
+  <div class="progress-indicator">
+    <div class="circle">
+      <div class="mask full">
+        <div class="fill"></div>
+      </div>
+      <div class="mask half">
+        <div class="fill"></div>
+        <div class="fill fix"></div>
+      </div>
+    </div>
+    <div class="inset"><span class='current-step-number'></span><span class='total-step-number'></span></div>
+  </div>
+  <div class="previous-step draft"><</div>
+  <div class="step-content draft"></div>
+  <div class="next-step draft">></div>
+</div>
+
+<script>
+  $(() => {
+    updateProgressIndicator($('.progress-indicator'), 3, 6);
+  })
+
+  const updateProgressIndicator = (ele, currentStep, totalStep) => {
+    $('.current-step-number').text(currentStep);
+    $('.total-step-number').text('/' + totalStep);
+    var score = currentStep;
+    var transform_styles = ['-webkit-transform', '-ms-transform', 'transform'];
+    $(ele).find('span').fadeTo('slow', 1);
+    var deg = (((100 / totalStep) * score) / 100) * 180;
+    var rotation = deg;
+    var fill_rotation = rotation;
+    var fix_rotation = rotation * 2;
+    for (i in transform_styles) {
+      $(ele).find('.circle .fill, .circle .mask.full').css(transform_styles[i], 'rotate(' + fill_rotation + 'deg)');
+      $(ele).find('.circle .fill.fix').css(transform_styles[i], 'rotate(' + fix_rotation + 'deg)');
+    }
+  }
+</script>
