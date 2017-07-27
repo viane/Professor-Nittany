@@ -27,7 +27,7 @@ $(document).ready(function () {
 $(document).on('click', ':button', function (e) {
     $('.active').removeClass('active')
     $(this).addClass('active');
-    $('.media-watson-info').html(data[this.id]);
+    $('.active-chat').html(data[this.id]);
     addReadmoreHandler();
     $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
     e.preventDefault();
@@ -185,7 +185,7 @@ const formatAnswerByTag = (input) => {
 // Just to condense the append functions
 // it's to make sure all of the messages stay consistant
 let htmlBefore = '<li class="media"><div class="media-body row"><div class="pull-right"><img class="media-object img-circle " src="images/default-user.png"></div><div class="media-user-info">';
-let htmlWBefore = '<li class="media"><div class="media-body row"><div class="pull-left"><img class="media-object img-circle " src="images/logo.png"></div><div class="media-watson-info">';
+let htmlWBefore = '<li class="media"><div class="media-body row"><div class="pull-left"><img class="media-object img-circle " src="images/logo.png"></div><div class="media-watson-info active-chat">';
 let watsonChatClassNumerous = '<p class="media-text current-message">';
 let watsonChatClassSingle = '<p class="media-text">';
 let htmlAfter = '</small></div></div></div></li>';
@@ -254,7 +254,7 @@ function sendServerQuestion(question) {
         .then(json => {
             $('.current-message').attr('class', 'media-text');
             $('.other-answers').remove();
-
+            $('.active-chat').removeClass('active-chat');
             let i = 0;
             while (i < 4 && i != json.response.docs.length) {
                 data[i] = formatAnswerByTag(json.response.docs[i].body);
