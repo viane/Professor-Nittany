@@ -9,9 +9,11 @@ const Questions = require('../models/question');
 const Users = require('../models/user');
 const config = require('../config');
 const Verify = require('../system/utility/verify');
+const dominatedTermsUtility = require('../system/utility/get-dominated-terms');
 const twilio = require('twilio');
 const twilioSMS = require('twilio')(config.twilio.accountSid, config.twilio.authToken);
 const SpeechToTextV1 = require('watson-developer-cloud/speech-to-text/v1');
+const dominatedTerms = require('../models/dominated-term');
 import processQuestion from '../system/utility/process-question';
 import retrieve_and_rank from '../system/watson/retrieve-rank';
 import path from 'path';
@@ -24,7 +26,7 @@ const text_to_speech = new TextToSpeechV1({username: config.watson.text_to_speec
 questionRouter.use(bodyParser.json());
 
 //API get asked question from mongodb: get /questions
-questionRouter.route('/').get(Verify.verifyOrdinaryUser, function(req, res, next) {
+questionRouter.route('/').get(function(req, res, next) {
   Questions.find({}).populate('submitter').exec(function(err, question) {
     if (err)
       return next(err);
@@ -36,6 +38,89 @@ questionRouter.route('/').get(Verify.verifyOrdinaryUser, function(req, res, next
       return next(err);
     res.json(resp);
   });
+});
+
+questionRouter.route('/test').get(function(req,res,next){
+  Questions.count({'body': "Where do I get textbooks?", 'trained': true}, function(err, count){
+      res.status(200).json(count);
+  });
+  //var count = Questions.find({_id: "5970d4f16acaec2008916653"}, {_id: 1}).limit(1);
+
+});
+
+//API get asked dominated-terms of questions we trained
+questionRouter.route('/dominated-terms').get(function(req, res, next) {
+  dominatedTerms.find({}).exec(function(err, terms) {
+    if (err)
+      return next(err);
+    res.json(terms);
+  });
+})
+.post(function(req,res,next){
+  // console.log("here");
+  // var newDomTerms = dominatedTermsUtility.getDominatedTerms();
+  // newDomTerms.save(function(err,resp){
+  //        if(err) return nexy(err);
+  //        res.json(resp);
+  // });
+  dominatedTermsUtility.getDominatedTerms()
+    .then((data)=>{
+      res.status(200).json(data);
+    })
+    .catch((err)=>{
+        if(err) return next(err);
+    });
+})
+.delete(function(req, res, next) {
+  dominatedTerms.remove({}, function(err, resp) {
+    if (err)
+      return next(err);
+    res.json(resp);
+  });
+});
+
+//API check low-confidence questions
+questionRouter.route('/dominated-terms/check-match').post(function(req,res,next){
+  Questions.find({'match.log': true}, function(err, questions){
+    console.log(questions);
+    
+  })
+});
+
+//API upload trained question to the server to add more terms
+questionRouter.route('/dominated-terms/upload-file').post(function(req,res,next){
+  console.log(req.files);
+
+  if(req.files){
+    let file = req.files.questions;
+    let file_name = req.files.questions.name;
+    if (path.extname(file_name) != ".txt") {
+        return res.status(205).json({
+          "message": "Invalid file type! Upload file can be in .txt",
+          "error": {
+            "name": "FileError",
+            "message": "Invalid file type! Upload file can be in .txt",
+            "code": 205
+          }
+        })
+    }
+    file.mv("./public/system/word-file-temp-folder/"+file_name,function(err){
+      if(err){
+        console.log(err)
+        return next(err);
+      }
+      else{
+         res.status(200).json({
+          "message": "successfully upload the file "+req.files.questions.name
+          });
+      }
+    });
+  }
+  else{
+    res.status(200).json({
+          "message": "you did not choose any file"
+    });
+  }
 });
 
 //API lite-version send new question to conversation and retrive-rank: post /question/send-lite
@@ -57,7 +142,7 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
         return res.status(302).json(err)
       });
     }
-    else if(data.intents[0].intent == "Ask_New_Question"){
+    else if(data.intents[0] && data.intents[0].intent == "Ask_New_Question"){
       return res.status(200).json({
         context:{},
         response: {
@@ -115,7 +200,7 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
     //   context.PSU_ID = user.psu_id;
     // }
     conversation.questionCheck(req.body.question, context).then((data) => {
-      //console.log(data);
+      console.log(data);
       // if question is general, ask RR
       if (data.output.text[0] == "-genereal question") {
         var newQuestion = new Questions();
@@ -129,6 +214,10 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
           newQuestion.save(function(err, resp){
             if(err) return next(err);
             retrieve_and_rank.enterMessage(req.body.question).then((searchResponse) => {
+              if(searchResponse.response.docs[0]["ranker.confidence"]<config.questionThreshold){
+                newQuestion.match.log = true;
+                newQuestion.match.answer = searchResponse.response.docs[0].body;
+              }
               searchResponse.context = {};
               return res.status(200).json(searchResponse);
             }).catch((err) => {
@@ -141,7 +230,7 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
         
 
       }
-      else if(data.intents[0].intent == "Ask_New_Question"){
+      else if(data.intents[0] && data.intents[0].intent == "Ask_New_Question"){
         return res.status(200).json({
           context:{},
           response: {

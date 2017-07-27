@@ -1,4 +1,5 @@
 module.exports = {
+  'questionThreshold':'0.2',
   'server_url': {
     'public': 'https://5eee40c0.ngrok.io',
     'local': 'localhost:3000/'
