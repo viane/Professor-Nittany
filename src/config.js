@@ -67,10 +67,10 @@ module.exports = {
       version: 'v1'
     },
     "rrparams": {
-      cluster_id: 'scd1a4815e_895b_4a51_b8da_239255267abd',
-      collection_name: 'Intelligent-Academic-Planner-Collection'
+      cluster_id: 'scfdc7ceae_2dd2_4b6e_88c7_be14c54e4d07',
+      collection_name: 'Intelligent-Academic-Advisor-WorldCampus'
     },
-    "ranker_id": '1eec74x28-rank-4480',
+    "ranker_id": '7ff711x34-rank-66',
     "NaturalLanguageUnderstanding": {
       'username': 'c9d48fc2-7b13-46ef-99cb-a8b819a79963',
       'password': 'Eg57mMPqQE5R',
