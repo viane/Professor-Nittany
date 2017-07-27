@@ -19,7 +19,7 @@ $(document).ready(function () {
     // Update the first Watson message
     $("#Watson-Time").html('Watson | ' + getDateAndTime());
 
-    $('#myModal').modal('toggle');
+    //$('#myModal').modal('toggle');
 });
 
 // when the user wants to see more answers, they can click on the buttons
@@ -67,7 +67,9 @@ function getDateAndTime() {
 // Just to condense the append functions
 // it's to make sure all of the messages stay consistant
 let htmlBefore = '<li class="media"><div class="media-body row"><div class="pull-right"><img class="media-object img-circle " src="images/default-user.png"></div><div class="media-user-info">';
-let htmlWBefore = '<li class="media"><div class="media-body row"><div class="pull-left"><img class="media-object img-circle " src="images/logo.png"></div><div class="media-watson-info"><p class="media-text current-message">';
+let htmlWBefore = '<li class="media"><div class="media-body row"><div class="pull-left"><img class="media-object img-circle " src="images/logo.png"></div><div class="media-watson-info">';
+let watsonChatClassNumerous = '<p class="media-text current-message">';
+let watsonChatClassSingle = '<p class="media-text">';
 let htmlAfter = '</small></div></div></div></li>';
 let htmlButtons = '<div class="btn-group other-answers" role="group" aria-label="...">' +
     '<button type="button" class="btn btn-default active" id="0">First</button>' +
@@ -75,6 +77,7 @@ let htmlButtons = '<div class="btn-group other-answers" role="group" aria-label=
     '<button type="button" class="btn btn-default" id="2">Third</button>' +
     '<button type="button" class="btn btn-default" id="3">Fourth</button></div>';
 let htmlWAfter = '</small></div></div></div>' + htmlButtons + '</li>';
+let htmlWAfterNoButtons = '</small></div></div></div></li>';
 
 // This adds the user input to the chat and sends it to server for response
 function addUserChat() {
@@ -87,7 +90,6 @@ function addUserChat() {
         $('#chat').append(htmlBefore + question.title + '<br><small class="text-muted">You | ' + getDateAndTime() + htmlAfter);
 
         sendServerQuestion(question.title);
-        //getDataFromServer();
         //test();
 
         $('.current-chat-area').animate({ scrollTop: $(".scroll-chat").height() });
@@ -103,27 +105,35 @@ function test() {
 }
 
 function sendServerQuestion(question) {
-    fetch("https://localhost:3443/questions/ask-lite", {
+    fetch("http://localhost:3000/questions/send-lite", {
         method: 'post',
         headers: {
-            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            "Content-type": "application/json"
         },
-        body: 'question={question}',
-        credentials: 'include'
+        body: JSON.stringify({
+            'question': question,
+            'context': {}
+        })
     }).then(response => { return response.json() })
         .then(json => {
+            $('.current-message').attr('class', 'media-text');
             $('.other-answers').remove();
-            if (json.response.numFound == 0) {
-                data[0] = "Sorry. I could not find what you are looking for.";
+
+            let i = 0;
+            while (i < 4 && i != json.response.docs.length) {
+                data[i] = json.response.docs[i].body;
+                i++;
+            }
+
+            // don't want the buttons popping up if there is only one response from the server
+            if (json.response.docs.length == 1) {
+                 $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + getDateAndTime() + htmlWAfterNoButtons);
             }
             else {
-                $('.current-message').attr('class', 'media-text');
-
-                for (let i = 0; i < 4; i++) {
-                    data[i] = json.response.docs.body[i];
-                }
-
-                $('#chat').append(htmlWBefore + data[0] + '</p><small class="text-muted">Watson | ' + getDateAndTime() + htmlWAfter);
+                $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p><small class="text-muted">Watson | ' + getDateAndTime() + htmlWAfter);
             }
+
+            $('.current-chat-area').animate({ scrollTop: $(".scroll-chat").height() });
         });
 }
+

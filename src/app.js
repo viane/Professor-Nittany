@@ -9,6 +9,7 @@ var passport = require('passport');
 //var session = require ('express-session'); //commented because twitter signin disabled
 var authenticate = require('./authenticate');
 var config = require('./config');
+var uploadfile = require('express-fileupload');
 
 const flash = require('connect-flash');
 const nodemon = require('nodemon');
@@ -39,7 +40,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-
+app.use(uploadfile());
 // passport config
 //app.use(session({secret:config.secret, resave: false, saveUninitialized:false}));//commented because twitter signin disabled
 app.use(passport.initialize());
