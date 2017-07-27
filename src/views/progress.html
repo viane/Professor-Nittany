@@ -1,0 +1,158 @@
+<style>
+  span {
+    opacity: 0;
+  }
+
+  .radial-progress {
+    float: left;
+    width: 120px;
+    height: 120px;
+    position: relative;
+    background-color: #d7d7d7;
+    border-radius: 50%;
+  }
+
+  @media (max-width: 480px) {
+    .radial-progress {
+      width: 85px;
+      height: 85px;
+    }
+  }
+
+  .radial-progress .circle .mask,
+  .radial-progress .circle .fill,
+  .radial-progress .circle .shadow {
+    width: 120px;
+    height: 120px;
+    position: absolute;
+    border-radius: 50%;
+  }
+
+  @media (max-width: 480px) {
+    .radial-progress .circle .mask,
+    .radial-progress .circle .fill,
+    .radial-progress .circle .shadow {
+      width: 85px;
+      height: 85px;
+    }
+  }
+
+  .radial-progress .circle .mask,
+  .radial-progress .circle .fill {
+    -webkit-backface-visibility: hidden;
+    transition: -webkit-transform 1s;
+    transition: -ms-transform 1s;
+    transition: transform 1s;
+  }
+
+  .radial-progress .circle .mask.reanimate,
+  .radial-progress .circle .fill.reanimate {
+    transition: -webkit-transform 0s;
+    transition: -ms-transform 0s;
+    transition: transform 0s;
+  }
+
+  .radial-progress .circle .mask.reset,
+  .radial-progress .circle .fill.reset {
+    -webkit-transform: rotate(0deg) !important;
+    -ms-transform: rotate(0deg) !important;
+    transform: rotate(0deg) !important;
+  }
+
+  .radial-progress .circle .mask {
+    clip: rect(0px, 120px, 120px, 60px);
+  }
+
+  @media (max-width: 480px) {
+    .radial-progress .circle .mask {
+      clip: rect(0px, 85px, 85px, 42.5px);
+    }
+  }
+
+  .radial-progress .circle .mask .fill {
+    clip: rect(0px, 60px, 120px, 0px);
+    background-color: #EA463D;
+  }
+
+  @media (max-width: 480px) {
+    .radial-progress .circle .mask .fill {
+      clip: rect(0px, 42.5px, 85px, 0px);
+    }
+  }
+
+  .radial-progress .inset {
+    width: 100px !important;
+    height: 100px !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -50px 0 0 -50px !important;
+    background-color: #fbfbfb;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 100px;
+  }
+
+  @media (max-width: 480px) {
+    .radial-progress .inset {
+      width: 66px !important;
+      height: 66px !important;
+      margin: -33px 0 0 -33px !important;
+      line-height: 90px;
+    }
+  }
+
+  .radial-progress .little {
+    font-size: 26px;
+    color: #d7d7d7;
+  }
+
+  @media (max-width: 480px) {
+    .radial-progress .little {
+      font-size: 18px;
+    }
+  }
+
+  .radial-progress .big {
+    font-size: 37px;
+  }
+
+  @media (max-width: 480px) {
+    .radial-progress .big {
+      font-size: 27px;
+    }
+  }
+</style>
+
+<div id="progress">
+
+  <div class="radial-progress">
+    <div class="circle">
+      <div class="mask full">
+        <div class="fill"></div>
+      </div>
+      <div class="mask half">
+        <div class="fill"></div>
+        <div class="fill fix"></div>
+      </div>
+    </div>
+    <div class="inset"><span class='big'>1</span> <span class='little'>/ 5</span></div>
+  </div>
+</div>
+
+<script>
+var score = 1;
+$('.radial-progress').each(function() {
+var transform_styles = ['-webkit-transform', '-ms-transform', 'transform'];
+$(this).find('span').fadeTo('slow', 1);
+
+var deg = (((100 / 5) * score) / 100) * 180;
+var rotation = deg;
+var fill_rotation = rotation;
+var fix_rotation = rotation * 2;
+for(i in transform_styles) {
+  $(this).find('.circle .fill, .circle .mask.full').css(transform_styles[i], 'rotate(' + fill_rotation + 'deg)');
+  $(this).find('.circle .fill.fix').css(transform_styles[i], 'rotate(' + fix_rotation + 'deg)');
+}
+});
+</script>
