@@ -1,132 +1,138 @@
-<style>
-  span {
-    opacity: 0;
-  }
-
-  .radial-progress {
-    float: left;
-    width: 120px;
-    height: 120px;
-    position: relative;
-    background-color: #d7d7d7;
-    border-radius: 50%;
-  }
-
-  @media (max-width: 480px) {
-    .radial-progress {
-      width: 85px;
-      height: 85px;
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <style>
+    span {
+      opacity: 0;
     }
-  }
 
-  .radial-progress .circle .mask,
-  .radial-progress .circle .fill,
-  .radial-progress .circle .shadow {
-    width: 120px;
-    height: 120px;
-    position: absolute;
-    border-radius: 50%;
-  }
-
-  @media (max-width: 480px) {
-    .radial-progress .circle .mask,
-    .radial-progress .circle .fill,
-    .radial-progress .circle .shadow {
-      width: 85px;
-      height: 85px;
+    .progress-indicator {
+      float: left;
+      width: 120px;
+      height: 120px;
+      position: relative;
+      background-color: #d7d7d7;
+      border-radius: 50%;
     }
-  }
 
-  .radial-progress .circle .mask,
-  .radial-progress .circle .fill {
-    -webkit-backface-visibility: hidden;
-    transition: -webkit-transform 1s;
-    transition: -ms-transform 1s;
-    transition: transform 1s;
-  }
-
-  .radial-progress .circle .mask.reanimate,
-  .radial-progress .circle .fill.reanimate {
-    transition: -webkit-transform 0s;
-    transition: -ms-transform 0s;
-    transition: transform 0s;
-  }
-
-  .radial-progress .circle .mask.reset,
-  .radial-progress .circle .fill.reset {
-    -webkit-transform: rotate(0deg) !important;
-    -ms-transform: rotate(0deg) !important;
-    transform: rotate(0deg) !important;
-  }
-
-  .radial-progress .circle .mask {
-    clip: rect(0px, 120px, 120px, 60px);
-  }
-
-  @media (max-width: 480px) {
-    .radial-progress .circle .mask {
-      clip: rect(0px, 85px, 85px, 42.5px);
+    @media (max-width: 480px) {
+      .progress-indicator {
+        width: 85px;
+        height: 85px;
+      }
     }
-  }
 
-  .radial-progress .circle .mask .fill {
-    clip: rect(0px, 60px, 120px, 0px);
-    background-color: #EA463D;
-  }
-
-  @media (max-width: 480px) {
-    .radial-progress .circle .mask .fill {
-      clip: rect(0px, 42.5px, 85px, 0px);
+    .progress-indicator .circle .mask,
+    .progress-indicator .circle .fill,
+    .progress-indicator .circle .shadow {
+      width: 120px;
+      height: 120px;
+      position: absolute;
+      border-radius: 50%;
     }
-  }
 
-  .radial-progress .inset {
-    width: 100px !important;
-    height: 100px !important;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin: -50px 0 0 -50px !important;
-    background-color: #fbfbfb;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 100px;
-  }
-
-  @media (max-width: 480px) {
-    .radial-progress .inset {
-      width: 66px !important;
-      height: 66px !important;
-      margin: -33px 0 0 -33px !important;
-      line-height: 90px;
+    @media (max-width: 480px) {
+      .progress-indicator .circle .mask,
+      .progress-indicator .circle .fill,
+      .progress-indicator .circle .shadow {
+        width: 85px;
+        height: 85px;
+      }
     }
-  }
 
-  .radial-progress .little {
-    font-size: 26px;
-    color: #d7d7d7;
-  }
-
-  @media (max-width: 480px) {
-    .radial-progress .little {
-      font-size: 18px;
+    .progress-indicator .circle .mask,
+    .progress-indicator .circle .fill {
+      -webkit-backface-visibility: hidden;
+      transition: -webkit-transform 1s;
+      transition: -ms-transform 1s;
+      transition: transform 1s;
     }
-  }
 
-  .radial-progress .big {
-    font-size: 37px;
-  }
-
-  @media (max-width: 480px) {
-    .radial-progress .big {
-      font-size: 27px;
+    .progress-indicator .circle .mask.reanimate,
+    .progress-indicator .circle .fill.reanimate {
+      transition: -webkit-transform 0s;
+      transition: -ms-transform 0s;
+      transition: transform 0s;
     }
-  }
-</style>
 
-<div id="progress">
+    .progress-indicator .circle .mask.reset,
+    .progress-indicator .circle .fill.reset {
+      -webkit-transform: rotate(0deg) !important;
+      -ms-transform: rotate(0deg) !important;
+      transform: rotate(0deg) !important;
+    }
 
-  <div class="radial-progress">
+    .progress-indicator .circle .mask {
+      clip: rect(0px, 120px, 120px, 60px);
+    }
+
+    @media (max-width: 480px) {
+      .progress-indicator .circle .mask {
+        clip: rect(0px, 85px, 85px, 42.5px);
+      }
+    }
+
+    .progress-indicator .circle .mask .fill {
+      clip: rect(0px, 60px, 120px, 0px);
+      background-color: #EA463D;
+    }
+
+    @media (max-width: 480px) {
+      .progress-indicator .circle .mask .fill {
+        clip: rect(0px, 42.5px, 85px, 0px);
+      }
+    }
+
+    .progress-indicator .inset {
+      width: 100px !important;
+      height: 100px !important;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -50px 0 0 -50px !important;
+      background-color: #fbfbfb;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 100px;
+    }
+
+    @media (max-width: 480px) {
+      .progress-indicator .inset {
+        width: 66px !important;
+        height: 66px !important;
+        margin: -33px 0 0 -33px !important;
+        line-height: 90px;
+      }
+    }
+
+    .progress-indicator .total-step-number {
+      font-size: 26px;
+      color: #d7d7d7;
+    }
+
+    @media (max-width: 480px) {
+      .progress-indicator .total-step-number {
+        font-size: 18px;
+      }
+    }
+
+    .progress-indicator .current-step-number {
+      font-size: 37px;
+    }
+
+    @media (max-width: 480px) {
+      .progress-indicator .current-step-number {
+        font-size: 27px;
+      }
+    }
+  </style>
+</head>
+
+
+<div class="progress-section">
+  <div class="previous-step"><</div>
+  <div class="step-content"></div>
+  <div class="next-step">></div>
+  <div class="progress-indicator">
     <div class="circle">
       <div class="mask full">
         <div class="fill"></div>
@@ -136,23 +142,28 @@
         <div class="fill fix"></div>
       </div>
     </div>
-    <div class="inset"><span class='big'>1</span> <span class='little'>/ 5</span></div>
+    <div class="inset"><span class='current-step-number'></span><span class='total-step-number'></span></div>
   </div>
 </div>
 
 <script>
-var score = 1;
-$('.radial-progress').each(function() {
-var transform_styles = ['-webkit-transform', '-ms-transform', 'transform'];
-$(this).find('span').fadeTo('slow', 1);
+  $(() => {
+    updateProgressIndicator($('.progress-indicator'), 3, 6);
+  })
 
-var deg = (((100 / 5) * score) / 100) * 180;
-var rotation = deg;
-var fill_rotation = rotation;
-var fix_rotation = rotation * 2;
-for(i in transform_styles) {
-  $(this).find('.circle .fill, .circle .mask.full').css(transform_styles[i], 'rotate(' + fill_rotation + 'deg)');
-  $(this).find('.circle .fill.fix').css(transform_styles[i], 'rotate(' + fix_rotation + 'deg)');
-}
-});
+  const updateProgressIndicator = (ele, currentStep, totalStep) => {
+    $('.current-step-number').text(currentStep);
+    $('.total-step-number').text('/' + totalStep);
+    var score = currentStep;
+    var transform_styles = ['-webkit-transform', '-ms-transform', 'transform'];
+    $(ele).find('span').fadeTo('slow', 1);
+    var deg = (((100 / totalStep) * score) / 100) * 180;
+    var rotation = deg;
+    var fill_rotation = rotation;
+    var fix_rotation = rotation * 2;
+    for (i in transform_styles) {
+      $(ele).find('.circle .fill, .circle .mask.full').css(transform_styles[i], 'rotate(' + fill_rotation + 'deg)');
+      $(ele).find('.circle .fill.fix').css(transform_styles[i], 'rotate(' + fix_rotation + 'deg)');
+    }
+  }
 </script>
