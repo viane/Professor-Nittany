@@ -26,7 +26,8 @@ exports.enterMessage = function(inputText, questionTopic) {
                                 docs: [
                                         {
                                             title: "No answer found",
-                                            body: "Sorry I can't find any answer for this question, please ask a different question."
+                                            body: "Sorry I can't find any answer for this question, please ask a different question.",
+                                            'ranker.confidence' : 0
                                         }
                                 ]
                         }
