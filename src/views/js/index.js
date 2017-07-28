@@ -180,15 +180,15 @@ const formatAnswerByTag = (input) => {
     input = input.replace(initTipText, tipText);
   }
 
-  while (input.match("\\[img\\].*?\\[/img\\]")) {
-    let initImgText = input.match("\\[img\\].*?\\[/img\\]").toString();
+  // while (input.match("\\[img\\].*?\\[/img\\]")) {
+  //   let initImgText = input.match("\\[img\\].*?\\[/img\\]").toString();
 
-    let imgSrc = initImgText.replace(new RegExp("\\[img\\]", "g"), "").replace(new RegExp("\\[/img\\]", "g"), "");
+  //   let imgSrc = initImgText.replace(new RegExp("\\[img\\]", "g"), "").replace(new RegExp("\\[/img\\]", "g"), "");
 
-    imgDomStr = "</br><img src=\"" + imgSrc + "\"></br>";
+  //   imgDomStr = "</br><img src=\"" + imgSrc + "\"></br>";
 
-    input = input.replace(initImgText, imgDomStr);
-  }
+  //   input = input.replace(initImgText, imgDomStr);
+  // }
 
   return input;
 }
@@ -252,7 +252,7 @@ const addReadmoreHandler = () => {
 }
 
 function sendServerQuestion(question) {
-    fetch("/questions/send-lite", {
+    fetch("../questions/send-lite", {
         method: 'post',
         headers: {
             "Content-type": "application/json"
