@@ -270,6 +270,8 @@ function sendServerQuestion(question) {
             }
             addReadmoreHandler();
             $('.current-chat-area').animate({ scrollTop: $(".scroll-chat").height() });
+
+            $('#question').val('');
         });
 }
 

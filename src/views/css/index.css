@@ -94,6 +94,16 @@ html, body {
     }
 }
 
+@media only screen and (max-height: 620px) {
+    .text-benefits {
+        visibility: hidden;
+    }
+
+    .side-bar-footer > hr {
+        visibility: hidden;
+    }
+}
+
 /* ------------------- CHAT AREA CSS ------------------- */
 .current-chat {
     height: 100vh;
@@ -131,6 +141,12 @@ html, body {
    .scroll-chat {
        margin-top: 60vh;
    }
+}
+
+@media only screen and (max-height: 840px) {
+    .scroll-chat {
+        margin-top: 50vh;
+    }
 }
 
 /* ------------------- CHAT MESSAGE CSS ------------------- */
