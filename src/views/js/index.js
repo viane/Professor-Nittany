@@ -19,6 +19,9 @@ $(document).ready(function () {
     // Update the first Watson message
     $("#Watson-Time").html('Watson | ' + getDateAndTime());
 
+    if(window.devicePixelRatio > 1 )
+        $("body").addClass("disable-zoom")
+
     //$('#myModal').modal('toggle');
 });
 

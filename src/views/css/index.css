@@ -19,6 +19,11 @@ html, body {
     height:100%;
 }
 
+.disable-zoom {
+    zoom: 100%; /* all browsers */
+     -moz-transform: scale(1);  /* Firefox */
+}
+
 /* ------------------- SIDE BAR CSS ------------------- */
 
 .side-bar {
