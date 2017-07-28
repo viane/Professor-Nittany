@@ -3,6 +3,7 @@
 let context = {};
 let data = ["test1", "test2", "test3", "test4"];
 let timeAsked = "";
+let question = {};
 
 $(document).ready(function () {
     // when user presses the send button
@@ -29,12 +30,20 @@ $(document).ready(function () {
 
 // when the user wants to see more answers, they can click on the buttons
 // this makes sure that the data is changed
-$(document).on('click', '.btn', function (e) {
+$(document).on('click', '.btn-default', function (e) {
     $('.active').removeClass('active')
     $(this).addClass('active');
     //let replaceHTML = watsonChatClassNumerous + data[this.id] + '</p><small class="text-muted">Watson | ' + timeAsked;
     e.preventDefault();
 });
+
+$(document).on('click', '.btn-log', function (e) {
+    $(this).prop("disabled",true);
+    logQuestion(question.title);
+    e.preventDefault();
+});
+
+
 
 $(document).on('click', '.btn-answer', function(e){
     $('.current-message').empty();
@@ -247,13 +256,13 @@ let htmlButtons = '<div class="btn-group other-answers" role="group" aria-label=
     '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' +
     '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' +
     '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' +
-    '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>';
+    '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>'+
+    '<div type="buttion" class="btn btn-danger btn-log pull-right">No Satisfying Answers</div>';
 let htmlWAfter = '</small></div></div></div></li>';
 let htmlWAfterNoButtons = '</small></div></div></div></li>';
 
 // This adds the user input to the chat and sends it to server for response
 function addUserChat() {
-    let question = {};
     question.title = $('#question').val();
     let date = getDateAndTime();
 
@@ -308,6 +317,7 @@ function sendServerQuestion(question) {
         .then(json => {
             $('.current-message').attr('class', 'media-text');
             $('.other-answers').remove();
+            $('.btn-log').remove();
             $('.active-chat').removeClass('active-chat');
             let i = 0;
             while (i < 4 && i != json.response.docs.length) {
@@ -385,4 +395,24 @@ const initPNBtnHandler = (ele)=>{
       updateStep(ele);
     }
   });
+}
+
+
+//log unsatisfying answers to a question
+function logQuestion(question) {
+    fetch("../questions/log-question", {
+        method: 'post',
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify({
+            'question': question,
+            'answers': data
+        })
+    }).then(response => { return response.json() })
+        .then(json => {
+            $('.btn-log').empty();
+            $('.btn-log').text(json.message);
+            $('.btn-log').addClass('active');
+        });
 }
