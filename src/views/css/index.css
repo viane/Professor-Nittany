@@ -120,6 +120,7 @@ html, body {
     overflow: auto;
     height: 89vh;
     width: auto;
+    padding-bottom: 37px;
 }
 
 .current-chat-footer {
@@ -148,9 +149,13 @@ html, body {
    }
 }
 
-@media only screen and (max-height: 840px) {
+@media only screen and (max-height: 640px) {
     .scroll-chat {
         margin-top: 50vh;
+    }
+
+    .scroll-chat {
+        margin-bottom: 50px;
     }
 }
 
@@ -185,7 +190,7 @@ html, body {
     max-width: 90%;
     border-right: 2px solid;
     border-radius: 10px;
-    background-color: #f0f0f0;
+    background-color: #eaece5;
     margin-right: 10px;
     padding: 10px;
     float: right;
@@ -197,6 +202,7 @@ html, body {
 
 .other-answers {
     margin-left: 75px;
+    margin-top: 10px;
 }
 
 /* USED FOR CHAT.HTML */
