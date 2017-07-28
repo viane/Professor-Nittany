@@ -29,12 +29,16 @@ $(document).ready(function () {
 
 // when the user wants to see more answers, they can click on the buttons
 // this makes sure that the data is changed
-$(document).on('click', ':button', function (e) {
+$(document).on('click', '.btn', function (e) {
     $('.active').removeClass('active')
     $(this).addClass('active');
-    let replaceHTML = watsonChatClassNumerous + data[this.id] + '</p><small class="text-muted">Watson | ' + timeAsked;
+    //let replaceHTML = watsonChatClassNumerous + data[this.id] + '</p><small class="text-muted">Watson | ' + timeAsked;
+    e.preventDefault();
+});
 
-    $('.active-chat').html(replaceHTML);
+$(document).on('click', '.btn-answer', function(e){
+    $('.current-message').empty();
+    $('.current-message').html(data[this.id]);
     addReadmoreHandler();
     $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
     e.preventDefault();
@@ -193,15 +197,15 @@ const formatAnswerByTag = (input) => {
 // it's to make sure all of the messages stay consistant
 let htmlBefore = '<li class="media"><div class="media-body row"><div class="pull-right"><img class="media-object img-circle " src="images/default-user.png"></div><div class="media-user-info">';
 let htmlWBefore = '<li class="media"><div class="media-body row"><div class="pull-left"><img class="media-object img-circle " src="images/logo.png"></div><div class="media-watson-info active-chat">';
-let watsonChatClassNumerous = '<p class="media-text current-message">';
+let watsonChatClassNumerous = '<div class="current-message"><p class="media-text">';
 let watsonChatClassSingle = '<p class="media-text">';
 let htmlAfter = '</small></div></div></div></li>';
 let htmlButtons = '<div class="btn-group other-answers" role="group" aria-label="...">' +
-    '<button type="button" class="btn btn-default active" id="0">First</button>' +
-    '<button type="button" class="btn btn-default" id="1">Second</button>' +
-    '<button type="button" class="btn btn-default" id="2">Third</button>' +
-    '<button type="button" class="btn btn-default" id="3">Fourth</button></div>';
-let htmlWAfter = '</small></div></div></div>' + htmlButtons + '</li>';
+    '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' +
+    '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' +
+    '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' +
+    '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>';
+let htmlWAfter = '</small></div></div></div></li>';
 let htmlWAfterNoButtons = '</small></div></div></div></li>';
 
 // This adds the user input to the chat and sends it to server for response
@@ -276,7 +280,7 @@ function sendServerQuestion(question) {
                  $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfterNoButtons);
             }
             else {
-                $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
+                $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>'+ htmlButtons +'</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
             }
             addReadmoreHandler();
             $('.current-chat-area').animate({ scrollTop: $(".scroll-chat").height() });

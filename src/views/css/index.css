@@ -180,7 +180,8 @@ html, body {
     max-width: 90%;
     border-left: 2px solid;
     border-radius: 10px;
-    background-color: #f0f0f0;
+    background-color: #4f8dcc;
+    color: #ffffff;
     margin-top: 15px;
     padding: 10px;
     float: left;
@@ -201,7 +202,7 @@ html, body {
 }
 
 .other-answers {
-    margin-left: 75px;
+   /*margin-left: 75px;*/
     margin-top: 10px;
 }
 
@@ -226,4 +227,8 @@ html, body {
     margin-left: auto;
     margin-right: auto;
     padding: 0; 
+}
+
+.text-muted {
+    color: #000
 }
