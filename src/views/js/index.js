@@ -19,6 +19,19 @@ $(document).ready(function () {
     // Update the first Watson message
     $("#Watson-Time").html('Watson | ' + getDateAndTime());
 
+    var fullHeightMinusHeader =  0;
+    function calcHeights(){
+        fullHeightMinusHeader = $(window).height() - $('lite-header').outerHeight()-$('.current-chat-footer').outerHeight()-$('.line').outerHeight();
+        $(".scroll-chat").height(fullHeightMinusHeader);
+        // HeightScroll = $('.current-chat-area').outerHeight()-$('.current-chat-footer').outerHeight();
+        // $('.scroll-chat').height(HeightScroll);
+    }
+    //On page load
+    calcHeights();
+    //On window resize
+    // $(window).resize(function{
+    //     calcHeights();
+    // })
     //$('#myModal').modal('toggle');
 });
 
