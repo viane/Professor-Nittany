@@ -1,5 +1,6 @@
 'use strict'
 
+let context = {};
 let data = ["test1", "test2", "test3", "test4"];
 
 $(document).ready(function () {
@@ -251,7 +252,7 @@ function sendServerQuestion(question) {
         },
         body: JSON.stringify({
             'question': question,
-            'context': {}
+            'context': context
         })
     }).then(response => { return response.json() })
         .then(json => {
@@ -263,7 +264,7 @@ function sendServerQuestion(question) {
                 data[i] = formatAnswerByTag(json.response.docs[i].body);
                 i++;
             }
-
+            context = json.context;
             // don't want the buttons popping up if there is only one response from the server
             if (json.response.docs.length == 1) {
                  $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + getDateAndTime() + htmlWAfterNoButtons);
@@ -277,4 +278,3 @@ function sendServerQuestion(question) {
             $('#question').val('');
         });
 }
-
