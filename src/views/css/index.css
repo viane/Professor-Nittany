@@ -14,6 +14,27 @@
 p {
     font-size: 1.5rem;
 }
+a {
+  color: #fbff00;
+}
+
+/* effect-shine */
+a.effect-shine:hover {
+  color: #fbff00;
+  -webkit-mask-image: linear-gradient(-75deg, rgba(0,0,0,.6) 30%, #000 50%, rgba(0,0,0,.6) 70%);
+  -webkit-mask-size: 200%;
+  animation: shine 2s infinite;
+}
+
+@-webkit-keyframes shine {
+  from {
+    -webkit-mask-position: 150%;
+  }
+
+  to {
+    -webkit-mask-position: -50%;
+  }
+}
 
 html, body {
     height:100%;
@@ -58,7 +79,7 @@ html, body {
     margin: 1em 0;
     margin-left: auto;
     margin-right: auto;
-    padding: 0; 
+    padding: 0;
 }
 
 .text-benefits {
@@ -177,7 +198,7 @@ html, body {
 }
 
 .media-watson-info {
-    max-width: 90%;
+    max-width: 85%;
     border-left: 2px solid;
     border-radius: 10px;
     background-color: #4f8dcc;
@@ -185,6 +206,7 @@ html, body {
     margin-top: 15px;
     padding: 10px;
     float: left;
+    transition: all 1.8s ease-in-out;
 }
 
 .media-user-info {
@@ -226,13 +248,152 @@ html, body {
     margin: 1em 0;
     margin-left: auto;
     margin-right: auto;
-    padding: 0; 
+    padding: 0;
 }
 
 .text-muted {
     color: #000
 }
 
-a{
-    color: #e2de32
+/*answer progress style*/
+.progress-section{
+ margin-top: 20px;
+}
+.progress-indicator {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  background-color: #d7d7d7;
+  border-radius: 50%;
+}
+
+@media (max-width: 480px) {
+  .progress-indicator {
+    width: 85px;
+    height: 85px;
+  }
+}
+
+.progress-indicator .circle .mask,
+.progress-indicator .circle .fill,
+.progress-indicator .circle .shadow {
+  width: 120px;
+  height: 120px;
+  position: absolute;
+  border-radius: 50%;
+}
+
+@media (max-width: 480px) {
+  .progress-indicator .circle .mask,
+  .progress-indicator .circle .fill,
+  .progress-indicator .circle .shadow {
+    width: 85px;
+    height: 85px;
+  }
+}
+
+.progress-indicator .circle .mask,
+.progress-indicator .circle .fill {
+  -webkit-backface-visibility: hidden;
+  transition: -webkit-transform 1s;
+  transition: -ms-transform 1s;
+  transition: transform 1s;
+}
+
+.progress-indicator .circle .mask.reanimate,
+.progress-indicator .circle .fill.reanimate {
+  transition: -webkit-transform 0s;
+  transition: -ms-transform 0s;
+  transition: transform 0s;
+}
+
+.progress-indicator .circle .mask.reset,
+.progress-indicator .circle .fill.reset {
+  -webkit-transform: rotate(0deg) !important;
+  -ms-transform: rotate(0deg) !important;
+  transform: rotate(0deg) !important;
+}
+
+.progress-indicator .circle .mask {
+  clip: rect(0px, 120px, 120px, 60px);
+}
+
+@media (max-width: 480px) {
+  .progress-indicator .circle .mask {
+    clip: rect(0px, 85px, 85px, 42.5px);
+  }
+}
+
+.progress-indicator .circle .mask .fill {
+  clip: rect(0px, 60px, 120px, 0px);
+  background-color: #EA463D;
+}
+
+@media (max-width: 480px) {
+  .progress-indicator .circle .mask .fill {
+    clip: rect(0px, 42.5px, 85px, 0px);
+  }
+}
+
+.progress-indicator .inset {
+  width: 100px !important;
+  height: 100px !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -50px 0 0 -50px !important;
+  background-color: #fbfbfb;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 100px;
+}
+
+@media (max-width: 480px) {
+  .progress-indicator .inset {
+    width: 66px !important;
+    height: 66px !important;
+    margin: -33px 0 0 -33px !important;
+    line-height: 90px;
+  }
+}
+
+.progress-indicator .total-step-number {
+  font-size: 26px;
+  color: #d7d7d7;
+}
+
+@media (max-width: 480px) {
+  .progress-indicator .total-step-number {
+    font-size: 18px;
+  }
+}
+
+.progress-indicator .current-step-number {
+  font-size: 37px;
+}
+
+@media (max-width: 480px) {
+  .progress-indicator .current-step-number {
+    font-size: 27px;
+  }
+}
+.step{
+  display: none;
+}
+
+.current-step-number, .total-step-number{
+  color:#000;
+
+}
+.previous-step-btn, .next-step-btn{
+  display: inline-block;
+      font-size: 3em;
+}
+.step-control, .next-step-btn{
+      float: right;
+}
+
+.step-image{
+      max-width: 80%;
+      padding: 15px;
 }
