@@ -806,4 +806,17 @@ questionRouter.post('/ask-sms', (req, res) => {
   });
 });
 
+questionRouter.post('/log-question', function(req,res,next){
+  var newQuestion = new Questions();
+  newQuestion.body = req.body.question;
+  newQuestion.temp_answer_holder = req.body.answers;
+  newQuestion.low_confidence.mark = true;
+  newQuestion.save(function(err,resp){
+    if(err) return next(err);
+    res.status(200).json({
+      'message': 'logged'
+    });
+  });
+});
+
 module.exports = questionRouter;
