@@ -28,6 +28,7 @@ $(document).on('click', ':button', function (e) {
     $('.active').removeClass('active')
     $(this).addClass('active');
     $('.active-chat').html(data[this.id]);
+    initProgressHandler($($('.progress-section')[$('.progress-section').length-1]));
     addReadmoreHandler();
     $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
     e.preventDefault();
@@ -179,6 +180,44 @@ const formatAnswerByTag = (input) => {
     input = input.replace(initImgText, imgDomStr);
   }
 
+  while (input.match("\\[progress\\].*?\\[/progress\\]")) {
+    // convert to general question that can be directly asked to system
+    let initProgressText = input.match("\\[progress\\].*?\\[/progress\\]").toString();
+    const totalStepNumber = (initProgressText.match(new RegExp("\\[step\\]", "g") || [])).length;
+    const progressDivStart = "<div class=\"progress-section\" data-on-step="+1+" data-total-step="+totalStepNumber+">"
+      // previous step btn
+    const pBtn = "<div class=\"previous-step-btn\"><i class=\"fa fa-chevron-left\" aria-hidden=\"true\"></i></div>";
+        // next step btn
+    const nBtn = "<div class=\"next-step-btn\"><i class=\"fa fa-chevron-right\" aria-hidden=\"true\"></i></div>";
+    // add visual indicator
+    let indicator = "";
+    indicator += '<div class="progress-indicator">';
+    indicator += '  <div class="circle">';
+    indicator += '    <div class="mask full">';
+    indicator += '      <div class="fill"></div>';
+    indicator += '    </div>';
+    indicator += '    <div class="mask half">';
+    indicator += '      <div class="fill"></div>';
+    indicator += '      <div class="fill fix"></div>';
+    indicator += '    </div>';
+    indicator += '  </div>';
+    indicator += '  <div class="inset"><span class="current-step-number">1</span><span class="total-step-number">/'+ totalStepNumber +'</span></div>';
+    indicator += '</div>';
+    // wraper for steps
+    const stepContent = '<div class="step-content">';
+    // convert progress tag
+    // div.progress-section
+    //  div.pbtn div.nbtn div.indicator div.step-content
+    initProgressText = initProgressText.replace(new RegExp("\\[progress\\]", "g"), progressDivStart + indicator + pBtn + nBtn + stepContent);
+    initProgressText = initProgressText.replace(new RegExp("\\[\/progress\\]", "g"), "</div></div>");
+    // convert step tag
+    initProgressText = initProgressText.replace(new RegExp("\\[step\\]", "g"), "<div class=\"step\">");
+    initProgressText = initProgressText.replace(new RegExp("\\[\/step\\]", "g"), "</div>");
+
+    input = input.replace(input.match("\\[progress\\].*?\\[/progress\\]").toString(), initProgressText);
+  }
+
+
   return input;
 }
 
@@ -240,6 +279,60 @@ const addReadmoreHandler = () => {
   })
 }
 
+//////////////////////////////////////////////////
+// Progress section elements handler
+//////////////////////////////////////////////////
+const initProgressHandler = (ele)=>{
+  updateStep(ele);
+  updateProgressIndicator(ele);
+  initPNBtnHandler(ele);
+}
+
+const updateStep = (ele)=>{
+  const currentStep = $(ele).data( "on-step" );
+  $(ele).find('.step-content .step').hide();
+  $($(ele).find('.step-content .step')[currentStep - 1]).show();
+}
+
+const updateProgressIndicator = (ele) => {
+  const currentStep = $(ele).data( "on-step" );
+  const totalStep = $(ele).data( "total-step" );
+  $(ele).find('.current-step-number').text(currentStep);
+  $(ele).find('.total-step-number').text('/' + totalStep);
+  const score = currentStep;
+  const transform_styles = ['-webkit-transform', '-ms-transform', 'transform'];
+  $(ele).find('span').fadeTo('slow', 1);
+  const deg = (((100 / totalStep) * score) / 100) * 180;
+  const rotation = deg;
+  const fill_rotation = rotation;
+  const fix_rotation = rotation * 2;
+  for (let i in transform_styles) {
+    $(ele).find('.circle .fill, .circle .mask.full').css(transform_styles[i], 'rotate(' + fill_rotation + 'deg)');
+    $(ele).find('.circle .fill.fix').css(transform_styles[i], 'rotate(' + fix_rotation + 'deg)');
+  }
+}
+
+const initPNBtnHandler = (ele)=>{
+  $(ele).find('.previous-step-btn').on('click',()=>{
+    const currentStep = $(ele).data( "on-step" );
+    if (currentStep > 1) {
+      $(ele).data( "on-step",currentStep-1);
+      updateProgressIndicator(ele);
+      updateStep(ele);
+    }
+  });
+
+  $(ele).find('.next-step-btn').on('click',()=>{
+    const currentStep = $(ele).data( "on-step" );
+    const totalStep = $(ele).data( "total-step" );
+    if (currentStep < totalStep) {
+      $(ele).data( "on-step",currentStep+1);
+      updateProgressIndicator(ele);
+      updateStep(ele);
+    }
+  });
+}
+
 function sendServerQuestion(question) {
     fetch("/questions/send-lite", {
         method: 'post',
@@ -268,8 +361,9 @@ function sendServerQuestion(question) {
             else {
                 $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p><small class="text-muted">Watson | ' + getDateAndTime() + htmlWAfter);
             }
+            initProgressHandler($($('.progress-section')[$('.progress-section').length-1]));
             addReadmoreHandler();
+
             $('.current-chat-area').animate({ scrollTop: $(".scroll-chat").height() });
         });
 }
-
