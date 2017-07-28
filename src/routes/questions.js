@@ -82,9 +82,9 @@ questionRouter.route('/dominated-terms').get(function(req, res, next) {
 //API check low-confidence questions
 questionRouter.route('/get-low-confidence').get(function(req,res,next){
   Questions.find({'low_confidence.mark': true}, function(err, questions){
-    
+
     res.json(questions);
-    
+
   })
 });
 
@@ -238,7 +238,7 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
                   else{
                     newQuestion.low_confidence.relevance_percent = terms_match_count/Text.length;
                   }
-                  
+
                   switch(newQuestion.low_confidence.relevance_percent){
                     case 0:
                       newQuestion.low_confidence.relevance_level="irrelevant";
@@ -269,7 +269,7 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
             });
 
         });
-        
+
       }
       else if(data.intents[0] && data.intents[0].intent == "Ask_New_Question"){
         return res.status(200).json({
@@ -392,7 +392,7 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
             });
 
         });
-        
+
       }
       else if(data.intents[0] && data.intents[0].intent == "Ask_New_Question"){
         return res.status(200).json({
@@ -562,22 +562,22 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
 
 // });
 
-// // twillo phone route
+// twillo phone route
 
-// let QACopyAry = [];
+let QACopyAry = [];
 
-// questionRouter.route('/ask-phone').post(function(req, res, next) {
-//   const twiml = new twilio.twiml.VoiceResponse();
-//   twiml.play(config.server_url.public + '/audio/greeting.wav');
-//   // record user question, audio file will be stored in twilio server
-//   twiml.record({
-//     maxLength: 50, timeout: 55, finihOnKey: '1234567890*#',
-//     // transcribe: true,
-//     method: 'POST',
-//     action: '/questions/ask-phone/callback'
-//   });
-//   res.send(twiml.toString());
-// });
+questionRouter.route('/ask-phone').post(function(req, res, next) {
+  const twiml = new twilio.twiml.VoiceResponse();
+  twiml.play(config.server_url.public + '/audio/greeting.wav');
+  // record user question, audio file will be stored in twilio server
+  twiml.record({
+    maxLength: 50, timeout: 55, finihOnKey: '1234567890*#',
+    // transcribe: true,
+    method: 'POST',
+    action: '/questions/ask-phone/callback'
+  });
+  res.send(twiml.toString());
+});
 
 questionRouter.route('/ask-phone/callback').post(function(req, res, next) {
 
