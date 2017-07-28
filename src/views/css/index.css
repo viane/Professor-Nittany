@@ -53,7 +53,7 @@ html, body {
     margin: 1em 0;
     margin-left: auto;
     margin-right: auto;
-    padding: 0; 
+    padding: 0;
 }
 
 .text-benefits {
@@ -198,5 +198,128 @@ html, body {
     margin: 1em 0;
     margin-left: auto;
     margin-right: auto;
-    padding: 0; 
+    padding: 0;
+}
+
+/*Progress section in answer*/
+.progress-indicator {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  background-color: #d7d7d7;
+  border-radius: 50%;
+}
+
+@media (max-width: 480px) {
+  .progress-indicator {
+    width: 85px;
+    height: 85px;
+  }
+}
+
+.progress-indicator .circle .mask,
+.progress-indicator .circle .fill,
+.progress-indicator .circle .shadow {
+  width: 120px;
+  height: 120px;
+  position: absolute;
+  border-radius: 50%;
+}
+
+@media (max-width: 480px) {
+  .progress-indicator .circle .mask,
+  .progress-indicator .circle .fill,
+  .progress-indicator .circle .shadow {
+    width: 85px;
+    height: 85px;
+  }
+}
+
+.progress-indicator .circle .mask,
+.progress-indicator .circle .fill {
+  -webkit-backface-visibility: hidden;
+  transition: -webkit-transform 1s;
+  transition: -ms-transform 1s;
+  transition: transform 1s;
+}
+
+.progress-indicator .circle .mask.reanimate,
+.progress-indicator .circle .fill.reanimate {
+  transition: -webkit-transform 0s;
+  transition: -ms-transform 0s;
+  transition: transform 0s;
+}
+
+.progress-indicator .circle .mask.reset,
+.progress-indicator .circle .fill.reset {
+  -webkit-transform: rotate(0deg) !important;
+  -ms-transform: rotate(0deg) !important;
+  transform: rotate(0deg) !important;
+}
+
+.progress-indicator .circle .mask {
+  clip: rect(0px, 120px, 120px, 60px);
+}
+
+@media (max-width: 480px) {
+  .progress-indicator .circle .mask {
+    clip: rect(0px, 85px, 85px, 42.5px);
+  }
+}
+
+.progress-indicator .circle .mask .fill {
+  clip: rect(0px, 60px, 120px, 0px);
+  background-color: #EA463D;
+}
+
+@media (max-width: 480px) {
+  .progress-indicator .circle .mask .fill {
+    clip: rect(0px, 42.5px, 85px, 0px);
+  }
+}
+
+.progress-indicator .inset {
+  width: 100px !important;
+  height: 100px !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -50px 0 0 -50px !important;
+  background-color: #fbfbfb;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 100px;
+}
+
+@media (max-width: 480px) {
+  .progress-indicator .inset {
+    width: 66px !important;
+    height: 66px !important;
+    margin: -33px 0 0 -33px !important;
+    line-height: 90px;
+  }
+}
+
+.progress-indicator .total-step-number {
+  font-size: 26px;
+  color: #d7d7d7;
+}
+
+@media (max-width: 480px) {
+  .progress-indicator .total-step-number {
+    font-size: 18px;
+  }
+}
+
+.progress-indicator .current-step-number {
+  font-size: 37px;
+}
+
+@media (max-width: 480px) {
+  .progress-indicator .current-step-number {
+    font-size: 27px;
+  }
+}
+.step{
+  display: none;
 }
