@@ -2,6 +2,7 @@
 
 let context = {};
 let data = ["test1", "test2", "test3", "test4"];
+let timeAsked = "";
 
 $(document).ready(function () {
     // when user presses the send button
@@ -31,7 +32,9 @@ $(document).ready(function () {
 $(document).on('click', ':button', function (e) {
     $('.active').removeClass('active')
     $(this).addClass('active');
-    $('.active-chat').html(data[this.id]);
+    let replaceHTML = watsonChatClassNumerous + data[this.id] + '</p><small class="text-muted">Watson | ' + timeAsked;
+
+    $('.active-chat').html(replaceHTML);
     addReadmoreHandler();
     $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
     e.preventDefault();
@@ -266,11 +269,14 @@ function sendServerQuestion(question) {
             }
             context = json.context;
             // don't want the buttons popping up if there is only one response from the server
+            timeAsked = getDateAndTime();
+
+            // don't want the buttons popping up if there is only one response from the server
             if (json.response.docs.length == 1) {
-                 $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + getDateAndTime() + htmlWAfterNoButtons);
+                 $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfterNoButtons);
             }
             else {
-                $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p><small class="text-muted">Watson | ' + getDateAndTime() + htmlWAfter);
+                $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
             }
             addReadmoreHandler();
             $('.current-chat-area').animate({ scrollTop: $(".scroll-chat").height() });
