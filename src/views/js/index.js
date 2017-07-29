@@ -502,6 +502,7 @@ function questionWrapper(question){
 }
 
 function showLowQuestions(){
+    $('.current-chat').append('<div class="question-loading scrollable">' + htmlLoading + '</div>');
     fetch("../questions/get-low-confidence",{
       method:'get',
       headers:{
@@ -510,6 +511,7 @@ function showLowQuestions(){
       }
     }).then(response=>{return response.json()})
     .then(json=>{
+      setTimeout(function(){$('.question-loading').remove()},2000);
       console.log(json);
       var questionList = questionWrapper(json);
       $('.current-chat').append(questionList);     
