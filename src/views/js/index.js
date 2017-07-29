@@ -339,7 +339,7 @@ function sendServerQuestion(question) {
             }
             context = json.context;
             // don't want the buttons popping up if there is only one response from the server
-            timeAsked = getDateAndTime();
+            timeAsked = '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>';
 
             // don't want the buttons popping up if there is only one response from the server
             if (json.response.docs.length == 1) {
