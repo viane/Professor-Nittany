@@ -398,6 +398,10 @@ html, body {
       padding: 15px;
 }
 
+.step-image:hover{
+  cursor: zoom-in;
+}
+
 .cs-loader {
     transform: translateY(-50%);
     top: 50%;
