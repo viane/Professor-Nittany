@@ -398,4 +398,239 @@ html, body {
       padding: 15px;
 }
 
+.cs-loader {
+    transform: translateY(-50%);
+    top: 50%;
+    position: absolute;
+    left: -1%;
+    width: 100%;
+    color: #FFF;
+    padding: 0 0px;
+    text-align: center;
+}
 
+.cs-loader label {
+  font-size: 20px;
+  opacity: 0;
+  display:inline-block;
+}
+
+@keyframes lol {
+  0% {
+    opacity: 0;
+    transform: translateX(-300px);
+  }
+  33% {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+  66% {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(300px);
+  }
+}
+
+@-webkit-keyframes lol {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateX(-300px);
+  }
+  33% {
+    opacity: 1;
+    -webkit-transform: translateX(0px);
+  }
+  66% {
+    opacity: 1;
+    -webkit-transform: translateX(0px);
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: translateX(300px);
+  }
+}
+
+.cs-loader label:nth-child(6) {
+  -webkit-animation: lol 1.5s infinite ease-in-out;
+  animation: lol 1.5s infinite ease-in-out;
+}
+
+.cs-loader label:nth-child(5) {
+  -webkit-animation: lol 1.5s 100ms infinite ease-in-out;
+  animation: lol 1.5s 100ms infinite ease-in-out;
+}
+
+.cs-loader label:nth-child(4) {
+  -webkit-animation: lol 1.5s 200ms infinite ease-in-out;
+  animation: lol 1.5s 200ms infinite ease-in-out;
+}
+
+.cs-loader label:nth-child(3) {
+  -webkit-animation: lol 1.5s 300ms infinite ease-in-out;
+  animation: lol 1.5s 300ms infinite ease-in-out;
+}
+
+.cs-loader label:nth-child(2) {
+  -webkit-animation: lol 1.5s 400ms infinite ease-in-out;
+  animation: lol 1.5s 400ms infinite ease-in-out;
+}
+
+.cs-loader label:nth-child(1) {
+  -webkit-animation: lol 1.5s 500ms infinite ease-in-out;
+  animation: lol 1.5s 500ms infinite ease-in-out;
+}
+
+/*.loading-dot{
+    position: absolute;
+    z-index: 10;
+    width: 67px;
+    left:-11px;
+    top: 27px;
+    .dot{
+      height: 17px;
+      width: 17px;
+      border-radius: 50%;
+      background: #c1c1c1;
+      display: block;
+      float: left;
+      margin: 0 0 0 8px;
+      &:first-child{
+        margin: 0;
+      }
+      &.one{
+        -webkit-animation: cycleOne 1s ease-in-out infinite;
+        -webkit-animation-direction: normal;
+      }
+      &.two{
+        -webkit-animation: cycleTwo 1s ease-in-out infinite;
+        -webkit-animation-direction: normal;
+      }
+      &.three{
+        -webkit-animation: cycleThree 1s ease-in-out infinite;
+        -webkit-animation-direction: normal;
+      }
+    }
+}
+
+@-webkit-keyframes cycleOne{
+  0%{
+    background: rgba(150, 150, 150, 0.4);
+  }
+  33.333%{
+    background: rgba(150, 150, 150, 1);
+  }
+  66.6667%{
+    background: rgba(150, 150, 150, 0.4);
+  }
+  100%{
+    background: rgba(150, 150, 150, 0.4);
+  }
+}
+
+@-webkit-keyframes cycleTwo{
+  0%{
+    background: rgba(150, 150, 150, 0.4);
+  }
+  33.333%{
+    background: rgba(150, 150, 150, 0.4);
+  }
+  66.6667%{
+    background: rgba(150, 150, 150, 1);
+  }
+  100%{
+    background: rgba(150, 150, 150, 0.4);
+  }
+}
+
+@-webkit-keyframes cycleThree{
+  0%{
+    background: rgba(150, 150, 150, 0.4);
+  }
+  33.333%{
+    background: rgba(150, 150, 150, 0.4);
+  }
+  66.6667%{
+    background: rgba(150, 150, 150, 0.4);
+  }
+  100%{
+    background: rgba(150, 150, 150, 1);
+  }
+}*/
+
+/*.typing-indicator {
+  $ti-color-bg: #E6E7ED;
+  background-color: $ti-color-bg;
+  will-change: transform;
+  width: auto;
+  border-radius: 50px;
+  padding: 20px;
+  display: table;
+  margin: 0 auto;
+  position: relative;
+  animation: 2s bulge infinite ease-out;
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: -2px;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background-color: $ti-color-bg;
+  }
+  &::after {
+    height: 10px;
+    width: 10px;
+    left: -10px;
+    bottom: -10px;
+  }
+  span {
+    height: 15px;
+    width: 15px;
+    float: left;
+    margin: 0 1px;
+    background-color: #9E9EA1;
+    display: block;
+    border-radius: 50%;
+    opacity: 0.4;
+    @for $i from 1 through 3 {
+      &:nth-of-type(#{$i}) {
+        animation: 1s blink infinite ($i * .3333s);
+      }
+    }
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes bulge {
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+// vertically center demo 
+html {
+  display: table;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  display: table-cell;
+  vertical-align: middle;
+}
+*/
+.loading-info{
+    position: relative;
+    width: 5%;
+    z-index: -1;
+}

@@ -260,14 +260,27 @@ const formatAnswerByTag = (input) => {
 // Just to condense the append functions
 // it's to make sure all of the messages stay consistant
 let htmlBefore = '<li class="media"><div class="media-body row"><div class="pull-right"><img class="media-object img-circle " src="images/default-user.png"></div><div class="media-user-info">';
+let htmlLBefore = '<li class="media loading"><div class="media-body row"><div class="pull-left"><img class="media-object img-circle " src="images/logo.png"></div><div class="media-watson-info loading-info">';
 let htmlWBefore = '<li class="media"><div class="media-body row"><div class="pull-left"><img class="media-object img-circle " src="images/logo.png"></div><div class="media-watson-info active-chat">';
 let watsonChatClassNumerous = '<div class="current-message"><p class="media-text">';
 let watsonChatClassSingle = '<p class="media-text">';
 let htmlAfter = '</span></div></div></div></li>';
 let htmlButtons = '<div class="btn-group other-answers" role="group" aria-label="...">' +
+<<<<<<< HEAD
+    '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' +
+    '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' +
+    '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' +
+    '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>'+
+    '<div type="buttion" class="btn btn-danger btn-log pull-right">No Satisfying Answers</div>';
+let htmlWAfter = '</small></div></div></div></li>';
+let htmlWAfterNoButtons = '</small></div></div></div></li>';
+let htmlLAfter = '</div></div></li>'
+let htmlLoading = '<div class="cs-loader"><label> ●</label><label> ●</label><label> ●</label></div>';
+=======
 '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Satisfying Answers</div>';
 let htmlWAfter = '</span></div></div></div></li>';
 let htmlWAfterNoButtons = '</span></div></div></div></li>';
+>>>>>>> Allen
 
 // This adds the user input to the chat and sends it to server for response
 function addUserChat() {
@@ -313,40 +326,45 @@ const addReadmoreHandler = () => {
 }
 
 function sendServerQuestion(question) {
-  fetch("../questions/send-lite", {
-    method: 'post',
-    headers: {
-      "Content-type": "application/json"
-    },
-    body: JSON.stringify({'question': question, 'context': context})
-  }).then(response => {
-    return response.json()
-  }).then(json => {
-    $('.current-message').attr('class', 'media-text');
-    $('.other-answers').remove();
-    $('.btn-log').remove();
-    $('.active-chat').removeClass('active-chat');
-    let i = 0;
-    while (i < 4 && i != json.response.docs.length) {
-      data[i] = formatAnswerByTag(json.response.docs[i].body);
-      i++;
-    }
-    context = json.context;
-    // don't want the buttons popping up if there is only one response from the server
-    timeAsked = '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>';
+    $('#chat').append(htmlLBefore + htmlLoading + htmlLAfter);
+    fetch("../questions/send-lite", {
+        method: 'post',
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify({
+            'question': question,
+            'context': context
+        })
+    }).then(response => { return response.json() })
+        .then(json => {
+            $('.loading').remove();
+            $('.current-message').attr('class', 'media-text');
+            $('.other-answers').remove();
+            $('.btn-log').remove();
+            $('.active-chat').removeClass('active-chat');
+            let i = 0;
+            while (i < 4 && i != json.response.docs.length) {
+                data[i] = formatAnswerByTag(json.response.docs[i].body);
+                i++;
+            }
+            context = json.context;
+            // don't want the buttons popping up if there is only one response from the server
+            timeAsked = getDateAndTime();
 
-    // don't want the buttons popping up if there is only one response from the server
-    if (json.response.docs.length == 1) {
-      $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><span class="text-muted">Watson | ' + timeAsked + htmlWAfterNoButtons);
-    } else {
-      $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + htmlButtons + '</p><span class="text-muted">Watson | ' + timeAsked + htmlWAfter);
-    }
-    initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
-    addReadmoreHandler();
-    $('.current-chat-area').animate({scrollTop: $(".scroll-chat").height()});
+            // don't want the buttons popping up if there is only one response from the server
+            if (json.response.docs.length == 1) {
+                 $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfterNoButtons);
+            }
+            else {
+                $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>'+ htmlButtons +'</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
+            }
+            initProgressHandler($($('.progress-section')[$('.progress-section').length-1]));
+            addReadmoreHandler();
+            $('.current-chat-area').animate({ scrollTop: $(".scroll-chat").height() });
 
-    $('#question').val('');
-  });
+            $('#question').val('');
+        });
 }
 
 ////////////////////////////////////
