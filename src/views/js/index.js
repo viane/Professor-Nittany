@@ -248,6 +248,7 @@ const formatAnswerByTag = (input) => {
 // Just to condense the append functions
 // it's to make sure all of the messages stay consistant
 let htmlBefore = '<li class="media"><div class="media-body row"><div class="pull-right"><img class="media-object img-circle " src="images/default-user.png"></div><div class="media-user-info">';
+let htmlLBefore = '<li class="media loading"><div class="media-body row"><div class="pull-left"><img class="media-object img-circle " src="images/logo.png"></div><div class="media-watson-info loading-info">';
 let htmlWBefore = '<li class="media"><div class="media-body row"><div class="pull-left"><img class="media-object img-circle " src="images/logo.png"></div><div class="media-watson-info active-chat">';
 let watsonChatClassNumerous = '<div class="current-message"><p class="media-text">';
 let watsonChatClassSingle = '<p class="media-text">';
@@ -260,6 +261,8 @@ let htmlButtons = '<div class="btn-group other-answers" role="group" aria-label=
     '<div type="buttion" class="btn btn-danger btn-log pull-right">No Satisfying Answers</div>';
 let htmlWAfter = '</small></div></div></div></li>';
 let htmlWAfterNoButtons = '</small></div></div></div></li>';
+let htmlLAfter = '</div></div></li>'
+let htmlLoading = '<div class="cs-loader"><label> ●</label><label> ●</label><label> ●</label></div>';
 
 // This adds the user input to the chat and sends it to server for response
 function addUserChat() {
@@ -304,6 +307,7 @@ const addReadmoreHandler = () => {
 }
 
 function sendServerQuestion(question) {
+    $('#chat').append(htmlLBefore + htmlLoading + htmlLAfter);
     fetch("../questions/send-lite", {
         method: 'post',
         headers: {
@@ -315,6 +319,7 @@ function sendServerQuestion(question) {
         })
     }).then(response => { return response.json() })
         .then(json => {
+            $('.loading').remove();
             $('.current-message').attr('class', 'media-text');
             $('.other-answers').remove();
             $('.btn-log').remove();
