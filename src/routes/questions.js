@@ -103,7 +103,6 @@ questionRouter.route('/get-low-confidence').get(function(req,res,next){
     if (err)
       return next(err);
     res.json(questions);
-    
   })
 })
 .delete(function(req,res,next){
@@ -236,90 +235,7 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
         })
         .catch((err)=>{
           return res.status(302).json(err);
-        });
-        // if(req.body.question.length>=5){
-        //   var newQuestion = new Questions();
-        //   newQuestion.body = req.body.question;
-        //   newQuestion.submitter = '59708b6acf1559c355555555';
-        //   Questions.find({body:req.body.question})
-        //     processQuestion.NLUAnalysis(req.body.question).then((analysis) => {
-        //     //console.log(analysis);
-        //     newQuestion.feature.concepts = analysis.concepts;
-        //     newQuestion.feature.keywords = analysis.keywords;
-        //     newQuestion.feature.entities = analysis.entities;
-        //     retrieve_and_rank.enterMessage(req.body.question).then((searchResponse) => {
-        //         //console.log(searchResponse.response.docs[0]['ranker.confidence']);
-        //         if(searchResponse.response.docs[0]['ranker.confidence']<config.questionThreshold){
-        //           //console.log(config.questionThreshold);
-        //           newQuestion.low_confidence.mark = true;
-        //           newQuestion.low_confidence.answer = searchResponse.response.docs[0].body;
-        //           let features = [];
-        //           features = features.concat(newQuestion.feature.concepts);
-        //           features = features.concat(newQuestion.feature.keywords);
-        //           features = features.concat(newQuestion.feature.entities);
-        //           let Text = features.map(function(a){return a.text});
-        //           let terms_match_count = 0;
-        //           //console.log(Text);
-        //           DominatedTerms.findById("5978f6b724e65c86144167b0", function(err, domTerms ){
-        //             if(err) return next(err);
-        //             for(let j=0; j<Text.length; j++){
-        //               if(domTerms.termsText.includes(Text[j])){
-        //                 terms_match_count++;
-        //               }
-        //             }
-        //             if(Text.length == 0){
-        //               newQuestion.low_confidence.relevance_percent = 0;
-        //             }
-        //             else{
-        //               newQuestion.low_confidence.relevance_percent = terms_match_count/Text.length;
-        //             }
-                    
-        //             switch(newQuestion.low_confidence.relevance_percent){
-        //               case 0:
-        //                 newQuestion.low_confidence.relevance_level="irrelevant";
-        //                 break;
-        //               case 1:
-        //                 newQuestion.low_confidence.relevance_level="full";
-        //                 break;
-        //               default:
-        //                 newQuestion.low_confidence.relevance_level="some";
-        //             }
-        //             searchResponse.context = {};
-        //             newQuestion.save(function(err, resp){
-        //               if(err) return next(err);
-        //               return res.status(200).json(searchResponse);
-        //             });
-        //           });
-        //         }
-        //         else{
-        //           searchResponse.context = {};
-        //           newQuestion.save(function(err, resp){
-        //             if(err) return next(err);
-        //             return res.status(200).json(searchResponse);
-        //           });
-        //         }
-        //        }).catch((err) => {
-        //         console.error(err);
-        //         return res.status(302).json(err)
-        //       });
-
-        //     });
-        // }
-        // else{
-        //   return res.status(200).json({
-        //     response: {
-        //                         docs: [
-        //                                 {
-        //                                     title: "No answer found",
-        //                                     body: "Sorry I can't find any answer for this question, please ask a different question.",
-        //                                     'ranker.confidence' : 0
-        //                                 }
-        //                         ]
-        //               }
-        //     })
-        // }
-        
-        
+        });       
       }
       else if(data.intents[0] && data.intents[0].intent == "Ask_New_Question"){
         return res.status(200).json({
@@ -442,7 +358,7 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
             });
 
         });
-        
+
       }
       else if(data.intents[0] && data.intents[0].intent == "Ask_New_Question"){
         return res.status(200).json({
@@ -612,22 +528,22 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
 
 // });
 
-// // twillo phone route
+// twillo phone route
 
-// let QACopyAry = [];
+let QACopyAry = [];
 
-// questionRouter.route('/ask-phone').post(function(req, res, next) {
-//   const twiml = new twilio.twiml.VoiceResponse();
-//   twiml.play(config.server_url.public + '/audio/greeting.wav');
-//   // record user question, audio file will be stored in twilio server
-//   twiml.record({
-//     maxLength: 50, timeout: 55, finihOnKey: '1234567890*#',
-//     // transcribe: true,
-//     method: 'POST',
-//     action: '/questions/ask-phone/callback'
-//   });
-//   res.send(twiml.toString());
-// });
+questionRouter.route('/ask-phone').post(function(req, res, next) {
+  const twiml = new twilio.twiml.VoiceResponse();
+  twiml.play(config.server_url.public + '/audio/greeting.wav');
+  // record user question, audio file will be stored in twilio server
+  twiml.record({
+    maxLength: 50, timeout: 55, finihOnKey: '1234567890*#',
+    // transcribe: true,
+    method: 'POST',
+    action: '/questions/ask-phone/callback'
+  });
+  res.send(twiml.toString());
+});
 
 questionRouter.route('/ask-phone/callback').post(function(req, res, next) {
 

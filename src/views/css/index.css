@@ -154,29 +154,29 @@ html, body {
 
 .scroll-chat {
     margin-left: 10px;
-    margin-top: 70vh;
-    margin-bottom: 30px;
+    margin-top: 10px;
+    margin-bottom: 45px;
 }
 
 @media only screen and (min-height: 1000px) {
    .scroll-chat {
-       margin-top: 75vh;
+       margin-top: 10px;
    }
 }
 
 @media only screen and (max-height: 840px) {
    .scroll-chat {
-       margin-top: 60vh;
+       margin-top: 10px;
    }
 }
 
 @media only screen and (max-height: 640px) {
     .scroll-chat {
-        margin-top: 50vh;
+        margin-top: 10px;
     }
 
     .scroll-chat {
-        margin-bottom: 50px;
+        margin-bottom: 45px;
     }
 }
 
@@ -359,7 +359,7 @@ html, body {
 
 .progress-indicator .total-step-number {
   font-size: 26px;
-  color: #d7d7d7;
+  color: #777;
 }
 
 @media (max-width: 480px) {
@@ -396,6 +396,10 @@ html, body {
 .step-image{
       max-width: 80%;
       padding: 15px;
+}
+
+.step-image:hover{
+  cursor: zoom-in;
 }
 
 .cs-loader {
@@ -617,7 +621,7 @@ html, body {
   }
 }
 
-// vertically center demo 
+// vertically center demo
 html {
   display: table;
   height: 100%;

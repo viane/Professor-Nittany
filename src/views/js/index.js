@@ -6,52 +6,62 @@ let timeAsked = "";
 let question = {};
 let access_token;
 
-$(document).ready(function () {
-    // when user presses the send button
-    $('#send').click(function () {
-        addUserChat();
-    });
+$(() => {
+  initMsgTimeElaspeListener();
 
-    // allows user to just press enter
-    $('#question').keypress(function (e) {
-        if (e.which == 13) {
-            addUserChat();
-            return false; //So that page doesn't refresh
-        }
-    });
 
-    // Update the first Watson message
-    $("#Watson-Time").html('Watson | ' + getDateAndTime());
+  lightbox.option({
+ 'resizeDuration': 200,
+ 'wrapAround': true
+});
+})
+$(document).ready(function() {
+  // when user presses the send button
+  $('#send').click(function() {
+    addUserChat();
+  });
 
-    if(window.devicePixelRatio > 1 )
-        $("body").addClass("disable-zoom")
+  // allows user to just press enter
+  $('#question').keypress(function(e) {
+    if (e.which == 13) {
+      addUserChat();
+      return false; //So that page doesn't refresh
+    }
+  });
+
+  // Update the first Watson message
+  $("#Watson-Time").html('Watson | ' +
+    '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>');
+
+  if (window.devicePixelRatio > 1)
+    $("body").addClass("disable-zoom")
 
     //$('#myModal').modal('toggle');
-});
+  });
 
 // when the user wants to see more answers, they can click on the buttons
 // this makes sure that the data is changed
-$(document).on('click', '.btn-default', function (e) {
-    $('.active').removeClass('active')
-    $(this).addClass('active');
-    //let replaceHTML = watsonChatClassNumerous + data[this.id] + '</p><small class="text-muted">Watson | ' + timeAsked;
-    e.preventDefault();
+$(document).on('click', '.btn-default', function(e) {
+  $('.active').removeClass('active')
+  $(this).addClass('active');
+  //let replaceHTML = watsonChatClassNumerous + data[this.id] + '</p><small class="text-muted">Watson | ' + timeAsked;
+  e.preventDefault();
 });
 
-$(document).on('click', '.btn-log', function (e) {
-    $(this).prop("disabled",true);
-    logQuestion(question.title);
-    e.preventDefault();
+$(document).on('click', '.btn-log', function(e) {
+  $(this).prop("disabled", true);
+  logQuestion(question.title);
+  e.preventDefault();
 });
 
 
-$(document).on('click', '.btn-answer', function(e){
-    $('.current-message').empty();
-    $('.current-message').html(data[this.id]);
-    initProgressHandler($($('.progress-section')[$('.progress-section').length-1]));
-    addReadmoreHandler();
-    $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
-    e.preventDefault();
+$(document).on('click', '.btn-answer', function(e) {
+  $('.current-message').empty();
+  $('.current-message').html(data[this.id]);
+  initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
+  addReadmoreHandler();
+  $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
+  e.preventDefault();
 });
 
 $(document).on('click', '.question-tab', function(e){
@@ -77,37 +87,49 @@ $(document).on('click', '.question-tab', function(e){
 
 // formats date and time
 function getDateAndTime() {
-    var date = new Date();
-    var day = date.getDate();
-    var month = date.getMonth();
-    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    var hour = date.getHours();
-    var minutes = date.getMinutes();
-    var time;
+  var date = new Date();
+  var day = date.getDate();
+  var month = date.getMonth();
+  var months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
+  var hour = date.getHours();
+  var minutes = date.getMinutes();
+  var time;
 
-    if (minutes < 10)
-        minutes = '0' + minutes;
+  if (minutes < 10)
+    minutes = '0' + minutes;
 
-    if (hour > 12)
-        time = hour - 12 + ':' + minutes + ' pm';
-    else
-        time = hour + ':' + minutes + ' am';
+  if (hour > 12)
+    time = hour - 12 + ':' + minutes + ' pm';
+  else
+    time = hour + ':' + minutes + ' am';
 
-    month = months[month];
+  month = months[month];
 
-    // Formatting the date
-    if (day == 1 || day == 21)
-        day = day + 'st';
-    else if (day == 2 || day == 22)
-        day = day + 'nd';
-    else if (day == 3 || day == 23)
-        day = day + 'rd';
-    else
-        day = day + 'th';
+  // Formatting the date
+  if (day == 1 || day == 21)
+    day = day + 'st';
+  else if (day == 2 || day == 22)
+    day = day + 'nd';
+  else if (day == 3 || day == 23)
+    day = day + 'rd';
+  else
+    day = day + 'th';
 
-    return day + ' of ' + month + ' at ' + time;
+  return day + ' of ' + month + ' at ' + time;
 }
-
 
 const formatAnswerByTag = (input) => {
 
@@ -220,7 +242,7 @@ const formatAnswerByTag = (input) => {
     if (imgSrc.match("^\/image\/.*?.png") != null) {
       imgSrc = imgSrc.replace(new RegExp("\/image\/", "g"), "/images/answer_image/");
     }
-    const imgDomStr = "</br><img class=\"step-image\" src=\"" + imgSrc + "\"></br>";
+    const imgDomStr = "</br><a data-lightbox=\"image" + uuidv4() + "\" href=\"" + imgSrc + "\"><img class=\"step-image\" src=\"" + imgSrc + "\"></a></br>";
 
     input = input.replace(initImgText, imgDomStr);
   }
@@ -229,10 +251,10 @@ const formatAnswerByTag = (input) => {
     // convert to general question that can be directly asked to system
     let initProgressText = input.match("\\[progress\\].*?\\[/progress\\]").toString();
     const totalStepNumber = (initProgressText.match(new RegExp("\\[step\\]", "g") || [])).length;
-    const progressDivStart = "<div class=\"progress-section\" data-on-step="+1+" data-total-step="+totalStepNumber+">"
-      // previous step btn
+    const progressDivStart = "<div class=\"progress-section\" data-on-step=" + 1 + " data-total-step=" + totalStepNumber + ">"
+    // previous step btn
     const pBtn = "<div class=\"previous-step-btn\"><i class=\"fa fa-chevron-left\" aria-hidden=\"true\"></i></div>";
-        // next step btn
+    // next step btn
     const nBtn = "<div class=\"next-step-btn\"><i class=\"fa fa-chevron-right\" aria-hidden=\"true\"></i></div>";
     // add visual indicator
     let indicator = "";
@@ -246,7 +268,7 @@ const formatAnswerByTag = (input) => {
     indicator += '      <div class="fill fix"></div>';
     indicator += '    </div>';
     indicator += '  </div>';
-    indicator += '  <div class="inset"><span class="current-step-number">1</span><span class="total-step-number">/'+ totalStepNumber +'</span></div>';
+    indicator += '  <div class="inset"><span class="current-step-number">1</span><span class="total-step-number">/' + totalStepNumber + '</span></div>';
     indicator += '</div>';
     // wraper for steps
     const stepContent = '<div class="step-content">';
@@ -262,7 +284,6 @@ const formatAnswerByTag = (input) => {
     input = input.replace(input.match("\\[progress\\].*?\\[/progress\\]").toString(), initProgressText);
   }
 
-
   return input;
 }
 
@@ -273,39 +294,37 @@ let htmlLBefore = '<li class="media loading"><div class="media-body row"><div cl
 let htmlWBefore = '<li class="media"><div class="media-body row"><div class="pull-left"><img class="media-object img-circle " src="images/logo.png"></div><div class="media-watson-info active-chat">';
 let watsonChatClassNumerous = '<div class="current-message"><p class="media-text">';
 let watsonChatClassSingle = '<p class="media-text">';
-let htmlAfter = '</small></div></div></div></li>';
-let htmlButtons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' +
-    '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' +
-    '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' +
-    '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' +
-    '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>'+
-    '<div type="buttion" class="btn btn-danger btn-log pull-right">No Satisfying Answers</div>';
-let htmlWAfter = '</small></div></div></div></li>';
-let htmlWAfterNoButtons = '</small></div></div></div></li>';
+
+let htmlAfter = '</span></div></div></div></li>';
+let htmlButtons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Satisfying Answers</div>';
+let htmlWAfter = '</span></div></div></div></li>';
+let htmlWAfterNoButtons = '</span></div></div></div></li>';
+
 let htmlLAfter = '</div></div></li>'
 let htmlLoading = '<div class="cs-loader"><label> ●</label><label> ●</label><label> ●</label></div>';
 
 // This adds the user input to the chat and sends it to server for response
 function addUserChat() {
-    question.title = $('#question').val();
-    let date = getDateAndTime();
+  question.title = $('#question').val();
+  let date = getDateAndTime();
 
-    // Regex checks if the string sent isn't only spaces
-    if (/\S/.test(question.title)) {
-        $('#chat').append(htmlBefore + question.title + '<br><small class="text-muted">You | ' + getDateAndTime() + htmlAfter);
+  // Regex checks if the string sent isn't only spaces
+  if (/\S/.test(question.title)) {
+    $('#chat').append(htmlBefore + question.title + '<br><small class="text-muted">You | ' + '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>' + htmlAfter);
 
-        sendServerQuestion(question.title);
-        //test();
+    sendServerQuestion(question.title);
+    //test();
 
-        $('.current-chat-area').animate({ scrollTop: $(".scroll-chat").height() + 20+'px' });
-    }
-    // Clears value in input field
-    $('#question').val('');
+    $('.current-chat-area').animate({
+      scrollTop: $(".scroll-chat").height() + 20 + 'px'
+    });
+  }
+  // Clears value in input field
+  $('#question').val('');
 }
 
 function test() {
-    data[0] = 'This is just a test';
-
+  data[0] = 'This is just a test';
 
 }
 
@@ -322,7 +341,7 @@ const addReadmoreHandler = () => {
         $(this).text("Read More")
         $(this).next().addClass("hide");
       }
-                  $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
+      $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
     })
   })
 }
@@ -352,7 +371,7 @@ function sendServerQuestion(question) {
             }
             context = json.context;
             // don't want the buttons popping up if there is only one response from the server
-            timeAsked = getDateAndTime();
+            timeAsked = '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>';
 
             // don't want the buttons popping up if there is only one response from the server
             if (json.response.docs.length == 1) {
@@ -372,21 +391,21 @@ function sendServerQuestion(question) {
 ////////////////////////////////////
 /// Answer progress handler
 ////////////////////////////////////
-const initProgressHandler = (ele)=>{
+const initProgressHandler = (ele) => {
   updateStep(ele);
   updateProgressIndicator(ele);
   initPNBtnHandler(ele);
 }
 
-const updateStep = (ele)=>{
-  const currentStep = $(ele).data( "on-step" );
+const updateStep = (ele) => {
+  const currentStep = $(ele).data("on-step");
   $(ele).find('.step-content .step').hide();
   $($(ele).find('.step-content .step')[currentStep - 1]).show();
 }
 
 const updateProgressIndicator = (ele) => {
-  const currentStep = $(ele).data( "on-step" );
-  const totalStep = $(ele).data( "total-step" );
+  const currentStep = $(ele).data("on-step");
+  const totalStep = $(ele).data("total-step");
   $(ele).find('.current-step-number').text(currentStep);
   $(ele).find('.total-step-number').text('/' + totalStep);
   const score = currentStep;
@@ -402,27 +421,51 @@ const updateProgressIndicator = (ele) => {
   }
 }
 
-const initPNBtnHandler = (ele)=>{
-  $(ele).find('.previous-step-btn').on('click',()=>{
-    const currentStep = $(ele).data( "on-step" );
+const initPNBtnHandler = (ele) => {
+  $(ele).find('.previous-step-btn').on('click', () => {
+    const currentStep = $(ele).data("on-step");
     if (currentStep > 1) {
-      $(ele).data( "on-step",currentStep-1);
+      $(ele).data("on-step", currentStep - 1);
       updateProgressIndicator(ele);
       updateStep(ele);
     }
   });
 
-  $(ele).find('.next-step-btn').on('click',()=>{
-    const currentStep = $(ele).data( "on-step" );
-    const totalStep = $(ele).data( "total-step" );
+  $(ele).find('.next-step-btn').on('click', () => {
+    const currentStep = $(ele).data("on-step");
+    const totalStep = $(ele).data("total-step");
     if (currentStep < totalStep) {
-      $(ele).data( "on-step",currentStep+1);
+      $(ele).data("on-step", currentStep + 1);
       updateProgressIndicator(ele);
       updateStep(ele);
     }
   });
 }
 
+// update message elaspe handler
+const initMsgTimeElaspeListener = () => {
+  updateTime();
+}
+
+const updateTime = () => {
+  const randTime = Math.round(Math.random() * (60000 - 10000)) + 10000;
+  setTimeout(function() {
+    // update display time
+    $('.message-time').each((index, ele) => {
+      const orginalTimeISO = $(ele).data('time-iso');
+      // update iso and display
+      $(ele).html(moment(orginalTimeISO).fromNow());
+    })
+    // call next
+    updateTime();
+  }, randTime);
+}
+
+const uuidv4 = () => {
+  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  )
+}
 
 //log unsatisfying answers to a question
 function logQuestion(question) {
