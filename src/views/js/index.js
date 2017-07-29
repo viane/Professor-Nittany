@@ -265,22 +265,11 @@ let htmlWBefore = '<li class="media"><div class="media-body row"><div class="pul
 let watsonChatClassNumerous = '<div class="current-message"><p class="media-text">';
 let watsonChatClassSingle = '<p class="media-text">';
 let htmlAfter = '</span></div></div></div></li>';
-let htmlButtons = '<div class="btn-group other-answers" role="group" aria-label="...">' +
-<<<<<<< HEAD
-    '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' +
-    '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' +
-    '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' +
-    '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>'+
-    '<div type="buttion" class="btn btn-danger btn-log pull-right">No Satisfying Answers</div>';
-let htmlWAfter = '</small></div></div></div></li>';
-let htmlWAfterNoButtons = '</small></div></div></div></li>';
-let htmlLAfter = '</div></div></li>'
-let htmlLoading = '<div class="cs-loader"><label> ●</label><label> ●</label><label> ●</label></div>';
-=======
-'<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Satisfying Answers</div>';
+let htmlButtons = '<div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Satisfying Answers</div>';
 let htmlWAfter = '</span></div></div></div></li>';
 let htmlWAfterNoButtons = '</span></div></div></div></li>';
->>>>>>> Allen
+let htmlLAfter = '</div></div></li>'
+let htmlLoading = '<div class="cs-loader"><label> ●</label><label> ●</label><label> ●</label></div>';
 
 // This adds the user input to the chat and sends it to server for response
 function addUserChat() {
