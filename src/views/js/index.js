@@ -65,9 +65,9 @@ $(document).on('click', '.btn-answer', function(e) {
 });
 
 $(document).on('click', '.question-tab', function(e){
-  if($('.low-confidence').text()=="Low Confidence Questions"){
+  if($('.low-confidence').text()=="Check Logged Questions"){
     $('.lite-header').empty();
-    $('.lite-header').text('Low Confidence Questions');
+    $('.lite-header').text('Check Logged Questions');
     $('.current-chat-area').hide();
     $('.low-confidence').empty();
     $('.low-confidence').text('Lite Version');
@@ -75,7 +75,7 @@ $(document).on('click', '.question-tab', function(e){
   }
   else{
     $('.low-confidence').empty();
-    $('.low-confidence').text('Low Confidence Questions');
+    $('.low-confidence').text('Check Logged Questions');
     $('.lite-header').empty();
     $('.lite-header').text('Lite Version');
     $('.current-chat-area').show();
