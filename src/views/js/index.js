@@ -4,6 +4,7 @@ let context = {};
 let data = ["test1", "test2", "test3", "test4"];
 let timeAsked = "";
 let question = {};
+let access_token;
 
 $(document).ready(function () {
     // when user presses the send button
@@ -44,13 +45,33 @@ $(document).on('click', '.btn-log', function (e) {
 });
 
 
-
 $(document).on('click', '.btn-answer', function(e){
     $('.current-message').empty();
     $('.current-message').html(data[this.id]);
     initProgressHandler($($('.progress-section')[$('.progress-section').length-1]));
     addReadmoreHandler();
     $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
+    e.preventDefault();
+});
+
+$(document).on('click', '.question-tab', function(e){
+  if($('.low-confidence').text()=="Low Confidence Questions"){
+    $('.lite-header').empty();
+    $('.lite-header').text('Low Confidence Questions');
+    $('.current-chat-area').hide();
+    $('.low-confidence').empty();
+    $('.low-confidence').text('Lite Version');
+    showLowQuestions();
+  }
+  else{
+    $('.low-confidence').empty();
+    $('.low-confidence').text('Low Confidence Questions');
+    $('.lite-header').empty();
+    $('.lite-header').text('Lite Version');
+    $('.current-chat-area').show();
+    $('.form-check').remove();
+  }
+    
     e.preventDefault();
 });
 
@@ -253,7 +274,7 @@ let htmlWBefore = '<li class="media"><div class="media-body row"><div class="pul
 let watsonChatClassNumerous = '<div class="current-message"><p class="media-text">';
 let watsonChatClassSingle = '<p class="media-text">';
 let htmlAfter = '</small></div></div></div></li>';
-let htmlButtons = '<div class="btn-group other-answers" role="group" aria-label="...">' +
+let htmlButtons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' +
     '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' +
     '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' +
     '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' +
@@ -420,4 +441,35 @@ function logQuestion(question) {
             $('.btn-log').text(json.message);
             $('.btn-log').addClass('active');
         });
+}
+
+function questionWrapper(question){
+  var questionListHTMLH = '<div class="row form-check scrollable">';
+  var questionListHTMLT ='</div>';
+  var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
+  var questionInputT = '</label></p>';
+  var accumulater='';
+  if(question.length>0){
+    for(let i=0; i<question.length; i++){
+        accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
+        console.log(accumulater);
+    }
+  }
+  return questionListHTMLH + accumulater + questionListHTMLT;
+}
+
+function showLowQuestions(){
+    fetch("../questions/get-low-confidence",{
+      method:'get',
+      headers:{
+        "Content-type" : "application/json",
+        "x-access-token" : access_token
+      }
+    }).then(response=>{return response.json()})
+    .then(json=>{
+      console.log(json);
+      var questionList = questionWrapper(json);
+      $('.current-chat').append(questionList);     
+    })
+
 }
