@@ -20,6 +20,7 @@ import path from 'path';
 import formatter from '../system/utility/formatter';
 import TextToSpeechV1 from 'watson-developer-cloud/text-to-speech/v1';
 import conversation from '../system/watson/conversation';
+import questionsHandle from '../system/utility/questions-handler';
 
 const text_to_speech = new TextToSpeechV1({username: config.watson.text_to_speech.username, password: config.watson.text_to_speech.password});
 
@@ -40,13 +41,13 @@ questionRouter.route('/').get(function(req, res, next) {
   });
 });
 
-questionRouter.route('/test').get(function(req,res,next){
-  Questions.count({'body': "Where do I get textbooks?", 'trained': true}, function(err, count){
-      res.status(200).json(count);
-  });
-  //var count = Questions.find({_id: "5970d4f16acaec2008916653"}, {_id: 1}).limit(1);
+// questionRouter.route('/test').get(function(req,res,next){
+//   Questions.count({'body': "Where do I get textbooks?", 'trained': true}, function(err, count){
+//       res.status(200).json(count);
+//   });
+//   //var count = Questions.find({_id: "5970d4f16acaec2008916653"}, {_id: 1}).limit(1);
 
-});
+// });
 
 //API get asked dominated-terms of questions we trained
 questionRouter.route('/dominated-terms').get(function(req, res, next) {
@@ -79,13 +80,37 @@ questionRouter.route('/dominated-terms').get(function(req, res, next) {
   });
 });
 
+//API handle Untrained questions
+questionRouter.route('/untrained')
+.get(function(req,res,next){
+  Questions.find({'trained': false}, function(err, resp){
+    if (err)
+      return next(err);
+    res.json(resp);
+    });
+})
+.delete(function(req,res,next){
+  Questions.remove({'trained': false}, function(err, resp){
+    if (err)
+      return next(err);
+    res.json(resp);
+    });
+});
+
 //API check low-confidence questions
 questionRouter.route('/get-low-confidence').get(function(req,res,next){
-  Questions.find({'low_confidence.mark': true}, function(err, questions){
-
+  Questions.find({'low_confidence.mark': true, $or:[{'low_confidence.relevance_level':'some'},{'low_confidence.relevance_level':'full'}]}, function(err, questions){
+    if (err)
+      return next(err);
     res.json(questions);
-
   })
+})
+.delete(function(req,res,next){
+  Questions.remove({'low_confidence.mark': true, $or:[{'low_confidence.relevance_level':'some'},{'low_confidence.relevance_level':'full'}]}, function(err, resp) {
+    if (err)
+      return next(err);
+    res.json(resp);
+  });
 });
 
 //API upload trained question to the server to add more terms
@@ -204,72 +229,13 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
       //console.log(data);
       // if question is general, ask RR
       if (data.output.text[0] == "-genereal question") {
-        var newQuestion = new Questions();
-        newQuestion.body = req.body.question;
-        newQuestion.submitter = '59708b6acf1559c355555555';
-        processQuestion.NLUAnalysis(req.body.question).then((analysis) => {
-          //console.log(analysis);
-          newQuestion.feature.concepts = analysis.concepts;
-          newQuestion.feature.keywords = analysis.keywords;
-          newQuestion.feature.entities = analysis.entities;
-          retrieve_and_rank.enterMessage(req.body.question).then((searchResponse) => {
-              //console.log(searchResponse.response.docs[0]['ranker.confidence']);
-              if(searchResponse.response.docs[0]['ranker.confidence']<config.questionThreshold){
-                //console.log(config.questionThreshold);
-                newQuestion.low_confidence.mark = true;
-                newQuestion.low_confidence.answer = searchResponse.response.docs[0].body;
-                let features = [];
-                features = features.concat(newQuestion.feature.concepts);
-                features = features.concat(newQuestion.feature.keywords);
-                features = features.concat(newQuestion.feature.entities);
-                let Text = features.map(function(a){return a.text});
-                let terms_match_count = 0;
-                //console.log(Text);
-                DominatedTerms.findById("5978f6b724e65c86144167b0", function(err, domTerms ){
-                  if(err) return next(err);
-                  for(let j=0; j<Text.length; j++){
-                    if(domTerms.termsText.includes(Text[j])){
-                      terms_match_count++;
-                    }
-                  }
-                  if(Text.length == 0){
-                    newQuestion.low_confidence.relevance_percent = 0;
-                  }
-                  else{
-                    newQuestion.low_confidence.relevance_percent = terms_match_count/Text.length;
-                  }
-
-                  switch(newQuestion.low_confidence.relevance_percent){
-                    case 0:
-                      newQuestion.low_confidence.relevance_level="irrelevant";
-                      break;
-                    case 1:
-                      newQuestion.low_confidence.relevance_level="full";
-                      break;
-                    default:
-                      newQuestion.low_confidence.relevance_level="some";
-                  }
-                  searchResponse.context = {};
-                  newQuestion.save(function(err, resp){
-                    if(err) return next(err);
-                    return res.status(200).json(searchResponse);
-                  });
-                });
-              }
-              else{
-                searchResponse.context = {};
-                newQuestion.save(function(err, resp){
-                  if(err) return next(err);
-                  return res.status(200).json(searchResponse);
-                });
-              }
-             }).catch((err) => {
-              console.error(err);
-              return res.status(302).json(err)
-            });
-
-        });
-
+        questionsHandle.questionHandler(req.body.question, '59708b6acf1559c355555555')
+        .then((resp)=>{
+          return res.status(200).json(resp);
+        })
+        .catch((err)=>{
+          return res.status(302).json(err);
+        });       
       }
       else if(data.intents[0] && data.intents[0].intent == "Ask_New_Question"){
         return res.status(200).json({
@@ -807,14 +773,16 @@ questionRouter.post('/ask-sms', (req, res) => {
 });
 
 questionRouter.post('/log-question', function(req,res,next){
-  var newQuestion = new Questions();
-  newQuestion.body = req.body.question;
-  newQuestion.temp_answer_holder = req.body.answers;
-  newQuestion.low_confidence.mark = true;
-  newQuestion.save(function(err,resp){
+  Questions.findOne({body:req.body.question},function(err,question){
     if(err) return next(err);
-    res.status(200).json({
-      'message': 'logged'
+    question.temp_answer_holder = req.body.answers;
+    question.low_confidence.mark = true;
+    question.low_confidence.relevance_level = "some";
+    question.save(function(err,resp){
+      if(err) return next(err);
+      res.status(200).json({
+        'message': 'logged'
+      });
     });
   });
 });

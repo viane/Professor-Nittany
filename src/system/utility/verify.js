@@ -45,7 +45,7 @@ exports.verifyOrdinaryUser = function (req, res, next) {
     }
 };
 
-exports.verifyAdminUser = function (req, res, next) {
+exports.verifyAdviserUser = function (req, res, next) {
     // check header or url parameters or post parameters for token
     var token = req.body.token || req.query.token || req.headers['x-access-token'];
 
@@ -58,7 +58,7 @@ exports.verifyAdminUser = function (req, res, next) {
                 return next(err);
             } else {
                 // if everything is good, save to request for use in other routes
-                if(decoded.admin){
+                if(decoded.account_role == "adviser"){
                     req.decoded = decoded;
                     next();
                 }

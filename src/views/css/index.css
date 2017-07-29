@@ -638,3 +638,16 @@ body {
     width: 5%;
     z-index: -1;
 }
+
+.scrollable{
+    overflow: auto;
+}
+
+.form-check{
+    padding:10px;
+}
+
+.form-check p{
+    font-size: 10rem;
+    font-weight: 200;
+}
