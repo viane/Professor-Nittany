@@ -39,6 +39,7 @@ mongoose.Promise = global.Promise;
 // define the schema for our question model
 var questionSchema = new Schema({
     body: String,
+    temp_answer_holder:Array,
     feature: {
         concepts: [
             {

@@ -257,7 +257,7 @@ html, body {
 
 /*answer progress style*/
 .progress-section{
- margin-top: 20px; 
+ margin-top: 20px;
 }
 .progress-indicator {
   width: 120px;
@@ -397,3 +397,5 @@ html, body {
       max-width: 80%;
       padding: 15px;
 }
+
+
