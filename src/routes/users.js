@@ -47,8 +47,8 @@ router.post('/signup', function(req, res) {
             user.account_role = "student";
         }
 
-        if (req.body.account_role === "Advisor") {
-            user.account_role = "advisor";
+        if (req.body.account_role === "Adviser") {
+            user.account_role = "adviser";
         }
 
         //process major

@@ -4,8 +4,11 @@ let context = {};
 let data = ["test1", "test2", "test3", "test4"];
 let timeAsked = "";
 let question = {};
+let access_token;
+
 $(() => {
   initMsgTimeElaspeListener();
+
 
   lightbox.option({
  'resizeDuration': 200,
@@ -51,6 +54,7 @@ $(document).on('click', '.btn-log', function(e) {
   e.preventDefault();
 });
 
+
 $(document).on('click', '.btn-answer', function(e) {
   $('.current-message').empty();
   $('.current-message').html(data[this.id]);
@@ -58,6 +62,27 @@ $(document).on('click', '.btn-answer', function(e) {
   addReadmoreHandler();
   $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
   e.preventDefault();
+});
+
+$(document).on('click', '.question-tab', function(e){
+  if($('.low-confidence').text()=="Check Logged Questions"){
+    $('.lite-header').empty();
+    $('.lite-header').text('Check Logged Questions');
+    $('.current-chat-area').hide();
+    $('.low-confidence').empty();
+    $('.low-confidence').text('Lite Version');
+    showLowQuestions();
+  }
+  else{
+    $('.low-confidence').empty();
+    $('.low-confidence').text('Check Logged Questions');
+    $('.lite-header').empty();
+    $('.lite-header').text('Lite Version');
+    $('.current-chat-area').show();
+    $('.logged-questions').remove();
+  }
+    
+    e.preventDefault();
 });
 
 // formats date and time
@@ -269,10 +294,12 @@ let htmlLBefore = '<li class="media loading"><div class="media-body row"><div cl
 let htmlWBefore = '<li class="media"><div class="media-body row"><div class="pull-left"><img class="media-object img-circle " src="images/logo.png"></div><div class="media-watson-info active-chat">';
 let watsonChatClassNumerous = '<div class="current-message"><p class="media-text">';
 let watsonChatClassSingle = '<p class="media-text">';
+
 let htmlAfter = '</span></div></div></div></li>';
-let htmlButtons = '<div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Satisfying Answers</div>';
+let htmlButtons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Satisfying Answers</div>';
 let htmlWAfter = '</span></div></div></div></li>';
 let htmlWAfterNoButtons = '</span></div></div></div></li>';
+
 let htmlLAfter = '</div></div></li>'
 let htmlLoading = '<div class="cs-loader"><label> ●</label><label> ●</label><label> ●</label></div>';
 
@@ -415,23 +442,6 @@ const initPNBtnHandler = (ele) => {
   });
 }
 
-//log unsatisfying answers to a question
-function logQuestion(question) {
-  fetch("../questions/log-question", {
-    method: 'post',
-    headers: {
-      "Content-type": "application/json"
-    },
-    body: JSON.stringify({'question': question, 'answers': data})
-  }).then(response => {
-    return response.json()
-  }).then(json => {
-    $('.btn-log').empty();
-    $('.btn-log').text(json.message);
-    $('.btn-log').addClass('active');
-  });
-}
-
 // update message elaspe handler
 const initMsgTimeElaspeListener = () => {
   updateTime();
@@ -455,4 +465,80 @@ const uuidv4 = () => {
   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
   )
+}
+
+//log unsatisfying answers to a question
+function logQuestion(question) {
+    fetch("../questions/log-question", {
+        method: 'post',
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify({
+            'question': question,
+            'answers': data
+        })
+    }).then(response => { return response.json() })
+        .then(json => {
+            $('.btn-log').empty();
+            $('.btn-log').text(json.message);
+            $('.btn-log').addClass('active');
+        });
+}
+
+function questionWrapper(question){
+  var questionHTML='';
+  var questionListHTMLH = '<div class="panel-group scrollable logged-questions" id="accordion" role="tablist" aria-multiselectable="true">';
+  var questionListHTMLT = '</div>';
+  for(let i=0; i<question.length; i++){
+        questionHTML=questionHTML+'<div class="panel panel-default">';
+        questionHTML=questionHTML+'<div class="panel-heading" role="tab" id="headingOne">'
+        questionHTML=questionHTML+'<h3 class="panel-title">'
+        questionHTML=questionHTML+'<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse'+i+'" aria-expanded="true" aria-controls="collapseOne">';
+        questionHTML=questionHTML+ question[i].body;
+        questionHTML=questionHTML+ '</a>'
+        questionHTML=questionHTML+ '</h3>'
+        questionHTML=questionHTML+ '</div>'
+        questionHTML=questionHTML+ '<div id="collapse'+i+'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">'
+        questionHTML=questionHTML+'<div class="panel-body logged-answers">'
+        for(let j=0; j<question[i].temp_answer_holder.length; j++){
+          questionHTML=questionHTML+ "<h4>Answer "+(j+1)+" </h4>"+formatAnswerByTag(question[i].temp_answer_holder[j]);
+        }
+        questionHTML=questionHTML+ '</div>';
+        questionHTML=questionHTML+ '</div>';
+        questionHTML=questionHTML+'</div>';
+  }
+  return questionListHTMLH + questionHTML + questionListHTMLT;
+  // var questionListHTMLH = '<div class="row form-check scrollable">';
+  // var questionListHTMLT ='</div>';
+  // var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
+  // var questionInputT = '</label></p>';
+  // var accumulater='';
+  // if(question.length>0){
+  //   for(let i=0; i<question.length; i++){
+  //       accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
+  //       console.log(accumulater);
+  //   }
+  // }
+  // return questionListHTMLH + accumulater + questionListHTMLT;
+}
+
+function showLowQuestions(){
+    $('.current-chat').append('<div class="question-loading scrollable">' + htmlLoading + '</div>');
+    fetch("../questions/get-low-confidence",{
+      method:'get',
+      headers:{
+        "Content-type" : "application/json",
+        "x-access-token" : access_token
+      }
+    }).then(response=>{return response.json()})
+    .then(json=>{
+      setTimeout(function(){$('.question-loading').remove()},2000);
+      console.log(json);
+      var questionList = questionWrapper(json);
+      $('.current-chat').append(questionList);
+      initProgressHandler($($('.progress-section')[$('.progress-section').length-1]));
+      addReadmoreHandler();     
+    })
+
 }

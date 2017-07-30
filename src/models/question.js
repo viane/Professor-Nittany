@@ -62,10 +62,10 @@ var questionSchema = new Schema({
             }
         ]
     },
-    submitter: {
+    submitter: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
-    },
+    }],
     trained:{
         type: Boolean,
         default: false
