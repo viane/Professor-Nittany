@@ -79,7 +79,7 @@ $(document).on('click', '.question-tab', function(e){
     $('.lite-header').empty();
     $('.lite-header').text('Lite Version');
     $('.current-chat-area').show();
-    $('.form-check').remove();
+    $('.logged-questions').remove();
   }
     
     e.preventDefault();
@@ -487,18 +487,40 @@ function logQuestion(question) {
 }
 
 function questionWrapper(question){
-  var questionListHTMLH = '<div class="row form-check scrollable">';
-  var questionListHTMLT ='</div>';
-  var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
-  var questionInputT = '</label></p>';
-  var accumulater='';
-  if(question.length>0){
-    for(let i=0; i<question.length; i++){
-        accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
-        console.log(accumulater);
-    }
+  var questionHTML='';
+  var questionListHTMLH = '<div class="panel-group scrollable logged-questions" id="accordion" role="tablist" aria-multiselectable="true">';
+  var questionListHTMLT = '</div>';
+  for(let i=0; i<question.length; i++){
+        questionHTML=questionHTML+'<div class="panel panel-default">';
+        questionHTML=questionHTML+'<div class="panel-heading" role="tab" id="headingOne">'
+        questionHTML=questionHTML+'<h3 class="panel-title">'
+        questionHTML=questionHTML+'<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse'+i+'" aria-expanded="true" aria-controls="collapseOne">';
+        questionHTML=questionHTML+ question[i].body;
+        questionHTML=questionHTML+ '</a>'
+        questionHTML=questionHTML+ '</h3>'
+        questionHTML=questionHTML+ '</div>'
+        questionHTML=questionHTML+ '<div id="collapse'+i+'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">'
+        questionHTML=questionHTML+'<div class="panel-body logged-answers">'
+        for(let j=0; j<question[i].temp_answer_holder.length; j++){
+          questionHTML=questionHTML+ "<h4>Answer "+(j+1)+" </h4>"+formatAnswerByTag(question[i].temp_answer_holder[j]);
+        }
+        questionHTML=questionHTML+ '</div>';
+        questionHTML=questionHTML+ '</div>';
+        questionHTML=questionHTML+'</div>';
   }
-  return questionListHTMLH + accumulater + questionListHTMLT;
+  return questionListHTMLH + questionHTML + questionListHTMLT;
+  // var questionListHTMLH = '<div class="row form-check scrollable">';
+  // var questionListHTMLT ='</div>';
+  // var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
+  // var questionInputT = '</label></p>';
+  // var accumulater='';
+  // if(question.length>0){
+  //   for(let i=0; i<question.length; i++){
+  //       accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
+  //       console.log(accumulater);
+  //   }
+  // }
+  // return questionListHTMLH + accumulater + questionListHTMLT;
 }
 
 function showLowQuestions(){
@@ -514,7 +536,9 @@ function showLowQuestions(){
       setTimeout(function(){$('.question-loading').remove()},2000);
       console.log(json);
       var questionList = questionWrapper(json);
-      $('.current-chat').append(questionList);     
+      $('.current-chat').append(questionList);
+      initProgressHandler($($('.progress-section')[$('.progress-section').length-1]));
+      addReadmoreHandler();     
     })
 
 }
