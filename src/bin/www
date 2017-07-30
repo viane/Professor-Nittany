@@ -2,7 +2,7 @@
 /**
  * Module dependencies.
  */
-
+require('@risingstack/trace');
 const app = require('../app');
 const debug = require('debug')('rest-server:server');
 const http = require('http');
