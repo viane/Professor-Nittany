@@ -19,6 +19,7 @@
     ]
   },
   "dependencies": {
+    "@risingstack/trace": "^3.14.0",
     "babel-cli": "^6.24.1",
     "babel-eslint": "^6.0.2",
     "babel-plugin-add-module-exports": "^0.1.2",
