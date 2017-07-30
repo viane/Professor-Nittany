@@ -68,6 +68,8 @@ html, body {
 
 .panel-group {
     margin-bottom: 40px;
+    overflow-y: auto;
+    height:55vh;
 }
 
 .side-bar-footer > hr {
@@ -640,9 +642,9 @@ body {
 }
 
 .scrollable{
-    overflow: auto;
     padding-top: 2px;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     height: 89vh;
     width: auto;
     padding: 15px;
@@ -655,4 +657,9 @@ body {
 
 .question-loading .cs-loader{
     color: #4f8dcc;
+}
+
+.logged-answers {
+    background-color: #4f8dcc;
+    color: #ffffff;
 }
