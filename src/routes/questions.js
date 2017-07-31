@@ -226,7 +226,7 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
     //   context.PSU_ID = user.psu_id;
     // }
     conversation.questionCheck(req.body.question, context).then((data) => {
-      //console.log(data);
+      console.log(data);
       // if question is general, ask RR
       if (data.output.text[0] == "-genereal question" || data.output.result) {
         questionsHandle.questionHandler(req.body.question, '59708b6acf1559c355555555')

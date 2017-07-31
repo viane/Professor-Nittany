@@ -184,6 +184,33 @@ const formatAnswerByTag = (input) => {
     }
   }
 
+  // for [a]...[/a] and [email-addr]...[/email-addr] pair
+
+  const emailRegularExpression = /(\[email-addr\].*?\[\/email-addr\])/gi; // reg pattern for [email-addr]...[/email-addr]
+
+  let emailAry = input.match(emailRegularExpression); // search answer if there is any [email-addr]...[/email-addr], if there is one or more, each segement will be assign to an array
+
+  if (emailAry && emailAry.length > 0) { // if array contains any [email-addr]...[/email-addr]
+
+    // trim [link] and [/link] from each segement in array
+    emailAry = emailAry.map((email) => {
+      email = email.replace(new RegExp("\\[email-addr\\]"), "");
+      email = email.replace(new RegExp("\\[\/email-addr\\]"), "");
+      email = email.replace(new RegExp("\\s", "g"), "");
+      return email;
+    })
+
+    let anchorCount = 0;
+    const anchorRegularExpression = /\[email-addr\].*?\[\/email-addr\]/; // reg pattern for [a]...[/a]
+    while (input.match(anchorRegularExpression) && input.match(anchorRegularExpression).length > 0) { // check each [a]...[/a] in the original answer
+
+      // convert to <a target="_blank" href="...">...</a>
+      input = input.replace(new RegExp("\\[email-addr\\]"), "<a class=\"effect-shine\" target=\"_blank\" href=\"mailto:" + emailAry[anchorCount] + "\">");
+      input = input.replace(new RegExp("\\[\/email-addr\\]"), "</a>");
+      anchorCount++;
+    }
+  }
+
   // for [question]...[/question]
 
   if (input.match("\\[question\\].*?\\[/question\\]")) {
