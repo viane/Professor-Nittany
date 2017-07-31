@@ -124,12 +124,101 @@
 
           <div class="col-md-12 buttons">
             <div class="col-md-6 login">
-              <button class="btn-lg btn-default" type="submit" onclick="location.href='./login.html'">Login</button>
+              <button class="btn-lg btn-default" type="submit" data-target="#loginModal" data-toggle="modal">Login</button>
             </div>
-            <div class="col-md-6 register">
-              <button class="btn-lg btn-default" type="submit" onclick="location.href='./register.html'">Register</button>
+            <div class="col-md-6 login">
+              <button class="btn-lg btn-default" type="submit" data-target="#RegisterModal" data-toggle="modal">Register</button>
             </div>
           </div>
+          <div class="modal" id="loginModal" tabindex="-1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                    <button class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Login</h4>
+                  </div>
+                  <div class="modal-body">
+                    <form>
+                      <div class="form-group">
+                        <label for="inputUserEmail">Email</label>
+                        <input class="form-control" placeholder="Login Email" type="text" id="inputUserEmail">
+                      </div>
+                      <div class="form-group">
+                        <label for="inputPassword">Password</label>
+                        <input class="form-control" placeholder="Login Password" type="text" id="inputUserPassword">
+                      </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-primary" type="submit">Login</button>
+                    <button class="btn btn-default" data-dismiss="modal">Cancle</button>
+                    <div class="col-md-12">
+                        <p style="text-align:center">
+                            Or log in with
+                        </p>
+                        <div class="col-md-6 col-md-offset-3 centering icon-group container">
+                          <div class="row">
+                            <img class="icon col-md-4 " src="images/facebook-icon.png" onclick="location.href='./users/signup-facebook'">
+                            <img class="icon col-md-4" src="images/linkedin-icon.png" onclick="location.href='./users/signup-linkedin'">
+                            <img class="icon col-md-4" src="images/google-logo.png" onclick="location.href='./users/signup-google'">
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal" id="RegisterModal" tabindex="-1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                    <button class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Register</h4>
+                  </div>
+                  <div class="modal-body">
+                    <form>
+                      <div class="form-group">
+                        <label for="inputUserF">First Name</label>
+                        <input class="form-control" placeholder="First Name" type="text" id="inputUserEmail">
+                      </div>
+                      <div class="form-group">
+                        <label for="inputUserL">Last Name</label>
+                        <input class="form-control" placeholder="Last Name" type="text" id="inputUserPassword">
+                      </div>
+                      <div class="form-group">
+                        <label for="inputUserEmail">Email</label>
+                        <input class="form-control" placeholder="Email" type="text" id="inputUserEmail">
+                      </div>
+                      <div class="form-group">
+                        <label for="inputPassword">Password</label>
+                        <input class="form-control" placeholder="Password" type="text" id="inputUserPassword">
+                      </div>
+                      <div class="form-group">
+                        <label for="inputConfirmPassword">Confirm Password</label>
+                        <input class="form-control" placeholder="Confirm Password" type="text" id="inputUserPassword">
+                      </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-primary" type="submit">Login</button>
+                    <button class="btn btn-default" data-dismiss="modal">Cancle</button>
+                    <div class="col-md-12">
+                        <p style="text-align:center">
+                            Or Register with
+                        </p>
+                        <div class="col-md-6 col-md-offset-3 centering icon-group container">
+                          <div class="row">
+                            <img class="icon col-md-4 " src="images/facebook-icon.png" onclick="location.href='./users/signup-facebook'">
+                            <img class="icon col-md-4" src="images/linkedin-icon.png" onclick="location.href='./users/signup-linkedin'">
+                            <img class="icon col-md-4" src="images/google-logo.png" onclick="location.href='./users/signup-google'">
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>  
+
         </div>
       </div>
 
