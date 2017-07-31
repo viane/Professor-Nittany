@@ -81,7 +81,7 @@ $(document).on('click', '.question-tab', function(e){
     $('.current-chat-area').show();
     $('.logged-questions').remove();
   }
-    
+
     e.preventDefault();
 });
 
@@ -453,7 +453,6 @@ const updateTime = () => {
     // update display time
     $('.message-time').each((index, ele) => {
       const orginalTimeISO = $(ele).data('time-iso');
-      // update iso and display
       $(ele).html(moment(orginalTimeISO).fromNow());
     })
     // call next
@@ -538,7 +537,7 @@ function showLowQuestions(){
       var questionList = questionWrapper(json);
       $('.current-chat').append(questionList);
       initProgressHandler($($('.progress-section')[$('.progress-section').length-1]));
-      addReadmoreHandler();     
+      addReadmoreHandler();
     })
 
 }

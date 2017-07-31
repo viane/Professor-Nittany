@@ -50,6 +50,7 @@ html, body {
 .side-bar {
     background-color: #0F7DC2;
     height: 100vh;
+    position: relative;
 }
 
 .title > img {

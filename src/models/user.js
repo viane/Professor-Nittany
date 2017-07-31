@@ -73,7 +73,18 @@ var User = new Schema({
     type: String,
     default: "inactive"
   },
-  activation_code: String
+  activation_code:  {
+    type: String,
+    default: "xxxxxxx"
+  },
+  resetPasswordToken:{
+    type: String,
+    default: null
+  },
+  resetPasswordExpires:{
+    type: Date,
+    default: null
+  }
 });
 
 User.methods.getName = function() {

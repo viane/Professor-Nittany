@@ -10,7 +10,7 @@ module.exports = {
   'facebook': {
     clientID: '1962035640700088',
     clientSecret: '26f046e8112ae5048435cf7ef1e6c1ac',
-    callbackURL: 'https://localhost:3443/users/facebook/callback'
+    callbackURL: 'http://localhost:3000/users/facebook/callback'
   },
   'twitter': {
     'consumerKey': '3LMDaxawNk2L71KDz0qFfyovW',
@@ -21,13 +21,13 @@ module.exports = {
   'google': {
     'clientID': '132722948922-gavv9i3p51t0heg27qihaj1c4kocn01h.apps.googleusercontent.com',
     'clientSecret': 'ZTKGjktIOUz3-m1L0BCBud_9',
-    'callbackURL': 'https://localhost:3443/users/google/callback'
+    'callbackURL': 'http://localhost:3000/users/google/callback'
   },
 
   'linkedin': {
     'clientID': '78y1qxhj1ass0f',
     'clientSecret': 'gbyTOaNTCXegTufn',
-    'callbackURL': 'https://localhost:3443/users/linkedin/callback'
+    'callbackURL': 'http://localhost:3000/users/linkedin/callback'
   },
 
   'instagram': {
