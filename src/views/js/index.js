@@ -386,6 +386,7 @@ function sendServerQuestion(question) {
         })
     }).then(response => { return response.json() })
         .then(json => {
+            // console.log(json);
             $('.loading').remove();
             $('.current-message').attr('class', 'media-text');
             $('.other-answers').remove();
@@ -528,7 +529,7 @@ function questionWrapper(question){
         questionHTML=questionHTML+ '<div id="collapse'+i+'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">'
         questionHTML=questionHTML+'<div class="panel-body logged-answers">'
         for(let j=0; j<question[i].temp_answer_holder.length; j++){
-          questionHTML=questionHTML+ "<h4>Answer "+(j+1)+" </h4>"+formatAnswerByTag(question[i].temp_answer_holder[j]);
+          questionHTML=questionHTML+ "<h4>Answer "+(j+1)+" </h4>"+question[i].temp_answer_holder[j];
         }
         questionHTML=questionHTML+ '</div>';
         questionHTML=questionHTML+ '</div>';
@@ -560,7 +561,7 @@ function showLowQuestions(){
     }).then(response=>{return response.json()})
     .then(json=>{
       setTimeout(function(){$('.question-loading').remove()},2000);
-      console.log(json);
+      //console.log(json);
       var questionList = questionWrapper(json);
       $('.current-chat').append(questionList);
       initProgressHandler($($('.progress-section')[$('.progress-section').length-1]));

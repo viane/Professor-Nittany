@@ -26,12 +26,12 @@ module.exports.questionHandler=function(myQuestion, id){
           		newQuestion.body = myQuestion;
           		newQuestion.submitter.push(id);
 		        processQuestion.NLUAnalysis(myQuestion).then((analysis) => {
-		            //console.log(analysis);
+		            // console.log(analysis);
 		            newQuestion.feature.concepts = analysis.concepts;
 		            newQuestion.feature.keywords = analysis.keywords;
 		            newQuestion.feature.entities = analysis.entities;
 		            retrieve_and_rank.enterMessage(myQuestion).then((searchResponse) => {
-		                //console.log(searchResponse.response.docs[0]['ranker.confidence']);
+		                // console.log(searchResponse);
 		            	if(searchResponse.response.docs[0]['ranker.confidence']<config.questionThreshold){
 		                  //console.log(config.questionThreshold);
 		                  newQuestion.low_confidence.mark = true;
