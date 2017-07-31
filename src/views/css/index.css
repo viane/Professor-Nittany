@@ -664,3 +664,11 @@ body {
     background-color: #4f8dcc;
     color: #ffffff;
 }
+
+.forgetPassword{
+    color: #4f8dcc;
+}
+
+.icon{
+    cursor: pointer;
+}
