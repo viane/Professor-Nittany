@@ -226,16 +226,27 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
     //   context.PSU_ID = user.psu_id;
     // }
     conversation.questionCheck(req.body.question, context).then((data) => {
-      console.log(data);
+      //console.log(data);
       // if question is general, ask RR
       if (data.output.text[0] == "-genereal question" || data.output.result) {
-        questionsHandle.questionHandler(req.body.question, '59708b6acf1559c355555555')
-        .then((resp)=>{
-          return res.status(200).json(resp);
-        })
-        .catch((err)=>{
-          return res.status(302).json(err);
-        });       
+        if(data.output.result){
+          questionsHandle.questionHandler(data.output.text[0], '59708b6acf1559c355555555')
+          .then((resp)=>{
+            return res.status(200).json(resp);
+          })
+          .catch((err)=>{
+            return res.status(302).json(err);
+          }); 
+        }
+        else{
+          questionsHandle.questionHandler(req.body.question, '59708b6acf1559c355555555')
+          .then((resp)=>{
+            return res.status(200).json(resp);
+          })
+          .catch((err)=>{
+            return res.status(302).json(err);
+          }); 
+        }      
       }
       else if(data.intents[0] && data.intents[0].intent == "Ask_New_Question"){
         return res.status(200).json({
