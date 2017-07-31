@@ -149,6 +149,30 @@ Property    | Response                                       | Description
 ---------   | ---------------------------------------------- | -----------------
 status      | Successfully registered, check actvition email | Successfully create the account, server has sent out an activation email to the email beening registered
 
+## Local Account Activation
+
+### HTTP Request
+
+`POST /users/active-account/{token}`
+
+## Request Account Password Change
+
+### HTTP Request
+
+`POST /users/request-reset-password`
+
+## Get Email by Password Request Token
+
+### HTTP Request
+
+`GET /users/update-password/{token}`
+
+## Update Account Password
+
+### HTTP Request
+
+`POST /users/update-password`
+
 ## Facebook SignIn
 
 ### HTTP Request
