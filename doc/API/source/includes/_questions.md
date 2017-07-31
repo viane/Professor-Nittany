@@ -11,7 +11,7 @@ We implement Watson Conversation System with Retrivement and Rank to get a smoot
 > To get an answer to a question or start a conversation, use this code:
 
 ```javascript
-fetch("http://localhost:3000/questions/send-lite", {  
+fetch("/questions/send-lite", {  
   method: 'post',  
   headers: {  
     "Content-type": "application/json"
@@ -172,7 +172,7 @@ res.context                 | An object track the conversation need to be sent b
 > To get an answer to a question or start a conversation, use this code:
 
 ```javascript
-fetch("http://localhost:3000/questions/send", {  
+fetch("/questions/send", {  
   method: 'post',  
   headers: {  
     "Content-type": "application/json",
