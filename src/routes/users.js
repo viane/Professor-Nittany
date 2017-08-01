@@ -18,7 +18,25 @@ router.route('/').get(function(req, res, next) {
   });
 }).delete(function(req, res, next) {
   User.remove({
-    '_id': req.body.userID
+    'email': req.body.email
+  }, function(err, resp) {
+    if (err)
+      return next(err);
+    res.json(resp);
+  });
+});
+
+//get User information
+router.route('/get-user').get(Verify.verifyOrdinaryUser,function(req, res, next) {
+  User.findById(req.decoded._id).populate('major').populate('interest').populate('interest_manual').populate('inbox').populate('personality_evaluation').populate('assessement') //Schema hasn't been registered for model {Assessement}
+  .exec(function(err, user) {
+    if (err)
+      return next(err);
+    res.json(user);
+  });
+}).delete(function(req, res, next) {
+  User.remove({
+    'email': req.body.email
   }, function(err, resp) {
     if (err)
       return next(err);
@@ -156,7 +174,7 @@ router.get('/active-account/:token', (req, res) => {
 ///////////////////////////////////////////////////////////////
 // post request for requesting change password to a email
 ///////////////////////////////////////////////////////////////
-router.post('/request-reset-password', (req, res) => {
+router.post('/request-reset-password', (req, res, next) => {
   async.waterfall([
     (done) => {
       crypto.randomBytes(20, (err, buf) => {
@@ -227,7 +245,7 @@ router.post('/request-reset-password', (req, res) => {
             message: "An error has occured, please try again later or contact us."
           });
         }
-        return res.status(200).json({status: 'success', message: "An e-mail has been sent to ' + user.email + ' with further instructions.", token: token});
+        return res.status(200).json({status: 'success', message: "An e-mail has been sent to " + user.email + " with further instructions.", token: token});
       });
     }
   ]);
@@ -236,7 +254,7 @@ router.post('/request-reset-password', (req, res) => {
 // =============================================================
 // Get email that is requiring update password with token
 // =============================================================
-router.get('/update-password/:token', (req, res) => {
+router.get('/update-password/:token', (req, res, next) => {
   User.findOne({
     "resetPasswordToken": req.params.token,
     "resetPasswordExpires": {
@@ -253,7 +271,7 @@ router.get('/update-password/:token', (req, res) => {
 // =============================================================
 // Post update password
 // =============================================================
-router.post('/update-password', (req, res) => {
+router.post('/update-password', (req, res,next) => {
   if (!Verify.verifyPasswordFormat(req.body.password)) {
     return res.status(200).json({
       err: {
@@ -286,19 +304,11 @@ router.post('/update-password', (req, res) => {
             message: "Password reset token is invalid or has expired."
           });
         }
-
-        // user.hashPassword(req.body['password-primary'])  <------------ fix this, assign user new hashed password
-        user.resetPasswordToken = null;
-        user.resetPasswordExpires = null;
-        user.save((err, user) => {
-          if (err) {
-            console.error(err);
-            return res.status(200).json(err : {
-              name: "SystemError",
-              message: "An error has occured, please try again later or contact us."
-            });
-          }
-          req.logIn(user, (err) => {
+        user.setPassword(req.body.password, function(err,resp){
+          if(err) return next(err);
+          user.resetPasswordToken = null;
+          user.resetPasswordExpires = null;
+          user.save((err, user) => {
             if (err) {
               console.error(err);
               return res.status(200).json(err : {
@@ -306,11 +316,23 @@ router.post('/update-password', (req, res) => {
                 message: "An error has occured, please try again later or contact us."
               });
             }
-            var token = Verify.getToken({"username": user.username, "_id": user._id, "status": user.status, "account_role": user.account_role});
-            res.status(200).json({status: 'Password reset successful', success: true, token: token});
-            done(err, user);
+            req.logIn(user, (err) => {
+              if (err) {
+                console.error(err);
+                return res.status(200).json(err : {
+                  name: "SystemError",
+                  message: "An error has occured, please try again later or contact us."
+                });
+              }
+              var token = Verify.getToken({"username": user.username, "_id": user._id, "status": user.status, "account_role": user.account_role});
+              res.status(200).json({status: 'Password reset successful', success: true, token: token});
+              done(err, user);
+            });
           });
-        });
+        })
+
+        // user.hashPassword(req.body['password-primary'])  <------------ fix this, assign user new hashed password
+        
       });
     },
     (user, done) => {
