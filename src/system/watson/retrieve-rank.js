@@ -43,3 +43,43 @@ exports.enterMessage = function(inputText, questionTopic) {
         });
     });
 };
+
+// run cluster check on system up
+retrieve_and_rank.listCollections({
+  cluster_id: 'scfdc7ceae_2dd2_4b6e_88c7_be14c54e4d07'
+},
+  function (err, response) {
+    if (err)
+      console.err('retrieve and rank error:', err);
+});
+
+// following code might solve RR cluster schema failure, from Allen
+// var params1 = {
+//   cluster_id: 'scfdc7ceae_2dd2_4b6e_88c7_be14c54e4d07',
+//   collection_name: 'Intelligent-Academic-Advisor-WorldCampus',
+// };
+//
+// var doc = {
+//     id: 500,
+//     body: 'He is trying to fix the cluster failure, but even he thinks most likely he wont success.',
+//     title: 'A mysterous hero'
+// };
+//
+// var solrClient1 = retrieve_and_rank.createSolrClient(params1);
+//
+// solrClient1.add(doc, function (err, response) {
+//   if (err) {
+//     console.log('Error indexing document: ', err);
+//   }
+//     else {
+//       console.log('Indexed a document.');
+//       solrClient.commit(function(err) {
+//         if(err) {
+//           console.log('Error committing change: ' + err);
+//         }
+//           else {
+//             console.log('Successfully committed changes.');
+//           }
+//       });
+//     }
+// });
