@@ -26,6 +26,24 @@ router.route('/').get(function(req, res, next) {
   });
 });
 
+//get User information
+router.route('/get-user').get(Verify.verifyOrdinaryUser,function(req, res, next) {
+  User.findById(req.decoded._id).populate('major').populate('interest').populate('interest_manual').populate('inbox').populate('personality_evaluation').populate('assessement') //Schema hasn't been registered for model {Assessement}
+  .exec(function(err, user) {
+    if (err)
+      return next(err);
+    res.json(user);
+  });
+}).delete(function(req, res, next) {
+  User.remove({
+    'email': req.body.email
+  }, function(err, resp) {
+    if (err)
+      return next(err);
+    res.json(resp);
+  });
+});
+
 //API user local signup : post /users/signup
 router.post('/signup', function(req, res) {
   if (!Verify.verifyPasswordFormat(req.body.password)) {
