@@ -35,12 +35,12 @@ var User = new Schema({
   account_role: {
     type: String
   },
-  question_history: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Question'
-    }
-  ],
+  // question_history: [
+  //   {
+  //     type: mongoose.Schema.Types.ObjectId,
+  //     ref: 'Question'
+  //   }
+  // ],
   interest: {
     type: mongoose.Schema.Types.ObjectId,
     default: null,

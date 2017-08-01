@@ -1,5 +1,74 @@
 # Profiles
 
+## Retrieve User Information
+
+`GET /users/get-user`
+
+> To get a user's information, use this code:
+
+```javascript
+fetch("/users/get-user", {  
+  method: 'get',  
+  headers: {  
+    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+    "x-access-token":"{user's token}"
+  },
+  credentials: 'include'
+}).then(response=>{return response.json()})
+.then(json=> {
+  // now json contains user manual input interest
+});
+```
+The API requires 1 parameter in the request header
+
+Parameter          | Description
+------------------ | --------------------------------------
+x-access-token     | Token gained after successfully signin
+
+<aside class="notice">
+The response are either success or error due to invalid token.
+</aside>
+
+### Example response of error:
+
+```json
+// error due to incorrect token
+{
+    "message": "You are not authenticated!",
+    "error": {
+        "status": 302
+    }
+}
+```
+
+Property     | Response                            | Description
+------------ | ----------------------------------- | ---------------
+message      | You are not authenticated!          | User signin token is invalid
+error.status | 302                                 | Indicate user should be redirected to signin page
+
+### Example response with valid token:
+
+```json
+{
+    "_id": "597f84379db7336b68bd6a0a",
+    "first_name": "Kun",
+    "last_name": "Wang",
+    "email": "harryhappy111@gmail.com",
+    "question_history": [],
+    "__v": 0,
+    "account_role": "student",
+    "resetPasswordExpires": "2017-07-31T22:26:44.211Z",
+    "resetPasswordToken": "6076253795a31fade21b1c6b106cd0bf1df08334",
+    "activation_code": null,
+    "status": "active",
+    "assessement": [],
+    "inbox": [],
+    "interest_manual": null,
+    "interest": null,
+    "major": [],
+    "psu_id": null
+}
+```
 ## Retrieve Input Interest
 
 ### HTTP Request
