@@ -125,6 +125,7 @@ module.exports.convertPerspectsToAIReadable = (perspect_type, content) => {
 
 module.exports.removeAnswerTags = (answerText)=>{
   let answer = answerText;
+  console.log(answerText);
   // use RegExp remove targeted tags and content between tags
   // rules:
   // 1. remove [a][/a],[extend][/extend],[email][/email] tags
