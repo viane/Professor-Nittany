@@ -228,7 +228,7 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
     conversation.questionCheck(req.body.question, context).then((data) => {
       //console.log(data);
       // if question is general, ask RR
-      if (data.output.text[0] == "-genereal question" || data.output.result) {
+      if (data.output.text[0] == "-genereal question" || data.output.result || data.entities[0].entity == 'Irrelevant_Questions') {
         if(data.output.result){
           questionsHandle.questionHandler(data.output.text[0], '59708b6acf1559c355555555')
           .then((resp)=>{
@@ -248,7 +248,7 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
           }); 
         }      
       }
-      else if(data.intents[0] && data.intents[0].intent == "Ask_New_Question"){
+      else if(data.output.text[0] == "-a new question"){
         return res.status(200).json({
           context:{},
           response: {

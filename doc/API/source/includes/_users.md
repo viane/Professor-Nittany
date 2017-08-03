@@ -205,7 +205,13 @@ Sever will send back user's email and token, which are used to update password.
     "token":"6076253795a31fade21b1c6b106cd0bf1df08334"
 }
 ```
+### Example of invalid token error:
 
+```json
+{
+    status: 'Password reset token is invalid or has expired.'
+}
+```
 
 ## Update Account Password
 
