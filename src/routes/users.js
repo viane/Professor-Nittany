@@ -16,14 +16,6 @@ router.route('/').get(function(req, res, next) {
       return next(err);
     res.json(user);
   });
-}).delete(function(req, res, next) {
-  User.remove({
-    'email': req.body.email
-  }, function(err, resp) {
-    if (err)
-      return next(err);
-    res.json(resp);
-  });
 });
 
 //get User information
@@ -335,7 +327,7 @@ router.post('/update-password', (req, res,next) => {
         })
 
         // user.hashPassword(req.body['password-primary'])  <------------ fix this, assign user new hashed password
-        
+
       });
     },
     (user, done) => {

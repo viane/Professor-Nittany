@@ -4,6 +4,7 @@ const usersRouter = require('./users');
 const questionRouter = require('./questions');
 const majorListRouter = require('./major-list');
 const profileRouter = require('./profile');
+import phoneRouter from './phone';
 import devRouter from './dev';
 
 module.exports = function(app) {
@@ -16,5 +17,6 @@ module.exports = function(app) {
   app.use('/questions', questionRouter);
   app.use('/major-list',majorListRouter);
   app.use('/profile', profileRouter);
+  app.use('/phone', phoneRouter)
   app.use('/dev', devRouter)
 }
