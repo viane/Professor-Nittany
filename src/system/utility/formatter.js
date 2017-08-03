@@ -122,8 +122,9 @@ module.exports.convertPerspectsToAIReadable = (perspect_type, content) => {
     return AI_Read_String;
 }
 
-module.exports.removeTagsAndRelateInfoFromSMSAnswer = (answerText)=>{
+module.exports.removeAnswerTags = (answerText)=>{
   let answer = answerText;
+  console.log(answerText);
   // use RegExp remove targeted tags and content between tags
   // rules:
   // 1. remove [a][/a],[extend][/extend],[email][/email] tags
