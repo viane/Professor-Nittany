@@ -113,7 +113,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
               twiml.say("Sorry I don't know the answer to this question")
               twiml.redirect('/phone/ask-phone/qa-loop');
             }
-            const answerBody = formatter.removeTagsAndRelateInfoFromSMSAnswer(result.response.docs[0].body);
+            const answerBody = formatter.removeAnswerTags(result.response.docs[0].body);
             // console.log(answerBody);
             const TTS_Params = {
               text: answerBody,
@@ -150,11 +150,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
             QACopyAry.unshift({
               callSid: req.body.CallSid,
               question: questionTranscript,
-<<<<<<< HEAD
-              answer: result.response.docs[0].body
-=======
               answer: answerBody
->>>>>>> refs/remotes/origin/Allen
             });
           }).catch(function(err) {
             console.error(err);
@@ -201,12 +197,8 @@ phoneRouter.route('/ask-phone/feedback').post(function(req, res, next) {
         }
       })[0];
       // console.log(QAObject);
-<<<<<<< HEAD
-      const smsBody = "Question: " + QAObject.question + "." + "\n" + "Answer: " + formatter.removeAnswerTags(formatter.compressSMS(QAObject.question, QAObject.answer));
-      console.log(smsBody);
-=======
+
       const smsBody = "Question: " + QAObject.question + "." + "\n" + "Answer: " + QAObject.answer;
->>>>>>> refs/remotes/origin/Allen
       twilioSMS.messages.create({
         to: req.body.From,
         from: req.body.To,
@@ -280,7 +272,7 @@ phoneRouter.post('/ask-phone/qa-loop', (req, res) => {
 phoneRouter.post('/ask-sms', (req, res) => {
   retrieve_and_rank.enterMessage(req.body.Body).then(function(result) {
     // speak back with answer
-    const answerBody = formatter.removeTagsAndRelateInfoFromSMSAnswer(result.response.docs[0].body);
+    const answerBody = formatter.removeAnswerTags(result.response.docs[0].body);
     twilioSMS.messages.create({
       to: req.body.From,
       from: req.body.To,
@@ -290,42 +282,7 @@ phoneRouter.post('/ask-sms', (req, res) => {
         console.error(err);
         return res.status(400);
       }
-<<<<<<< HEAD
-      return res.status(200);
-    })
-  } else {
-    retrieve_and_rank.enterMessage(req.body.Body).then(function(result) {
-      // speak back with answer
-      let answerBody = formatter.compressSMS(req.body.Body, result.response.docs[0].body);
-      answerBody = formatter.removeAnswerTags(answerBody);
-      console.log(answerBody);
-      twilioSMS.messages.create({
-        to: req.body.From,
-        from: req.body.To,
-        body: answerBody
-      }, (err, message) => {
-        if (err) {
-          console.error(err);
-          return res.status(400);
-        }
-        res.status(200);
-      });
-    }).catch(function(err) {
-      console.error(err);
-      twilioSMS.messages.create({
-        to: req.body.From,
-        from: req.body.To,
-        body: "There is an issue with the system, please try again later or contact us!"
-      }, (err, message) => {
-        if (err) {
-          console.error(err);
-          return res.status(400);
-        }
-        res.status(200);
-      });
-=======
       res.status(200);
->>>>>>> refs/remotes/origin/Allen
     });
   }).catch(function(err) {
     console.error(err);
