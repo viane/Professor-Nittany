@@ -52,8 +52,6 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
 
   const voiceFileLocalPath = path.join(__dirname, '../system/audio/audio-file-temp-folder/') + req.body.RecordingSid + "-question.wav";
 
-  console.log(voiceFileLocalPath);
-
   request(voiceFileWAVUrl).pipe(fs.createWriteStream(voiceFileLocalPath)).on('finish', () => {
     const params = {
       audio: fs.createReadStream(voiceFileLocalPath),
@@ -69,8 +67,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
       fs.unlink(voiceFileLocalPath, (err) => {
         if (err)
           console.error(err);
-      }
-      );
+      });
       if (error) {
         console.error(error);
         twiml.play(config.server_url.public + '/audio/system-error.wav');
@@ -202,6 +199,7 @@ phoneRouter.route('/ask-phone/feedback').post(function(req, res, next) {
       })[0];
       // console.log(QAObject);
       const smsBody = "Question: " + QAObject.question + "." + "\n" + "Answer: " + formatter.compressSMS(QAObject.question, QAObject.answer);
+      console.log(smsBody);
       twilioSMS.messages.create({
         to: req.body.From,
         from: req.body.To,
@@ -288,11 +286,13 @@ phoneRouter.post('/ask-sms', (req, res) => {
   } else {
     retrieve_and_rank.enterMessage(req.body.Body).then(function(result) {
       // speak back with answer
-      const answerBody = formatter.removeTagsAndRelateInfoFromSMSAnswer(result.response.docs[0].body);
+      let answerBody = formatter.removeTagsAndRelateInfoFromSMSAnswer(result.response.docs[0].body);
+      answerBody = formatter.compressSMS(req.body.Body, answerBody)
+      console.log(answerBody);
       twilioSMS.messages.create({
         to: req.body.From,
         from: req.body.To,
-        body: formatter.compressSMS(req.body.Body, answerBody)
+        body: answerBody
       }, (err, message) => {
         if (err) {
           console.error(err);
