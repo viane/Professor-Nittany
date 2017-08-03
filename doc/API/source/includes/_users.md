@@ -205,13 +205,7 @@ Sever will send back user's email and token, which are used to update password.
     "token":"6076253795a31fade21b1c6b106cd0bf1df08334"
 }
 ```
-### Example of invalid token error:
 
-```json
-{
-    status: 'Password reset token is invalid or has expired.'
-}
-```
 
 ## Update Account Password
 
@@ -252,52 +246,6 @@ Property    | Description
 status      | Show login status
 success     | Boolen flag
 token       | Access token
-
-### Example error response for wrong password format:
-
-```json
-{
-    "err": {
-        "name": "InvalidPasswordFormat",
-        "message": "Invalid password format, check the rule of making password."
-    }
-}
-```
-### Example error response for wrong password format:
-
-```json
-{
-    "err": {
-        "name": "InvalidPasswordFormat",
-        "message": "Invalid password format, check the rule of making password."
-    }
-}
-```
-
-### Example error response for empty token:
-
-```json
-{
-    "err": {
-        "name": "InvalidToken",
-        "message": "Empty token"
-    }
-}
-```
-### Example error response for empty token:
-
-```json
-{
-    "err": {
-            name: "InvalidToken",
-            message: "Password reset token is invalid or has expired."
-    }
-}
-```
-
-
-
-
 
 ## Facebook SignIn
 

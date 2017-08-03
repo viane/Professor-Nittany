@@ -8,13 +8,13 @@ let access_token;
 
 $(() => {
   initMsgTimeElaspeListener();
-
-
+  externalQuestionListener();
   lightbox.option({
- 'resizeDuration': 200,
- 'wrapAround': true
-});
+    'resizeDuration': 200,
+    'wrapAround': true
+  });
 })
+
 $(document).ready(function() {
   // when user presses the send button
   $('#send').click(function() {
@@ -36,8 +36,8 @@ $(document).ready(function() {
   if (window.devicePixelRatio > 1)
     $("body").addClass("disable-zoom")
 
-    //$('#myModal').modal('toggle');
-  });
+//$('#myModal').modal('toggle');
+});
 
 // when the user wants to see more answers, they can click on the buttons
 // this makes sure that the data is changed
@@ -64,16 +64,15 @@ $(document).on('click', '.btn-answer', function(e) {
   e.preventDefault();
 });
 
-$(document).on('click', '.question-tab', function(e){
-  if($('.low-confidence').text()=="Check Unsatisfying Questions"){
+$(document).on('click', '.question-tab', function(e) {
+  if ($('.low-confidence').text() == "Check Unsatisfying Questions") {
     $('.lite-header').empty();
     $('.lite-header').text('Unsatisfying Questions');
     $('.current-chat-area').hide();
     $('.low-confidence').empty();
     $('.low-confidence').text('Lite Version');
     showLowQuestions();
-  }
-  else{
+  } else {
     $('.low-confidence').empty();
     $('.low-confidence').text('Check Unsatisfying Questions');
     $('.lite-header').empty();
@@ -82,7 +81,7 @@ $(document).on('click', '.question-tab', function(e){
     $('.logged-questions').remove();
   }
 
-    e.preventDefault();
+  e.preventDefault();
 });
 
 // formats date and time
@@ -139,7 +138,7 @@ const formatAnswerByTag = (input) => {
   input = input.replace(endLineRegularExpression, '</br>');
 
   //for [html]...[/html]
-  if (input.match("\\[html\\].*?\\[/html\\]")) {
+  while (input.match("\\[html\\].*?\\[/html\\]")) {
 
     //[html] to <div class="answerHTMLDOM">
     input = input.replace(new RegExp("\\[html\\]", "g"), "<div class=\"answerHTMLDOM\">");
@@ -151,7 +150,7 @@ const formatAnswerByTag = (input) => {
 
   // hide [ask]...[/ask]
 
-  if (input.match("\\[ask\\].*?\\[/ask\\]")) {
+  while (input.match("\\[ask\\].*?\\[/ask\\]")) {
 
     input = input.replace(new RegExp("\\[ask\\].*?\\[/ask\\]", "g"), "");
   }
@@ -236,13 +235,6 @@ const formatAnswerByTag = (input) => {
     }
   }
 
-  // for [question]...[/question]
-
-  if (input.match("\\[question\\].*?\\[/question\\]")) {
-    // convert to general question that can be directly asked to system
-
-  }
-
   // for [ul][li]...[/li][/ul]
   if (input.match("\\[ul\\].*?\\[/ul\\]")) {
     // convert to general question that can be directly asked to system
@@ -257,7 +249,7 @@ const formatAnswerByTag = (input) => {
     // convert to general question that can be directly asked to system
     input = input.replace(new RegExp("\\[question\\]", "g"), "<a href=\"#\" class=\"answer-relate-question\">");
     input = input.replace(new RegExp("\\[\/question\\]", "g"), "</a>");
-    // handler are in
+  // handler are in
   }
 
   //for [extend]...[/extend] same step above but replace to
@@ -273,6 +265,7 @@ const formatAnswerByTag = (input) => {
     input = input.replace(initExtendText, "<div><span class=\"read-more btn btn-secondary\">Read More</span><div class=\"answer-body hide\">" + extendText + "</div></div>");
   }
 
+  // for [tip] ... [/tip]
   while (input.match("\\[tip\\].*?\\[/tip\\]")) {
     let initTipText = input.match("\\[tip\\].*?\\[/tip\\]").toString();
 
@@ -284,6 +277,20 @@ const formatAnswerByTag = (input) => {
 
     input = input.replace(initTipText, tipText);
   }
+
+  // for [optional] ... [/optional]
+  while (input.match("\\[optional\\].*?\\[/optional\\]")) {
+    let initOptionalText = input.match("\\[optional\\].*?\\[/optional\\]").toString();
+
+    let optionalText = initOptionalText.replace(new RegExp("\\[optional\\]", "g"), "");
+
+    optionalText = optionalText.replace(new RegExp("\\[/optional\\]", "g"), "");
+
+    optionalText = "<span class='optional-text'><i class='fa fa-tags' aria-hidden='true'></i> " + optionalText + "</span>";
+
+    input = input.replace(initOptionalText, optionalText);
+  }
+
 
   while (input.match("\\[img\\].*?\\[/img\\]")) {
     const initImgText = input.match("\\[img\\].*?\\[/img\\]").toString();
@@ -399,46 +406,49 @@ const addReadmoreHandler = () => {
 }
 
 function sendServerQuestion(question) {
-    $('#chat').append(htmlLBefore + htmlLoading + htmlLAfter);
-    fetch("../questions/send-lite", {
-        method: 'post',
-        headers: {
-            "Content-type": "application/json"
-        },
-        body: JSON.stringify({
-            'question': question,
-            'context': context
-        })
-    }).then(response => { return response.json() })
-        .then(json => {
-            // console.log(json);
-            $('.loading').remove();
-            $('.current-message').attr('class', 'media-text');
-            $('.other-answers').remove();
-            $('.btn-log').remove();
-            $('.active-chat').removeClass('active-chat');
-            let i = 0;
-            while (i < 4 && i != json.response.docs.length) {
-                data[i] = formatAnswerByTag(json.response.docs[i].body);
-                i++;
-            }
-            context = json.context;
-            // don't want the buttons popping up if there is only one response from the server
-            timeAsked = '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>';
+  $('#chat').append(htmlLBefore + htmlLoading + htmlLAfter);
+  fetch("../questions/send-lite", {
+    method: 'post',
+    headers: {
+      "Content-type": "application/json"
+    },
+    body: JSON.stringify({
+      'question': question,
+      'context': context
+    })
+  }).then(response => {
+    return response.json()
+  })
+    .then(json => {
+      // console.log(json);
+      $('.loading').remove();
+      $('.current-message').attr('class', 'media-text');
+      $('.other-answers').remove();
+      $('.btn-log').remove();
+      $('.active-chat').removeClass('active-chat');
+      let i = 0;
+      while (i < 4 && i != json.response.docs.length) {
+        data[i] = formatAnswerByTag(json.response.docs[i].body);
+        i++;
+      }
+      context = json.context;
+      // don't want the buttons popping up if there is only one response from the server
+      timeAsked = '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>';
 
-            // don't want the buttons popping up if there is only one response from the server
-            if (json.response.docs.length == 1) {
-                 $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfterNoButtons);
-            }
-            else {
-                $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>'+ htmlButtons +'</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
-            }
-            initProgressHandler($($('.progress-section')[$('.progress-section').length-1]));
-            addReadmoreHandler();
-            $('.current-chat-area').animate({ scrollTop: $(".scroll-chat").height() });
+      // don't want the buttons popping up if there is only one response from the server
+      if (json.response.docs.length == 1) {
+        $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfterNoButtons);
+      } else {
+        $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + htmlButtons + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
+      }
+      initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
+      addReadmoreHandler();
+      $('.current-chat-area').animate({
+        scrollTop: $(".scroll-chat").height()
+      });
 
-            $('#question').val('');
-        });
+      $('#question').val('');
+    });
 }
 
 ////////////////////////////////////
@@ -514,82 +524,101 @@ const updateTime = () => {
 }
 
 const uuidv4 = () => {
-  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
   )
+}
+
+const externalQuestionListener = () => {
+  if (window.location.pathname == '/lite-version.html') {
+    const url = new URL(window.location.href);
+    window.history.pushState("object or string", "Title", "/" + window.location.href.substring(window.location.href.lastIndexOf('/') + 1).split("?")[0]);
+    const externalQuestionString = url.searchParams.get("q");
+    if (externalQuestionString != null && externalQuestionString.length > 0 && externalQuestionString.trim() != "") {
+      $('#question').val(externalQuestionString.trim());
+      setTimeout(() => {
+        $('.fa-paper-plane-o').click();
+      }, 10)
+    }
+  }
 }
 
 //log unsatisfying answers to a question
 function logQuestion(question) {
-    fetch("../questions/log-question", {
-        method: 'post',
-        headers: {
-            "Content-type": "application/json"
-        },
-        body: JSON.stringify({
-            'question': question,
-            'answers': data
-        })
-    }).then(response => { return response.json() })
-        .then(json => {
-            $('.btn-log').empty();
-            $('.btn-log').text(json.message);
-            $('.btn-log').addClass('active');
-        });
+  fetch("../questions/log-question", {
+    method: 'post',
+    headers: {
+      "Content-type": "application/json"
+    },
+    body: JSON.stringify({
+      'question': question,
+      'answers': data
+    })
+  }).then(response => {
+    return response.json()
+  })
+    .then(json => {
+      $('.btn-log').empty();
+      $('.btn-log').text(json.message);
+      $('.btn-log').addClass('active');
+    });
 }
 
-function questionWrapper(question){
-  var questionHTML='';
+function questionWrapper(question) {
+  var questionHTML = '';
   var questionListHTMLH = '<div class="panel-group scrollable logged-questions" id="accordion" role="tablist" aria-multiselectable="true">';
   var questionListHTMLT = '</div>';
-  for(let i=0; i<question.length; i++){
-        questionHTML=questionHTML+'<div class="panel panel-default">';
-        questionHTML=questionHTML+'<div class="panel-heading" role="tab" id="headingOne">'
-        questionHTML=questionHTML+'<h3 class="panel-title">'
-        questionHTML=questionHTML+'<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse'+i+'" aria-expanded="true" aria-controls="collapseOne">';
-        questionHTML=questionHTML+ question[i].body;
-        questionHTML=questionHTML+ '</a>'
-        questionHTML=questionHTML+ '</h3>'
-        questionHTML=questionHTML+ '</div>'
-        questionHTML=questionHTML+ '<div id="collapse'+i+'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">'
-        questionHTML=questionHTML+'<div class="panel-body logged-answers">'
-        for(let j=0; j<question[i].temp_answer_holder.length; j++){
-          questionHTML=questionHTML+ "<h4>Answer "+(j+1)+" </h4>"+question[i].temp_answer_holder[j];
-        }
-        questionHTML=questionHTML+ '</div>';
-        questionHTML=questionHTML+ '</div>';
-        questionHTML=questionHTML+'</div>';
+  for (let i = 0; i < question.length; i++) {
+    questionHTML = questionHTML + '<div class="panel panel-default">';
+    questionHTML = questionHTML + '<div class="panel-heading" role="tab" id="headingOne">'
+    questionHTML = questionHTML + '<h3 class="panel-title">'
+    questionHTML = questionHTML + '<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse' + i + '" aria-expanded="true" aria-controls="collapseOne">';
+    questionHTML = questionHTML + question[i].body;
+    questionHTML = questionHTML + '</a>'
+    questionHTML = questionHTML + '</h3>'
+    questionHTML = questionHTML + '</div>'
+    questionHTML = questionHTML + '<div id="collapse' + i + '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">'
+    questionHTML = questionHTML + '<div class="panel-body logged-answers">'
+    for (let j = 0; j < question[i].temp_answer_holder.length; j++) {
+      questionHTML = questionHTML + "<h4>Answer " + (j + 1) + " </h4>" + question[i].temp_answer_holder[j];
+    }
+    questionHTML = questionHTML + '</div>';
+    questionHTML = questionHTML + '</div>';
+    questionHTML = questionHTML + '</div>';
   }
   return questionListHTMLH + questionHTML + questionListHTMLT;
-  // var questionListHTMLH = '<div class="row form-check scrollable">';
-  // var questionListHTMLT ='</div>';
-  // var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
-  // var questionInputT = '</label></p>';
-  // var accumulater='';
-  // if(question.length>0){
-  //   for(let i=0; i<question.length; i++){
-  //       accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
-  //       console.log(accumulater);
-  //   }
-  // }
-  // return questionListHTMLH + accumulater + questionListHTMLT;
+// var questionListHTMLH = '<div class="row form-check scrollable">';
+// var questionListHTMLT ='</div>';
+// var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
+// var questionInputT = '</label></p>';
+// var accumulater='';
+// if(question.length>0){
+//   for(let i=0; i<question.length; i++){
+//       accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
+//       console.log(accumulater);
+//   }
+// }
+// return questionListHTMLH + accumulater + questionListHTMLT;
 }
 
-function showLowQuestions(){
-    $('.current-chat').append('<div class="question-loading scrollable">' + htmlLoading + '</div>');
-    fetch("../questions/get-low-confidence",{
-      method:'get',
-      headers:{
-        "Content-type" : "application/json",
-        "x-access-token" : access_token
-      }
-    }).then(response=>{return response.json()})
-    .then(json=>{
-      setTimeout(function(){$('.question-loading').remove()},2000);
+function showLowQuestions() {
+  $('.current-chat').append('<div class="question-loading scrollable">' + htmlLoading + '</div>');
+  fetch("../questions/get-low-confidence", {
+    method: 'get',
+    headers: {
+      "Content-type": "application/json",
+      "x-access-token": access_token
+    }
+  }).then(response => {
+    return response.json()
+  })
+    .then(json => {
+      setTimeout(function() {
+        $('.question-loading').remove()
+      }, 2000);
       //console.log(json);
       var questionList = questionWrapper(json);
       $('.current-chat').append(questionList);
-      initProgressHandler($($('.progress-section')[$('.progress-section').length-1]));
+      initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
       addReadmoreHandler();
     })
 
