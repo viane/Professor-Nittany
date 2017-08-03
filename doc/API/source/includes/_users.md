@@ -153,7 +153,7 @@ status      | Successfully registered, check actvition email | Successfully crea
 
 ### HTTP Request
 
-`POST /users/active-account/{token}`
+`GET /users/active-account/{token}`
 
 ## Request Account Password Change
 
@@ -195,7 +195,7 @@ An email will send to user with a link (/users/update-password/{token}) to reset
 
 `GET /users/update-password/{token}`
 
-Sever will send back user's email and token, which are used to update password. 
+Sever will send back user's email and token, which are used to update password.
 
 ### Example of response information:
 

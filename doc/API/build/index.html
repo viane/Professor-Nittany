@@ -236,7 +236,7 @@
                     <a href="#request-account-password-change" class="toc-h2 toc-link" data-title="Uers">Request Account Password Change</a>
                   </li>
                   <li>
-                    <a href="#get-email-by-password-request-token" class="toc-h2 toc-link" data-title="Uers">Get Email by Password Request Token</a>
+                    <a href="#get-email-by-password-request-token-the-link-will-be-in-the-user-39-s-email" class="toc-h2 toc-link" data-title="Uers">Get Email by Password Request Token (The link will be in the user's email)</a>
                   </li>
                   <li>
                     <a href="#update-account-password" class="toc-h2 toc-link" data-title="Uers">Update Account Password</a>
@@ -272,6 +272,9 @@
           <li>
             <a href="#profiles" class="toc-h1 toc-link" data-title="Profiles">Profiles</a>
               <ul class="toc-list-h2">
+                  <li>
+                    <a href="#retrieve-user-information" class="toc-h2 toc-link" data-title="Profiles">Retrieve User Information</a>
+                  </li>
                   <li>
                     <a href="#retrieve-input-interest" class="toc-h2 toc-link" data-title="Profiles">Retrieve Input Interest</a>
                   </li>
@@ -314,7 +317,7 @@
 <blockquote>
 <p>To locally sign in a user, use this code:</p>
 </blockquote>
-<pre class="highlight javascript tab-javascript"><code>  <span class="nx">fetch</span><span class="p">(</span><span class="s2">"http://localhost:3000/users/signin"</span><span class="p">,</span> <span class="p">{</span>  
+<pre class="highlight javascript tab-javascript"><code>  <span class="nx">fetch</span><span class="p">(</span><span class="s2">"/users/signin"</span><span class="p">,</span> <span class="p">{</span>  
     <span class="na">method</span><span class="p">:</span> <span class="s1">'post'</span><span class="p">,</span>  
     <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>  
       <span class="s2">"Content-type"</span><span class="p">:</span> <span class="s2">"application/x-www-form-urlencoded; charset=UTF-8"</span>  
@@ -407,7 +410,7 @@ The response are either success or error.
 <blockquote>
 <p>To locally sign up a user, use this code:</p>
 </blockquote>
-<pre class="highlight javascript tab-javascript"><code>  <span class="nx">fetch</span><span class="p">(</span><span class="s2">"http://localhost:3000/users/signup"</span><span class="p">,</span> <span class="p">{</span>  
+<pre class="highlight javascript tab-javascript"><code>  <span class="nx">fetch</span><span class="p">(</span><span class="s2">"/users/signup"</span><span class="p">,</span> <span class="p">{</span>  
     <span class="na">method</span><span class="p">:</span> <span class="s1">'post'</span><span class="p">,</span>  
     <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>  
       <span class="s2">"Content-type"</span><span class="p">:</span> <span class="s2">"application/x-www-form-urlencoded; charset=UTF-8"</span>  
@@ -503,13 +506,85 @@ The response are either success or error.
 </tr>
 </tbody></table>
 <h2 id='local-account-activation'>Local Account Activation</h2><h3 id='http-request-3'>HTTP Request</h3>
-<p><code>POST /users/active-account/{token}</code></p>
+<p><code>GET /users/active-account/{token}</code></p>
 <h2 id='request-account-password-change'>Request Account Password Change</h2><h3 id='http-request-4'>HTTP Request</h3>
 <p><code>POST /users/request-reset-password</code></p>
-<h2 id='get-email-by-password-request-token'>Get Email by Password Request Token</h2><h3 id='http-request-5'>HTTP Request</h3>
+
+<blockquote>
+<p>To submit a password reset request:</p>
+</blockquote>
+<pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="s2">"/users/request-reset-password"</span><span class="p">,</span> <span class="p">{</span>  
+  <span class="na">method</span><span class="p">:</span> <span class="s1">'post'</span><span class="p">,</span>  
+  <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>  
+    <span class="s2">"Content-type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
+  <span class="p">},</span>
+  <span class="na">body</span><span class="p">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+        <span class="s1">'email'</span><span class="p">:</span> <span class="s1">''</span>
+  <span class="p">})</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
+<span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">json</span><span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">//json contains responses</span>
+<span class="p">})</span>
+</code></pre><h3 id='example-response'>Example Response</h3>
+<p>An email will send to user with a link (/users/update-password/{token}) to reset their password</p>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"An e-mail has been sent to harryhappy111@gmail.com with further instructions."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6076253795a31fade21b1c6b106cd0bf1df08334"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h2 id='get-email-by-password-request-token-the-link-will-be-in-the-user-39-s-email'>Get Email by Password Request Token (The link will be in the user&#39;s email)</h2><h3 id='http-request-5'>HTTP Request</h3>
 <p><code>GET /users/update-password/{token}</code></p>
-<h2 id='update-account-password'>Update Account Password</h2><h3 id='http-request-6'>HTTP Request</h3>
+
+<p>Sever will send back user&#39;s email and token, which are used to update password.</p>
+<h3 id='example-of-response-information'>Example of response information:</h3><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"email"</span><span class="p">:</span><span class="s2">"harryhappy111@gmail.com"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"token"</span><span class="p">:</span><span class="s2">"6076253795a31fade21b1c6b106cd0bf1df08334"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h2 id='update-account-password'>Update Account Password</h2><h3 id='http-request-6'>HTTP Request</h3>
 <p><code>POST /users/update-password</code></p>
+
+<blockquote>
+<p>To rest password:</p>
+</blockquote>
+<pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="s2">"/users/update-password"</span><span class="p">,</span> <span class="p">{</span>  
+  <span class="na">method</span><span class="p">:</span> <span class="s1">'post'</span><span class="p">,</span>  
+  <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>  
+    <span class="s2">"Content-type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
+  <span class="p">},</span>
+  <span class="na">body</span><span class="p">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+        <span class="s1">'email'</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
+        <span class="s1">'token'</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
+        <span class="s1">'password'</span><span class="p">:</span> <span class="s1">''</span>
+  <span class="p">})</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
+<span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">json</span><span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">//json contains responses</span>
+<span class="p">})</span>
+</code></pre><h3 id='example-callback-response-of-successful-reset'>Example callback response of successful reset:</h3><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Password reset successful"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"success"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTdmODQzNzlkYjczMzZiNjhiZDZhMGEiLCJzdGF0dXMiOiJhY3RpdmUiLCJhY2NvdW50X3JvbGUiOiJzdHVkZW50IiwiaWF0IjoxNTAxNTMyNDM4LCJleHAiOjE1MDE1MzYwMzh9.9Dwj-iM9AcL3UN6As8GoYikd1HS-9YLYo8bBiKryhW0"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<table><thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td>Show login status</td>
+</tr>
+<tr>
+<td>success</td>
+<td>Boolen flag</td>
+</tr>
+<tr>
+<td>token</td>
+<td>Access token</td>
+</tr>
+</tbody></table>
 <h2 id='facebook-signin'>Facebook SignIn</h2><h3 id='http-request-7'>HTTP Request</h3>
 <p><code>Get /users/signup-facebook</code></p>
 <h3 id='example-callback-response-of-successful-signin-at-code-users-signin-callback-xxx-xxx-code'>Example callback response of successful signin at <code>/users/signin/callback?xxx=xxx</code>:</h3><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
@@ -644,7 +719,7 @@ The response are either success or error.
 <blockquote>
 <p>To get an answer to a question or start a conversation, use this code:</p>
 </blockquote>
-<pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="s2">"http://localhost:3000/questions/send-lite"</span><span class="p">,</span> <span class="p">{</span>  
+<pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="s2">"/questions/send-lite"</span><span class="p">,</span> <span class="p">{</span>  
   <span class="na">method</span><span class="p">:</span> <span class="s1">'post'</span><span class="p">,</span>  
   <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>  
     <span class="s2">"Content-type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
@@ -838,7 +913,7 @@ The response are either with useful information or the request to restate a ques
 <blockquote>
 <p>To get an answer to a question or start a conversation, use this code:</p>
 </blockquote>
-<pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="s2">"http://localhost:3000/questions/send"</span><span class="p">,</span> <span class="p">{</span>  
+<pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="s2">"/questions/send"</span><span class="p">,</span> <span class="p">{</span>  
   <span class="na">method</span><span class="p">:</span> <span class="s1">'post'</span><span class="p">,</span>  
   <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>  
     <span class="s2">"Content-type"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span>
@@ -1043,7 +1118,87 @@ The response are either with useful information or the request to restate a ques
 <td>An object track the conversation</td>
 </tr>
 </tbody></table>
-<h1 id='profiles'>Profiles</h1><h2 id='retrieve-input-interest'>Retrieve Input Interest</h2><h3 id='http-request'>HTTP Request</h3>
+<h1 id='profiles'>Profiles</h1><h2 id='retrieve-user-information'>Retrieve User Information</h2>
+<p><code>GET /users/get-user</code></p>
+
+<blockquote>
+<p>To get a user&#39;s information, use this code:</p>
+</blockquote>
+<pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="s2">"/users/get-user"</span><span class="p">,</span> <span class="p">{</span>  
+  <span class="na">method</span><span class="p">:</span> <span class="s1">'get'</span><span class="p">,</span>  
+  <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>  
+    <span class="s2">"Content-type"</span><span class="p">:</span> <span class="s2">"application/x-www-form-urlencoded; charset=UTF-8"</span><span class="p">,</span>
+    <span class="s2">"x-access-token"</span><span class="p">:</span><span class="s2">"{user's token}"</span>
+  <span class="p">},</span>
+  <span class="na">credentials</span><span class="p">:</span> <span class="s1">'include'</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
+<span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">json</span><span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">// now json contains user manual input interest</span>
+<span class="p">});</span>
+</code></pre>
+<p>The API requires 1 parameter in the request header</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>x-access-token</td>
+<td>Token gained after successfully signin</td>
+</tr>
+</tbody></table>
+
+<aside class="notice">
+The response are either success or error due to invalid token.
+</aside>
+<h3 id='example-response-of-error'>Example response of error:</h3><pre class="highlight json tab-json"><code><span class="err">//</span><span class="w"> </span><span class="err">error</span><span class="w"> </span><span class="err">due</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">incorrect</span><span class="w"> </span><span class="err">token</span><span class="w">
+</span><span class="p">{</span><span class="w">
+    </span><span class="s2">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"You are not authenticated!"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"error"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">302</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<table><thead>
+<tr>
+<th>Property</th>
+<th>Response</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>message</td>
+<td>You are not authenticated!</td>
+<td>User signin token is invalid</td>
+</tr>
+<tr>
+<td>error.status</td>
+<td>302</td>
+<td>Indicate user should be redirected to signin page</td>
+</tr>
+</tbody></table>
+<h3 id='example-response-with-valid-token'>Example response with valid token:</h3><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"597f84379db7336b68bd6a0a"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Kun"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Wang"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"harryhappy111@gmail.com"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"question_history"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+    </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"account_role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"student"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"resetPasswordExpires"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2017-07-31T22:26:44.211Z"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"resetPasswordToken"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6076253795a31fade21b1c6b106cd0bf1df08334"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"activation_code"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"assessement"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+    </span><span class="s2">"inbox"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+    </span><span class="s2">"interest_manual"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"interest"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"major"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+    </span><span class="s2">"psu_id"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h2 id='retrieve-input-interest'>Retrieve Input Interest</h2><h3 id='http-request'>HTTP Request</h3>
 <p><code>GET /profile/interest-manual</code></p>
 
 <blockquote>
@@ -1078,7 +1233,7 @@ The response are either with useful information or the request to restate a ques
 <aside class="notice">
 The response are either success or error due to invalid token.
 </aside>
-<h3 id='example-response-of-error'>Example response of error:</h3><pre class="highlight json tab-json"><code><span class="err">//</span><span class="w"> </span><span class="err">error</span><span class="w"> </span><span class="err">due</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">incorrect</span><span class="w"> </span><span class="err">token</span><span class="w">
+<h3 id='example-response-of-error-2'>Example response of error:</h3><pre class="highlight json tab-json"><code><span class="err">//</span><span class="w"> </span><span class="err">error</span><span class="w"> </span><span class="err">due</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">incorrect</span><span class="w"> </span><span class="err">token</span><span class="w">
 </span><span class="p">{</span><span class="w">
     </span><span class="s2">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"You are not authenticated!"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"error"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -1197,7 +1352,7 @@ The response are either success or error due to invalid token.
 <td>An array of interest term in string format</td>
 </tr>
 </tbody></table>
-<h3 id='example-response-of-error-2'>Example response of error:</h3><pre class="highlight json tab-json"><code><span class="err">//</span><span class="w"> </span><span class="err">error</span><span class="w"> </span><span class="err">due</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">incorrect</span><span class="w"> </span><span class="err">token</span><span class="w">
+<h3 id='example-response-of-error-3'>Example response of error:</h3><pre class="highlight json tab-json"><code><span class="err">//</span><span class="w"> </span><span class="err">error</span><span class="w"> </span><span class="err">due</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">incorrect</span><span class="w"> </span><span class="err">token</span><span class="w">
 </span><span class="p">{</span><span class="w">
     </span><span class="s2">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"You are not authenticated!"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"error"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -1294,7 +1449,7 @@ The response are either success or error due to invalid token.
 <td>Token gained after successfully signin</td>
 </tr>
 </tbody></table>
-<h3 id='example-response-of-error-3'>Example response of error:</h3><pre class="highlight json tab-json"><code><span class="err">//</span><span class="w"> </span><span class="err">error</span><span class="w"> </span><span class="err">due</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">incorrect</span><span class="w"> </span><span class="err">token</span><span class="w">
+<h3 id='example-response-of-error-4'>Example response of error:</h3><pre class="highlight json tab-json"><code><span class="err">//</span><span class="w"> </span><span class="err">error</span><span class="w"> </span><span class="err">due</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">incorrect</span><span class="w"> </span><span class="err">token</span><span class="w">
 </span><span class="p">{</span><span class="w">
     </span><span class="s2">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"You are not authenticated!"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"error"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -1375,7 +1530,7 @@ The response are either success or error due to invalid token.
 <td>Token gained after successfully signin</td>
 </tr>
 </tbody></table>
-<h3 id='example-response-of-error-4'>Example response of error:</h3><pre class="highlight json tab-json"><code><span class="err">//</span><span class="w"> </span><span class="err">error</span><span class="w"> </span><span class="err">due</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">incorrect</span><span class="w"> </span><span class="err">token</span><span class="w">
+<h3 id='example-response-of-error-5'>Example response of error:</h3><pre class="highlight json tab-json"><code><span class="err">//</span><span class="w"> </span><span class="err">error</span><span class="w"> </span><span class="err">due</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">incorrect</span><span class="w"> </span><span class="err">token</span><span class="w">
 </span><span class="p">{</span><span class="w">
     </span><span class="s2">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"You are not authenticated!"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"error"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -1629,7 +1784,7 @@ The response are either success or error due to invalid token.
 <td>Single string of introduction</td>
 </tr>
 </tbody></table>
-<h3 id='example-response-of-error-5'>Example response of error:</h3><pre class="highlight json tab-json"><code><span class="err">//</span><span class="w"> </span><span class="err">error</span><span class="w"> </span><span class="err">due</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">incorrect</span><span class="w"> </span><span class="err">token</span><span class="w">
+<h3 id='example-response-of-error-6'>Example response of error:</h3><pre class="highlight json tab-json"><code><span class="err">//</span><span class="w"> </span><span class="err">error</span><span class="w"> </span><span class="err">due</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">incorrect</span><span class="w"> </span><span class="err">token</span><span class="w">
 </span><span class="p">{</span><span class="w">
     </span><span class="s2">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"You are not authenticated!"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"error"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -1738,7 +1893,7 @@ The response are either success or error due to invalid token.
 <aside class="warning">
 The API only accept file that has extension of .txt, .doc or .docx
 </aside>
-<h3 id='example-response-of-error-6'>Example response of error:</h3><pre class="highlight json tab-json"><code><span class="err">//</span><span class="w"> </span><span class="err">error</span><span class="w"> </span><span class="err">due</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">incorrect</span><span class="w"> </span><span class="err">token</span><span class="w">
+<h3 id='example-response-of-error-7'>Example response of error:</h3><pre class="highlight json tab-json"><code><span class="err">//</span><span class="w"> </span><span class="err">error</span><span class="w"> </span><span class="err">due</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">incorrect</span><span class="w"> </span><span class="err">token</span><span class="w">
 </span><span class="p">{</span><span class="w">
     </span><span class="s2">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"You are not authenticated!"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"error"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">

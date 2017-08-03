@@ -1,9 +1,10 @@
-var express = require('express');
-var router = express.Router();
-var usersRouter = require('./users');
-var questionRouter = require('./questions');
-var majorListRouter = require('./major-list');
+const express = require('express');
+const router = express.Router();
+const usersRouter = require('./users');
+const questionRouter = require('./questions');
+const majorListRouter = require('./major-list');
 const profileRouter = require('./profile');
+import devRouter from './dev';
 
 module.exports = function(app) {
   /* GET home page. */
@@ -15,4 +16,5 @@ module.exports = function(app) {
   app.use('/questions', questionRouter);
   app.use('/major-list',majorListRouter);
   app.use('/profile', profileRouter);
+  app.use('/dev', devRouter)
 }
