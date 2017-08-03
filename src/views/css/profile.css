@@ -1,0 +1,15 @@
+.centering {
+    display: flex;
+    justify-content: center;
+    /*align-items: center;*/
+}
+
+.wordCloud {
+    height: 35vh;
+}
+
+@media only screen and (max-height: 850px) {
+    .wordCloud {
+        height: 50vh;
+    }
+}

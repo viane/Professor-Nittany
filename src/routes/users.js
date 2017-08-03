@@ -290,10 +290,13 @@ router.post('/update-password', (req, res,next) => {
           $gt: Date.now()
         }
       }, (err, user) => {
-        if (!user) {
-          return res.status(200).json(err : {
-            name: "InvalidToken",
-            message: "Password reset token is invalid or has expired."
+        if (err || !user) {
+          console.log("here");
+          return res.status(200).json({
+            err: {
+              name: "InvalidToken",
+              message: "Password reset token is invalid or has expired."
+            }
           });
         }
         user.setPassword(req.body.password, function(err,resp){
