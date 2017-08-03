@@ -138,7 +138,7 @@ const formatAnswerByTag = (input) => {
   input = input.replace(endLineRegularExpression, '</br>');
 
   //for [html]...[/html]
-  if (input.match("\\[html\\].*?\\[/html\\]")) {
+  while (input.match("\\[html\\].*?\\[/html\\]")) {
 
     //[html] to <div class="answerHTMLDOM">
     input = input.replace(new RegExp("\\[html\\]", "g"), "<div class=\"answerHTMLDOM\">");
@@ -150,7 +150,7 @@ const formatAnswerByTag = (input) => {
 
   // hide [ask]...[/ask]
 
-  if (input.match("\\[ask\\].*?\\[/ask\\]")) {
+  while (input.match("\\[ask\\].*?\\[/ask\\]")) {
 
     input = input.replace(new RegExp("\\[ask\\].*?\\[/ask\\]", "g"), "");
   }
@@ -235,13 +235,6 @@ const formatAnswerByTag = (input) => {
     }
   }
 
-  // for [question]...[/question]
-
-  if (input.match("\\[question\\].*?\\[/question\\]")) {
-    // convert to general question that can be directly asked to system
-
-  }
-
   // for [ul][li]...[/li][/ul]
   if (input.match("\\[ul\\].*?\\[/ul\\]")) {
     // convert to general question that can be directly asked to system
@@ -272,6 +265,7 @@ const formatAnswerByTag = (input) => {
     input = input.replace(initExtendText, "<div><span class=\"read-more btn btn-secondary\">Read More</span><div class=\"answer-body hide\">" + extendText + "</div></div>");
   }
 
+  // for [tip] ... [/tip]
   while (input.match("\\[tip\\].*?\\[/tip\\]")) {
     let initTipText = input.match("\\[tip\\].*?\\[/tip\\]").toString();
 
@@ -283,6 +277,20 @@ const formatAnswerByTag = (input) => {
 
     input = input.replace(initTipText, tipText);
   }
+
+  // for [optional] ... [/optional]
+  while (input.match("\\[optional\\].*?\\[/optional\\]")) {
+    let initOptionalText = input.match("\\[optional\\].*?\\[/optional\\]").toString();
+
+    let optionalText = initOptionalText.replace(new RegExp("\\[optional\\]", "g"), "");
+
+    optionalText = optionalText.replace(new RegExp("\\[/optional\\]", "g"), "");
+
+    optionalText = "<span class='optional-text'><i class='fa fa-tags' aria-hidden='true'></i> " + optionalText + "</span>";
+
+    input = input.replace(initOptionalText, optionalText);
+  }
+
 
   while (input.match("\\[img\\].*?\\[/img\\]")) {
     const initImgText = input.match("\\[img\\].*?\\[/img\\]").toString();

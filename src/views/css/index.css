@@ -201,7 +201,7 @@ html, body {
 }
 
 .media-watson-info {
-    max-width: 85%;
+    max-width: 88%;
     border-left: 2px solid;
     border-radius: 10px;
     background-color: #4f8dcc;
@@ -382,6 +382,9 @@ html, body {
 }
 .step{
   display: none;
+  padding: 5px 0 25px 10px;
+  max-width: 88%;
+  min-width: 60%;
 }
 
 .current-step-number, .total-step-number{
@@ -394,6 +397,7 @@ html, body {
 }
 .step-control, .next-step-btn{
       float: right;
+      /* position: absolute; */
 }
 
 .step-image{
