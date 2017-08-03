@@ -1,9 +1,8 @@
 'use strict';
-import googleUrlShortener from '../google/url-shortener';
-const config = require('../../config');
 /////////////////////////////////////////////////////////////////////////////
 // Use for format alchemyAPI result in system.js update domain terms func
 /////////////////////////////////////////////////////////////////////////////
+
 module.exports.retrieveTermsFromAlchemyAPI = (_result, _opt) => {
     let termArray = [];
 
@@ -128,42 +127,12 @@ module.exports.removeTagsAndRelateInfoFromSMSAnswer = (answerText)=>{
   // use RegExp remove targeted tags and content between tags
   // rules:
   // 1. remove [a][/a],[extend][/extend],[email][/email] tags
-  answer = answer.replace(/\[a\]/g,'').replace(/\[\/a\]/g,'')
-  .replace(/\[email\]/g,'').replace(/\[\/email\]/g,'')
-  .replace(/\[extend\]/g,'').replace(/\[\/extend\]/g,'')
-  .replace(/\[optional\]/g,'').replace(/\[\/optional\]/g,'');
   // 2. remove tags and whats in between of following tags: [link][/link],[email-addr][/email-addr],[img][/img]
-  answer = answer.replace(/\[link\][\s\S]*?\[\/link\]/g,'')
-  .replace(/\[email-addr\][\s\S]*?\[\/email-addr\]/g,'')
-  .replace(/\[html\][\s\S]*?\[\/html\]/g,'')
-  .replace(/\[img\][\s\S]*?\[\/img\]/g,'');
+  answer = answer.replace(/\[a\]/g,'').replace(/\[\/a\]/g,'').replace(/\[email\]/g,'').replace(/\[\/email\]/g,'').replace(/\[extend\]/g,'').replace(/\[\/extend\]/g,'').replace(/\[optional\]/g,'').replace(/\[\/optional\]/g,'');
+  answer = answer.replace(/\[link\][\s\S]*?\[\/link\]/g,'').replace(/\[email-addr\][\s\S]*?\[\/email-addr\]/g,'').replace(/\[img\][\s\S]*?\[\/img\]/g,'').replace(/\[html\][\s\S]*?\[\/html\]/g,'');
+
   return answer;
 }
-
-module.exports.compressPhoneAnswer = (answerText) =>{
-  let answer = answerText;
-  answer = answer.split('[\\n]')[0];
-  return answer;
-}
-
-module.exports.compressSMS = (question,answerText) =>{
-  // After format tags
-  let answer = answerText;
-  // rules:
-  // if answer is less than 100 characters, pass
-  if (answerText.length > 100) {
-    // remove other paragraphs except 1st one, ie.find 1st [\n]
-    answer = answer.split('[\\n]')[0];
-    googleUrlShortener.shortUrl(config.server_url.public+"/?q="+encodeURIComponent(question)).then(sURL=>{
-      answer.concat("\\n").concat("To see the full answer, please chat with our advisor: ").concat(sURL);
-      return answer;
-    }).catch(err => {
-      console.error(err);
-      return answer;
-    })
-  }
-}
-
 /////////////////////////////////////////////////////////////////////////////
 // Format user interest for wordClound2.js
 /////////////////////////////////////////////////////////////////////////////
