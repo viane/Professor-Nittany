@@ -148,12 +148,14 @@ module.exports.compressSMS = (question,answerText) =>{
   // if answer is less than 100 characters, pass
   if (answerText.length > 100) {
     // remove other paragraphs except 1st one, ie.find 1st [\n]
-    answer = answer.split('[\\n]')[0];
+    answer = answer.split('[\n]')[0];
+    console.log(answer);
     if (!answer) {
       answer = answerText;
     }
     googleUrlShortener.shortUrl(config.server_url.public+"/?q="+encodeURIComponent(question)).then(sURL=>{
       answer.concat("\\n").concat("To see the full answer, please chat with our advisor: ").concat(sURL);
+      console.log(answer);
       return answer;
     }).catch(err => {
       console.error(err);
