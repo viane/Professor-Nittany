@@ -310,68 +310,27 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
     conversation.questionCheck(req.body.question, context).then((data) => {
       //console.log(data);
       // if question is general, ask RR
-      if (data.output.text[0] == "-genereal question") {
-        var newQuestion = new Questions();
-        newQuestion.body = req.body.question;
-        newQuestion.submitter = req.decoded._id;
-        processQuestion.NLUAnalysis(req.body.question).then((analysis) => {
-          //console.log(analysis);
-          newQuestion.feature.concepts = analysis.concepts;
-          newQuestion.feature.keywords = analysis.keywords;
-          newQuestion.feature.entities = analysis.entities;
-          retrieve_and_rank.enterMessage(req.body.question).then((searchResponse) => {
-              //console.log(searchResponse.response.docs[0]['ranker.confidence']);
-              if(searchResponse.response.docs[0]['ranker.confidence']<config.questionThreshold){
-                //console.log(config.questionThreshold);
-                newQuestion.low_confidence.mark = true;
-                newQuestion.low_confidence.answer = searchResponse.response.docs[0].body;
-                let features = [];
-                features = features.concat(newQuestion.feature.concepts);
-                features = features.concat(newQuestion.feature.keywords);
-                features = features.concat(newQuestion.feature.entities);
-                let Text = features.map(function(a){return a.text});
-                let terms_match_count = 0;
-                //console.log(Text);
-                DominatedTerms.findById("5978f6b724e65c86144167b0", function(err, domTerms ){
-                  if(err) return next(err);
-                  for(let j=0; j<Text.length; j++){
-                    if(domTerms.termsText.includes(Text[j])){
-                      terms_match_count++;
-                    }
-                  }
-                  newQuestion.low_confidence.relevance_percent = terms_match_count/Text.length;
-                  switch(newQuestion.low_confidence.relevance_percent){
-                    case 0:
-                      newQuestion.low_confidence.relevance_level="irrelevant";
-                      break;
-                    case 1:
-                      newQuestion.low_confidence.relevance_level="full";
-                      break;
-                    default:
-                      newQuestion.low_confidence.relevance_level="some";
-                  }
-                  searchResponse.context = {};
-                  newQuestion.save(function(err, resp){
-                    if(err) return next(err);
-                  });
-                });
-              }
-              else{
-                searchResponse.context = {};
-                newQuestion.save(function(err, resp){
-                  if(err) return next(err);
-                });
-              }
-              return res.status(200).json(searchResponse);
-            }).catch((err) => {
-              console.error(err);
-              return res.status(302).json(err)
-            });
-
-        });
-
+      if (data.output.text[0] == "-genereal question" || data.output.result || data.entities[0].entity == 'Irrelevant_Questions') {
+        if(data.output.result){
+          questionsHandle.questionHandler(data.output.text[0], req.decoded._id)
+          .then((resp)=>{
+            return res.status(200).json(resp);
+          })
+          .catch((err)=>{
+            return res.status(302).json(err);
+          }); 
+        }
+        else{
+          questionsHandle.questionHandler(req.body.question, req.decoded._id)
+          .then((resp)=>{
+            return res.status(200).json(resp);
+          })
+          .catch((err)=>{
+            return res.status(302).json(err);
+          }); 
+        }      
       }
-      else if(data.intents[0] && data.intents[0].intent == "Ask_New_Question"){
+      else if(data.output.text[0] == "-a new question"){
         return res.status(200).json({
           context:{},
           response: {
@@ -384,25 +343,19 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
           }
         });
       }
-      else if(data.output.result){
-        if(data.context.hasOwnProperty('PSU_ID')){
-          user.psu_id = data.context.PSU_ID;
-        }
-        user.save(function(err,resp){
-          if (err) return next(err);
-          return res.status(200).json({
-            context:{},
-            response: {
-              docs: [
-                {
-                  title: "personal question information",
-                  body: data.output.text[0]
-                }
-              ]
-            }
-          });
-        });
-      }
+      // else if(data.output.result){
+      //     return res.status(200).json({
+      //       context:{},
+      //       response: {
+      //         docs: [
+      //           {
+      //             title: "personal question information",
+      //             body: data.output.text[0]
+      //           }
+      //         ]
+      //       }
+      //     });
+      // }
       else {
         return res.status(200).json({
           context: data.context,

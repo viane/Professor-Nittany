@@ -253,6 +253,52 @@ status      | Show login status
 success     | Boolen flag
 token       | Access token
 
+### Example error response for wrong password format:
+
+```json
+{
+    "err": {
+        "name": "InvalidPasswordFormat",
+        "message": "Invalid password format, check the rule of making password."
+    }
+}
+```
+### Example error response for wrong password format:
+
+```json
+{
+    "err": {
+        "name": "InvalidPasswordFormat",
+        "message": "Invalid password format, check the rule of making password."
+    }
+}
+```
+
+### Example error response for empty token:
+
+```json
+{
+    "err": {
+        "name": "InvalidToken",
+        "message": "Empty token"
+    }
+}
+```
+### Example error response for empty token:
+
+```json
+{
+    "err": {
+            name: "InvalidToken",
+            message: "Password reset token is invalid or has expired."
+    }
+}
+```
+
+
+
+
+
 ## Facebook SignIn
 
 ### HTTP Request
