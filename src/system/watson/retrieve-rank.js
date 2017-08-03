@@ -50,7 +50,7 @@ retrieve_and_rank.listCollections({
 },
   function (err, response) {
     if (err)
-      console.err('retrieve and rank error:', err);
+      console.log('retrieve and rank error:', err);
 });
 
 // following code might solve RR cluster schema failure, from Allen
