@@ -525,7 +525,7 @@ const externalQuestionListener = () => {
     const url = new URL(window.location.href);
     window.history.pushState("object or string", "Title", "/" + window.location.href.substring(window.location.href.lastIndexOf('/') + 1).split("?")[0]);
     const externalQuestionString = url.searchParams.get("q");
-    if (externalQuestionString.length > 0 && externalQuestionString.trim() != "") {
+    if (externalQuestionString != null && externalQuestionString.length > 0 && externalQuestionString.trim() != "") {
       $('#question').val(externalQuestionString.trim());
       setTimeout(() => {
         $('.fa-paper-plane-o').click();
