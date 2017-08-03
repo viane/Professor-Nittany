@@ -17,9 +17,11 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
 
-    <script src="js/index.js"></script>
     <link href="css/index.css" rel="stylesheet" type="text/css">
+    <link href="css/profile.css" rel="stylesheet" type="text/css">
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <script src="js/wordcloud2.js"></script>
+    <script src="js/profile.js"></script>
 
 </head>
 
@@ -46,6 +48,12 @@
             <div class="col-sm-12 col-md-9 current-chat">
                 <h2 class="lite-header"> Profile </h2>
                 <hr>
+
+                <div class="profile-content col-md-12">
+                    <div class="wordCloud col-md-12 row centering" id="canvas">
+                        <canvas id="wordcloud"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
