@@ -1,7 +1,7 @@
 module.exports = {
   'questionThreshold':'0.2',
   'server_url': {
-    'public': 'intelligent-student-advisor.herokuapp.com',
+    'public': 'https://intelligent-student-advisor.herokuapp.com/',
     'local': 'localhost:3000/'
   },
   'secretKey': '12345-67890-09876-54321',
