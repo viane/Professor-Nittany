@@ -123,7 +123,7 @@ module.exports.convertPerspectsToAIReadable = (perspect_type, content) => {
     return AI_Read_String;
 }
 
-module.exports.removeTagsAndRelateInfoFromSMSAnswer = (answerText)=>{
+module.exports.removeAnswerTags = (answerText)=>{
   let answer = answerText;
   // use RegExp remove targeted tags and content between tags
   // rules:
@@ -154,6 +154,9 @@ module.exports.compressSMS = (question,answerText) =>{
   if (answerText.length > 100) {
     // remove other paragraphs except 1st one, ie.find 1st [\n]
     answer = answer.split('[\\n]')[0];
+    if (!answer) {
+      answer = answerText;
+    }
     googleUrlShortener.shortUrl(config.server_url.public+"/?q="+encodeURIComponent(question)).then(sURL=>{
       answer.concat("\\n").concat("To see the full answer, please chat with our advisor: ").concat(sURL);
       return answer;

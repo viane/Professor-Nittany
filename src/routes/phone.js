@@ -113,8 +113,8 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
               twiml.say("Sorry I don't know the answer to this question")
               twiml.redirect('/phone/ask-phone/qa-loop');
             }
-            let answerBody = formatter.removeTagsAndRelateInfoFromSMSAnswer(result.response.docs[0].body);
-            answerBody = formatter.compressPhoneAnswer(answerBody);
+            let answerBody = formatter.compressPhoneAnswer(result.response.docs[0].body);
+            answerBody = formatter.removeAnswerTags(answerBody);
             // console.log(answerBody);
             const TTS_Params = {
               text: answerBody,
@@ -151,7 +151,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
             QACopyAry.unshift({
               callSid: req.body.CallSid,
               question: questionTranscript,
-              answer: formatter.removeTagsAndRelateInfoFromSMSAnswer(result.response.docs[0].body)
+              answer: result.response.docs[0].body
             });
           }).catch(function(err) {
             console.error(err);
@@ -198,7 +198,7 @@ phoneRouter.route('/ask-phone/feedback').post(function(req, res, next) {
         }
       })[0];
       // console.log(QAObject);
-      const smsBody = "Question: " + QAObject.question + "." + "\n" + "Answer: " + formatter.compressSMS(QAObject.question, QAObject.answer);
+      const smsBody = "Question: " + QAObject.question + "." + "\n" + "Answer: " + formatter.removeAnswerTags(formatter.compressSMS(QAObject.question, QAObject.answer));
       console.log(smsBody);
       twilioSMS.messages.create({
         to: req.body.From,
@@ -286,8 +286,8 @@ phoneRouter.post('/ask-sms', (req, res) => {
   } else {
     retrieve_and_rank.enterMessage(req.body.Body).then(function(result) {
       // speak back with answer
-      let answerBody = formatter.removeTagsAndRelateInfoFromSMSAnswer(result.response.docs[0].body);
-      answerBody = formatter.compressSMS(req.body.Body, answerBody)
+      let answerBody = formatter.compressSMS(req.body.Body, result.response.docs[0].body);
+      answerBody = formatter.removeAnswerTags(answerBody);
       console.log(answerBody);
       twilioSMS.messages.create({
         to: req.body.From,
