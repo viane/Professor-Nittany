@@ -355,7 +355,9 @@ let watsonChatClassNumerous = '<div class="current-message"><p class="media-text
 let watsonChatClassSingle = '<p class="media-text">';
 
 let htmlAfter = '</span></div></div></div></li>';
-let htmlButtons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Satisfying Answers</div>';
+let html2Buttons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Satisfying Answers</div>';
+let html3Buttons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Satisfying Answers</div>';
+let html4Buttons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Satisfying Answers</div>';
 let htmlWAfter = '</span></div></div></div></li>';
 let htmlWAfterNoButtons = '</span></div></div></div></li>';
 
@@ -372,7 +374,6 @@ function addUserChat() {
     $('#chat').append(htmlBefore + question.title + '<br><small class="text-muted">You | ' + '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>' + htmlAfter);
 
     sendServerQuestion(question.title);
-    //test();
 
     $('.current-chat-area').animate({
       scrollTop: $(".scroll-chat").height() + 20 + 'px'
@@ -380,11 +381,6 @@ function addUserChat() {
   }
   // Clears value in input field
   $('#question').val('');
-}
-
-function test() {
-  data[0] = 'This is just a test';
-
 }
 
 //////////////////////////////////////////////////
@@ -435,12 +431,22 @@ function sendServerQuestion(question) {
       // don't want the buttons popping up if there is only one response from the server
       timeAsked = '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>';
 
-      // don't want the buttons popping up if there is only one response from the server
-      if (json.response.docs.length == 1) {
-        $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfterNoButtons);
-      } else {
-        $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + htmlButtons + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
+      // I need the number of buttons to match the number of answers
+      switch(json.response.docs.length) {
+        case 1: 
+          $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfterNoButtons); 
+          break;
+        case 2:
+          $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html2Buttons + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
+          break;
+        case 3:
+          $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html3Buttons + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
+          break;
+        default:
+          $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html4Buttons + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
+          break;
       }
+
       initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
       addReadmoreHandler();
       $('.current-chat-area').animate({
