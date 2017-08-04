@@ -15,30 +15,30 @@ passport.deserializeUser(User.deserializeUser());
 
 exports.facebook = passport.use(new FacebookStrategy({
   clientID: config.facebook.clientID,
-  clientSecret: config.facebook.clientSecret, 
+  clientSecret: config.facebook.clientSecret,
   callbackURL: config.facebook.callbackURL,
   profileFields: ['id', 'displayName','name', 'photos', 'emails','gender']
   },
   function(accessToken, refreshToken, profile, done) {
     User.findOne({$or:[{facebook_OauthId: profile.id},{email: profile.emails[0].value}] }, function(err, user) {
       if(err) {
-        console.log(err); // handle errors!
+        console.error(err);; // handle errors!
       }
       if (!err && user !== null) {
         if(!user.facebook_OauthId){
           user.facebook_OauthId = profile.id;
           user.save(function(err) {
             if(err) {
-              console.log(err); // handle errors!
+              console.error(err);; // handle errors!
             }else {
-              console.log("saving user ...");
+              //console.log("saving user ...");
               done(null, user);
             }
           });
         }
         else{
           done(null, user);
-        }     
+        }
       } else {
 
         user = new User({
@@ -51,9 +51,9 @@ exports.facebook = passport.use(new FacebookStrategy({
         user.status = "active";
         user.save(function(err) {
           if(err) {
-            console.log(err); // handle errors!
+            console.error(err);; // handle errors!
           } else {
-            console.log("saving user ...");
+            //console.log("saving user ...");
             done(null, user);
           }
         });
@@ -70,26 +70,26 @@ exports.linkedin = passport.use(new LinkedinStrategy({
     scope:['r_emailaddress', 'r_basicprofile']
   },
   function(accessToken, tokenSecret, profile, done) {
-    console.log(profile);
+    //console.log(profile);
     User.findOne({$or:[{linkedin_OauthId: profile.id},{email: profile.emails[0].value}] }, function(err, user) {
       if(err) {
-        console.log(err); // handle errors!
+        console.error(err); // handle errors!
       }
       if (!err && user !== null) {
           if(!user.linkedin_OauthId){
           user.linkedin_OauthId = profile.id;
           user.save(function(err) {
             if(err) {
-              console.log(err); // handle errors!
+              console.error(err); // handle errors!
             }else {
-              console.log("saving user ...");
+              //console.log("saving user ...");
               done(null, user);
             }
           });
         }
         else{
           done(null, user);
-        }  
+        }
       } else {
 
         user = new User({
@@ -102,9 +102,9 @@ exports.linkedin = passport.use(new LinkedinStrategy({
         user.status = "active";
         user.save(function(err) {
           if(err) {
-            console.log(err); // handle errors!
+            console.error(err); // handle errors!
           } else {
-            console.log("saving user ...");
+            //console.log("saving user ...");
             done(null, user);
           }
         });
@@ -139,7 +139,7 @@ exports.linkedin = passport.use(new LinkedinStrategy({
 //         }
 //         else{
 //           done(null, user);
-//         }  
+//         }
 //       } else {
 //         var fullname = profile._json.name.split(" ");
 //         user = new User({
@@ -173,23 +173,23 @@ exports.google=passport.use(new GoogleStrategy({
   function(request, accessToken, refreshToken, profile, done) {
     User.findOne({$or:[{google_OauthId: profile.id},{email: profile.emails[0].value}] }, function(err, user) {
       if(err) {
-        console.log(err); // handle errors!
+        console.error(err); // handle errors!
       }
       if (!err && user !== null) {
           if(!user.google_OauthId){
           user.google_OauthId = profile.id;
           user.save(function(err) {
             if(err) {
-              console.log(err); // handle errors!
+              console.error(err); // handle errors!
             }else {
-              console.log("saving user ...");
+              //console.log("saving user ...");
               done(null, user);
             }
           });
         }
         else{
           done(null, user);
-        }  
+        }
       } else {
 
         user = new User({
@@ -202,9 +202,9 @@ exports.google=passport.use(new GoogleStrategy({
         user.status = "active";
         user.save(function(err) {
           if(err) {
-            console.log(err); // handle errors!
+            console.error(err); // handle errors!
           } else {
-            console.log("saving user ...");
+            //console.log("saving user ...");
             done(null, user);
           }
         });

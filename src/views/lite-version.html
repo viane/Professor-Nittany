@@ -39,8 +39,8 @@
             <div class="panel-heading" role="tab" id="headingOne">
               <h4 class="panel-title">
                 <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    What Am I?
-                                </a>
+                    What Am I?
+                </a>
               </h4>
             </div>
             <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
@@ -54,8 +54,8 @@
               <h4 class="panel-title">
                 <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false"
                   aria-controls="collapseTwo">
-                                    Instructions
-                                </a>
+                      Instructions
+                  </a>
               </h4>
             </div>
             <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
@@ -70,8 +70,8 @@
               <h4 class="panel-title">
                 <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false"
                   aria-controls="collapseThree">
-                                    Example Questions
-                                </a>
+                      Example Questions
+                  </a>
               </h4>
             </div>
             <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
@@ -90,8 +90,8 @@
               <h4 class="panel-title">
                 <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false"
                   aria-controls="collapseFour">
-                                    Contact Us
-                                </a>
+                      Contact Us
+                  </a>
               </h4>
             </div>
             <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
@@ -120,13 +120,12 @@
             <p>
               Sign up and enjoy the additional benefits of:<br>
               <span style="font-style:italic;">
-                            Personality Assessment<br>
-                            Easy Question Retrieval<br>
-                            Advising Assistance
-                            </span>
+              Personality Assessment<br>
+              Easy Question Retrieval<br>
+              Advising Assistance
+              </span>
             </p>
           </div>
-
           <div class="col-md-12 buttons">
             <div class="col-md-6 login">
               <button class="btn-lg btn-default" type="submit" data-target="#loginModal" data-toggle="modal">Login</button>
@@ -135,6 +134,8 @@
               <button class="btn-lg btn-default" type="submit" data-target="#RegisterModal" data-toggle="modal">Register</button>
             </div>
           </div>
+
+          <!-- LOGIN MODAL -->
           <div class="modal" id="loginModal" tabindex="-1">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -164,9 +165,9 @@
                     </p>
                     <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-6 col-xs-offset-3 centering icon-group container">
                       <div class="row">
-                        <img class="icon col-md-4 col-sm-4 col-xs-12 " src="images/facebook-icon.png" onclick="location.href='./users/signup-facebook'">
-                        <img class="icon col-md-4 col-sm-4 col-xs-12" src="images/linkedin-icon.png" onclick="location.href='./users/signup-linkedin'">
-                        <img class="icon col-md-4 col-sm-4 col-xs-12" src="images/google-logo.png" onclick="location.href='./users/signup-google'">
+                        <img class="icon col-md-4 col-sm-4 col-xs-12 " src="images/facebook-icon.png" onclick="location.href='../users/signup-facebook'">
+                        <img class="icon col-md-4 col-sm-4 col-xs-12" src="images/linkedin-icon.png" onclick="location.href='../users/signup-linkedin'">
+                        <img class="icon col-md-4 col-sm-4 col-xs-12" src="images/google-logo.png" onclick="location.href='../users/signup-google'">
                       </div>
                     </div>
                   </div>
@@ -174,6 +175,8 @@
               </div>
             </div>
           </div>
+
+          <!-- REGISTER MODAL -->
           <div class="modal" id="RegisterModal" tabindex="-1">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -214,9 +217,9 @@
                     </p>
                     <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-6 col-xs-offset-3 centering icon-group container">
                       <div class="row">
-                        <img class="icon col-md-4 col-sm-4 col-xs-12 " src="images/facebook-icon.png" onclick="location.href='./users/signup-facebook'">
-                        <img class="icon col-md-4 col-sm-4 col-xs-12" src="images/linkedin-icon.png" onclick="location.href='./users/signup-linkedin'">
-                        <img class="icon col-md-4 col-sm-4 col-xs-12" src="images/google-logo.png" onclick="location.href='./users/signup-google'">
+                        <a href="/users/signup-facebook"><img class="icon col-md-4 col-sm-4 col-xs-12" src="images/facebook-icon.png"></a>
+                        <a href="/users/signup-facebook"><img class="icon col-md-4 col-sm-4 col-xs-12" src="images/linkedin-icon.png"></a>
+                        <a href="/users/signup-facebook"><img class="icon col-md-4 col-sm-4 col-xs-12" src="images/google-logo.png"></a>
                       </div>
                     </div>
                   </div>
@@ -253,12 +256,12 @@
             <div class="panel-footer">
               <div class="input-group input-group-lg">
                 <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button"><i class="fa fa-microphone" aria-hidden="true"></i></button>
-                                </span>
+                  <button class="btn btn-default" type="button"><i class="fa fa-microphone" aria-hidden="true"></i></button>
+                </span>
                 <input placeholder="Ask any question you may have ..." type="text" class="form-control" id="question">
                 <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" id="send"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
-                                </span>
+                  <button class="btn btn-default" type="button" id="send"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                </span>
               </div>
             </div>
           </div>

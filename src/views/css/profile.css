@@ -4,6 +4,12 @@
     /*align-items: center;*/
 }
 
+.profile {
+    overflow: auto;
+}
+
+/* WORD CLOUD */
+
 .wordCloud {
     height: 35vh;
 }
@@ -12,4 +18,58 @@
     .wordCloud {
         height: 50vh;
     }
+}
+
+/* USER DESCRIPTION */
+
+.intro {
+    -moz-box-shadow: 1px 2px 3px rgba(0,0,0,.5);
+    -webkit-box-shadow: 1px 2px 3px rgba(0,0,0,.5);
+    box-shadow: 1px 2px 3px rgba(0,0,0,.5);
+}
+
+.intro > hr {
+    width: 100%;
+}
+
+.intro > h4 {
+    padding-left: 10px;
+}
+
+.fa-pencil-square-o {
+    color: blue;
+}
+
+.fa-pencil-square-o:hover {
+    color: gold;
+}
+
+/* QUESTION LOG */
+
+.questions {
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-bottom: 10px;
+}
+
+.header {
+    border-bottom: lightgrey 1px solid;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    -moz-box-shadow: 1px 0px 3px rgba(0,0,0,.5);
+    -webkit-box-shadow: 1px 0px 3px rgba(0,0,0,.5);
+    box-shadow: 1px 0px 3px rgba(0,0,0,.5);
+}
+
+.question-log {
+    -moz-box-shadow: 1px 2px 3px rgba(0,0,0,.5);
+    -webkit-box-shadow: 1px 2px 3px rgba(0,0,0,.5);
+    box-shadow: 1px 2px 3px rgba(0,0,0,.5);
+    overflow: auto;
+    height: 30vh;
+}
+
+#top {
+    margin-top: -1px;
 }

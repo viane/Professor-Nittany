@@ -16,6 +16,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
 
     <link href="css/index.css" rel="stylesheet" type="text/css">
     <link href="css/profile.css" rel="stylesheet" type="text/css">
@@ -45,14 +46,73 @@
                     <hr>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-9 current-chat">
-                <h2 class="lite-header"> Profile </h2>
+            <div class="col-sm-12 col-md-9 profile">
+                <h2 class="lite-header"><span id="username"> </span> Profile </h2>
                 <hr>
-
                 <div class="profile-content col-md-12">
                     <div class="wordCloud col-md-12 row centering" id="canvas">
                         <canvas id="wordcloud"></canvas>
                     </div>
+                    <div class="intro">
+                        <hr>
+                        <h4> Introduction <i class="fa fa-pencil-square-o" aria-hidden="true" onclick="$('#editIntro').modal('toggle');"></i></h4>
+                        <div class="description col-md-12 centering">
+                            <p id="userDescription">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc scelerisque auctor dolor sed mollis. Donec ullamcorper iaculis
+                                ullamcorper. Donec urna lorem, ultrices quis varius et, rutrum nec lacus. Phasellus malesuada
+                                lacus id lobortis vestibulum. Praesent vel mi consectetur, pellentesque justo nec, consectetur
+                                massa. Nullam ac velit molestie, efficitur diam sit amet, ornare lectus. Curabitur in gravida
+                                lorem. Quisque vitae elit in tortor auctor pretium. Integer faucibus orci ac nisi rutrum ornare.
+                                Cras cursus nunc ac mauris pharetra blandit.
+                            </p>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="questions col-md-4 col-xs-12">
+                        <div class="header"><h4>Questions Asked</h4></div>
+                        <div class="question-log">
+                            <hr id="top">
+                            <p> TEST </p>
+                            <hr>
+                            <p> TEST 2 </p>
+                            <hr>
+                            <p> TEST </p>
+                            <hr>
+                            <p> TEST 2 </p>
+                            <hr>
+                            <p> TEST </p>
+                            <hr>
+                            <p> TEST 2 </p>
+                            <hr>
+                            <p> TEST </p>
+                            <hr>
+                            <p> TEST 2 </p>
+                            <hr>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal" id="editIntro" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Edit Introduction</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <label for="intro">Introduction:</label>
+                        <textarea class="form-control" rows="5" id="intro"></textarea>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Save</button>
                 </div>
             </div>
         </div>
