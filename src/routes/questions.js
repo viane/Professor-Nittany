@@ -219,9 +219,9 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
     //   context.PSU_ID = user.psu_id;
     // }
     conversation.questionCheck(req.body.question, context).then((data) => {
-      //console.log(data);
+      console.log(data);
       // if question is general, ask RR
-      if (data.output.text[0] == "-genereal question" || data.output.result || data.entities[0].entity == 'Irrelevant_Questions') {
+      if (data.output.text[0] == "-genereal question" || data.output.result || (data.entities.length>0 && data.entities[0].entity == 'Irrelevant_Questions')) {
         if(data.output.result){
           questionsHandle.questionHandler(data.output.text[0], '59708b6acf1559c355555555')
           .then((resp)=>{
@@ -268,6 +268,7 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
       //     });
       // }
       else {
+        console.log("conversation");
         return res.status(200).json({
           context: data.context,
           response: {
@@ -303,7 +304,7 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
     conversation.questionCheck(req.body.question, context).then((data) => {
       //console.log(data);
       // if question is general, ask RR
-      if (data.output.text[0] == "-genereal question" || data.output.result || data.entities[0].entity == 'Irrelevant_Questions') {
+      if (data.output.text[0] == "-genereal question" || data.output.result || (data.entities && data.entities[0].entity == 'Irrelevant_Questions')) {
         if(data.output.result){
           questionsHandle.questionHandler(data.output.text[0], req.decoded._id)
           .then((resp)=>{
