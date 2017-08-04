@@ -433,8 +433,8 @@ function sendServerQuestion(question) {
 
       // I need the number of buttons to match the number of answers
       switch(json.response.docs.length) {
-        case 1: 
-          $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfterNoButtons); 
+        case 1:
+          $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfterNoButtons);
           break;
         case 2:
           $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html2Buttons + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
