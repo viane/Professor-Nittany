@@ -8,9 +8,9 @@ module.exports = {
   'secret': '94838472',
   'mongoUrl': 'mongodb://Pb7TdS:qyW3g8LLAqaCELzB@ds033056.mlab.com:33056/intelligent_academic_planner',
   'facebook': {
-    clientID: '1962035640700088',
-    clientSecret: '26f046e8112ae5048435cf7ef1e6c1ac',
-    callbackURL: 'http://localhost:3000/users/facebook/callback'
+    clientID: '1099198873493707',
+    clientSecret: '4285a312c1c1eb98aa77e49001d23a61',
+    callbackURL: '/users/facebook/callback'
   },
   // 'twitter': {
   //   'consumerKey': '3LMDaxawNk2L71KDz0qFfyovW',
