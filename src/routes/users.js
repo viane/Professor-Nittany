@@ -422,6 +422,7 @@ router.get('/linkedin/callback', function(req, res, next) {
         return res.status(200).json({err: 'Could not log in user'});
       }
       var token = Verify.getToken({"username": user.username, "_id": user._id, "status": user.status, "account_role": user.account_role});
+      console.log(req.hostname);
       res.status(200).redirect("/users/signin/callback?token=" + token + "&status=Login%20successful!" + "&success=true");
     });
   })(req, res, next);
