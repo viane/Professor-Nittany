@@ -8,54 +8,53 @@ module.exports = {
   'secret': '94838472',
   'mongoUrl': 'mongodb://Pb7TdS:qyW3g8LLAqaCELzB@ds033056.mlab.com:33056/intelligent_academic_planner',
   'facebook': {
-    clientID: '1962035640700088',
-    clientSecret: '26f046e8112ae5048435cf7ef1e6c1ac',
-    callbackURL: 'http://localhost:3000/users/facebook/callback'
+    clientID: '1099198873493707',
+    clientSecret: '4285a312c1c1eb98aa77e49001d23a61',
+    callbackURL: '/users/facebook/callback'
   },
-  'twitter': {
-    'consumerKey': '3LMDaxawNk2L71KDz0qFfyovW',
-    'consumerSecret': 'K4ifsbzDPS3lh0sLBPF5vh43lSmnYM0EcJtLBB5Emji0iGcAz4',
-    'callbackURL': 'https://127.0.0.1:3443/users/twitter/callback'
-  },
-
+  // 'twitter': {
+  //   'consumerKey': '3LMDaxawNk2L71KDz0qFfyovW',
+  //   'consumerSecret': 'K4ifsbzDPS3lh0sLBPF5vh43lSmnYM0EcJtLBB5Emji0iGcAz4',
+  //   'callbackURL': 'https://127.0.0.1:3443/users/twitter/callback'
+  // },
   'google': {
-    'clientID': '132722948922-gavv9i3p51t0heg27qihaj1c4kocn01h.apps.googleusercontent.com',
-    'clientSecret': 'ZTKGjktIOUz3-m1L0BCBud_9',
-    'callbackURL': 'http://localhost:3000/users/google/callback'
+    'clientID': '424735770376-ili546ebj6c07kaqnd3h6hbuutj8qc96.apps.googleusercontent.com',
+    'clientSecret': '_5C4tFW8VswkdPSF1RY8NZQe',
+    'callbackURL': '/users/google/callback'
   },
 
   'linkedin': {
-    'clientID': '78y1qxhj1ass0f',
-    'clientSecret': 'gbyTOaNTCXegTufn',
-    'callbackURL': 'http://localhost:3000/users/linkedin/callback'
+    'clientID': '77pspualk4ip3x',
+    'clientSecret': 'ql1xSpb8wtT2Mh6G',
+    'callbackURL': '/users/linkedin/callback'
   },
-
-  'instagram': {
-    'clientID': 'c36ed58b9ea848deb94520f896d5a510',
-    'clientSecret': 'bb4cf3b16e3a4188aa3a875324e66f74',
-    'callbackURL': 'https://intelligent-student-advisor.herokuapp.com/auth/instagram/callback'
-  },
-
-  'reddit': {
-    'clientID': 'yo-BqUiqPXuSXA',
-    'clientSecret': 'vyY0HbuiunObb4eGT-lEkx4CwyM',
-    'callbackURL': 'https://intelligent-student-advisor.herokuapp.com/auth/reddit/callback',
-    'avatar': '/img/reddit-icon.png'
-  },
-
-  'amazon': {
-    'clientID': 'amzn1.application-oa2-client.d1e9e34ce1d24f3a9b68e05f56e9ea73',
-    'clientSecret': '75f16bbe34c4f5529a81a0e8df431e8f163ed28ee9b5b2e6083961ad1446cf03',
-    'callbackURL': 'https://intelligent-student-advisor.herokuapp.com/auth/amazon/callback',
-    'avatar': '/img/amazon-icon.png'
-  },
-
-  'wechatAu': {
-    'clientID': 'viane2222',
-    'clientSecret': 'fada9ec6fa020548',
-    'callbackURL': 'https://intelligent-student-advisor.herokuapp.com/auth/wechat/callback',
-    'avatar': '/img/wechat-icon.png'
-  },
+  //
+  // 'instagram': {
+  //   'clientID': 'c36ed58b9ea848deb94520f896d5a510',
+  //   'clientSecret': 'bb4cf3b16e3a4188aa3a875324e66f74',
+  //   'callbackURL': '/auth/instagram/callback'
+  // },
+  //
+  // 'reddit': {
+  //   'clientID': 'yo-BqUiqPXuSXA',
+  //   'clientSecret': 'vyY0HbuiunObb4eGT-lEkx4CwyM',
+  //   'callbackURL': '/auth/reddit/callback',
+  //   'avatar': '/img/reddit-icon.png'
+  // },
+  //
+  // 'amazon': {
+  //   'clientID': 'amzn1.application-oa2-client.d1e9e34ce1d24f3a9b68e05f56e9ea73',
+  //   'clientSecret': '75f16bbe34c4f5529a81a0e8df431e8f163ed28ee9b5b2e6083961ad1446cf03',
+  //   'callbackURL': '/auth/amazon/callback',
+  //   'avatar': '/img/amazon-icon.png'
+  // },
+  //
+  // 'wechatAu': {
+  //   'clientID': 'viane2222',
+  //   'clientSecret': 'fada9ec6fa020548',
+  //   'callbackURL': '/auth/wechat/callback',
+  //   'avatar': '/img/wechat-icon.png'
+  // },
   'twilio': {
     "accountSid": "AC986df3d5c5b5185f845ac46499758075",
     "authToken": "8953462aa58c2dfaf97835ef40b26fc5"

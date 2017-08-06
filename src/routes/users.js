@@ -406,7 +406,7 @@ router.get('/facebook/callback', function(req, res, next) {
 });
 
 //API user linkedin login: get /users/signup-linkedin
-router.get('/signup-linkedin', passport.authenticate('linkedin'), function(req, res) {});
+router.get('/signup-linkedin', passport.authenticate('linkedin'));
 
 //API usesr linkedin callback: get /users/linkedin/callback
 router.get('/linkedin/callback', function(req, res, next) {
