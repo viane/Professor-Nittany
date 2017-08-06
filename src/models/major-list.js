@@ -12,14 +12,6 @@ const MajorSchema = mongoose.Schema({
         },
         "degree_level": {
             type:String
-        },
-        "degree_option":{
-            type:String,
-            default: null
-        },
-        "utility_type":{
-            type:String,
-            default: "degree"
         }
 
 });
