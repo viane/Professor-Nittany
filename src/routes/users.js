@@ -16,6 +16,14 @@ router.route('/').get(function(req, res, next) {
       return next(err);
     res.json(user);
   });
+}).delete(function(req, res, next) {
+  User.remove({
+    'email': req.body.email
+  }, function(err, resp) {
+    if (err)
+      return next(err);
+    res.json(resp);
+  });
 });
 
 //get User information
@@ -25,14 +33,6 @@ router.route('/get-user').get(Verify.verifyOrdinaryUser,function(req, res, next)
     if (err)
       return next(err);
     res.json(user);
-  });
-}).delete(function(req, res, next) {
-  User.remove({
-    'email': req.body.email
-  }, function(err, resp) {
-    if (err)
-      return next(err);
-    res.json(resp);
   });
 });
 
@@ -67,6 +67,13 @@ router.post('/signup', function(req, res) {
     }
 
     user.status = "inactive";
+    console.log(req.body);
+    if(req.body.major && req.body.major.length>0){
+      for(let j=0; j<req.body.major.length; j++){
+        user.major.push(req.body.major[j]);
+      }
+    }
+    
 
     crypto.randomBytes(20, (err, buf) => {
       const token = buf.toString('hex');

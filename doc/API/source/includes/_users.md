@@ -79,16 +79,22 @@ token       | Access token
 
 ```javascript
   fetch("/users/signup", {  
-    method: 'post',  
-    headers: {  
-      "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"  
-    },  
-    body: 'email={email}&password={password}&first_name={first_name}&last_name={last_name}&account_role={account_role}',
-    credentials: 'include'
-  }).then(response=>{return response.json()})
-  .then(json=> {
-    // response message will be in json
-  });
+  method: 'post',  
+  headers: {  
+    "Content-type": "application/json"
+  },
+  body: JSON.stringify({
+        'email': '',
+        'password' : '',
+        'first_name':'',
+        'last_name':'',
+        'account_role':'',
+        'major':[] //allow double or triple majors. An array of major document id such as ["59868428a9a69f4d0028cd58"]
+  })
+}).then(response=>{return response.json()})
+.then(json=> {
+  //json contains responses
+})
 ```
 
 ###The local sign up API requires 5 parameters
@@ -100,8 +106,10 @@ last_name | The last_name of the user
 account_role| the role of the account       
 email     | The email of the account        
 password  | The password of account
+major    | An array of majors' document id
 
 <aside class="notice">The response are either success or error.</aside>
+<aside class="notice">major is an array of majors' document id</aside>
 
 ```json
 {
@@ -148,6 +156,209 @@ err.message | A user with the given username is already registered <br>  <br> In
 Property    | Response                                       | Description
 ---------   | ---------------------------------------------- | -----------------
 status      | Successfully registered, check actvition email | Successfully create the account, server has sent out an activation email to the email beening registered
+
+
+## Get Major List
+
+### HTTP Request
+
+`POST /users/signup`
+
+> To locally sign up a user, use this code:
+
+```javascript
+  fetch("/major-list", {  
+  method: 'get',  
+  headers: {  
+    "Content-type": "application/json"
+  }
+}).then(response=>{return response.json()})
+.then(json=> {
+  //json contains responses
+})
+```
+
+### Example successful response:
+
+Property   | Description                  
+---------  | --------------------------------
+degree_name| The name of degree
+degree_level| Undergraduate only by now
+id          | Id of major documents should be send back to server when user register
+
+<aside class="notice">Response will be an array of major documents.</aside>
+
+
+```json
+{
+    [
+        {
+            "_id": "59868428a9a69f4d0028cd56",
+            "degree_name": "Accounting",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd57",
+            "degree_name": "Advertising/Public Relations-Strategic Communications",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd58",
+            "degree_name": "Agribusiness Management",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd59",
+            "degree_name": "Biobehavioral Health",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd5a",
+            "degree_name": "Business",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd5b",
+            "degree_name": "Criminal Justice",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd5d",
+            "degree_name": "Economics",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd5c",
+            "degree_name": "Digital Multimedia Design",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd5e",
+            "degree_name": "Energy and Sustainability Policy",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd5f",
+            "degree_name": "Finance",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd60",
+            "degree_name": "Health Policy and Administration",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd61",
+            "degree_name": "Human Development and Family Studies",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd62",
+            "degree_name": "Information Sciences and Technology",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd63",
+            "degree_name": "Integrated Social Sciences",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd64",
+            "degree_name": "International Politics",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd66",
+            "degree_name": "Law and Society",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd68",
+            "degree_name": "Marketing",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd6b",
+            "degree_name": "Political Science",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868429a9a69f4d0028cd6d",
+            "degree_name": "Security and Risk Analysis",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd67",
+            "degree_name": "Letters, Arts, and Sciences",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd6c",
+            "degree_name": "Psychology",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd65",
+            "degree_name": "Labor and Employment Relations",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd6a",
+            "degree_name": "Organizational Leadership",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868428a9a69f4d0028cd69",
+            "degree_name": "Nursing",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868429a9a69f4d0028cd6e",
+            "degree_name": "Software Engineering",
+            "degree_level": "undergraduate",
+            "__v": 0
+        },
+        {
+            "_id": "59868429a9a69f4d0028cd6f",
+            "degree_name": "Turfgrass Science",
+            "degree_level": "undergraduate",
+            "__v": 0
+        }
+    ]
+}
+```
+
+### Example response of successful singup:
+
+Property    | Response                                       | Description
+---------   | ---------------------------------------------- | -----------------
+status      | Successfully registered, check actvition email | Successfully create the account, server has sent out an activation email to the email beening registered
+
+<aside class="notice">There should not be any client side error. Either shown or not.</aside>
 
 ## Local Account Activation
 
