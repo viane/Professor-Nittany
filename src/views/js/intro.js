@@ -1,114 +1,117 @@
 // show intro if user is "frist" time use the interface
 const dataStorage = window.localStorage;
 $(() => {
-
-  if (!localStorage.hasOwnProperty('iaa-showTourBool')) {
-    setLocalTourBool(null);
-  }
-  if (!localStorage.hasOwnProperty('currentStep')) {
-     dataStorage.setItem('currentStep', JSON.stringify(1));
-  }  
-  // Define the tour!
-  const liteVersionTour = {
-    id: "lite-version",
-    steps: [
-      {
-        title: "Welcome!",
-        content: "Hi there! It's nice to see you! Let me walk you through some basic components about the lite version chat interface.",
-        target: $(".title")[0],
-        placement: "bottom",
-        xOffset: 20,
-        showNextButton: true
-      },
-      {
-        title: "General info pannel.",
-        content: "You can find out most direct information about what I am in this pannel.",
-        target: $("#accordion")[0],
-        placement: "top",
-        showPrevButton: true,
-        showNextButton: true
-      },
-      {
-        title: "Some questions guide for you!",
-        content: "You can reference some basic/start-up questions from this tab that I usually asked by people.",
-        target: $("#headingThree")[0],
-        placement: "top",
-
-        showNextButton: true
-      },
-      {
-        title: "Register and Login to experience personalized service!",
-        content: "You can obtain personalized advises after you register",
-        target: $(".userLog")[0],
-        placement: "top",
-        xOffset: 18,
-        showNextButton: true
-      },
-      {
-        title: "Raise your question!",
-        content: "Write down your question here whenever your are ready!",
-        target: $("#question")[0],
-        placement: "top",
-        width: "350",
-
-        showNextButton: true
-      },
-      {
-        title: "Let's Chat!",
-        content: "Let's start our conversation!",
-        target: $("#send")[0],
-        placement: "top",
-        arrowOffset: 265,
-        xOffset: -245,
-        showCTAButton: true
-      }
-    ],
-    showPrevButton: true,
-    onPrev: ()=>{
-      dataStorage.currentStep--;
-      $('.expose').removeClass('expose');
-      $('.'+dataStorage.currentStep).addClass('expose');
-    },
-    onNext: ()=>{
-      dataStorage.currentStep++;
-      $('.expose').removeClass('expose');
-      $('.'+dataStorage.currentStep).addClass('expose');
-    },
-    onEnd: () => {
-      //change localStorage
-      setLocalTourBool(true);
-      // if has userToken, update user DB record
-      if (hasUserToken()) {
-
-      }
-      $('#overlay').fadeOut(300, function(){
-        $('.expose').css('z-index','1');
-      });
-    },
-    onClose: () => {
-      //change localStorage
-      setLocalTourBool(true);
-      // if has userToken, update user DB record
-      if (hasUserToken()) {
-
-      }
-      $('#overlay').fadeOut(300, function(){
-        $('.expose').css('z-index','1');
-      });
+  console.log($(window).width());
+  if($(window).width()>768){
+    if (!localStorage.hasOwnProperty('iaa-showTourBool')) {
+      setLocalTourBool(null);
     }
-  };
+    if (!localStorage.hasOwnProperty('currentStep')) {
+       dataStorage.setItem('currentStep', JSON.stringify(1));
+    }  
+    // Define the tour!
+    const liteVersionTour = {
+      id: "lite-version",
+      steps: [
+        {
+          title: "Welcome!",
+          content: "Hi there! It's nice to see you! Let me walk you through some basic components about the lite version chat interface.",
+          target: $(".title")[0],
+          placement: "bottom",
+          xOffset: 20,
+          showNextButton: true
+        },
+        {
+          title: "General info pannel.",
+          content: "You can find out most direct information about what I am in this pannel.",
+          target: $("#accordion")[0],
+          placement: "top",
+          showPrevButton: true,
+          showNextButton: true
+        },
+        {
+          title: "Some questions guide for you!",
+          content: "You can reference some basic/start-up questions from this tab that I usually asked by people.",
+          target: $("#headingThree")[0],
+          placement: "top",
 
-  // check local storage for tour record, if never been decleared
-  if (shownTour() === null) {
-    setLocalTourBool(false);
-  }
-  shouldDisplayTour().then(tourBool => {
-    if (tourBool) {
-      $('#overlay').fadeIn(300);
-      $('.'+dataStorage.currentStep).addClass('expose');
-      hopscotch.startTour(liteVersionTour);
+          showNextButton: true
+        },
+        {
+          title: "Register and Login to experience personalized service!",
+          content: "You can obtain personalized advises after you register",
+          target: $(".userLog")[0],
+          placement: "top",
+          xOffset: 18,
+          showNextButton: true
+        },
+        {
+          title: "Raise your question!",
+          content: "Write down your question here whenever your are ready!",
+          target: $("#question")[0],
+          placement: "top",
+          width: "350",
+
+          showNextButton: true
+        },
+        {
+          title: "Let's Chat!",
+          content: "Let's start our conversation!",
+          target: $("#send")[0],
+          placement: "top",
+          arrowOffset: 265,
+          xOffset: -245,
+          showCTAButton: true
+        }
+      ],
+      showPrevButton: true,
+      onPrev: ()=>{
+        dataStorage.currentStep--;
+        $('.expose').removeClass('expose');
+        $('.'+dataStorage.currentStep).addClass('expose');
+      },
+      onNext: ()=>{
+        dataStorage.currentStep++;
+        $('.expose').removeClass('expose');
+        $('.'+dataStorage.currentStep).addClass('expose');
+      },
+      onEnd: () => {
+        //change localStorage
+        setLocalTourBool(true);
+        // if has userToken, update user DB record
+        if (hasUserToken()) {
+
+        }
+        $('#overlay').fadeOut(300, function(){
+          $('.expose').css('z-index','1');
+        });
+      },
+      onClose: () => {
+        //change localStorage
+        setLocalTourBool(true);
+        // if has userToken, update user DB record
+        if (hasUserToken()) {
+
+        }
+        $('#overlay').fadeOut(300, function(){
+          $('.expose').css('z-index','1');
+        });
+      }
+    };
+
+    // check local storage for tour record, if never been decleared
+    if (shownTour() === null) {
+      setLocalTourBool(false);
     }
-  })
+    shouldDisplayTour().then(tourBool => {
+      if (tourBool) {
+        $('#overlay').fadeIn(300);
+        $('.'+dataStorage.currentStep).addClass('expose');
+        hopscotch.startTour(liteVersionTour);
+      }
+    })
+  }
+  
 })
 
 const setLocalTourBool = (boolVal) => {
