@@ -168,6 +168,6 @@ module.exports = {
         }
       }
     }
-  }
-
+  },
+  interface_version :['chat-lite','chat-full']
 }
