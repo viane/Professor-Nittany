@@ -680,3 +680,8 @@ body {
 .icon{
     cursor: pointer;
 }
+
+/* fix border on tour step bubble*/
+.tour-lite-version{
+    border-radius: 9px;
+}

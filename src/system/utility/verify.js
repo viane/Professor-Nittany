@@ -1,7 +1,7 @@
 'use strict';
-var User = require('../../models/user');
-var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
-var config = require('../../config.js');
+const User = require('../../models/user');
+const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+const config = require('../../config.js');
 import util from 'util';
 
 // login error class
@@ -23,14 +23,14 @@ exports.getToken = function (user) {
 
 exports.verifyOrdinaryUser = function (req, res, next) {
     // check header or url parameters or post parameters for token
-    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+    const token = req.body.token || req.query.token || req.headers['x-access-token'];
     // decode token
     if (token) {
         // verifies secret and checks exp
         jwt.verify(token, config.secretKey, function (err, decoded) {
             if (err) {
-                var err = new LoginError('You are not authenticated!',302);
-                return next(err);
+                const err = new LoginError('You are not authenticated!',302);
+                return res.json(err)
             } else {
                 // if everything is good, save to request for use in other routes
                 req.decoded = decoded;
@@ -40,22 +40,22 @@ exports.verifyOrdinaryUser = function (req, res, next) {
     } else {
         // if there is no token
         // return an error
-        var err = new LoginError('No token provided!',302);
+        const err = new LoginError('No token provided!',302);
         return next(err);
     }
 };
 
 exports.verifyAdviserUser = function (req, res, next) {
     // check header or url parameters or post parameters for token
-    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+    const token = req.body.token || req.query.token || req.headers['x-access-token'];
 
     // decode token
     if (token) {
         // verifies secret and checks exp
         jwt.verify(token, config.secretKey, function (err, decoded) {
             if (err) {
-                var err = new LoginError('You are not authenticated!',302);
-                return next(err);
+                const err = new LoginError('You are not authenticated!',302);
+                return res.json(err)
             } else {
                 // if everything is good, save to request for use in other routes
                 if(decoded.account_role == "adviser"){
@@ -63,9 +63,9 @@ exports.verifyAdviserUser = function (req, res, next) {
                     next();
                 }
                 else{
-                    var err = new Error('You are not authenticated to perform this operation!');
+                    const err = new Error('You are not authenticated to perform this operation!');
                     err.status = 302;
-                    return next(err);
+                    return res.json(err)
                 }
 
             }
@@ -73,7 +73,7 @@ exports.verifyAdviserUser = function (req, res, next) {
     } else {
         // if there is no token
         // return an error
-        var err = new LoginError('No token provided!',302);
+        const err = new LoginError('No token provided!',302);
         return next(err);
     }
 };
