@@ -2,6 +2,13 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 
+const tutorial = new Schema({
+  liteVersion: {
+    type: Boolean,
+    default: false
+  }
+},{ _id : false })
+
 var User = new Schema({
   password: String,
   facebook_OauthId: String,
@@ -17,9 +24,9 @@ var User = new Schema({
     type: String,
     required: true
   },
-  psu_id:{
+  psu_id: {
     type: String,
-    default:null
+    default: null
   },
   major: [
     {
@@ -73,17 +80,20 @@ var User = new Schema({
     type: String,
     default: "inactive"
   },
-  activation_code:  {
+  activation_code: {
     type: String,
     default: "xxxxxxx"
   },
-  resetPasswordToken:{
+  resetPasswordToken: {
     type: String,
     default: null
   },
-  resetPasswordExpires:{
+  resetPasswordExpires: {
     type: Date,
     default: null
+  },
+  viewedTour: {
+    type:tutorial
   }
 });
 
@@ -91,6 +101,8 @@ User.methods.getName = function() {
   return (this.firstname + ' ' + this.lastname);
 };
 
-User.plugin(passportLocalMongoose, {'usernameField': 'email'});
+User.plugin(passportLocalMongoose, {
+  'usernameField': 'email'
+});
 
 module.exports = mongoose.model('User', User);
