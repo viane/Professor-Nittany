@@ -33,6 +33,14 @@ $(() => {
         showNextButton: true
       },
       {
+        title: "Register and Login to experience personalized service!",
+        content: "You can obtain personalized advises after you register",
+        target: $(".userLog")[0],
+        placement: "top",
+
+        showNextButton: true
+      },
+      {
         title: "Raise your question!",
         content: "Write down your question here whenever your are ready!",
         target: $("#question")[0],
