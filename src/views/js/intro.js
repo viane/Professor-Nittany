@@ -80,20 +80,12 @@ $(() => {
 })
 
 const setLocalTourBool = (boolVal) => {
-  let introBool = {
-    'showTourBool': boolVal
-  };
-  dataStorage.setItem('iaa', JSON.stringify(introBool));
+  dataStorage.setItem('iaa-showTourBool', JSON.stringify(boolVal));
 }
 
 const hasUserToken = () => {
   const storage = localStorage;
-  if (storage.iaa) {
-    if (JSON.parse(storage.iaa).userToken.length > 0) {
-      return JSON.parse(storage.iaa).userToken;
-    } else {
-      return null;
-    }
+  if (storage['iaa-userToken'] && storage['iaa-userToken'].length > 0) {
   } else {
     return null;
   }
@@ -101,8 +93,8 @@ const hasUserToken = () => {
 
 const shownTour = () => {
   const storage = localStorage;
-  if (storage.iaa) {
-    return JSON.parse(storage.iaa).showTourBool;
+  if (JSON.parse(storage['iaa-showTourBool']) != null) {
+    return JSON.parse(storage['iaa-showTourBool']);
   } else {
     return null;
   }
