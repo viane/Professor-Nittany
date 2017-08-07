@@ -29,7 +29,7 @@ $(() => {
         title: "Some questions guide for you!",
         content: "You can reference some basic/start-up questions from this tab that I usually asked by people.",
         target: $("#headingThree")[0],
-        placement: "bottom",
+        placement: "top",
 
         showNextButton: true
       },
@@ -38,7 +38,7 @@ $(() => {
         content: "You can obtain personalized advises after you register",
         target: $(".userLog")[0],
         placement: "top",
-
+        xOffset: 18,
         showNextButton: true
       },
       {
