@@ -230,6 +230,9 @@
                     <a href="#local-signup" class="toc-h2 toc-link" data-title="Uers">Local Signup</a>
                   </li>
                   <li>
+                    <a href="#get-major-list" class="toc-h2 toc-link" data-title="Uers">Get Major List</a>
+                  </li>
+                  <li>
                     <a href="#local-account-activation" class="toc-h2 toc-link" data-title="Uers">Local Account Activation</a>
                   </li>
                   <li>
@@ -410,17 +413,23 @@ The response are either success or error.
 <blockquote>
 <p>To locally sign up a user, use this code:</p>
 </blockquote>
-<pre class="highlight javascript tab-javascript"><code>  <span class="nx">fetch</span><span class="p">(</span><span class="s2">"/users/signup"</span><span class="p">,</span> <span class="p">{</span>  
-    <span class="na">method</span><span class="p">:</span> <span class="s1">'post'</span><span class="p">,</span>  
-    <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>  
-      <span class="s2">"Content-type"</span><span class="p">:</span> <span class="s2">"application/x-www-form-urlencoded; charset=UTF-8"</span>  
-    <span class="p">},</span>  
-    <span class="na">body</span><span class="p">:</span> <span class="s1">'email={email}&amp;password={password}&amp;first_name={first_name}&amp;last_name={last_name}&amp;account_role={account_role}'</span><span class="p">,</span>
-    <span class="na">credentials</span><span class="p">:</span> <span class="s1">'include'</span>
-  <span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
-  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">json</span><span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="c1">// response message will be in json</span>
-  <span class="p">});</span>
+<pre class="highlight javascript tab-javascript"><code>  <span class="nx">fetch</span><span class="p">(</span><span class="s2">"/questions/send-lite"</span><span class="p">,</span> <span class="p">{</span>  
+  <span class="na">method</span><span class="p">:</span> <span class="s1">'post'</span><span class="p">,</span>  
+  <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>  
+    <span class="s2">"Content-type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
+  <span class="p">},</span>
+  <span class="na">body</span><span class="p">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+        <span class="s1">'email'</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
+        <span class="s1">'password'</span> <span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
+        <span class="s1">'first_name'</span><span class="p">:</span><span class="s1">''</span><span class="p">,</span>
+        <span class="s1">'last_name'</span><span class="p">:</span><span class="s1">''</span><span class="p">,</span>
+        <span class="s1">'account_role'</span><span class="p">:</span><span class="s1">''</span><span class="p">,</span>
+        <span class="s1">'majors'</span><span class="p">:[]</span> <span class="c1">//allow double or triple majors. An array of major document id</span>
+  <span class="p">})</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
+<span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">json</span><span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">//json contains responses</span>
+<span class="p">})</span>
 </code></pre><h3 id='the-local-sign-up-api-requires-5-parameters'>The local sign up API requires 5 parameters</h3>
 <table><thead>
 <tr>
@@ -448,9 +457,15 @@ The response are either success or error.
 <td>password</td>
 <td>The password of account</td>
 </tr>
+<tr>
+<td>majors</td>
+<td>An array of document id</td>
+</tr>
 </tbody></table>
 
 <aside class="notice">The response are either success or error.</aside>
+
+<aside class="notice">Majors is an array of document id</aside>
 <pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
     </span><span class="s2">"err"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
         </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UserExistsError"</span><span class="p">,</span><span class="w">
@@ -505,9 +520,222 @@ The response are either success or error.
 <td>Successfully create the account, server has sent out an activation email to the email beening registered</td>
 </tr>
 </tbody></table>
-<h2 id='local-account-activation'>Local Account Activation</h2><h3 id='http-request-3'>HTTP Request</h3>
+<h2 id='get-major-list'>Get Major List</h2><h3 id='http-request-3'>HTTP Request</h3>
+<p><code>POST /users/signup</code></p>
+
+<blockquote>
+<p>To locally sign up a user, use this code:</p>
+</blockquote>
+<pre class="highlight javascript tab-javascript"><code>  <span class="nx">fetch</span><span class="p">(</span><span class="s2">"/major-list"</span><span class="p">,</span> <span class="p">{</span>  
+  <span class="na">method</span><span class="p">:</span> <span class="s1">'get'</span><span class="p">,</span>  
+  <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>  
+    <span class="s2">"Content-type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
+  <span class="p">}</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
+<span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">json</span><span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">//json contains responses</span>
+<span class="p">})</span>
+</code></pre><h3 id='example-successful-response'>Example successful response:</h3>
+<table><thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>degree_name</td>
+<td>The name of degree</td>
+</tr>
+<tr>
+<td>degree_level</td>
+<td>Undergraduate only by now</td>
+</tr>
+<tr>
+<td>id</td>
+<td>Id of major documents should be send back to server when user register</td>
+</tr>
+</tbody></table>
+
+<aside class="notice">Response will be an array of major documents.</aside>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd56"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Accounting"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd57"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Advertising/Public Relations-Strategic Communications"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd58"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Agribusiness Management"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd59"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Biobehavioral Health"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd5a"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Business"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd5b"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Criminal Justice"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd5d"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Economics"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd5c"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Digital Multimedia Design"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd5e"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Energy and Sustainability Policy"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd5f"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Finance"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd60"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Health Policy and Administration"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd61"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Human Development and Family Studies"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd62"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Information Sciences and Technology"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd63"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Integrated Social Sciences"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd64"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"International Politics"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd66"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Law and Society"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd68"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Marketing"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd6b"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Political Science"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868429a9a69f4d0028cd6d"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Security and Risk Analysis"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd67"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Letters, Arts, and Sciences"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd6c"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Psychology"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd65"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Labor and Employment Relations"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd6a"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Organizational Leadership"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868428a9a69f4d0028cd69"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Nursing"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868429a9a69f4d0028cd6e"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Software Engineering"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59868429a9a69f4d0028cd6f"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Turfgrass Science"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"degree_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"__v"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h3 id='example-response-of-successful-singup-2'>Example response of successful singup:</h3>
+<table><thead>
+<tr>
+<th>Property</th>
+<th>Response</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td>Successfully registered, check actvition email</td>
+<td>Successfully create the account, server has sent out an activation email to the email beening registered</td>
+</tr>
+</tbody></table>
+
+<aside class="notice">There should not be any client side error. Either shown or not.</aside>
+<h2 id='local-account-activation'>Local Account Activation</h2><h3 id='http-request-4'>HTTP Request</h3>
 <p><code>GET /users/active-account/{token}</code></p>
-<h2 id='request-account-password-change'>Request Account Password Change</h2><h3 id='http-request-4'>HTTP Request</h3>
+<h2 id='request-account-password-change'>Request Account Password Change</h2><h3 id='http-request-5'>HTTP Request</h3>
 <p><code>POST /users/request-reset-password</code></p>
 
 <blockquote>
@@ -532,7 +760,7 @@ The response are either success or error.
     </span><span class="s2">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"An e-mail has been sent to harryhappy111@gmail.com with further instructions."</span><span class="p">,</span><span class="w">
     </span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6076253795a31fade21b1c6b106cd0bf1df08334"</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre><h2 id='get-email-by-password-request-token-the-link-will-be-in-the-user-39-s-email'>Get Email by Password Request Token (The link will be in the user&#39;s email)</h2><h3 id='http-request-5'>HTTP Request</h3>
+</span></code></pre><h2 id='get-email-by-password-request-token-the-link-will-be-in-the-user-39-s-email'>Get Email by Password Request Token (The link will be in the user&#39;s email)</h2><h3 id='http-request-6'>HTTP Request</h3>
 <p><code>GET /users/update-password/{token}</code></p>
 
 <p>Sever will send back user&#39;s email and token, which are used to update password.</p>
@@ -540,7 +768,7 @@ The response are either success or error.
     </span><span class="s2">"email"</span><span class="p">:</span><span class="s2">"harryhappy111@gmail.com"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"token"</span><span class="p">:</span><span class="s2">"6076253795a31fade21b1c6b106cd0bf1df08334"</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre><h2 id='update-account-password'>Update Account Password</h2><h3 id='http-request-6'>HTTP Request</h3>
+</span></code></pre><h2 id='update-account-password'>Update Account Password</h2><h3 id='http-request-7'>HTTP Request</h3>
 <p><code>POST /users/update-password</code></p>
 
 <blockquote>
@@ -585,7 +813,7 @@ The response are either success or error.
 <td>Access token</td>
 </tr>
 </tbody></table>
-<h2 id='facebook-signin'>Facebook SignIn</h2><h3 id='http-request-7'>HTTP Request</h3>
+<h2 id='facebook-signin'>Facebook SignIn</h2><h3 id='http-request-8'>HTTP Request</h3>
 <p><code>Get /users/signup-facebook</code></p>
 <h3 id='example-callback-response-of-successful-signin-at-code-users-signin-callback-xxx-xxx-code'>Example callback response of successful signin at <code>/users/signin/callback?xxx=xxx</code>:</h3><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
     </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Login successful!"</span><span class="p">,</span><span class="w">
@@ -616,7 +844,7 @@ The response are either success or error.
 <aside class="notice">
 `token: xxxx...` is logined user identifier for all requests.
 </aside>
-<h2 id='google-signin'>Google SignIn</h2><h3 id='http-request-8'>HTTP Request</h3>
+<h2 id='google-signin'>Google SignIn</h2><h3 id='http-request-9'>HTTP Request</h3>
 <p><code>Get /users/signup-google</code></p>
 <h3 id='example-callback-response-of-successful-signin-at-code-users-signin-callback-xxx-xxx-code-2'>Example callback response of successful signin at <code>/users/signin/callback?xxx=xxx</code>:</h3><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
     </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Login successful!"</span><span class="p">,</span><span class="w">
@@ -647,7 +875,7 @@ The response are either success or error.
 <aside class="notice">
 `token: xxxx...` is logined user identifier for all requests.
 </aside>
-<h2 id='linkedin-signin'>Linkedin SignIn</h2><h3 id='http-request-9'>HTTP Request</h3>
+<h2 id='linkedin-signin'>Linkedin SignIn</h2><h3 id='http-request-10'>HTTP Request</h3>
 <p><code>Get /users/signup-linkedin</code></p>
 <h3 id='example-callback-response-of-successful-signin-at-code-users-signin-callback-xxx-xxx-code-3'>Example callback response of successful signin at <code>/users/signin/callback?xxx=xxx</code>:</h3><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
     </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Login successful!"</span><span class="p">,</span><span class="w">
@@ -678,7 +906,7 @@ The response are either success or error.
 <aside class="notice">
 `token: xxxx...` is logined user identifier for all requests.
 </aside>
-<h2 id='twitter-signin-currently-disabled'>Twitter SignIn (Currently Disabled)</h2><h3 id='http-request-10'>HTTP Request</h3>
+<h2 id='twitter-signin-currently-disabled'>Twitter SignIn (Currently Disabled)</h2><h3 id='http-request-11'>HTTP Request</h3>
 <p><code>Get /users/signup-twitter</code></p>
 <h3 id='example-callback-response-of-successful-signin-at-code-users-signin-callback-xxx-xxx-code-4'>Example callback response of successful signin at <code>/users/signin/callback?xxx=xxx</code>:</h3><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
     </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Login successful!"</span><span class="p">,</span><span class="w">

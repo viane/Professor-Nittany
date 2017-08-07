@@ -11,16 +11,33 @@ const async = require('async');
 /* GET users listing. */
 router.route('/').get(function(req, res, next) {
   User.find({}).populate('major').populate('question_history').populate('interest').populate('interest_manual').populate('inbox').populate('personality_evaluation').populate('assessement'). //Schema hasn't been registered for model {Assessement}
+<<<<<<< HEAD
     exec(function(err, user) {
       if (err)
         return next(err);
       res.json(user);
     });
+=======
+  exec(function(err, user) {
+    if (err)
+      return next(err);
+    res.json(user);
+  });
+}).delete(function(req, res, next) {
+  User.remove({
+    'email': req.body.email
+  }, function(err, resp) {
+    if (err)
+      return next(err);
+    res.json(resp);
+  });
+>>>>>>> refs/remotes/origin/master
 });
 
 //get User information
 router.route('/get-user').get(Verify.verifyOrdinaryUser, function(req, res, next) {
   User.findById(req.decoded._id).populate('major').populate('interest').populate('interest_manual').populate('inbox').populate('personality_evaluation').populate('assessement') //Schema hasn't been registered for model {Assessement}
+<<<<<<< HEAD
     .exec(function(err, user) {
       if (err) {
         return next(err)
@@ -34,6 +51,12 @@ router.route('/get-user').get(Verify.verifyOrdinaryUser, function(req, res, next
     if (err)
       return next(err);
     res.json(resp);
+=======
+  .exec(function(err, user) {
+    if (err)
+      return next(err);
+    res.json(user);
+>>>>>>> refs/remotes/origin/master
   });
 });
 
@@ -74,6 +97,13 @@ router.post('/signup', function(req, res) {
     }
 
     user.status = "inactive";
+    console.log(req.body);
+    if(req.body.major && req.body.major.length>0){
+      for(let j=0; j<req.body.major.length; j++){
+        user.major.push(req.body.major[j]);
+      }
+    }
+    
 
     crypto.randomBytes(20, (err, buf) => {
       const token = buf.toString('hex');
