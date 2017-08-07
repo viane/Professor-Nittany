@@ -23,6 +23,18 @@ const document_conversion = watson.document_conversion({username: config.watson.
 
 profileRouter.use(bodyParser.json());
 
+profileRouter.post('/view-tutorial', Verify.verifyOrdinaryUser, (req, res) => {
+  if (!config.interface_version.includes(req.interface)) {
+    return res.status(400).json({error:'Invalid interface name.'})
+  }
+  User.findById(req.decoded._id).exec().then((updateRecord, err) => {
+
+  }).catch((err) => {
+    console.error(err);
+    res.status(400).json(err);
+  });
+})
+
 // API GET /profile/interest-manual
 profileRouter.get('/interest-manual', Verify.verifyOrdinaryUser, (req, res) => {
   User.findById(req.decoded._id).exec().then((updateRecord, err) => {

@@ -1,7 +1,9 @@
 // show intro if user is "frist" time use the interface
 const dataStorage = window.localStorage;
-
 $(() => {
+  if (!localStorage.hasOwnProperty('iaa-showTourBool')) {
+    setLocalTourBool(false);
+  }
   // Define the tour!
   const liteVersionTour = {
     id: "lite-version",

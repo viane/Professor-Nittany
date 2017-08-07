@@ -6,6 +6,10 @@ let timeAsked = "";
 let question = {};
 let access_token;
 
+if (!localStorage.hasOwnProperty('iaa-userToken')) {
+  localStorage.setItem('iaa-userToken', null);
+}
+
 $(() => {
   initMsgTimeElaspeListener();
   externalQuestionListener();
