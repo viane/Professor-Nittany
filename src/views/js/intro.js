@@ -1,8 +1,9 @@
 // show intro if user is "frist" time use the interface
 const dataStorage = window.localStorage;
 $(() => {
+
   if (!localStorage.hasOwnProperty('iaa-showTourBool')) {
-    setLocalTourBool(false);
+    setLocalTourBool(null);
   }
   // Define the tour!
   const liteVersionTour = {
@@ -87,7 +88,8 @@ const setLocalTourBool = (boolVal) => {
 
 const hasUserToken = () => {
   const storage = localStorage;
-  if (storage['iaa-userToken'] && storage['iaa-userToken'].length > 0) {
+  if (JSON.parse(storage['iaa-userToken']) && storage['iaa-userToken'].length > 0) {
+    return storage['iaa-userToken'];
   } else {
     return null;
   }
