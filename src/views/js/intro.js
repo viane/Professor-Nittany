@@ -5,6 +5,9 @@ $(() => {
   if (!localStorage.hasOwnProperty('iaa-showTourBool')) {
     setLocalTourBool(null);
   }
+  if (!localStorage.hasOwnProperty('currentStep')) {
+     dataStorage.setItem('currentStep', JSON.stringify(1));
+  }  
   // Define the tour!
   const liteVersionTour = {
     id: "lite-version",
@@ -61,6 +64,16 @@ $(() => {
       }
     ],
     showPrevButton: true,
+    onPrev: ()=>{
+      dataStorage.currentStep--;
+      $('.expose').removeClass('expose');
+      $('.'+dataStorage.currentStep).addClass('expose');
+    },
+    onNext: ()=>{
+      dataStorage.currentStep++;
+      $('.expose').removeClass('expose');
+      $('.'+dataStorage.currentStep).addClass('expose');
+    },
     onEnd: () => {
       //change localStorage
       setLocalTourBool(true);
@@ -68,6 +81,9 @@ $(() => {
       if (hasUserToken()) {
 
       }
+      $('#overlay').fadeOut(300, function(){
+        $('.expose').css('z-index','1');
+      });
     },
     onClose: () => {
       //change localStorage
@@ -76,6 +92,9 @@ $(() => {
       if (hasUserToken()) {
 
       }
+      $('#overlay').fadeOut(300, function(){
+        $('.expose').css('z-index','1');
+      });
     }
   };
 
@@ -85,6 +104,8 @@ $(() => {
   }
   shouldDisplayTour().then(tourBool => {
     if (tourBool) {
+      $('#overlay').fadeIn(300);
+      $('.'+dataStorage.currentStep).addClass('expose');
       hopscotch.startTour(liteVersionTour);
     }
   })
