@@ -684,4 +684,17 @@ body {
 /* fix border on tour step bubble*/
 .tour-lite-version{
     border-radius: 9px;
+    z-index:99999;
+}
+
+.expose{
+    z-index:99999;
+    position: relative;
+}
+
+#overlay {
+    background:rgba(0,0,0,0.5);
+    display:none;
+    width:100%; height:100%;
+    position:absolute; top:0; left:0; z-index:99998;
 }
