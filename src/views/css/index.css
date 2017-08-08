@@ -212,6 +212,11 @@ html, body {
     transition: all 1.8s ease-in-out;
 }
 
+.current-message{
+  line-height: 1.5em;
+font-size: 1.1em;
+}
+
 .media-user-info {
     max-width: 90%;
     border-right: 2px solid;
