@@ -280,7 +280,7 @@ const formatAnswerByTag = (input) => {
 
     extendText = extendText.replace(new RegExp("\\[/extend\\]", "g"), "");
 
-    input = input.replace(initExtendText, "<div><span class=\"read-more btn btn-secondary\">Read More</span><div class=\"answer-body hide\">" + extendText + "</div></div>");
+    input = input.replace(initExtendText, "<div><div class=\"answer-body hide\">" + extendText + "</div><span class=\"read-more btn btn-secondary\">Read More</span></div>");
   }
 
   // for [tip] ... [/tip]
@@ -373,9 +373,9 @@ let watsonChatClassNumerous = '<div class="current-message"><p class="media-text
 let watsonChatClassSingle = '<p class="media-text">';
 
 let htmlAfter = '</span></div></div></div></li>';
-let html2Buttons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
-let html3Buttons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
-let html4Buttons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
+let html2Buttons = '<p class="media-text additional">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
+let html3Buttons = '<p class="media-text additional">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
+let html4Buttons = '<p class="media-text additional">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
 let htmlWAfter = '</span></div></div></div></li>';
 let htmlWAfterNoButtons = '</span></div></div></div></li>';
 
@@ -408,11 +408,11 @@ const addReadmoreHandler = () => {
   $('.read-more').each(function () {
     $(this).on('click', function () {
       if ($(this).text() === "Read More") {
-        $(this).text("Collapse")
-        $(this).next().removeClass("hide");
+        $(this).text("Collapse");
+        $(this).prev().removeClass("hide");
       } else {
-        $(this).text("Read More")
-        $(this).next().addClass("hide");
+        $(this).text("Read More");
+        $(this).prev().addClass("hide");
       }
       $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
     })

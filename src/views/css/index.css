@@ -114,11 +114,6 @@ html, body {
     width: 100%;
 }
 
-.select2m {
-    margin-left: 15px;
-    width: 100%;
-}
-
 @media only screen and (max-width: 991px) {
     .side-bar {
         min-height: 980px;
@@ -235,6 +230,15 @@ html, body {
     margin-bottom: 0px;
 }
 
+.additional {
+    font-style: italic;
+    color: #FDF5E6;
+}
+
+.answer-body {
+    margin-top: 10px;
+}
+
 .answer-list{
   margin-top: 10px;
 }
@@ -279,6 +283,12 @@ max-width: 92%;
 
 .btn-danger {
   margin-top: 10px;
+}
+
+.read-more:hover, .read-more {
+    color: white;
+    margin-top: 10px;
+    padding-left: 0px;
 }
 
 /*answer progress style*/
