@@ -114,6 +114,11 @@ html, body {
     width: 100%;
 }
 
+.select2m {
+    margin-left: 15px;
+    width: 100%;
+}
+
 @media only screen and (max-width: 991px) {
     .side-bar {
         min-height: 980px;
@@ -198,6 +203,10 @@ html, body {
 .pull-right > img {
     width: 80px;
     height: 80px;
+}
+
+.active-chat > p, .current-message > p {
+  margin-bottom: 0px;
 }
 
 .media-watson-info {
