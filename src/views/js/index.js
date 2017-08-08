@@ -134,6 +134,7 @@ function getDateAndTime() {
   return day + ' of ' + month + ' at ' + time;
 }
 
+// answer formatter
 const formatAnswerByTag = (input) => {
 
   //for [\n]
@@ -242,9 +243,9 @@ const formatAnswerByTag = (input) => {
   // for [ul][li]...[/li][/ul]
   if (input.match("\\[ul\\].*?\\[/ul\\]")) {
     // convert to general question that can be directly asked to system
-    input = input.replace(new RegExp("\\[ul\\]", "g"), "<ul>");
+    input = input.replace(new RegExp("\\[ul\\]", "g"), '<ul class="answer-list">');
     input = input.replace(new RegExp("\\[\/ul\\]", "g"), "</ul>");
-    input = input.replace(new RegExp("\\[li\\]", "g"), "<li>");
+    input = input.replace(new RegExp("\\[li\\]", "g"), '<li  class="list-group-item answer-list-item">');
     input = input.replace(new RegExp("\\[\/li\\]", "g"), "</li>");
   }
 
