@@ -226,6 +226,16 @@ html, body {
     margin-bottom: 0px;
 }
 
+.answer-list{
+  margin-top: 10px;
+}
+
+.answer-list-item{
+  color: purple;
+border-radius: 5px;
+max-width: 92%;
+}
+
 .other-answers {
    /*margin-left: 75px;*/
     margin-top: 10px;
