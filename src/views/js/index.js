@@ -19,14 +19,14 @@ $(() => {
   });
 })
 
-$(document).ready(function() {
+$(document).ready(function () {
   // when user presses the send button
-  $('#send').click(function() {
+  $('#send').click(function () {
     addUserChat();
   });
 
   // allows user to just press enter
-  $('#question').keypress(function(e) {
+  $('#question').keypress(function (e) {
     if (e.which == 13) {
       addUserChat();
       return false; //So that page doesn't refresh
@@ -38,28 +38,41 @@ $(document).ready(function() {
     '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>');
 
   if (window.devicePixelRatio > 1)
-    $("body").addClass("disable-zoom")
+    $("body").addClass("disable-zoom");
 
-//$('#myModal').modal('toggle');
+  fetch("/major-list", {
+    method: 'get',
+    headers: {
+      "Content-type": "application/json"
+    }
+  }).then(response => { return response.json() })
+    .then(json => {
+      $.each(json, function (i, item) {
+        $('#major').append($('<option>', {
+          value: item._id,
+          text: item.degree_name
+        }));
+      });
+    })
 });
 
 // when the user wants to see more answers, they can click on the buttons
 // this makes sure that the data is changed
-$(document).on('click', '.btn-default', function(e) {
+$(document).on('click', '.btn-default', function (e) {
   $('.active').removeClass('active')
   $(this).addClass('active');
   //let replaceHTML = watsonChatClassNumerous + data[this.id] + '</p><small class="text-muted">Watson | ' + timeAsked;
   e.preventDefault();
 });
 
-$(document).on('click', '.btn-log', function(e) {
+$(document).on('click', '.btn-log', function (e) {
   $(this).prop("disabled", true);
   logQuestion(question.title);
   e.preventDefault();
 });
 
 
-$(document).on('click', '.btn-answer', function(e) {
+$(document).on('click', '.btn-answer', function (e) {
   $('.current-message').empty();
   $('.current-message').html(data[this.id]);
   initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
@@ -68,7 +81,7 @@ $(document).on('click', '.btn-answer', function(e) {
   e.preventDefault();
 });
 
-$(document).on('click', '.question-tab', function(e) {
+$(document).on('click', '.question-tab', function (e) {
   if ($('.low-confidence').text() == "Check Unsatisfying Questions") {
     $('.lite-header').empty();
     $('.lite-header').text('Unsatisfying Questions');
@@ -254,7 +267,7 @@ const formatAnswerByTag = (input) => {
     // convert to general question that can be directly asked to system
     input = input.replace(new RegExp("\\[question\\]", "g"), "<a href=\"#\" class=\"answer-relate-question\">");
     input = input.replace(new RegExp("\\[\/question\\]", "g"), "</a>");
-  // handler are in
+    // handler are in
   }
 
   //for [extend]...[/extend] same step above but replace to
@@ -267,7 +280,7 @@ const formatAnswerByTag = (input) => {
 
     extendText = extendText.replace(new RegExp("\\[/extend\\]", "g"), "");
 
-    input = input.replace(initExtendText, "<div><span class=\"read-more btn btn-secondary\">Read More</span><div class=\"answer-body hide\">" + extendText + "</div></div>");
+    input = input.replace(initExtendText, "<div><div class=\"answer-body hide\">" + extendText + "</div><span class=\"read-more btn btn-secondary\">Read More</span></div>");
   }
 
   // for [tip] ... [/tip]
@@ -360,9 +373,9 @@ let watsonChatClassNumerous = '<div class="current-message"><p class="media-text
 let watsonChatClassSingle = '<p class="media-text">';
 
 let htmlAfter = '</span></div></div></div></li>';
-let html2Buttons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
-let html3Buttons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
-let html4Buttons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
+let html2Buttons = '<p class="media-text additional">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
+let html3Buttons = '<p class="media-text additional">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
+let html4Buttons = '<p class="media-text additional">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
 let htmlWAfter = '</span></div></div></div></li>';
 let htmlWAfterNoButtons = '</span></div></div></div></li>';
 
@@ -392,14 +405,14 @@ function addUserChat() {
 // read more click handler to expand answer
 //////////////////////////////////////////////////
 const addReadmoreHandler = () => {
-  $('.read-more').each(function() {
-    $(this).on('click', function() {
+  $('.read-more').each(function () {
+    $(this).on('click', function () {
       if ($(this).text() === "Read More") {
-        $(this).text("Collapse")
-        $(this).next().removeClass("hide");
+        $(this).text("Collapse");
+        $(this).prev().removeClass("hide");
       } else {
-        $(this).text("Read More")
-        $(this).next().addClass("hide");
+        $(this).text("Read More");
+        $(this).prev().addClass("hide");
       }
       $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
     })
@@ -437,7 +450,7 @@ function sendServerQuestion(question) {
       timeAsked = '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>';
 
       // I need the number of buttons to match the number of answers
-      switch(json.response.docs.length) {
+      switch (json.response.docs.length) {
         case 1:
           $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfterNoButtons);
           break;
@@ -523,7 +536,7 @@ const initMsgTimeElaspeListener = () => {
 
 const updateTime = () => {
   const randTime = Math.round(Math.random() * (60000 - 10000)) + 10000;
-  setTimeout(function() {
+  setTimeout(function () {
     // update display time
     $('.message-time').each((index, ele) => {
       const orginalTimeISO = $(ele).data('time-iso');
@@ -597,18 +610,18 @@ function questionWrapper(question) {
     questionHTML = questionHTML + '</div>';
   }
   return questionListHTMLH + questionHTML + questionListHTMLT;
-// var questionListHTMLH = '<div class="row form-check scrollable">';
-// var questionListHTMLT ='</div>';
-// var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
-// var questionInputT = '</label></p>';
-// var accumulater='';
-// if(question.length>0){
-//   for(let i=0; i<question.length; i++){
-//       accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
-//       console.log(accumulater);
-//   }
-// }
-// return questionListHTMLH + accumulater + questionListHTMLT;
+  // var questionListHTMLH = '<div class="row form-check scrollable">';
+  // var questionListHTMLT ='</div>';
+  // var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
+  // var questionInputT = '</label></p>';
+  // var accumulater='';
+  // if(question.length>0){
+  //   for(let i=0; i<question.length; i++){
+  //       accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
+  //       console.log(accumulater);
+  //   }
+  // }
+  // return questionListHTMLH + accumulater + questionListHTMLT;
 }
 
 function showLowQuestions() {
@@ -623,7 +636,7 @@ function showLowQuestions() {
     return response.json()
   })
     .then(json => {
-      setTimeout(function() {
+      setTimeout(function () {
         $('.question-loading').remove()
       }, 2000);
       //console.log(json);
