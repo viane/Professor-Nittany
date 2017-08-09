@@ -19,14 +19,14 @@ $(() => {
   });
 })
 
-$(document).ready(function () {
+$(document).ready(function() {
   // when user presses the send button
-  $('#send').click(function () {
+  $('#send').click(function() {
     addUserChat();
   });
 
   // allows user to just press enter
-  $('#question').keypress(function (e) {
+  $('#question').keypress(function(e) {
     if (e.which == 13) {
       addUserChat();
       return false; //So that page doesn't refresh
@@ -45,9 +45,11 @@ $(document).ready(function () {
     headers: {
       "Content-type": "application/json"
     }
-  }).then(response => { return response.json() })
+  }).then(response => {
+    return response.json()
+  })
     .then(json => {
-      $.each(json, function (i, item) {
+      $.each(json, function(i, item) {
         $('#major').append($('<option>', {
           value: item._id,
           text: item.degree_name
@@ -58,21 +60,21 @@ $(document).ready(function () {
 
 // when the user wants to see more answers, they can click on the buttons
 // this makes sure that the data is changed
-$(document).on('click', '.btn-default', function (e) {
+$(document).on('click', '.btn-default', function(e) {
   $('.active').removeClass('active')
   $(this).addClass('active');
   //let replaceHTML = watsonChatClassNumerous + data[this.id] + '</p><small class="text-muted">Watson | ' + timeAsked;
   e.preventDefault();
 });
 
-$(document).on('click', '.btn-log', function (e) {
+$(document).on('click', '.btn-log', function(e) {
   $(this).prop("disabled", true);
   logQuestion(question.title);
   e.preventDefault();
 });
 
 
-$(document).on('click', '.btn-answer', function (e) {
+$(document).on('click', '.btn-answer', function(e) {
   $('.current-message').empty();
   $('.current-message').html(data[this.id]);
   initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
@@ -81,7 +83,7 @@ $(document).on('click', '.btn-answer', function (e) {
   e.preventDefault();
 });
 
-$(document).on('click', '.question-tab', function (e) {
+$(document).on('click', '.question-tab', function(e) {
   if ($('.low-confidence').text() == "Check Unsatisfying Questions") {
     $('.lite-header').empty();
     $('.lite-header').text('Unsatisfying Questions');
@@ -195,21 +197,18 @@ const formatAnswerByTag = (input) => {
     while (input.match(anchorRegularExpression) && input.match(anchorRegularExpression).length > 0) { // check each [a]...[/a] in the original answer
 
       // convert to <a target="_blank" href="...">...</a>
-      input = input.replace(new RegExp("\\[a\\]"), "<a class=\"effect-shine\" target=\"_blank\" href=\"" + linkAry[anchorCount] + "\">");
+      input = input.replace(new RegExp("\\[a\\]"), "<a class=\"effect-shine\" target=\"_blank\" href=\"" + linkAry[anchorCount] + "\"><i class=\"fa fa-link\" aria-hidden=\"true\"></i> ");
       input = input.replace(new RegExp("\\[\/a\\]"), "</a>");
       anchorCount++;
     }
   }
 
   // for [a]...[/a] and [email-addr]...[/email-addr] pair
-
+  // extract email address
   const emailRegularExpression = /(\[email-addr\].*?\[\/email-addr\])/gi; // reg pattern for [email-addr]...[/email-addr]
-
   let emailAry = input.match(emailRegularExpression); // search answer if there is any [email-addr]...[/email-addr], if there is one or more, each segement will be assign to an array
 
   if (emailAry && emailAry.length > 0) { // if array contains any [email-addr]...[/email-addr]
-
-    // trim [link] and [/link] from each segement in array
     emailAry = emailAry.map((email) => {
       email = email.replace(new RegExp("\\[email-addr\\]"), "");
       email = email.replace(new RegExp("\\[\/email-addr\\]"), "");
@@ -217,41 +216,23 @@ const formatAnswerByTag = (input) => {
       return email;
     })
 
-    let anchorCount = 0;
-    const anchorRegularExpression = /\[email-addr\].*?\[\/email-addr\]/; // reg pattern for [a]...[/a]
-    while (input.match(anchorRegularExpression) && input.match(anchorRegularExpression).length > 0) { // check each [a]...[/a] in the original answer
+    const anchorRegularExpression = /\[email-addr\].*?\[\/email-addr\]/;
+    while (input.match(anchorRegularExpression) && input.match(anchorRegularExpression).length > 0) { // remove [email-addr]...[/email-addr]
+      input = input.replace(new RegExp("\\[email-addr\\].*?\\[\/email-addr\\]"), "");
+    }
 
+    // replace with DOM ele
+    const emailRegularExpression2 = /(\[email\].*?\[\/email\])/gi; // reg pattern for [email]...[/email]
+
+    let anchorCount = 0;
+    while (input.match(emailRegularExpression2) && input.match(emailRegularExpression2).length > 0) { // check each [email]...[/email] in the original answer
       // convert to <a target="_blank" href="...">...</a>
-      input = input.replace(new RegExp("\\[email-addr\\]"), "<a class=\"effect-shine\" target=\"_blank\" href=\"mailto:" + emailAry[anchorCount] + "\">");
-      input = input.replace(new RegExp("\\[\/email-addr\\]"), "</a>");
+      input = input.replace(new RegExp("\\[email\\]"), "<a class=\"effect-shine\" target=\"_blank\" href=\"mailto:" + emailAry[anchorCount] + "\">");
+      input = input.replace(new RegExp("\\[\/email\\]"), "</a>");
       anchorCount++;
     }
   }
 
-  const emailRegularExpression2 = /(\[email\].*?\[\/email\])/gi; // reg pattern for [email-addr]...[/email-addr]
-
-  let emailAry2 = input.match(emailRegularExpression2); // search answer if there is any [email-addr]...[/email-addr], if there is one or more, each segement will be assign to an array
-
-  if (emailAry2 && emailAry2.length > 0) { // if array contains any [email-addr]...[/email-addr]
-
-    // trim [link] and [/link] from each segement in array
-    emailAry2 = emailAry2.map((email) => {
-      email = email.replace(new RegExp("\\[email\\]"), "");
-      email = email.replace(new RegExp("\\[\/email\\]"), "");
-      email = email.replace(new RegExp("\\s", "g"), "");
-      return email;
-    })
-
-    let anchorCount2 = 0;
-    const anchorRegularExpression2 = /\[email\].*?\[\/email\]/; // reg pattern for [a]...[/a]
-    while (input.match(anchorRegularExpression2) && input.match(anchorRegularExpression2).length > 0) { // check each [a]...[/a] in the original answer
-
-      // convert to <a target="_blank" href="...">...</a>
-      input = input.replace(new RegExp("\\[email\\]"), "<a class=\"effect-shine\" target=\"_blank\" href=\"mailto:" + emailAry[anchorCount2] + "\">");
-      input = input.replace(new RegExp("\\[\/email\\]"), "</a>");
-      anchorCount2++;
-    }
-  }
 
   // for [ul][li]...[/li][/ul]
   if (input.match("\\[ul\\].*?\\[/ul\\]")) {
@@ -267,7 +248,7 @@ const formatAnswerByTag = (input) => {
     // convert to general question that can be directly asked to system
     input = input.replace(new RegExp("\\[question\\]", "g"), "<a href=\"#\" class=\"answer-relate-question\">");
     input = input.replace(new RegExp("\\[\/question\\]", "g"), "</a>");
-    // handler are in
+  // handler are in
   }
 
   //for [extend]...[/extend] same step above but replace to
@@ -405,8 +386,8 @@ function addUserChat() {
 // read more click handler to expand answer
 //////////////////////////////////////////////////
 const addReadmoreHandler = () => {
-  $('.read-more').each(function () {
-    $(this).on('click', function () {
+  $('.read-more').each(function() {
+    $(this).on('click', function() {
       if ($(this).text() === "Read More") {
         $(this).text("Collapse");
         $(this).prev().removeClass("hide");
@@ -536,7 +517,7 @@ const initMsgTimeElaspeListener = () => {
 
 const updateTime = () => {
   const randTime = Math.round(Math.random() * (60000 - 10000)) + 10000;
-  setTimeout(function () {
+  setTimeout(function() {
     // update display time
     $('.message-time').each((index, ele) => {
       const orginalTimeISO = $(ele).data('time-iso');
@@ -610,18 +591,18 @@ function questionWrapper(question) {
     questionHTML = questionHTML + '</div>';
   }
   return questionListHTMLH + questionHTML + questionListHTMLT;
-  // var questionListHTMLH = '<div class="row form-check scrollable">';
-  // var questionListHTMLT ='</div>';
-  // var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
-  // var questionInputT = '</label></p>';
-  // var accumulater='';
-  // if(question.length>0){
-  //   for(let i=0; i<question.length; i++){
-  //       accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
-  //       console.log(accumulater);
-  //   }
-  // }
-  // return questionListHTMLH + accumulater + questionListHTMLT;
+// var questionListHTMLH = '<div class="row form-check scrollable">';
+// var questionListHTMLT ='</div>';
+// var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
+// var questionInputT = '</label></p>';
+// var accumulater='';
+// if(question.length>0){
+//   for(let i=0; i<question.length; i++){
+//       accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
+//       console.log(accumulater);
+//   }
+// }
+// return questionListHTMLH + accumulater + questionListHTMLT;
 }
 
 function showLowQuestions() {
@@ -636,7 +617,7 @@ function showLowQuestions() {
     return response.json()
   })
     .then(json => {
-      setTimeout(function () {
+      setTimeout(function() {
         $('.question-loading').remove()
       }, 2000);
       //console.log(json);
