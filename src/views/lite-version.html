@@ -42,10 +42,10 @@
     <div class="full-body">
       <!-- SIDE BAR -->
       <div class="col-sm-12 col-md-3 side-bar">
-        <div class="row title 1" >
+        <div class="row title" data-tour-step="1">
           <img src="images/penn-logo.png" alt="penn state logo">
         </div>
-        <div class="panel-group 2" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true"  data-tour-step="2">
           <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingOne">
               <h4 class="panel-title">
@@ -76,8 +76,8 @@
               </div>
             </div>
           </div>
-          <div class="panel panel-default">
-            <div class="panel-heading 3" role="tab" id="headingThree">
+          <div class="panel panel-default" data-tour-step="3">
+            <div class="panel-heading" role="tab" id="headingThree">
               <h4 class="panel-title">
                 <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false"
                   aria-controls="collapseThree">
@@ -87,11 +87,8 @@
             </div>
             <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
               <div class="panel-body">
-                <ul>
-                  <li>What is World Campus</li>
-                  <li>How does online learning work?</li>
-                  <li>How do I apply to World Campus?</li>
-                  <li>Can you help me with LionPATH?</li>
+                <ul id="lite-example-question-list">
+
                 </ul>
               </div>
             </div>
@@ -137,7 +134,7 @@
               </span>
             </p>
           </div>
-          <div class="col-md-12 buttons userLog 4">
+          <div class="col-md-12 buttons userLog"  data-tour-step="4">
             <div class="col-md-6 login">
               <button class="btn-lg btn-default" type="submit" data-target="#loginModal" data-toggle="modal">Login</button>
             </div>
@@ -270,12 +267,12 @@
 
           <div class="current-chat-footer">
             <div class="panel-footer">
-              <div class="input-group 5 input-group-lg">
+              <div class="input-group input-group-lg">
                 <span class="input-group-btn">
                   <button class="btn btn-default" type="button"><i class="fa fa-microphone" aria-hidden="true"></i></button>
                 </span>
-                <input class="5 form-control" placeholder="Ask any question you may have ..." type="text" id="question">
-                <span class="input-group-btn 6">
+                <input class="form-control" placeholder="Ask any question you may have ..." type="text" id="question"  data-tour-step="5">
+                <span class="input-group-btn" data-tour-step="6">
                   <button class="btn btn-default" type="button" id="send"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
                 </span>
               </div>

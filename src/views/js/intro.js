@@ -1,15 +1,11 @@
 // show intro if user is "frist" time use the interface
 const dataStorage = window.localStorage;
 $(() => {
-  console.log($(window).width());
-  if($(window).width()>768){
+  if ($(window).width() > 768) {
     if (!localStorage.hasOwnProperty('iaa-showTourBool')) {
       setLocalTourBool(null);
     }
-    if (!localStorage.hasOwnProperty('currentStep')) {
-       dataStorage.setItem('currentStep', JSON.stringify(1));
-    }  
-    // Define the tour!
+    // Define the tour
     const liteVersionTour = {
       id: "lite-version",
       steps: [
@@ -47,33 +43,49 @@ $(() => {
         },
         {
           title: "Raise your question!",
-          content: "Write down your question here whenever your are ready!",
+          content: "Write down your question here whenever your are ready! In this turorial, I filled one of the popular question for you.",
           target: $("#question")[0],
           placement: "top",
           width: "350",
-
-          showNextButton: true
+          showNextButton: true,
+          onShow: () => {
+            setTimeout(()=>{$('#question').val("Are the tution rates the same for in-state and out-of-state?")}, 1);
+          }
         },
         {
           title: "Let's Chat!",
-          content: "Let's start our conversation!",
+          content: "Press this button or press ENTER on your keyboard to send the question to me!",
           target: $("#send")[0],
           placement: "top",
           arrowOffset: 265,
+          xOffset: -255,
+          showNextButton: true,
+          onShow: () => {
+            setTimeout(()=>{$('.hopscotch-next').hide()}, 10);
+          }
+        },
+        {
+          title: "Here is your answer!",
+          content: "I found answer for you! This area has every information to your answer.",
+          target: $(".media-watson-info")[1],
+          placement: "bottom",
+          arrowOffset: 265,
           xOffset: -245,
-          showCTAButton: true
+          showNextButton: true
         }
       ],
       showPrevButton: true,
-      onPrev: ()=>{
-        dataStorage.currentStep--;
+      onPrev: () => {
+        const currentStep = $('.expose').attr('data-tour-step');
+        const prevTourEle = "[data-tour-step=" + (~~currentStep - 1) + "]";
         $('.expose').removeClass('expose');
-        $('.'+dataStorage.currentStep).addClass('expose');
+        $(prevTourEle).addClass('expose');
       },
-      onNext: ()=>{
-        dataStorage.currentStep++;
+      onNext: () => {
+        const currentStep = $('.expose').attr('data-tour-step');
+        const nextTourEle = "[data-tour-step=" + (~~currentStep + 1) + "]";
         $('.expose').removeClass('expose');
-        $('.'+dataStorage.currentStep).addClass('expose');
+        $(nextTourEle).addClass('expose');
       },
       onEnd: () => {
         //change localStorage
@@ -82,8 +94,8 @@ $(() => {
         if (hasUserToken()) {
 
         }
-        $('#overlay').fadeOut(300, function(){
-          $('.expose').css('z-index','1');
+        $('#overlay').fadeOut(300, function() {
+          $('.expose').removeClass('expose');
         });
       },
       onClose: () => {
@@ -93,8 +105,8 @@ $(() => {
         if (hasUserToken()) {
 
         }
-        $('#overlay').fadeOut(300, function(){
-          $('.expose').css('z-index','1');
+        $('#overlay').fadeOut(300, function() {
+          $('.expose').removeClass('expose');
         });
       }
     };
@@ -106,12 +118,12 @@ $(() => {
     shouldDisplayTour().then(tourBool => {
       if (tourBool) {
         $('#overlay').fadeIn(300);
-        $('.'+dataStorage.currentStep).addClass('expose');
-        hopscotch.startTour(liteVersionTour);
+        $("[data-tour-step=1]").addClass('expose');
+        hopscotch.startTour(liteVersionTour, 0);
       }
     })
   }
-  
+
 })
 
 const setLocalTourBool = (boolVal) => {
