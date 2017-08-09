@@ -639,7 +639,7 @@ function login() {
     headers: {
       "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
     },
-    body: 'email={email}&password={password}',
+    body: 'email=' + email + '&password=' + password,
     credentials: 'include'
   }).then(response => { return response.json() })
     .then(json => {
