@@ -648,7 +648,7 @@ function login() {
         console.log(json.err);
       }
       else {
-        localStorage.loginToken = json.token;
+        localStorage['iaa-userToken'] = json.token;
         // TODO change - Currently redirecting to lite because full is not done
         window.location.replace('./lite-version.html');
       }
