@@ -16,7 +16,6 @@ import formatter from '../system/utility/formatter';
 import conversation from '../system/watson/conversation';
 import questionsHandle from '../system/utility/questions-handler';
 
-
 questionRouter.use(bodyParser.json());
 
 //API get asked question from mongodb: get /questions
@@ -517,7 +516,12 @@ questionRouter.post('/log-question', function(req, res, next) {
 
 // GET API for getting good example question
 questionRouter.get('/get-trained-question', (req, res) => {
-  Questions.find({'trained':true}).select({ "body": 1, "_id": 1 }).exec((questions,err)=>{
+  Questions.findRandom({
+    'trained': true
+  }, {
+    "body": 1,
+    "_id": 1
+  }, { skip: 10, limit: 10, count: 5 }, (err, questions) => {
     if (err) {
       console.error(err);
       return res.status(400).json({

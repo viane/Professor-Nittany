@@ -1,115 +1,22 @@
 // show intro if user is "frist" time use the interface
 const dataStorage = window.localStorage;
 $(() => {
+  // example Questions
+  fetch('/questions/get-trained-question',{
+    method: 'get'
+  }).then(response => {
+    return response.json()
+  }).then(json => {
+    for (let i = 0; i < 4; i++) {
+$('#lite-example-question-list').append("<li>"+json.questions[i].body+"</li>")
+    }
+  })
+
+  // turorial
   if ($(window).width() > 768) {
     if (!localStorage.hasOwnProperty('iaa-showTourBool')) {
       setLocalTourBool(null);
     }
-    // Define the tour
-    const liteVersionTour = {
-      id: "lite-version",
-      steps: [
-        {
-          title: "Welcome!",
-          content: "Hi there! It's nice to see you! Let me walk you through some basic components about the lite version chat interface.",
-          target: $(".title")[0],
-          placement: "bottom",
-          xOffset: 20,
-          showNextButton: true
-        },
-        {
-          title: "General info pannel.",
-          content: "You can find out most direct information about what I am in this pannel.",
-          target: $("#accordion")[0],
-          placement: "top",
-          showPrevButton: true,
-          showNextButton: true
-        },
-        {
-          title: "Some questions guide for you!",
-          content: "You can reference some basic/start-up questions from this tab that I usually asked by people.",
-          target: $("#headingThree")[0],
-          placement: "top",
-
-          showNextButton: true
-        },
-        {
-          title: "Register and Login to experience personalized service!",
-          content: "You can obtain personalized advises after you register",
-          target: $(".userLog")[0],
-          placement: "top",
-          xOffset: 18,
-          showNextButton: true
-        },
-        {
-          title: "Raise your question!",
-          content: "Write down your question here whenever your are ready! In this turorial, I filled one of the popular question for you.",
-          target: $("#question")[0],
-          placement: "top",
-          width: "350",
-          showNextButton: true,
-          onShow: () => {
-            setTimeout(()=>{$('#question').val("Are the tution rates the same for in-state and out-of-state?")}, 1);
-          }
-        },
-        {
-          title: "Let's Chat!",
-          content: "Press this button or press ENTER on your keyboard to send the question to me!",
-          target: $("#send")[0],
-          placement: "top",
-          arrowOffset: 265,
-          xOffset: -255,
-          showNextButton: true,
-          onShow: () => {
-            setTimeout(()=>{$('.hopscotch-next').hide()}, 10);
-          }
-        },
-        {
-          title: "Here is your answer!",
-          content: "I found answer for you! This area has every information to your answer.",
-          target: $(".media-watson-info")[1],
-          placement: "bottom",
-          arrowOffset: 265,
-          xOffset: -245,
-          showNextButton: true
-        }
-      ],
-      showPrevButton: true,
-      onPrev: () => {
-        const currentStep = $('.expose').attr('data-tour-step');
-        const prevTourEle = "[data-tour-step=" + (~~currentStep - 1) + "]";
-        $('.expose').removeClass('expose');
-        $(prevTourEle).addClass('expose');
-      },
-      onNext: () => {
-        const currentStep = $('.expose').attr('data-tour-step');
-        const nextTourEle = "[data-tour-step=" + (~~currentStep + 1) + "]";
-        $('.expose').removeClass('expose');
-        $(nextTourEle).addClass('expose');
-      },
-      onEnd: () => {
-        //change localStorage
-        setLocalTourBool(true);
-        // if has userToken, update user DB record
-        if (hasUserToken()) {
-
-        }
-        $('#overlay').fadeOut(300, function() {
-          $('.expose').removeClass('expose');
-        });
-      },
-      onClose: () => {
-        //change localStorage
-        setLocalTourBool(true);
-        // if has userToken, update user DB record
-        if (hasUserToken()) {
-
-        }
-        $('#overlay').fadeOut(300, function() {
-          $('.expose').removeClass('expose');
-        });
-      }
-    };
 
     // check local storage for tour record, if never been decleared
     if (shownTour() === null) {
@@ -119,12 +26,117 @@ $(() => {
       if (tourBool) {
         $('#overlay').fadeIn(300);
         $("[data-tour-step=1]").addClass('expose');
-        hopscotch.startTour(liteVersionTour, 0);
+        displayTourFirstPart();
       }
     })
   }
 
 })
+
+const displayTourFirstPart = ()=>{
+  // Define the tour
+  const liteVersionTour = {
+    id: "lite-version",
+    steps: [
+      {
+        title: "Welcome!",
+        content: "Hi there! It's nice to see you! Let me walk you through some basic components about the lite version chat interface.",
+        target: $(".title")[0],
+        placement: "bottom",
+        xOffset: 20,
+        showNextButton: true
+      },
+      {
+        title: "General info pannel.",
+        content: "You can find out most direct information about what I am in this pannel.",
+        target: $("#accordion")[0],
+        placement: "top",
+        showPrevButton: true,
+        showNextButton: true
+      },
+      {
+        title: "Some questions guide for you!",
+        content: "You can reference some basic/start-up questions from this tab that I usually asked by people.",
+        target: $("#headingThree")[0],
+        placement: "top",
+
+        showNextButton: true
+      },
+      {
+        title: "Register and Login to experience personalized service!",
+        content: "You can obtain personalized advises after you register",
+        target: $(".userLog")[0],
+        placement: "top",
+        xOffset: 18,
+        showNextButton: true
+      },
+      {
+        title: "Raise your question!",
+        content: "Write down your question here whenever your are ready! In this turorial, I filled one of the popular question for you.",
+        target: $("#question")[0],
+        placement: "top",
+        width: "350",
+        showNextButton: true,
+        onShow: () => {
+          setTimeout(() => {
+            $('#question').val("what is world campus?")
+          }, 1);
+        }
+      },
+      {
+        title: "Let's Chat!",
+        content: "Press this button or press ENTER on your keyboard to send the question to me!",
+        target: $("#send")[0],
+        placement: "top",
+        arrowOffset: 265,
+        xOffset: -255,
+        showNextButton: true,
+        onShow: () => {
+          setTimeout(() => {
+            $('.hopscotch-next').hide();
+            $('#send').click(() => {
+              $('.hopscotch-next').show('slow');
+            })
+          }, 10);
+        }
+      }
+    ],
+    showPrevButton: true,
+    onPrev: () => {
+      const currentStep = $('.expose').attr('data-tour-step');
+      const prevTourEle = "[data-tour-step=" + (~~currentStep - 1) + "]";
+      $('.expose').removeClass('expose');
+      $(prevTourEle).addClass('expose');
+    },
+    onNext: () => {
+      const currentStep = $('.expose').attr('data-tour-step');
+      const nextTourEle = "[data-tour-step=" + (~~currentStep + 1) + "]";
+      $('.expose').removeClass('expose');
+      $(nextTourEle).addClass('expose');
+    },
+    onEnd: () => {
+      // if has userToken, update user DB record
+      if (hasUserToken()) {
+
+      }
+      $('#overlay').fadeOut(300, function() {
+        $('.expose').removeClass('expose');
+      });
+    },
+    onClose: () => {
+      //change localStorage
+      setLocalTourBool(true);
+      // if has userToken, update user DB record
+      if (hasUserToken()) {
+
+      }
+      $('#overlay').fadeOut(300, function() {
+        $('.expose').removeClass('expose');
+      });
+    }
+  };
+  hopscotch.startTour(liteVersionTour, 0);
+}
 
 const setLocalTourBool = (boolVal) => {
   dataStorage.setItem('iaa-showTourBool', JSON.stringify(boolVal));
