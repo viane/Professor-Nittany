@@ -79,7 +79,9 @@ const displayTourFirstPart = () => {
           $('#send').click(() => {
             $('.expose').removeClass('expose');
             hopscotch.endTour();
-            $('#send').off('click');
+            $('#send').off('click').click(() => {
+              addUserChat()
+            });
           });
           $('.hopscotch-next').click(() => {
             $('#send').click();
@@ -109,6 +111,7 @@ const displayTourFirstPart = () => {
       $('#overlay').fadeOut(300, function() {
         $('.expose').removeClass('expose');
       });
+      hopscotch.endTour();
     },
     onEnd: () => {
       hopscotch.endTour();
