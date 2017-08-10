@@ -76,10 +76,14 @@ const displayTourFirstPart = () => {
         xOffset: -255,
         showNextButton: true,
         onShow: () => {
-          $('.hopscotch-next').click(() => {
-            $('#send').click();
+          $('#send').click(() => {
             $('.expose').removeClass('expose');
             hopscotch.endTour();
+            $('#send').off('click');
+          });
+          $('.hopscotch-next').click(() => {
+            $('#send').click();
+            $('.hopscotch-next').off('click')
           })
         }
       }
@@ -238,7 +242,7 @@ const displayTourSecondPart = () => {
         $('.expose').removeClass('expose');
       });
       setTimeout(() => {
-        $('.current-message').css({ 'z-index' : '', 'position' : '' });
+        $('.current-message').css({'z-index': '', 'position': ''});
       }, 100)
       hopscotch.endTour();
     },
@@ -249,7 +253,7 @@ const displayTourSecondPart = () => {
       // all tutorials are finished
       setLocalTourBool(true);
       setTimeout(() => {
-        $('.current-message').css({ 'z-index' : '', 'position' : '' });
+        $('.current-message').css({'z-index': '', 'position': ''});
       }, 100)
       hopscotch.endTour();
     }
