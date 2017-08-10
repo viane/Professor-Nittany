@@ -41,6 +41,7 @@
     "jsonwebtoken": "^7.4.1",
     "mongoose": "^4.11.0",
     "mongoose-currency": "^0.2.0",
+    "mongoose-simple-random": "^0.4.1",
     "morgan": "~1.8.1",
     "nodemailer": "^4.0.1",
     "nodemailer-smtp-transport": "^2.7.4",
