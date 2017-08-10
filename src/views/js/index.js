@@ -12,22 +12,19 @@ if (!localStorage.hasOwnProperty('iaa-userToken')) {
 
 $(() => {
   // alpha test notification
-  $.notify("You are in the alpha test version,\nsmall but unharmed bugs are expected in this stage."
-    , {
-      className: "info",
-      clickToHide: true,
-      autoHide: false
-    });
+  $.notify("You are in the alpha test version,\nsmall but unharmed bugs are expected in this stage.", {
+    className: "info",
+    clickToHide: true,
+    autoHide: false
+  });
   // example Questions
-  fetch('/questions/get-trained-question', {
-    method: 'get'
-  }).then(response => {
+  fetch('/questions/get-trained-question', {method: 'get'}).then(response => {
     return response.json()
   }).then(json => {
     for (let i = 0; i < 4; i++) {
       $('#lite-example-question-list').append("<li><i class=\"fa fa-slack\" aria-hidden=\"true\"></i>&nbsp;&nbsp;<a class=\"example-question\">" + json.questions[i].body + "</a></li>")
     }
-    $('.example-question').each((index,item)=>{
+    $('.example-question').each((index, item) => {
       $(item).click(() => {
         $('#question').val($(item).text());
       })
@@ -35,10 +32,7 @@ $(() => {
   })
   initMsgTimeElaspeListener();
   externalQuestionListener();
-  lightbox.option({
-    'resizeDuration': 200,
-    'wrapAround': true
-  });
+  lightbox.option({'resizeDuration': 200, 'wrapAround': true});
 })
 
 $(document).ready(function() {
@@ -69,15 +63,14 @@ $(document).ready(function() {
     }
   }).then(response => {
     return response.json()
+  }).then(json => {
+    $.each(json, function(i, item) {
+      $('#major').append($('<option>', {
+        value: item._id,
+        text: item.degree_name
+      }));
+    });
   })
-    .then(json => {
-      $.each(json, function(i, item) {
-        $('#major').append($('<option>', {
-          value: item._id,
-          text: item.degree_name
-        }));
-      });
-    })
 });
 
 // when the user wants to see more answers, they can click on the buttons
@@ -94,7 +87,6 @@ $(document).on('click', '.btn-log', function(e) {
   logQuestion(question.title);
   e.preventDefault();
 });
-
 
 $(document).on('click', '.btn-answer', function(e) {
   $('.current-message').empty();
@@ -255,7 +247,6 @@ const formatAnswerByTag = (input) => {
     }
   }
 
-
   // for [ul][li]...[/li][/ul]
   if (input.match("\\[ul\\].*?\\[/ul\\]")) {
     // convert to general question that can be directly asked to system
@@ -270,7 +261,7 @@ const formatAnswerByTag = (input) => {
     // convert to general question that can be directly asked to system
     input = input.replace(new RegExp("\\[question\\]", "g"), "<a href=\"#\" class=\"answer-relate-question\">");
     input = input.replace(new RegExp("\\[\/question\\]", "g"), "</a>");
-  // handler are in
+    // handler are in
   }
 
   //for [extend]...[/extend] same step above but replace to
@@ -283,7 +274,7 @@ const formatAnswerByTag = (input) => {
 
     extendText = extendText.replace(new RegExp("\\[/extend\\]", "g"), "");
 
-    input = input.replace(initExtendText, "<div><div class=\"answer-body hide\">" + extendText + "</div><span class=\"read-more btn btn-secondary\">Read More</span></div>");
+    input = input.replace(initExtendText, "<div class=\"answer-extra-info\"><div class=\"answer-body hide\">" + extendText + "</div><span class=\"read-more btn btn-secondary\">Read More</span></div>");
   }
 
   // for [tip] ... [/tip]
@@ -311,7 +302,6 @@ const formatAnswerByTag = (input) => {
 
     input = input.replace(initOptionalText, optionalText);
   }
-
 
   while (input.match("\\[img\\].*?\\[/img\\]")) {
     const initImgText = input.match("\\[img\\].*?\\[/img\\]").toString();
@@ -376,9 +366,12 @@ let watsonChatClassNumerous = '<div class="current-message"><p class="media-text
 let watsonChatClassSingle = '<p class="media-text">';
 
 let htmlAfter = '</span></div></div></div></li>';
-let html2Buttons = '<p class="media-text additional">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
-let html3Buttons = '<p class="media-text additional">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
-let html4Buttons = '<p class="media-text additional">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
+let html2Buttons = '<p class="media-text additional">View a different answer by clicking a button below.</p><div class="btn-group wers" role="group" aria-label="...">' +
+'<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right btn-incorrect-answer">No Correct Answers</div>';
+let html3Buttons = '<p class="media-text additional">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' +
+'<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right btn-incorrect-answer">No Correct Answers</div>';
+let html4Buttons = '<p class="media-text additional">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' +
+'<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right btn-incorrect-answer">No Correct Answers</div>';
 let htmlWAfter = '</span></div></div></div></li>';
 let htmlWAfterNoButtons = '</span></div></div></div></li>';
 
@@ -429,53 +422,62 @@ function sendServerQuestion(question) {
     headers: {
       "Content-type": "application/json"
     },
-    body: JSON.stringify({
-      'question': question,
-      'context': context
-    })
+    body: JSON.stringify({'question': question, 'context': context})
   }).then(response => {
     return response.json()
-  })
-    .then(json => {
-      // console.log(json);
-      $('.loading').remove();
-      $('.current-message').attr('class', 'media-text');
-      $('.other-answers').remove();
-      $('.btn-log').remove();
-      $('.active-chat').removeClass('active-chat');
-      let i = 0;
-      while (i < 4 && i != json.response.docs.length) {
-        data[i] = formatAnswerByTag(json.response.docs[i].body);
-        i++;
+  }).then(json => {
+    // console.log(json);
+    $('.loading').remove();
+    $('.current-message').attr('class', 'media-text');
+    $('.other-answers').remove();
+    $('.btn-log').remove();
+    $('.active-chat').removeClass('active-chat');
+    let i = 0;
+    while (i < 4 && i != json.response.docs.length) {
+      data[i] = formatAnswerByTag(json.response.docs[i].body);
+      i++;
+    }
+    context = json.context;
+    // don't want the buttons popping up if there is only one response from the server
+    timeAsked = '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>';
+
+    // I need the number of buttons to match the number of answers
+    switch (json.response.docs.length) {
+      case 1:
+        $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfterNoButtons);
+        break;
+      case 2:
+        $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html2Buttons + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
+        break;
+      case 3:
+        $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html3Buttons + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
+        break;
+      default:
+        $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html4Buttons + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
+        break;
+    }
+    // assign scroll chat to bottom on clicking each answer button
+    $('.btn-answer').each((index, ele) => {
+      $(ele).click(() => {
+        // force to scroll to bottom
+        $('.current-chat-area').animate({
+          scrollTop: $(".scroll-chat").height() + 40 + 'px'
+        });
+      })
+    })
+    initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
+    addReadmoreHandler();
+    $('.current-chat-area').animate({scrollTop: $(".scroll-chat").height()});
+    shouldDisplayTour().then(tourBool => {
+      if (tourBool) {
+        initTourSecondPart();
+        setTimeout(() => {
+          displayTourSecondPart()
+        }, 100)
       }
-      context = json.context;
-      // don't want the buttons popping up if there is only one response from the server
-      timeAsked = '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>';
-
-      // I need the number of buttons to match the number of answers
-      switch (json.response.docs.length) {
-        case 1:
-          $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfterNoButtons);
-          break;
-        case 2:
-          $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html2Buttons + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
-          break;
-        case 3:
-          $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html3Buttons + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
-          break;
-        default:
-          $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html4Buttons + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
-          break;
-      }
-
-      initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
-      addReadmoreHandler();
-      $('.current-chat-area').animate({
-        scrollTop: $(".scroll-chat").height()
-      });
-
-      $('#question').val('');
-    });
+    })
+    $('#question').val('');
+  });
 }
 
 ////////////////////////////////////
@@ -551,8 +553,7 @@ const updateTime = () => {
 }
 
 const uuidv4 = () => {
-  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-  )
+  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16))
 }
 
 const externalQuestionListener = () => {
@@ -576,18 +577,14 @@ function logQuestion(question) {
     headers: {
       "Content-type": "application/json"
     },
-    body: JSON.stringify({
-      'question': question,
-      'answers': data
-    })
+    body: JSON.stringify({'question': question, 'answers': data})
   }).then(response => {
     return response.json()
-  })
-    .then(json => {
-      $('.btn-log').empty();
-      $('.btn-log').text(json.message);
-      $('.btn-log').addClass('active');
-    });
+  }).then(json => {
+    $('.btn-log').empty();
+    $('.btn-log').text(json.message);
+    $('.btn-log').addClass('active');
+  });
 }
 
 function questionWrapper(question) {
@@ -613,18 +610,18 @@ function questionWrapper(question) {
     questionHTML = questionHTML + '</div>';
   }
   return questionListHTMLH + questionHTML + questionListHTMLT;
-// var questionListHTMLH = '<div class="row form-check scrollable">';
-// var questionListHTMLT ='</div>';
-// var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
-// var questionInputT = '</label></p>';
-// var accumulater='';
-// if(question.length>0){
-//   for(let i=0; i<question.length; i++){
-//       accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
-//       console.log(accumulater);
-//   }
-// }
-// return questionListHTMLH + accumulater + questionListHTMLT;
+  // var questionListHTMLH = '<div class="row form-check scrollable">';
+  // var questionListHTMLT ='</div>';
+  // var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
+  // var questionInputT = '</label></p>';
+  // var accumulater='';
+  // if(question.length>0){
+  //   for(let i=0; i<question.length; i++){
+  //       accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
+  //       console.log(accumulater);
+  //   }
+  // }
+  // return questionListHTMLH + accumulater + questionListHTMLT;
 }
 
 function showLowQuestions() {
@@ -637,17 +634,16 @@ function showLowQuestions() {
     }
   }).then(response => {
     return response.json()
+  }).then(json => {
+    setTimeout(function() {
+      $('.question-loading').remove()
+    }, 2000);
+    //console.log(json);
+    var questionList = questionWrapper(json);
+    $('.current-chat').append(questionList);
+    initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
+    addReadmoreHandler();
   })
-    .then(json => {
-      setTimeout(function() {
-        $('.question-loading').remove()
-      }, 2000);
-      //console.log(json);
-      var questionList = questionWrapper(json);
-      $('.current-chat').append(questionList);
-      initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
-      addReadmoreHandler();
-    })
 
 }
 
@@ -665,17 +661,16 @@ function login() {
     credentials: 'include'
   }).then(response => {
     return response.json()
-  })
-    .then(json => {
-      if (json.err) {
-        // TODO handle failure of login
-        console.log(json.err);
-      } else {
-        localStorage['iaa-userToken'] = JSON.stringify(json.token);;
-        // TODO change - Currently redirecting to lite because full is not done
-        window.location.replace('./lite-version.html');
-      }
-    });
+  }).then(json => {
+    if (json.err) {
+      // TODO handle failure of login
+      console.log(json.err);
+    } else {
+      localStorage['iaa-userToken'] = JSON.stringify(json.token);;
+      // TODO change - Currently redirecting to lite because full is not done
+      window.location.replace('./lite-version.html');
+    }
+  });
 }
 
 function register() {
@@ -708,14 +703,13 @@ function register() {
     })
   }).then(response => {
     return response.json()
-  })
-    .then(json => {
-      if (json.err) {
-        // TODO handle failure of registration
-        console.log(json.err);
-      } else {
-        // TODO change - Currently redirecting to lite because full is not done
-        window.location.replace('./lite-version.html');
-      }
-    });
+  }).then(json => {
+    if (json.err) {
+      // TODO handle failure of registration
+      console.log(json.err);
+    } else {
+      // TODO change - Currently redirecting to lite because full is not done
+      window.location.replace('./lite-version.html');
+    }
+  });
 }

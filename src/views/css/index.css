@@ -722,7 +722,7 @@ body {
 }
 
 /* fix border on tour step bubble*/
-.tour-lite-version{
+.tour-lite-version, .tour-lite-version-2{
     border-radius: 9px;
     z-index:99999;
 }
@@ -741,9 +741,14 @@ body {
 
 #lite-example-question-list{
   list-style: none;
+  padding: 5px;
 }
 
 #lite-example-question-list a{
   color: black;
   cursor: pointer;
+}
+
+.hopscotch-bubble-number{
+      display: none;
 }
