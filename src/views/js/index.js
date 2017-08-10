@@ -18,7 +18,21 @@ $(() => {
       clickToHide: true,
       autoHide: false
     });
-
+  // example Questions
+  fetch('/questions/get-trained-question', {
+    method: 'get'
+  }).then(response => {
+    return response.json()
+  }).then(json => {
+    for (let i = 0; i < 4; i++) {
+      $('#lite-example-question-list').append("<li><i class=\"fa fa-slack\" aria-hidden=\"true\"></i>&nbsp;&nbsp;<a class=\"example-question\">" + json.questions[i].body + "</a></li>")
+    }
+    $('.example-question').each((index,item)=>{
+      $(item).click(() => {
+        $('#question').val($(item).text());
+      })
+    })
+  })
   initMsgTimeElaspeListener();
   externalQuestionListener();
   lightbox.option({

@@ -1,17 +1,6 @@
 // show intro if user is "frist" time use the interface
 const dataStorage = window.localStorage;
 $(() => {
-  // example Questions
-  fetch('/questions/get-trained-question',{
-    method: 'get'
-  }).then(response => {
-    return response.json()
-  }).then(json => {
-    for (let i = 0; i < 4; i++) {
-$('#lite-example-question-list').append("<li>"+json.questions[i].body+"</li>")
-    }
-  })
-
   // turorial
   if ($(window).width() > 768) {
     if (!localStorage.hasOwnProperty('iaa-showTourBool')) {
@@ -113,15 +102,6 @@ const displayTourFirstPart = ()=>{
       const nextTourEle = "[data-tour-step=" + (~~currentStep + 1) + "]";
       $('.expose').removeClass('expose');
       $(nextTourEle).addClass('expose');
-    },
-    onEnd: () => {
-      // if has userToken, update user DB record
-      if (hasUserToken()) {
-
-      }
-      $('#overlay').fadeOut(300, function() {
-        $('.expose').removeClass('expose');
-      });
     },
     onClose: () => {
       //change localStorage
