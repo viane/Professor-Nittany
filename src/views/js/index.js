@@ -11,6 +11,14 @@ if (!localStorage.hasOwnProperty('iaa-userToken')) {
 }
 
 $(() => {
+  // alpha test notification
+  $.notify("You are in the alpha test version,\nsmall but unharmed bugs are expected in this stage."
+    , {
+      className: "info",
+      clickToHide: true,
+      autoHide: false
+    });
+
   initMsgTimeElaspeListener();
   externalQuestionListener();
   lightbox.option({
@@ -19,16 +27,16 @@ $(() => {
   });
 })
 
-$(document).ready(function () {
+$(document).ready(function() {
   // when user presses the send button
-  $('#send').click(function () {
+  $('#send').click(function() {
     addUserChat();
   });
 
   // allows user to just press enter
-  $('#question').keypress(function (e) {
+  $(document).keypress(function(e) {
     if (e.which == 13) {
-      addUserChat();
+      $('#send').click();
       return false; //So that page doesn't refresh
     }
   });
@@ -49,7 +57,7 @@ $(document).ready(function () {
     return response.json()
   })
     .then(json => {
-      $.each(json, function (i, item) {
+      $.each(json, function(i, item) {
         $('#major').append($('<option>', {
           value: item._id,
           text: item.degree_name
@@ -60,21 +68,21 @@ $(document).ready(function () {
 
 // when the user wants to see more answers, they can click on the buttons
 // this makes sure that the data is changed
-$(document).on('click', '.btn-default', function (e) {
+$(document).on('click', '.btn-default', function(e) {
   $('.active').removeClass('active')
   $(this).addClass('active');
   //let replaceHTML = watsonChatClassNumerous + data[this.id] + '</p><small class="text-muted">Watson | ' + timeAsked;
   e.preventDefault();
 });
 
-$(document).on('click', '.btn-log', function (e) {
+$(document).on('click', '.btn-log', function(e) {
   $(this).prop("disabled", true);
   logQuestion(question.title);
   e.preventDefault();
 });
 
 
-$(document).on('click', '.btn-answer', function (e) {
+$(document).on('click', '.btn-answer', function(e) {
   $('.current-message').empty();
   $('.current-message').html(data[this.id]);
   initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
@@ -83,7 +91,7 @@ $(document).on('click', '.btn-answer', function (e) {
   e.preventDefault();
 });
 
-$(document).on('click', '.question-tab', function (e) {
+$(document).on('click', '.question-tab', function(e) {
   if ($('.low-confidence').text() == "Check Unsatisfying Questions") {
     $('.lite-header').empty();
     $('.lite-header').text('Unsatisfying Questions');
@@ -248,7 +256,7 @@ const formatAnswerByTag = (input) => {
     // convert to general question that can be directly asked to system
     input = input.replace(new RegExp("\\[question\\]", "g"), "<a href=\"#\" class=\"answer-relate-question\">");
     input = input.replace(new RegExp("\\[\/question\\]", "g"), "</a>");
-    // handler are in
+  // handler are in
   }
 
   //for [extend]...[/extend] same step above but replace to
@@ -386,8 +394,8 @@ function addUserChat() {
 // read more click handler to expand answer
 //////////////////////////////////////////////////
 const addReadmoreHandler = () => {
-  $('.read-more').each(function () {
-    $(this).on('click', function () {
+  $('.read-more').each(function() {
+    $(this).on('click', function() {
       if ($(this).text() === "Read More") {
         $(this).text("Collapse");
         $(this).prev().removeClass("hide");
@@ -517,7 +525,7 @@ const initMsgTimeElaspeListener = () => {
 
 const updateTime = () => {
   const randTime = Math.round(Math.random() * (60000 - 10000)) + 10000;
-  setTimeout(function () {
+  setTimeout(function() {
     // update display time
     $('.message-time').each((index, ele) => {
       const orginalTimeISO = $(ele).data('time-iso');
@@ -591,18 +599,18 @@ function questionWrapper(question) {
     questionHTML = questionHTML + '</div>';
   }
   return questionListHTMLH + questionHTML + questionListHTMLT;
-  // var questionListHTMLH = '<div class="row form-check scrollable">';
-  // var questionListHTMLT ='</div>';
-  // var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
-  // var questionInputT = '</label></p>';
-  // var accumulater='';
-  // if(question.length>0){
-  //   for(let i=0; i<question.length; i++){
-  //       accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
-  //       console.log(accumulater);
-  //   }
-  // }
-  // return questionListHTMLH + accumulater + questionListHTMLT;
+// var questionListHTMLH = '<div class="row form-check scrollable">';
+// var questionListHTMLT ='</div>';
+// var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
+// var questionInputT = '</label></p>';
+// var accumulater='';
+// if(question.length>0){
+//   for(let i=0; i<question.length; i++){
+//       accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
+//       console.log(accumulater);
+//   }
+// }
+// return questionListHTMLH + accumulater + questionListHTMLT;
 }
 
 function showLowQuestions() {
@@ -617,7 +625,7 @@ function showLowQuestions() {
     return response.json()
   })
     .then(json => {
-      setTimeout(function () {
+      setTimeout(function() {
         $('.question-loading').remove()
       }, 2000);
       //console.log(json);
@@ -641,13 +649,14 @@ function login() {
     },
     body: 'email=' + email + '&password=' + password,
     credentials: 'include'
-  }).then(response => { return response.json() })
+  }).then(response => {
+    return response.json()
+  })
     .then(json => {
       if (json.err) {
         // TODO handle failure of login
         console.log(json.err);
-      }
-      else {
+      } else {
         localStorage['iaa-userToken'] = JSON.stringify(json.token);;
         // TODO change - Currently redirecting to lite because full is not done
         window.location.replace('./lite-version.html');
@@ -683,13 +692,14 @@ function register() {
       'account_role': 'Test',
       'majors': [major] //allow double or triple majors. An array of major document id
     })
-  }).then(response => { return response.json() })
+  }).then(response => {
+    return response.json()
+  })
     .then(json => {
       if (json.err) {
         // TODO handle failure of registration
         console.log(json.err);
-      }
-      else {
+      } else {
         // TODO change - Currently redirecting to lite because full is not done
         window.location.replace('./lite-version.html');
       }
