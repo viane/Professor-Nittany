@@ -121,7 +121,7 @@ const initTourSecondPart = () => {
   // tour step for external link
   $($('.active-chat a')[0]).attr('data-tour-step', '11');
   $($('.answer-extra-info')[0]).attr('data-tour-step', '12');
-  $($('.step-control')[0]).attr('data-tour-step', '13');
+  $($('.progress-indicator')[0]).attr('data-tour-step', '13');
   $($('.next-step-btn')[0]).attr('data-tour-step', '14');
   $($('.step iframe')[0]).attr('data-tour-step', '15');
   $($('.other-answers')[0]).attr('data-tour-step', '16');
@@ -158,7 +158,7 @@ const displayTourSecondPart = () => {
       }, {
         title: "More Than One Step!",
         content: "If you see a Progress Indicator here usually means the answer contains multiple steps to answer the question.",
-        target: $('.step-control')[0],
+        target: $('.progress-indicator')[0],
         placement: "top",
         showNextButton: true,
         arrowOffset: 265,
@@ -209,7 +209,7 @@ const displayTourSecondPart = () => {
         showNextButton: true,
         arrowOffset: 205,
         xOffset: -175
-      },{
+      }, {
         title: "That's All You Need to Know",
         content: "Congratulation, you finished all the steps in the tutorial, thank you for being patient with me. Next step for you is just go ahead ask me questions!",
         target: $('.lite-header')[0],
@@ -237,6 +237,9 @@ const displayTourSecondPart = () => {
       $('#overlay').fadeOut(300, function() {
         $('.expose').removeClass('expose');
       });
+      setTimeout(() => {
+        $('.current-message').css({ 'z-index' : '', 'position' : '' });
+      }, 100)
       hopscotch.endTour();
     },
     onEnd: () => {
@@ -245,6 +248,9 @@ const displayTourSecondPart = () => {
       });
       // all tutorials are finished
       setLocalTourBool(true);
+      setTimeout(() => {
+        $('.current-message').css({ 'z-index' : '', 'position' : '' });
+      }, 100)
       hopscotch.endTour();
     }
   };
