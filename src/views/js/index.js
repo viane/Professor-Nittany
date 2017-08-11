@@ -73,7 +73,7 @@ $(document).ready(function() {
   })
 
   // mannual start tutorial
-  $('#lite-instruction').click(()=>{
+  $('#lite-instruction').click(() => {
     setLocalTourBool(false);
     $('#overlay').fadeIn(300);
     $("[data-tour-step=1]").addClass('expose');
@@ -103,6 +103,10 @@ $(document).on('click', '.btn-answer', function(e) {
   addReadmoreHandler();
   $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
   e.preventDefault();
+});
+
+$(document).on('click', '.previous-step-btn, .next-step-btn', function(e) {
+  $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
 });
 
 $(document).on('click', '.question-tab', function(e) {
@@ -418,7 +422,7 @@ const addReadmoreHandler = () => {
         $(this).text("Read More");
         $(this).prev().addClass("hide");
       }
-      $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
+      // $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
     })
   })
 }

@@ -36,40 +36,40 @@ const displayTourFirstPart = () => {
         showNextButton: true
       }, {
         title: "General info pannel.",
-        content: "You can find out most direct information about what I am in this pannel.",
+        content: "You can find some general information about me in this pannel.",
         target: $("#accordion")[0],
         placement: "top",
         showPrevButton: true,
         showNextButton: true
       }, {
         title: "Some questions guide for you!",
-        content: "You can reference some basic/start-up questions from this tab that I usually asked by people.",
+        content: "You can reference some basic/start-up questions from this tab that other users have asked me before.",
         target: $("#headingThree")[0],
         placement: "top",
 
         showNextButton: true
       }, {
         title: "Register and Login to experience personalized service!",
-        content: "You can obtain personalized advises after you register",
+        content: "You can obtain personalized and more detailed advice after you register!",
         target: $(".userLog")[0],
         placement: "top",
         xOffset: 18,
         showNextButton: true
       }, {
         title: "Raise your question!",
-        content: "Write down your question here whenever your are ready! In this turorial, I filled one of the popular question for you.",
+        content: "Type your question here whenever your are ready! I have already filled a popular question for you.",
         target: $("#question")[0],
         placement: "top",
         width: "350",
         showNextButton: true,
         onShow: () => {
           setTimeout(() => {
-            $('#question').val("what is world campus?")
+            $('#question').val("What is World Campus?")
           }, 1);
         }
       }, {
         title: "Let's Chat!",
-        content: "Press this button or press ENTER on your keyboard to send the question to me!",
+        content: "Press this button or hit ENTER on your keyboard to ask your question.",
         target: $("#send")[0],
         placement: "top",
         arrowOffset: 265,
@@ -146,25 +146,25 @@ const displayTourSecondPart = () => {
     steps: [
       {
         title: "The Answer!",
-        content: "There goes your answer! Sometimes it's bit long so please bear with me few more moment to walk through all the part.",
+        content: "You will see the answer in this area.",
         target: $('.active-chat')[0],
         placement: "top",
         showNextButton: true
       }, {
         title: "An External Link",
-        content: "The link provided in the answer usually are explained in detail or has more rich information you might need. Feel free to open it, it won't close our chat.",
+        content: "Links in answers usually provide much more detailed information. Feel free to check them out, it will open in a new tab.",
         target: $('.active-chat a')[0],
         placement: "top",
         showNextButton: true
       }, {
         title: "Some More Information",
-        content: "There are more information in this answer that are too long to show you in the first time, you can click the Read More button to see the extra information.",
+        content: 'Some answers are quite long, so we hide some of it for you. You can click the "Read More" button to view extra information.',
         target: $('.answer-extra-info')[0],
         placement: "top",
         showNextButton: true
       }, {
-        title: "More Than One Step!",
-        content: "If you see a Progress Indicator here usually means the answer contains multiple steps to answer the question.",
+        title: "The Progress Bar",
+        content: "If you see a Progress Indicator, it usually means the answer contains multiple steps.",
         target: $('.progress-indicator')[0],
         placement: "top",
         showNextButton: true,
@@ -194,14 +194,14 @@ const displayTourSecondPart = () => {
           });
         }
       }, {
-        title: "Video is Worth a Thousand Words",
-        content: "Bored at long text? Sit back and enjoy a short video, I bet you will like it!",
+        title: "Videos are Worth a Thousand Words",
+        content: "Bored at long texts? Sit back and enjoy a short video, I bet you will like it!",
         target: $('.step iframe')[0],
         placement: "top",
         showNextButton: true
       }, {
         title: "Looking for Different Answers?",
-        content: "Each person has their own taste on answer, sometime it's hard to satisify everyone with one thing, but I always trying to find every possiable answer that could answer your question.",
+        content: "If the first answer does not answer your question, you have the option to view three other answers. Hopefully you find what you are looking for in them.",
         target: $('.other-answers')[0],
         placement: "top",
         showNextButton: true,
@@ -209,8 +209,8 @@ const displayTourSecondPart = () => {
           $('.current-message').css('z-index', '100000').css('position', 'relative');
         }
       }, {
-        title: "No Happy with All Answers?",
-        content: "I very sorry that I didn't help if you couldn't find anything that is useful, but don't worry, good news is I'm always  learn. There are other human experts teach me on the question that I didn't answer well, click this button will let them know I need improvement on this question.",
+        title: "Not Happy with Any Answer?",
+        content: "I am very sorry that I couldn't answer your question. Click this button to alert my creators that I need to be taught how to answer your question. In the meantime, you could try wording your question in a different way. This helps me sometimes.",
         target: $('.btn-incorrect-answer')[0],
         placement: "top",
         showNextButton: true,
@@ -218,7 +218,7 @@ const displayTourSecondPart = () => {
         xOffset: -175
       }, {
         title: "That's All You Need to Know",
-        content: "Congratulation, you finished all the steps in the tutorial, thank you for being patient with me. Next step for you is just go ahead ask me questions!",
+        content: "Congrats! You have completed the tutorial, thank you for your patience. Now you can go ahead and ask away!",
         target: $('.lite-header')[0],
         placement: "bottom"
       }
