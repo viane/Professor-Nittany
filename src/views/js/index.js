@@ -71,6 +71,14 @@ $(document).ready(function() {
       }));
     });
   })
+
+  // mannual start tutorial
+  $('#lite-instruction').click(()=>{
+    setLocalTourBool(false);
+    $('#overlay').fadeIn(300);
+    $("[data-tour-step=1]").addClass('expose');
+    displayTourFirstPart();
+  })
 });
 
 // when the user wants to see more answers, they can click on the buttons
