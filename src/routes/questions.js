@@ -268,19 +268,7 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
         }
       });
     }
-    // else if(data.output.result){
-    //     return res.status(200).json({
-    //       context:{},
-    //       response: {
-    //         docs: [
-    //           {
-    //             title: "personal question information",
-    //             body: data.output.text[0]
-    //           }
-    //         ]
-    //       }
-    //     });
-    // }
+
     else {
       console.log("conversation");
       return res.status(200).json({
@@ -299,7 +287,7 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
     console.log(err);
     return res.status(302).json(err)
   });
-  //});
+
 
 
 });
@@ -534,5 +522,27 @@ questionRouter.get('/get-trained-question', (req, res) => {
     })
   })
 });
+
+// GET API for getting good example question
+questionRouter.post('/mark-trained-question', (req, res) => {
+  let successNum=0, failNum=0;
+  // qid in req.body.question_id
+  const promiseAry = req.body.question_id.map((qid,index)=>{
+    return new Promise(function(resolve, reject) {
+      Questions.update({'_id':qid},{ $set: { 'trained': true }},(err,newDoc)=>{
+        if (err) {
+          console.error(err);
+          failNum++;
+        }else{
+          successNum++;
+        }
+        resolve();
+      })
+    })
+  })
+  Promise.all(promiseAry).then(()=>{
+    res.status(200).json({'succeed':successNum, 'failed':failNum});
+  })
+})
 
 module.exports = questionRouter;
