@@ -48,87 +48,81 @@ questionRouter.route('/dominated-terms').get(function(req, res, next) {
       return next(err);
     res.json(terms);
   });
-}).post(function(req, res, next) {
-  // console.log("here");
-  // var newDomTerms = dominatedTermsUtility.getDominatedTerms();
-  // newDomTerms.save(function(err,resp){
-  //        if(err) return nexy(err);
-  //        res.json(resp);
-  // });
-  dominatedTermsUtility.getDominatedTerms().then((data) => {
-    res.status(200).json(data);
-  }).catch((err) => {
-    if (err)
-      return next(err);
-    }
-  );
-}).delete(function(req, res, next) {
-  dominatedTerms.remove({}, function(err, resp) {
-    if (err)
-      return next(err);
-    res.json(resp);
+})
+  .post(function(req, res, next) {
+    // console.log("here");
+    // var newDomTerms = dominatedTermsUtility.getDominatedTerms();
+    // newDomTerms.save(function(err,resp){
+    //        if(err) return nexy(err);
+    //        res.json(resp);
+    // });
+    dominatedTermsUtility.getDominatedTerms()
+      .then((data) => {
+        res.status(200).json(data);
+      })
+      .catch((err) => {
+        if (err) return next(err);
+      });
+  })
+  .delete(function(req, res, next) {
+    dominatedTerms.remove({}, function(err, resp) {
+      if (err)
+        return next(err);
+      res.json(resp);
+    });
   });
-});
 
 //API handle Untrained questions
-questionRouter.route('/untrained').get(function(req, res, next) {
-  Questions.find({
-    'trained': false
-  }, function(err, resp) {
-    if (err)
-      return next(err);
-    res.json(resp);
+questionRouter.route('/untrained')
+  .get(function(req, res, next) {
+    Questions.find({
+      'trained': false
+    }, function(err, resp) {
+      if (err)
+        return next(err);
+      res.json(resp);
+    });
+  })
+  .delete(function(req, res, next) {
+    Questions.remove({
+      'trained': false
+    }, function(err, resp) {
+      if (err)
+        return next(err);
+      res.json(resp);
+    });
   });
-}).delete(function(req, res, next) {
-  Questions.remove({
-    'trained': false
-  }, function(err, resp) {
-    if (err)
-      return next(err);
-    res.json(resp);
-  });
-});
 
 //API check low-confidence questions
 questionRouter.route('/get-low-confidence').get(function(req, res, next) {
   Questions.find({
-    'trained': false,
+    'trained':false,
     'low_confidence.mark': true,
-    $or: [
-      {
-        'low_confidence.relevance_level': 'some'
-      }, {
-        'low_confidence.relevance_level': 'full'
-      }
-    ]
-  }, {
-    '_id': 1,
-    'body': 1,
-    'feature': 1,
-    'low_confidence.mark': 1,
-    'low_confidence.relevance_level': 1,
-    'low_confidence.relevance_percent': 1
-  }, function(err, questions) {
+    $or: [{
+      'low_confidence.relevance_level': 'some'
+    }, {
+      'low_confidence.relevance_level': 'full'
+    }]
+  },{'_id':1,'body':1,'feature':1,'low_confidence.mark':1,'low_confidence.relevance_level':1,'low_confidence.relevance_percent':1}, function(err, questions) {
     if (err)
       return next(err);
     res.json(questions);
   })
-}).delete(function(req, res, next) {
-  Questions.remove({
-    'low_confidence.mark': true,
-    $or: [
-      {
+})
+  .delete(function(req, res, next) {
+    Questions.remove({
+      'low_confidence.mark': true,
+      $or: [{
         'low_confidence.relevance_level': 'some'
       }, {
         'low_confidence.relevance_level': 'full'
-      }
-    ]
-  }, function(err, resp) {
-    if (err)
-      return next(err);
-    res.json(resp);
+      }]
+    }, function(err, resp) {
+      if (err)
+        return next(err);
+      res.json(resp);
+    });
   });
-});
 
 //API upload trained question to the server to add more terms
 questionRouter.route('/dominated-terms/upload-file').post(function(req, res, next) {
@@ -158,7 +152,9 @@ questionRouter.route('/dominated-terms/upload-file').post(function(req, res, nex
       }
     });
   } else {
-    res.status(200).json({"message": "you did not choose any file"});
+    res.status(200).json({
+      "message": "you did not choose any file"
+    });
   }
 });
 
@@ -243,17 +239,21 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
     // if question is general, ask RR
     if (data.output.text[0] == "-genereal question" || data.output.result || (data.entities.length > 0 && data.entities[0].entity == 'Irrelevant_Questions')) {
       if (data.output.result) {
-        questionsHandle.questionHandler(data.output.text[0], '59708b6acf1559c355555555').then((resp) => {
-          return res.status(200).json(resp);
-        }).catch((err) => {
-          return res.status(302).json(err);
-        });
+        questionsHandle.questionHandler(data.output.text[0], '59708b6acf1559c355555555')
+          .then((resp) => {
+            return res.status(200).json(resp);
+          })
+          .catch((err) => {
+            return res.status(302).json(err);
+          });
       } else {
-        questionsHandle.questionHandler(req.body.question, '59708b6acf1559c355555555').then((resp) => {
-          return res.status(200).json(resp);
-        }).catch((err) => {
-          return res.status(302).json(err);
-        });
+        questionsHandle.questionHandler(req.body.question, '59708b6acf1559c355555555')
+          .then((resp) => {
+            return res.status(200).json(resp);
+          })
+          .catch((err) => {
+            return res.status(302).json(err);
+          });
       }
     } else if (data.output.text[0] == "-a new question") {
       return res.status(200).json({
@@ -277,10 +277,11 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
     //             title: "personal question information",
     //             body: data.output.text[0]
     //           }
-    // }
     //         ]
     //       }
-    //     }); else {
+    //     });
+    // }
+    else {
       console.log("conversation");
       return res.status(200).json({
         context: data.context,
@@ -300,13 +301,13 @@ questionRouter.route('/send-lite').post(function(req, res, next) {
   });
   //});
 
+
 });
 
 //API full-version send new question to conversation and retrive-rank: post /question/send-lite
 questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res, next) {
   Users.findById(req.decoded._id, function(err, user) {
-    if (err)
-      return next(err);
+    if (err) return next(err);
     let context = {};
     if (req.body.hasOwnProperty('context')) {
       context = req.body.context;
@@ -319,17 +320,21 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
       // if question is general, ask RR
       if (data.output.text[0] == "-genereal question" || data.output.result || (data.entities && data.entities[0].entity == 'Irrelevant_Questions')) {
         if (data.output.result) {
-          questionsHandle.questionHandler(data.output.text[0], req.decoded._id).then((resp) => {
-            return res.status(200).json(resp);
-          }).catch((err) => {
-            return res.status(302).json(err);
-          });
+          questionsHandle.questionHandler(data.output.text[0], req.decoded._id)
+            .then((resp) => {
+              return res.status(200).json(resp);
+            })
+            .catch((err) => {
+              return res.status(302).json(err);
+            });
         } else {
-          questionsHandle.questionHandler(req.body.question, req.decoded._id).then((resp) => {
-            return res.status(200).json(resp);
-          }).catch((err) => {
-            return res.status(302).json(err);
-          });
+          questionsHandle.questionHandler(req.body.question, req.decoded._id)
+            .then((resp) => {
+              return res.status(200).json(resp);
+            })
+            .catch((err) => {
+              return res.status(302).json(err);
+            });
         }
       } else if (data.output.text[0] == "-a new question") {
         return res.status(200).json({
@@ -353,10 +358,11 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
       //             title: "personal question information",
       //             body: data.output.text[0]
       //           }
-      // }
       //         ]
       //       }
-      //     }); else {
+      //     });
+      // }
+      else {
         return res.status(200).json({
           context: data.context,
           response: {
@@ -375,7 +381,9 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
     });
   });
 
+
 });
+
 
 //API send new question to retrive-rank: post /question/ask
 // questionRouter.route('/ask').post(Verify.verifyOrdinaryUser, function(req, res, next) {
@@ -494,15 +502,15 @@ questionRouter.post('/log-question', function(req, res, next) {
   Questions.findOne({
     body: req.body.question
   }, function(err, question) {
-    if (err)
-      return next(err);
+    if (err) return next(err);
     question.temp_answer_holder = req.body.answers;
     question.low_confidence.mark = true;
     question.low_confidence.relevance_level = "some";
     question.save(function(err, resp) {
-      if (err)
-        return next(err);
-      res.status(200).json({'message': 'logged'});
+      if (err) return next(err);
+      res.status(200).json({
+        'message': 'logged'
+      });
     });
   });
 });
@@ -514,17 +522,17 @@ questionRouter.get('/get-trained-question', (req, res) => {
   }, {
     "body": 1,
     "_id": 1
-  }, {
-    skip: 10,
-    limit: 10,
-    count: 5
-  }, (err, questions) => {
+  }, { skip: 10, limit: 10, count: 5 }, (err, questions) => {
     if (err) {
       console.error(err);
-      return res.status(400).json({"status": err})
+      return res.status(400).json({
+        "status": err
+      })
     }
-    return res.status(200).json({"questions": questions})
+    return res.status(200).json({
+      "questions": questions
+    })
   })
-})
+});
 
 module.exports = questionRouter;
