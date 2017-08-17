@@ -603,7 +603,7 @@ function questionWrapper(question) {
     questionHTML = questionHTML + '</div>';
     questionHTML = questionHTML + '</div>';
   }
-  questionHTML += '<button type="button" class="btn-export-question">Export List</button><button class="btn-mark-trained" type="button">Mark Trained</button';
+  questionHTML += '<button type="button" class="btn-lg btn-default btn-mark-all-question">Mark All</button><button type="button" class="btn-lg btn-default btn-export-question">Export List</button><button class="btn-lg btn-default btn-mark-trained" type="button">Mark Trained</button';
   return questionListHTMLH + questionHTML + questionListHTMLT;
 
 }
@@ -626,6 +626,9 @@ function showLowQuestions() {
     var questionList = questionWrapper(json);
     $('.current-chat').append(questionList);
     // btn handler
+    $('.btn-mark-all-question').click(()=>{
+      $('.unsatisfy-question:checkbox:not(:checked)').click();
+    })
     $('.btn-export-question').click(() => {
       let questionList = "";
       $('.unsatisfy-question:checkbox:checked').each((index, ele) => {
@@ -640,17 +643,20 @@ function showLowQuestions() {
         const questionID = $(ele).val();
         qidAry.unshift(questionID);
       })
-      console.log(qidAry);
       fetch("../questions/mark-trained-question", {
         method: 'post',
         headers: {
-          "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+          "Content-type": "application/json; charset=UTF-8"
         },
-        body: 'question_id='+JSON.stringify(qidAry)
+        body: JSON.stringify({question_id: qidAry})
       }).then(response => {
         return response.json()
       }).then(json => {
-        console.log(json);
+        $.notify('Success update: ' + json.succeed, + ' failed update: ' + json.failed, {
+          className: "success",
+          clickToHide: true,
+          autoHide: true
+        })
       })
     })
   })
