@@ -714,7 +714,7 @@ body {
 }
 
 .forgetPassword{
-    color: #4f8dcc;
+
 }
 
 .icon{
@@ -751,4 +751,14 @@ body {
 
 .hopscotch-bubble-number{
       display: none;
+}
+
+.watson-power-tag{
+  border-radius: 3px;
+  padding: 1px 3px 1px 3px;
+  background-color: #fff6f3;
+}
+
+.small-chat-bubble-icon{
+  height: 18px;
 }
