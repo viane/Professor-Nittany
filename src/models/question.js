@@ -1,8 +1,9 @@
 'use strict';
 // app/models/QuestionAnswerPair.js
 // user for admin upload questions from either single submission or file submission
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const random = require('mongoose-simple-random');
 mongoose.Promise = global.Promise;
 
 // var answerSchema = new Schema({
@@ -82,6 +83,6 @@ var questionSchema = new Schema({
 }, {
     timestamps: true
 });
-
+questionSchema.plugin(random);
 // create the model for users and expose it to our app
 module.exports = mongoose.model('Question', questionSchema);

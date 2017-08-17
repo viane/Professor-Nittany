@@ -8,6 +8,8 @@ const nodemailer = require('nodemailer');
 const smtpTransport = require('nodemailer-smtp-transport');
 const crypto = require('crypto');
 const async = require('async');
+import path from 'path';
+
 /* GET users listing. */
 router.route('/').get(function(req, res, next) {
   User.find({}).populate('major').populate('question_history').populate('interest').populate('interest_manual').populate('inbox').populate('personality_evaluation').populate('assessement'). //Schema hasn't been registered for model {Assessement}
@@ -418,14 +420,9 @@ router.post('/signin', function(req, res, next) {
     if (err) {
       return next(err);
     }
-    if (!user) {
-      return res.status(401).json({
-        err: info
-      });
-    }
-    if (user.status === "inactive" || user.activation_code != null) {
+    if (!user || user.status === "inactive" || user.activation_code != null) {
       return res.status(200).json({
-        err: 'Your account is inactive.'
+        err: 'Your account does not exist or is inactive.'
       });
     }
     req.logIn(user, function(err) {
@@ -577,7 +574,7 @@ router.get('/google/callback', function(req, res, next) {
 });
 
 router.get("/signin/callback", function(req, res, next) {
-  res.json(req.query);
+  res.sendFile(path.join(__dirname, '../views', '/callback.html'));
 });
 
 module.exports = router;

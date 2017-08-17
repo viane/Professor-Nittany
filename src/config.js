@@ -69,7 +69,7 @@ module.exports = {
       cluster_id: 'scfdc7ceae_2dd2_4b6e_88c7_be14c54e4d07',
       collection_name: 'Intelligent-Academic-Advisor-WorldCampus'
     },
-    "ranker_id": '7ff711x34-rank-66',
+    "ranker_id": '7ff711x34-rank-803',
     "NaturalLanguageUnderstanding": {
       'username': 'c9d48fc2-7b13-46ef-99cb-a8b819a79963',
       'password': 'Eg57mMPqQE5R',
@@ -96,8 +96,8 @@ module.exports = {
       "version_date": '2016-07-11'
     },
     "document_conversion": {
-      "username": "d1f406ed-2958-472b-80d6-f1f5a8f176f1",
-      "password": "hiJHDXkxq16o",
+      "username": "79dda974-77fe-4001-bdc8-3c389211a596",
+      "password": "CvqPsf1IbxdY",
       "version": "v1",
       "version_date": "2015-12-15",
       "config": {

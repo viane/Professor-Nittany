@@ -11,12 +11,19 @@ if (!localStorage.hasOwnProperty('iaa-userToken')) {
 }
 
 $(() => {
+  // alpha test notification
+  $.notify("You are in the alpha test version,\nsmall but unharmed bugs are expected in this stage.", {
+    className: "info",
+    clickToHide: true,
+    autoHide: false
+  });
+  initGetSampleQuestion();
   initMsgTimeElaspeListener();
   externalQuestionListener();
-  lightbox.option({
-    'resizeDuration': 200,
-    'wrapAround': true
-  });
+  lightbox.option({'resizeDuration': 200, 'wrapAround': true});
+  initUserAccountListener();
+  initBtnHandler();
+
 })
 
 $(document).ready(function() {
@@ -26,21 +33,43 @@ $(document).ready(function() {
   });
 
   // allows user to just press enter
-  $('#question').keypress(function(e) {
+  $(document).keypress(function(e) {
     if (e.which == 13) {
-      addUserChat();
+      $('#send').click();
       return false; //So that page doesn't refresh
     }
   });
 
   // Update the first Watson message
-  $("#Watson-Time").html('Watson | ' +
+  $("#Watson-Time").html('Powered by <span class="watson-power-tag"><img class="small-chat-bubble-icon" src="images/watson-icon.png" /> Watson</span> | ' +
     '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>');
 
   if (window.devicePixelRatio > 1)
-    $("body").addClass("disable-zoom")
+    $("body").addClass("disable-zoom");
 
-//$('#myModal').modal('toggle');
+  fetch("/major-list", {
+    method: 'get',
+    headers: {
+      "Content-type": "application/json"
+    }
+  }).then(response => {
+    return response.json()
+  }).then(json => {
+    $.each(json, function(i, item) {
+      $('#major').append($('<option>', {
+        value: item._id,
+        text: item.degree_name
+      }));
+    });
+  })
+
+  // mannual start tutorial
+  $('#lite-instruction').click(() => {
+    setLocalTourBool(false);
+    $('#overlay').fadeIn(300);
+    $("[data-tour-step=1]").addClass('expose');
+    displayTourFirstPart();
+  })
 });
 
 // when the user wants to see more answers, they can click on the buttons
@@ -58,7 +87,6 @@ $(document).on('click', '.btn-log', function(e) {
   e.preventDefault();
 });
 
-
 $(document).on('click', '.btn-answer', function(e) {
   $('.current-message').empty();
   $('.current-message').html(data[this.id]);
@@ -68,19 +96,15 @@ $(document).on('click', '.btn-answer', function(e) {
   e.preventDefault();
 });
 
+$(document).on('click', '.previous-step-btn, .next-step-btn', function(e) {
+  $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
+});
+
 $(document).on('click', '.question-tab', function(e) {
   if ($('.low-confidence').text() == "Check Unsatisfying Questions") {
-    $('.lite-header').empty();
-    $('.lite-header').text('Unsatisfying Questions');
-    $('.current-chat-area').hide();
-    $('.low-confidence').empty();
-    $('.low-confidence').text('Lite Version');
     showLowQuestions();
+    $('.low-confidence').text('Back to Chat')
   } else {
-    $('.low-confidence').empty();
-    $('.low-confidence').text('Check Unsatisfying Questions');
-    $('.lite-header').empty();
-    $('.lite-header').text('Lite Version');
     $('.current-chat-area').show();
     $('.logged-questions').remove();
   }
@@ -134,6 +158,7 @@ function getDateAndTime() {
   return day + ' of ' + month + ' at ' + time;
 }
 
+// answer formatter
 const formatAnswerByTag = (input) => {
 
   //for [\n]
@@ -181,21 +206,18 @@ const formatAnswerByTag = (input) => {
     while (input.match(anchorRegularExpression) && input.match(anchorRegularExpression).length > 0) { // check each [a]...[/a] in the original answer
 
       // convert to <a target="_blank" href="...">...</a>
-      input = input.replace(new RegExp("\\[a\\]"), "<a class=\"effect-shine\" target=\"_blank\" href=\"" + linkAry[anchorCount] + "\">");
+      input = input.replace(new RegExp("\\[a\\]"), "<a class=\"effect-shine\" target=\"_blank\" href=\"" + linkAry[anchorCount] + "\"><i class=\"fa fa-link\" aria-hidden=\"true\"></i> ");
       input = input.replace(new RegExp("\\[\/a\\]"), "</a>");
       anchorCount++;
     }
   }
 
   // for [a]...[/a] and [email-addr]...[/email-addr] pair
-
+  // extract email address
   const emailRegularExpression = /(\[email-addr\].*?\[\/email-addr\])/gi; // reg pattern for [email-addr]...[/email-addr]
-
   let emailAry = input.match(emailRegularExpression); // search answer if there is any [email-addr]...[/email-addr], if there is one or more, each segement will be assign to an array
 
   if (emailAry && emailAry.length > 0) { // if array contains any [email-addr]...[/email-addr]
-
-    // trim [link] and [/link] from each segement in array
     emailAry = emailAry.map((email) => {
       email = email.replace(new RegExp("\\[email-addr\\]"), "");
       email = email.replace(new RegExp("\\[\/email-addr\\]"), "");
@@ -203,48 +225,29 @@ const formatAnswerByTag = (input) => {
       return email;
     })
 
-    let anchorCount = 0;
-    const anchorRegularExpression = /\[email-addr\].*?\[\/email-addr\]/; // reg pattern for [a]...[/a]
-    while (input.match(anchorRegularExpression) && input.match(anchorRegularExpression).length > 0) { // check each [a]...[/a] in the original answer
-
-      // convert to <a target="_blank" href="...">...</a>
-      input = input.replace(new RegExp("\\[email-addr\\]"), "<a class=\"effect-shine\" target=\"_blank\" href=\"mailto:" + emailAry[anchorCount] + "\">");
-      input = input.replace(new RegExp("\\[\/email-addr\\]"), "</a>");
-      anchorCount++;
+    const anchorRegularExpression = /\[email-addr\].*?\[\/email-addr\]/;
+    while (input.match(anchorRegularExpression) && input.match(anchorRegularExpression).length > 0) { // remove [email-addr]...[/email-addr]
+      input = input.replace(new RegExp("\\[email-addr\\].*?\\[\/email-addr\\]"), "");
     }
-  }
 
-  const emailRegularExpression2 = /(\[email\].*?\[\/email\])/gi; // reg pattern for [email-addr]...[/email-addr]
+    // replace with DOM ele
+    const emailRegularExpression2 = /(\[email\].*?\[\/email\])/gi; // reg pattern for [email]...[/email]
 
-  let emailAry2 = input.match(emailRegularExpression2); // search answer if there is any [email-addr]...[/email-addr], if there is one or more, each segement will be assign to an array
-
-  if (emailAry2 && emailAry2.length > 0) { // if array contains any [email-addr]...[/email-addr]
-
-    // trim [link] and [/link] from each segement in array
-    emailAry2 = emailAry2.map((email) => {
-      email = email.replace(new RegExp("\\[email\\]"), "");
-      email = email.replace(new RegExp("\\[\/email\\]"), "");
-      email = email.replace(new RegExp("\\s", "g"), "");
-      return email;
-    })
-
-    let anchorCount2 = 0;
-    const anchorRegularExpression2 = /\[email\].*?\[\/email\]/; // reg pattern for [a]...[/a]
-    while (input.match(anchorRegularExpression2) && input.match(anchorRegularExpression2).length > 0) { // check each [a]...[/a] in the original answer
-
+    let anchorCount = 0;
+    while (input.match(emailRegularExpression2) && input.match(emailRegularExpression2).length > 0) { // check each [email]...[/email] in the original answer
       // convert to <a target="_blank" href="...">...</a>
-      input = input.replace(new RegExp("\\[email\\]"), "<a class=\"effect-shine\" target=\"_blank\" href=\"mailto:" + emailAry[anchorCount2] + "\">");
+      input = input.replace(new RegExp("\\[email\\]"), "<a class=\"effect-shine\" target=\"_blank\" href=\"mailto:" + emailAry[anchorCount] + "\">");
       input = input.replace(new RegExp("\\[\/email\\]"), "</a>");
-      anchorCount2++;
+      anchorCount++;
     }
   }
 
   // for [ul][li]...[/li][/ul]
   if (input.match("\\[ul\\].*?\\[/ul\\]")) {
     // convert to general question that can be directly asked to system
-    input = input.replace(new RegExp("\\[ul\\]", "g"), "<ul>");
+    input = input.replace(new RegExp("\\[ul\\]", "g"), '<ul class="answer-list">');
     input = input.replace(new RegExp("\\[\/ul\\]", "g"), "</ul>");
-    input = input.replace(new RegExp("\\[li\\]", "g"), "<li>");
+    input = input.replace(new RegExp("\\[li\\]", "g"), '<li  class="list-group-item answer-list-item">');
     input = input.replace(new RegExp("\\[\/li\\]", "g"), "</li>");
   }
 
@@ -253,7 +256,7 @@ const formatAnswerByTag = (input) => {
     // convert to general question that can be directly asked to system
     input = input.replace(new RegExp("\\[question\\]", "g"), "<a href=\"#\" class=\"answer-relate-question\">");
     input = input.replace(new RegExp("\\[\/question\\]", "g"), "</a>");
-  // handler are in
+    // handler are in
   }
 
   //for [extend]...[/extend] same step above but replace to
@@ -266,7 +269,7 @@ const formatAnswerByTag = (input) => {
 
     extendText = extendText.replace(new RegExp("\\[/extend\\]", "g"), "");
 
-    input = input.replace(initExtendText, "<div><span class=\"read-more btn btn-secondary\">Read More</span><div class=\"answer-body hide\">" + extendText + "</div></div>");
+    input = input.replace(initExtendText, "<div class=\"answer-extra-info\"><div class=\"answer-body hide\">" + extendText + "</div><span class=\"read-more btn btn-secondary\">Read More</span></div>");
   }
 
   // for [tip] ... [/tip]
@@ -294,7 +297,6 @@ const formatAnswerByTag = (input) => {
 
     input = input.replace(initOptionalText, optionalText);
   }
-
 
   while (input.match("\\[img\\].*?\\[/img\\]")) {
     const initImgText = input.match("\\[img\\].*?\\[/img\\]").toString();
@@ -359,9 +361,12 @@ let watsonChatClassNumerous = '<div class="current-message"><p class="media-text
 let watsonChatClassSingle = '<p class="media-text">';
 
 let htmlAfter = '</span></div></div></div></li>';
-let html2Buttons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
-let html3Buttons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
-let html4Buttons = '<p class="media-text">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' + '<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right">No Correct Answers</div>';
+let html2Buttons = '<p class="media-text additional">View a different answer by clicking a button below.</p><div class="btn-group wers" role="group" aria-label="...">' +
+'<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right btn-incorrect-answer">No Correct Answers</div>';
+let html3Buttons = '<p class="media-text additional">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' +
+'<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right btn-incorrect-answer">No Correct Answers</div>';
+let html4Buttons = '<p class="media-text additional">View a different answer by clicking a button below.</p><div class="btn-group other-answers" role="group" aria-label="...">' +
+'<div type="button" class="btn btn-default btn-answer active" id="0">First</div>' + '<div type="button" class="btn btn-default btn-answer" id="1">Second</div>' + '<div type="button" class="btn btn-default btn-answer" id="2">Third</div>' + '<div type="button" class="btn btn-default btn-answer" id="3">Fourth</div></div>' + '<div type="buttion" class="btn btn-danger btn-log pull-right btn-incorrect-answer">No Correct Answers</div>';
 let htmlWAfter = '</span></div></div></div></li>';
 let htmlWAfterNoButtons = '</span></div></div></div></li>';
 
@@ -394,13 +399,13 @@ const addReadmoreHandler = () => {
   $('.read-more').each(function() {
     $(this).on('click', function() {
       if ($(this).text() === "Read More") {
-        $(this).text("Collapse")
-        $(this).next().removeClass("hide");
+        $(this).text("Collapse");
+        $(this).prev().removeClass("hide");
       } else {
-        $(this).text("Read More")
-        $(this).next().addClass("hide");
+        $(this).text("Read More");
+        $(this).prev().addClass("hide");
       }
-      $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
+      // $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
     })
   })
 }
@@ -412,53 +417,62 @@ function sendServerQuestion(question) {
     headers: {
       "Content-type": "application/json"
     },
-    body: JSON.stringify({
-      'question': question,
-      'context': context
-    })
+    body: JSON.stringify({'question': question, 'context': context})
   }).then(response => {
     return response.json()
-  })
-    .then(json => {
-      // console.log(json);
-      $('.loading').remove();
-      $('.current-message').attr('class', 'media-text');
-      $('.other-answers').remove();
-      $('.btn-log').remove();
-      $('.active-chat').removeClass('active-chat');
-      let i = 0;
-      while (i < 4 && i != json.response.docs.length) {
-        data[i] = formatAnswerByTag(json.response.docs[i].body);
-        i++;
+  }).then(json => {
+    // console.log(json);
+    $('.loading').remove();
+    $('.current-message').attr('class', 'media-text');
+    $('.other-answers').remove();
+    $('.btn-log').remove();
+    $('.active-chat').removeClass('active-chat');
+    let i = 0;
+    while (i < 4 && i != json.response.docs.length) {
+      data[i] = formatAnswerByTag(json.response.docs[i].body);
+      i++;
+    }
+    context = json.context;
+    // don't want the buttons popping up if there is only one response from the server
+    timeAsked = '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>';
+
+    // I need the number of buttons to match the number of answers
+    switch (json.response.docs.length) {
+      case 1:
+        $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Powered by <span class="watson-power-tag"><img class="small-chat-bubble-icon" src="images/watson-icon.png" /> Watson</span> | ' + timeAsked + htmlWAfterNoButtons);
+        break;
+      case 2:
+        $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html2Buttons + '</p><small class="text-muted">Powered by <span class="watson-power-tag"><img class="small-chat-bubble-icon" src="images/watson-icon.png" /> Watson</span> | ' + timeAsked + htmlWAfter);
+        break;
+      case 3:
+        $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html3Buttons + '</p><small class="text-muted">Powered by <span class="watson-power-tag"><img class="small-chat-bubble-icon" src="images/watson-icon.png" /> Watson</span> | ' + timeAsked + htmlWAfter);
+        break;
+      default:
+        $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html4Buttons + '</p><small class="text-muted">Powered by <span class="watson-power-tag"><img class="small-chat-bubble-icon" src="images/watson-icon.png" /> Watson</span> | ' + timeAsked + htmlWAfter);
+        break;
+    }
+    // assign scroll chat to bottom on clicking each answer button
+    $('.btn-answer').each((index, ele) => {
+      $(ele).click(() => {
+        // force to scroll to bottom
+        $('.current-chat-area').animate({
+          scrollTop: $(".scroll-chat").height() + 40 + 'px'
+        });
+      })
+    })
+    initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
+    addReadmoreHandler();
+    $('.current-chat-area').animate({scrollTop: $(".scroll-chat").height()});
+    shouldDisplayTour().then(tourBool => {
+      if (tourBool) {
+        initTourSecondPart();
+        setTimeout(() => {
+          displayTourSecondPart()
+        }, 100)
       }
-      context = json.context;
-      // don't want the buttons popping up if there is only one response from the server
-      timeAsked = '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>';
-
-      // I need the number of buttons to match the number of answers
-      switch(json.response.docs.length) {
-        case 1:
-          $('#chat').append(htmlWBefore + watsonChatClassSingle + data[0] + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfterNoButtons);
-          break;
-        case 2:
-          $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html2Buttons + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
-          break;
-        case 3:
-          $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html3Buttons + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
-          break;
-        default:
-          $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html4Buttons + '</p><small class="text-muted">Watson | ' + timeAsked + htmlWAfter);
-          break;
-      }
-
-      initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
-      addReadmoreHandler();
-      $('.current-chat-area').animate({
-        scrollTop: $(".scroll-chat").height()
-      });
-
-      $('#question').val('');
-    });
+    })
+    $('#question').val('');
+  });
 }
 
 ////////////////////////////////////
@@ -534,8 +548,7 @@ const updateTime = () => {
 }
 
 const uuidv4 = () => {
-  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-  )
+  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16))
 }
 
 const externalQuestionListener = () => {
@@ -559,18 +572,14 @@ function logQuestion(question) {
     headers: {
       "Content-type": "application/json"
     },
-    body: JSON.stringify({
-      'question': question,
-      'answers': data
-    })
+    body: JSON.stringify({'question': question, 'answers': data})
   }).then(response => {
     return response.json()
-  })
-    .then(json => {
-      $('.btn-log').empty();
-      $('.btn-log').text(json.message);
-      $('.btn-log').addClass('active');
-    });
+  }).then(json => {
+    $('.btn-log').empty();
+    $('.btn-log').text(json.message);
+    $('.btn-log').addClass('active');
+  });
 }
 
 function questionWrapper(question) {
@@ -579,38 +588,28 @@ function questionWrapper(question) {
   var questionListHTMLT = '</div>';
   for (let i = 0; i < question.length; i++) {
     questionHTML = questionHTML + '<div class="panel panel-default">';
-    questionHTML = questionHTML + '<div class="panel-heading" role="tab" id="headingOne">'
+    questionHTML = questionHTML + '<div class="panel-heading" role="tab">'
     questionHTML = questionHTML + '<h3 class="panel-title">'
+    questionHTML += '<input class="unsatisfy-question" type="checkbox" value="' + question[i]._id + '">'
     questionHTML = questionHTML + '<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse' + i + '" aria-expanded="true" aria-controls="collapseOne">';
     questionHTML = questionHTML + question[i].body;
     questionHTML = questionHTML + '</a>'
     questionHTML = questionHTML + '</h3>'
     questionHTML = questionHTML + '</div>'
     questionHTML = questionHTML + '<div id="collapse' + i + '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">'
-    questionHTML = questionHTML + '<div class="panel-body logged-answers">'
-    for (let j = 0; j < question[i].temp_answer_holder.length; j++) {
-      questionHTML = questionHTML + "<h4>Answer " + (j + 1) + " </h4>" + question[i].temp_answer_holder[j];
-    }
+    questionHTML = questionHTML + '<div class="panel-body logged-stats">'
+    questionHTML = questionHTML + "<pre>" + JSON.stringify(question[i].feature, '\t', 2) + " </pre>" + "Low Confidence Level: " + question[i].low_confidence.relevance_level;
     questionHTML = questionHTML + '</div>';
     questionHTML = questionHTML + '</div>';
     questionHTML = questionHTML + '</div>';
   }
+  questionHTML += '<button type="button" class="btn-lg btn-default btn-mark-all-question">Mark All</button><button type="button" class="btn-lg btn-default btn-export-question">Export List</button><button class="btn-lg btn-default btn-mark-trained" type="button">Mark Trained</button';
   return questionListHTMLH + questionHTML + questionListHTMLT;
-// var questionListHTMLH = '<div class="row form-check scrollable">';
-// var questionListHTMLT ='</div>';
-// var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
-// var questionInputT = '</label></p>';
-// var accumulater='';
-// if(question.length>0){
-//   for(let i=0; i<question.length; i++){
-//       accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
-//       console.log(accumulater);
-//   }
-// }
-// return questionListHTMLH + accumulater + questionListHTMLT;
+
 }
 
 function showLowQuestions() {
+  $('.current-chat-area').hide();
   $('.current-chat').append('<div class="question-loading scrollable">' + htmlLoading + '</div>');
   fetch("../questions/get-low-confidence", {
     method: 'get',
@@ -620,16 +619,270 @@ function showLowQuestions() {
     }
   }).then(response => {
     return response.json()
-  })
-    .then(json => {
-      setTimeout(function() {
-        $('.question-loading').remove()
-      }, 2000);
-      //console.log(json);
-      var questionList = questionWrapper(json);
-      $('.current-chat').append(questionList);
-      initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
-      addReadmoreHandler();
+  }).then(json => {
+    setTimeout(function() {
+      $('.question-loading').remove()
+    }, 200);
+    var questionList = questionWrapper(json);
+    $('.current-chat').append(questionList);
+    // btn handler
+    $('.btn-mark-all-question').click(()=>{
+      $('.unsatisfy-question:checkbox:not(:checked)').click();
     })
+    $('.btn-export-question').click(() => {
+      let questionList = "";
+      $('.unsatisfy-question:checkbox:checked').each((index, ele) => {
+        const questionText = $(ele).siblings().text();
+        questionList += questionText + '\n';
+      })
+      generateQuestionListTextFileAndDownload(questionList);
+    })
+    $('.btn-mark-trained').click(() => {
+      let qidAry = [];
+      $('.unsatisfy-question:checkbox:checked').each((index, ele) => {
+        const questionID = $(ele).val();
+        qidAry.unshift(questionID);
+      })
+      fetch("../questions/mark-trained-question", {
+        method: 'post',
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        },
+        body: JSON.stringify({question_id: qidAry})
+      }).then(response => {
+        return response.json()
+      }).then(json => {
+        $.notify('Success update: ' + json.succeed, + ' failed update: ' + json.failed, {
+          className: "success",
+          clickToHide: true,
+          autoHide: true
+        })
+      })
+    })
+  })
 
+}
+
+// -------------------------------------- Sign in Stuff ---------------------------------- //
+function login() {
+  let email = document.getElementById('inputUserEmail').value;
+  let password = document.getElementById('inputUserPassword').value;
+
+  fetch("/users/signin", {
+    method: 'post',
+    headers: {
+      "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+    },
+    body: 'email=' + email + '&password=' + password,
+    credentials: 'include'
+  }).then(response => {
+    return response.json()
+  }).then(json => {
+    if (json.err) {
+      // TODO handle failure of login
+      $.notify(json.err, {
+        className: "error",
+        clickToHide: true,
+        autoHide: true
+      })
+    } else {
+      localStorage['iaa-userToken'] = JSON.stringify(json.token);
+      getUserInfo().then(json => {
+        // notify login
+        $.notify("Successfully Signed In", {
+          className: "success",
+          clickToHide: true,
+          autoHide: true
+        })
+        // TODO change - Currently redirecting to lite because full is not done
+        // hide login/register btn
+        $('.text-benefits, .login, .register').hide();
+        $('.logout, .btn-profile').show();
+        // close login modal
+        $('#loginModal').modal('toggle');
+        const userDisplayName = capitalizeFirstLetter(json.first_name);
+        $('.lite-header').text("Welcome " + userDisplayName);
+      })
+
+    }
+  })
+}
+
+function register() {
+  let email = document.getElementById('inputEmail').value;
+  let password = document.getElementById('inputPassword').value;
+  let first_name = document.getElementById('inputUserF').value;
+  let last_name = document.getElementById('inputUserL').value;
+
+  let select = document.getElementById('major');
+  let major = select.options[select.selectedIndex].text;
+
+  console.log(email);
+  console.log(password);
+  console.log(first_name);
+  console.log(last_name);
+  console.log(major);
+
+  fetch("/users/signup", {
+    method: 'post',
+    headers: {
+      "Content-type": "application/json"
+    },
+    body: JSON.stringify({
+      'email': email,
+      'password': password,
+      'first_name': first_name,
+      'last_name': last_name,
+      'account_role': 'student',
+      'majors': [major] //allow double or triple majors. An array of major document id
+    })
+  }).then(response => {
+    return response.json()
+  }).then(json => {
+    if (json.err) {
+      // TODO handle failure of registration
+      console.log(json.err);
+    } else {
+      // TODO change - Currently redirecting to lite because full is not done
+      window.location.replace('./lite-version.html');
+    }
+  });
+}
+
+const initBtnHandler = () => {
+  // profile
+  $($('.btn-profile button')[0]).click(() => {
+    $('.current-chat-area').hide('slow');
+    $('.current-chat').append('<div class="question-loading scrollable">' + htmlLoading + '</div>');
+    getUserInfo().then(json => {
+      $('.profile-user-name').val(capitalizeFirstLetter(json.first_name + " " + json.last_name));
+      $('.profile-email').val(json.email);
+      if (json.hasOwnProperty('personality_evaluation')) {
+        if (json.personality_evaluation.hasOwnProperty('description_content')) {
+          const areaWidth = $('.current-chat').width();
+          console.log(areaWidth);
+          const introductionEle = $('.profile-introduction');
+          introductionEle.css({"width": areaWidth});
+          introductionEle.val(json.personality_evaluation.description_content);
+        }
+        if (json.personality_evaluation.hasOwnProperty('evaluation')) {
+          $('.profile-personality').text(JSON.stringify(json.personality_evaluation.evaluation));
+        }
+        if (json.hasOwnProperty('interest')) {
+          $('.word-cloud').text(JSON.stringify(json.interest));
+        }
+      }
+      $('.question-loading').hide('slow').remove();
+      $('.profile-area').show('slow');
+      $('.profile-introduction').css({
+        "height": $('.profile-introduction').prop('scrollHeight') / 3
+      });
+    })
+  })
+
+  // logout
+  $($('.logout button')[0]).click(() => {
+    // notify login
+    $.notify("Goodbye!", {
+      className: "success",
+      clickToHide: true,
+      autoHide: true
+    })
+    $('.text-benefits, .login, .register').show();
+    $('.logout, .btn-profile').hide();
+    localStorage['iaa-userToken'] = null;
+    $('.lite-header').text("Welcome Visitor");
+  })
+}
+
+const initGetSampleQuestion = () => {
+  // example Questions
+  fetch('/questions/get-trained-question', {method: 'get'}).then(response => {
+    return response.json()
+  }).then(json => {
+    for (let i = 0; i < 4; i++) {
+      $('#lite-example-question-list').append("<li><i class=\"fa fa-slack\" aria-hidden=\"true\"></i>&nbsp;&nbsp;<a class=\"example-question\">" + json.questions[i].body + "</a></li>")
+    }
+    $('.example-question').each((index, item) => {
+      $(item).click(() => {
+        $('#question').val($(item).text());
+      })
+    })
+  })
+}
+
+const initUserAccountListener = () => {
+  getUserInfo().then(json => {
+    if (json.hasOwnProperty('_id')) {
+      // hide login/register btn
+      $('.text-benefits, .login, .register').hide();
+      $('.logout, .btn-profile').show();
+      const userDisplayName = capitalizeFirstLetter(json.first_name);
+      $('.lite-header').text("Welcome " + userDisplayName);
+    }
+  })
+}
+
+const getUserInfo = () => {
+  return new Promise(function(resolve, reject) {
+    // get user info
+    fetch("/users/get-user", {
+      method: 'get',
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "x-access-token": JSON.parse(localStorage['iaa-userToken'])
+      }
+    }).then(response => {
+      resolve(response.json())
+    }).catch(err => {
+      reject(err)
+    })
+  });
+}
+
+const generateQuestionListTextFileAndDownload = (questionList) => {
+
+  if ('Blob' in window) {
+    var fileName = 'questionList.txt';
+    if (fileName) {
+      var textToWrite = questionList;
+      var textFileAsBlob = new Blob([textToWrite], {type: 'text/plain'});
+
+      if ('msSaveOrOpenBlob' in navigator) {
+        navigator.msSaveOrOpenBlob(textFileAsBlob, fileName);
+      } else {
+        var downloadLink = document.createElement('a');
+        downloadLink.download = fileName;
+        downloadLink.innerHTML = 'Download File';
+
+        if ('URL' in window) {
+          // Chrome allows the link to be clicked without actually adding it to the DOM.
+          downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+        } else {
+          // Firefox requires the link to be added to the DOM before it can be clicked.
+          downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+          downloadLink.click(function() {
+            document.body.removeChild(event.target);
+          });
+
+          downloadLink.style.display = 'none';
+          document.body.appendChild(downloadLink);
+        }
+        downloadLink.click();
+      }
+    }
+  } else {
+    $.notify('Your browser can not generate text file and download.', {
+      className: "error",
+      clickToHide: true,
+      autoHide: true
+    })
+  }
+}
+
+// utility func
+const capitalizeFirstLetter = (str) => {
+  return str.toLowerCase().split(' ').map(function(word) {
+    return word[0].toUpperCase() + word.substr(1);
+  }).join(' ');
 }
