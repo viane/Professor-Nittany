@@ -122,14 +122,15 @@ profileRouter.post('/interest-manual', Verify.verifyOrdinaryUser, (req, res) => 
 
 // API POST /profile/update-introduction
 profileRouter.post('/update-introduction', Verify.verifyOrdinaryUser, (req, res) => {
-  const introdcution = req.body.introdcution;
-  profileUtility.updateUserSelfDescription(req.decoded._id, introdcution).then((newAssessment) => {
+  const introduction = req.body.introduction;
+  console.log(req.body);
+  profileUtility.updateUserSelfDescription(req.decoded._id, introduction).then((newAssessment) => {
     // if user description is longer than 100 words, update persoanlity assessment and analysis
-    if (string.countWords(introdcution) > 100) {
+    if (string.countWords(introduction) > 100) {
       // update assessment and analysis
-      profileUtility.getAndUpdatePersonalityAssessment(newAssessment._id, introdcution).then(() => {
+      profileUtility.getAndUpdatePersonalityAssessment(newAssessment._id, introduction).then(() => {
         // update interest
-        naturalLanguageUnderstanding.getAnalysis(introdcution).then((analysis) => {
+        naturalLanguageUnderstanding.getAnalysis(introduction).then((analysis) => {
           profileUtility.updateInterest(req.decoded._id, analysis).then(() => {
             res.status(200).json({status: "success", message: "Done updating"})
           }).catch((err) => {
@@ -146,7 +147,7 @@ profileRouter.post('/update-introduction', Verify.verifyOrdinaryUser, (req, res)
       });
     } else {
       // if less than 100 words, only update user description content to DB
-      newAssessment.description_content = introdcution;
+      newAssessment.description_content = introduction;
       newAssessment.save().then((record) => {
         User.update({
           _id: req.decoded._id
@@ -156,7 +157,7 @@ profileRouter.post('/update-introduction', Verify.verifyOrdinaryUser, (req, res)
           }
         }).exec().then(() => {
           // update interest
-          naturalLanguageUnderstanding.getAnalysis(introdcution, 3, 3, 3).then((analysis) => {
+          naturalLanguageUnderstanding.getAnalysis(introduction, 3, 3, 3).then((analysis) => {
             profileUtility.updateInterest(req.decoded._id, analysis).then(() => {
               res.status(200).json({status: "success", message: "Done updating"})
             }).catch((err) => {
@@ -209,13 +210,13 @@ profileRouter.post('/update-introduction-by-file', Verify.verifyOrdinaryUser, bu
     if (path.extname(filename) === ".txt") {
       file.on('data', function(data) {
         profileUtility.updateUserSelfDescription(req.decoded._id, data).then((newAssessment) => {
-          const introdcution = data.toString();
+          const introduction = data.toString();
           // if user description is longer than 100 words, update persoanlity assessment and analysis
-          if (string.countWords(introdcution) > 100) {
+          if (string.countWords(introduction) > 100) {
             // update assessment and analysis
-            profileUtility.getAndUpdatePersonalityAssessment(newAssessment._id, introdcution).then(() => {
+            profileUtility.getAndUpdatePersonalityAssessment(newAssessment._id, introduction).then(() => {
               // update interest
-              naturalLanguageUnderstanding.getAnalysis(introdcution).then((analysis) => {
+              naturalLanguageUnderstanding.getAnalysis(introduction).then((analysis) => {
                 profileUtility.updateInterest(req.decoded._id, analysis).then(() => {
                   res.status(200).json({status: "success", message: "Done updating"})
                 }).catch((err) => {
@@ -232,7 +233,7 @@ profileRouter.post('/update-introduction-by-file', Verify.verifyOrdinaryUser, bu
             });
           } else {
             // if less than 100 words, only update user description content to DB
-            newAssessment.description_content = introdcution;
+            newAssessment.description_content = introduction;
             newAssessment.save().then((record) => {
               User.update({
                 _id: req.decoded._id
@@ -242,7 +243,7 @@ profileRouter.post('/update-introduction-by-file', Verify.verifyOrdinaryUser, bu
                 }
               }).exec().then(() => {
                 // update interest
-                naturalLanguageUnderstanding.getAnalysis(introdcution, 3, 3, 3).then((analysis) => {
+                naturalLanguageUnderstanding.getAnalysis(introduction, 3, 3, 3).then((analysis) => {
                   profileUtility.updateInterest(req.decoded._id, analysis).then(() => {
                     res.status(200).json({status: "success", message: "Done updating"})
                   }).catch((err) => {

@@ -40,8 +40,14 @@
     <div class="full-body">
       <!-- SIDE BAR -->
       <div class="col-sm-12 col-md-3 side-bar">
-        <div class="row title" data-tour-step="1">
-          <img src="images/penn-logo.png" alt="penn state logo">
+        <a href="/lite-version.html">
+          <div class="row title" data-tour-step="1">
+            <img src="images/penn-logo.png" alt="penn state logo">
+          </div>
+        </a>
+        <div class="mobile-contact-wrap">
+          <span class="contact-line"><i class="fa fa-mobile" aria-hidden="true"></i>&nbsp;Call:<a class="effect-shine" href="tel:+1917-746-5704"> &nbsp;917-746-5704</a></span>
+          <span class="contact-line"><i class="fa fa-commenting-o" aria-hidden="true"></i>&nbsp;SMS: &nbsp;917-746-5704</span>
         </div>
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" data-tour-step="2">
           <div class="panel panel-default">
@@ -140,8 +146,11 @@
               <div class="col-md-6 register">
                 <button class="btn-lg btn-default" type="submit" data-target="#RegisterModal" data-toggle="modal">Register</button>
               </div>
+              <div class="col-md-6 btn-profile">
+                <button class="btn-lg btn-default">Profile</button>
+              </div>
               <div class="col-md-6 logout">
-                <button class="btn-lg btn-default" >Logout</button>
+                <button class="btn-lg btn-default">Logout</button>
               </div>
             </div>
           </div>
@@ -259,14 +268,13 @@
                     <img class="media-object img-circle" src="images/logo.png">
                   </div>
                   <div class="media-watson-info">
-                    <p class="media-text current-message">Hello! Ask any question you may have about college and I'll try my best to answer.</p>
+                    <p class="media-text current-message">Hello! Ask any question you may have about college and I'll try my best to answer.<br> Also you can Call or Text me by <a class="effect-shine" href="tel:+1917-746-5704">917-746-5704</a>.</p>
                     <small id="Watson-Time" class="text-muted"></small>
                   </div>
                 </div>
               </li>
             </ul>
           </div>
-
           <div class="current-chat-footer">
             <div class="panel-footer">
               <div class="input-group input-group-lg">
@@ -279,6 +287,32 @@
                 </span>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="row profile-area">
+          <div class="col-md-12 row scrollable">
+            <div class="account-info">
+              <div class="group">
+                <input class="profile-user-name profile-input" type="text" readonly>
+                <span class="profile-highlight"></span>
+                <span class="profile-input-bar"></span>
+                <label class="profile-label">Name</label>
+              </div>
+              <div class="group">
+                <input class="profile-email profile-input" type="text" readonly>
+                <span class="profile-highlight"></span>
+                <span class="profile-input-bar"></span>
+                <label class="profile-label">Email</label>
+              </div>
+            </div>
+            <div class="group">
+              <textarea class="profile-introduction profile-input" type="text"></textarea>
+              <span class="profile-highlight"></span>
+              <span class="profile-input-bar"></span>
+              <label class="profile-label">Introduction</label>
+            </div>
+            <div class="word-cloud"></div>
+            <div class="profile-personality"></div>
           </div>
         </div>
       </div>
