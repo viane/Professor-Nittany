@@ -17,22 +17,12 @@ $(() => {
     clickToHide: true,
     autoHide: false
   });
-  // example Questions
-  fetch('/questions/get-trained-question', {method: 'get'}).then(response => {
-    return response.json()
-  }).then(json => {
-    for (let i = 0; i < 4; i++) {
-      $('#lite-example-question-list').append("<li><i class=\"fa fa-slack\" aria-hidden=\"true\"></i>&nbsp;&nbsp;<a class=\"example-question\">" + json.questions[i].body + "</a></li>")
-    }
-    $('.example-question').each((index, item) => {
-      $(item).click(() => {
-        $('#question').val($(item).text());
-      })
-    })
-  })
+  initGetSampleQuestion();
   initMsgTimeElaspeListener();
   externalQuestionListener();
   lightbox.option({'resizeDuration': 200, 'wrapAround': true});
+  initBtnHandler();
+  initUserAccountListener();
 })
 
 $(document).ready(function() {
@@ -50,7 +40,7 @@ $(document).ready(function() {
   });
 
   // Update the first Watson message
-  $("#Watson-Time").html('Watson | ' +
+  $("#Watson-Time").html('Powered by <span class="watson-power-tag"><img class="small-chat-bubble-icon" src="images/watson-icon.png" /> Watson</span> | ' +
     '<span class="message-time" data-time-iso="' + moment().format() + '">' + moment().format("dddd, h:mm a") + '</span>');
 
   if (window.devicePixelRatio > 1)
@@ -111,17 +101,8 @@ $(document).on('click', '.previous-step-btn, .next-step-btn', function(e) {
 
 $(document).on('click', '.question-tab', function(e) {
   if ($('.low-confidence').text() == "Check Unsatisfying Questions") {
-    $('.lite-header').empty();
-    $('.lite-header').text('Unsatisfying Questions');
-    $('.current-chat-area').hide();
-    $('.low-confidence').empty();
-    $('.low-confidence').text('Lite Version');
     showLowQuestions();
   } else {
-    $('.low-confidence').empty();
-    $('.low-confidence').text('Check Unsatisfying Questions');
-    $('.lite-header').empty();
-    $('.lite-header').text('Lite Version');
     $('.current-chat-area').show();
     $('.logged-questions').remove();
   }
@@ -613,30 +594,20 @@ function questionWrapper(question) {
     questionHTML = questionHTML + '</h3>'
     questionHTML = questionHTML + '</div>'
     questionHTML = questionHTML + '<div id="collapse' + i + '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">'
-    questionHTML = questionHTML + '<div class="panel-body logged-answers">'
-    for (let j = 0; j < question[i].temp_answer_holder.length; j++) {
-      questionHTML = questionHTML + "<h4>Answer " + (j + 1) + " </h4>" + question[i].temp_answer_holder[j];
-    }
+    questionHTML = questionHTML + '<div class="panel-body logged-stats">'
+
+    questionHTML = questionHTML + "<pre>" + JSON.stringify(question[i].feature,'\t',2) + " </pre>" + "Low Confidence Level: "+question[i].low_confidence.relevance_level;
+
     questionHTML = questionHTML + '</div>';
     questionHTML = questionHTML + '</div>';
     questionHTML = questionHTML + '</div>';
   }
   return questionListHTMLH + questionHTML + questionListHTMLT;
-  // var questionListHTMLH = '<div class="row form-check scrollable">';
-  // var questionListHTMLT ='</div>';
-  // var questionInputH = '<p><label class="form-check-label"><input class="form-check-input" type="checkbox" value=';//"">';
-  // var questionInputT = '</label></p>';
-  // var accumulater='';
-  // if(question.length>0){
-  //   for(let i=0; i<question.length; i++){
-  //       accumulater= accumulater+questionInputH+'"'+i+'">'+question[i].body+questionInputT;
-  //       console.log(accumulater);
-  //   }
-  // }
-  // return questionListHTMLH + accumulater + questionListHTMLT;
+
 }
 
 function showLowQuestions() {
+  $('.current-chat-area').hide();
   $('.current-chat').append('<div class="question-loading scrollable">' + htmlLoading + '</div>');
   fetch("../questions/get-low-confidence", {
     method: 'get',
@@ -649,12 +620,11 @@ function showLowQuestions() {
   }).then(json => {
     setTimeout(function() {
       $('.question-loading').remove()
-    }, 2000);
-    //console.log(json);
+    }, 200);
+    console.log(json);
     var questionList = questionWrapper(json);
+    console.log(questionList);
     $('.current-chat').append(questionList);
-    initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
-    addReadmoreHandler();
   })
 
 }
@@ -676,13 +646,33 @@ function login() {
   }).then(json => {
     if (json.err) {
       // TODO handle failure of login
-      console.log(json.err);
+      $.notify(json.err, {
+        className: "error",
+        clickToHide: true,
+        autoHide: true
+      })
     } else {
-      localStorage['iaa-userToken'] = JSON.stringify(json.token);;
-      // TODO change - Currently redirecting to lite because full is not done
-      window.location.replace('./lite-version.html');
+      localStorage['iaa-userToken'] = JSON.stringify(json.token);
+      getUserInfo().then(json => {
+        console.log(json);
+        // notify login
+        $.notify("Successfully Signed In", {
+          className: "success",
+          clickToHide: true,
+          autoHide: true
+        })
+        // TODO change - Currently redirecting to lite because full is not done
+        // hide login/register btn
+        $('.text-benefits, .login, .register').hide();
+        $('.logout').show();
+        // close login modal
+        $('#loginModal').modal('toggle');
+        const userDisplayName = capitalizeFirstLetter(json.first_name);
+        $('.lite-header').text("Welcome " + userDisplayName);
+      })
+
     }
-  });
+  })
 }
 
 function register() {
@@ -710,7 +700,7 @@ function register() {
       'password': password,
       'first_name': first_name,
       'last_name': last_name,
-      'account_role': 'Test',
+      'account_role': 'student',
       'majors': [major] //allow double or triple majors. An array of major document id
     })
   }).then(response => {
@@ -724,4 +714,72 @@ function register() {
       window.location.replace('./lite-version.html');
     }
   });
+}
+
+const initBtnHandler = () => {
+  //logout
+  $($('.logout button')[0]).click(() => {
+    // notify login
+    $.notify("Goodbye!", {
+      className: "success",
+      clickToHide: true,
+      autoHide: true
+    })
+    $('.text-benefits, .login, .register').show();
+    $('.logout').hide();
+    localStorage['iaa-userToken'] = null;
+    $('.lite-header').text("Welcome Visitor");
+  })
+}
+
+const initGetSampleQuestion = () => {
+  // example Questions
+  fetch('/questions/get-trained-question', {method: 'get'}).then(response => {
+    return response.json()
+  }).then(json => {
+    for (let i = 0; i < 4; i++) {
+      $('#lite-example-question-list').append("<li><i class=\"fa fa-slack\" aria-hidden=\"true\"></i>&nbsp;&nbsp;<a class=\"example-question\">" + json.questions[i].body + "</a></li>")
+    }
+    $('.example-question').each((index, item) => {
+      $(item).click(() => {
+        $('#question').val($(item).text());
+      })
+    })
+  })
+}
+
+const initUserAccountListener = () => {
+  getUserInfo().then(json=>{
+    if (json.hasOwnProperty('_id')) {
+      // hide login/register btn
+      $('.text-benefits, .login, .register').hide();
+      $('.logout').show();
+      const userDisplayName = capitalizeFirstLetter(json.first_name);
+      $('.lite-header').text("Welcome " + userDisplayName);
+    }
+  })
+}
+
+const getUserInfo = () => {
+  return new Promise(function(resolve, reject) {
+    // get user info
+    fetch("/users/get-user", {
+      method: 'get',
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "x-access-token": JSON.parse(localStorage['iaa-userToken'])
+      }
+    }).then(response => {
+      resolve(response.json())
+    }).catch(err => {
+      reject(err)
+    })
+  });
+}
+
+// utility func
+const capitalizeFirstLetter = (str) => {
+  return str.toLowerCase().split(' ').map(function(word) {
+    return word[0].toUpperCase() + word.substr(1);
+  }).join(' ');
 }
