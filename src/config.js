@@ -96,8 +96,8 @@ module.exports = {
       "version_date": '2016-07-11'
     },
     "document_conversion": {
-      "username": "d1f406ed-2958-472b-80d6-f1f5a8f176f1",
-      "password": "hiJHDXkxq16o",
+      "username": "79dda974-77fe-4001-bdc8-3c389211a596",
+      "password": "CvqPsf1IbxdY",
       "version": "v1",
       "version_date": "2015-12-15",
       "config": {

@@ -21,8 +21,9 @@ $(() => {
   initMsgTimeElaspeListener();
   externalQuestionListener();
   lightbox.option({'resizeDuration': 200, 'wrapAround': true});
-  initBtnHandler();
   initUserAccountListener();
+  initBtnHandler();
+
 })
 
 $(document).ready(function() {
@@ -102,6 +103,7 @@ $(document).on('click', '.previous-step-btn, .next-step-btn', function(e) {
 $(document).on('click', '.question-tab', function(e) {
   if ($('.low-confidence').text() == "Check Unsatisfying Questions") {
     showLowQuestions();
+    $('.low-confidence').text('Back to Chat')
   } else {
     $('.current-chat-area').show();
     $('.logged-questions').remove();
@@ -586,8 +588,9 @@ function questionWrapper(question) {
   var questionListHTMLT = '</div>';
   for (let i = 0; i < question.length; i++) {
     questionHTML = questionHTML + '<div class="panel panel-default">';
-    questionHTML = questionHTML + '<div class="panel-heading" role="tab" id="headingOne">'
+    questionHTML = questionHTML + '<div class="panel-heading" role="tab">'
     questionHTML = questionHTML + '<h3 class="panel-title">'
+    questionHTML += '<input class="unsatisfy-question" type="checkbox" value="' + question[i]._id + '">'
     questionHTML = questionHTML + '<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse' + i + '" aria-expanded="true" aria-controls="collapseOne">';
     questionHTML = questionHTML + question[i].body;
     questionHTML = questionHTML + '</a>'
@@ -595,13 +598,12 @@ function questionWrapper(question) {
     questionHTML = questionHTML + '</div>'
     questionHTML = questionHTML + '<div id="collapse' + i + '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">'
     questionHTML = questionHTML + '<div class="panel-body logged-stats">'
-
-    questionHTML = questionHTML + "<pre>" + JSON.stringify(question[i].feature,'\t',2) + " </pre>" + "Low Confidence Level: "+question[i].low_confidence.relevance_level;
-
+    questionHTML = questionHTML + "<pre>" + JSON.stringify(question[i].feature, '\t', 2) + " </pre>" + "Low Confidence Level: " + question[i].low_confidence.relevance_level;
     questionHTML = questionHTML + '</div>';
     questionHTML = questionHTML + '</div>';
     questionHTML = questionHTML + '</div>';
   }
+  questionHTML += '<button type="button" class="btn-export-question">Export List</button><button class="btn-mark-trained" type="button">Mark Trained</button';
   return questionListHTMLH + questionHTML + questionListHTMLT;
 
 }
@@ -621,10 +623,36 @@ function showLowQuestions() {
     setTimeout(function() {
       $('.question-loading').remove()
     }, 200);
-    console.log(json);
     var questionList = questionWrapper(json);
-    console.log(questionList);
     $('.current-chat').append(questionList);
+    // btn handler
+    $('.btn-export-question').click(() => {
+      let questionList = "";
+      $('.unsatisfy-question:checkbox:checked').each((index, ele) => {
+        const questionText = $(ele).siblings().text();
+        questionList += questionText + '\n';
+      })
+      generateQuestionListTextFileAndDownload(questionList);
+    })
+    $('.btn-mark-trained').click(() => {
+      let qidAry = [];
+      $('.unsatisfy-question:checkbox:checked').each((index, ele) => {
+        const questionID = $(ele).val();
+        qidAry.unshift(questionID);
+      })
+      console.log(qidAry);
+      fetch("../questions/mark-trained-question", {
+        method: 'post',
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        },
+        body: 'question_id='+JSON.stringify(qidAry)
+      }).then(response => {
+        return response.json()
+      }).then(json => {
+        console.log(json);
+      })
+    })
   })
 
 }
@@ -654,7 +682,6 @@ function login() {
     } else {
       localStorage['iaa-userToken'] = JSON.stringify(json.token);
       getUserInfo().then(json => {
-        console.log(json);
         // notify login
         $.notify("Successfully Signed In", {
           className: "success",
@@ -664,7 +691,7 @@ function login() {
         // TODO change - Currently redirecting to lite because full is not done
         // hide login/register btn
         $('.text-benefits, .login, .register').hide();
-        $('.logout').show();
+        $('.logout, .btn-profile').show();
         // close login modal
         $('#loginModal').modal('toggle');
         const userDisplayName = capitalizeFirstLetter(json.first_name);
@@ -717,7 +744,37 @@ function register() {
 }
 
 const initBtnHandler = () => {
-  //logout
+  // profile
+  $($('.btn-profile button')[0]).click(() => {
+    $('.current-chat-area').hide('slow');
+    $('.current-chat').append('<div class="question-loading scrollable">' + htmlLoading + '</div>');
+    getUserInfo().then(json => {
+      $('.profile-user-name').val(capitalizeFirstLetter(json.first_name + " " + json.last_name));
+      $('.profile-email').val(json.email);
+      if (json.hasOwnProperty('personality_evaluation')) {
+        if (json.personality_evaluation.hasOwnProperty('description_content')) {
+          const areaWidth = $('.current-chat').width();
+          console.log(areaWidth);
+          const introductionEle = $('.profile-introduction');
+          introductionEle.css({"width": areaWidth});
+          introductionEle.val(json.personality_evaluation.description_content);
+        }
+        if (json.personality_evaluation.hasOwnProperty('evaluation')) {
+          $('.profile-personality').text(JSON.stringify(json.personality_evaluation.evaluation));
+        }
+        if (json.hasOwnProperty('interest')) {
+          $('.word-cloud').text(JSON.stringify(json.interest));
+        }
+      }
+      $('.question-loading').hide('slow').remove();
+      $('.profile-area').show('slow');
+      $('.profile-introduction').css({
+        "height": $('.profile-introduction').prop('scrollHeight') / 3
+      });
+    })
+  })
+
+  // logout
   $($('.logout button')[0]).click(() => {
     // notify login
     $.notify("Goodbye!", {
@@ -726,7 +783,7 @@ const initBtnHandler = () => {
       autoHide: true
     })
     $('.text-benefits, .login, .register').show();
-    $('.logout').hide();
+    $('.logout, .btn-profile').hide();
     localStorage['iaa-userToken'] = null;
     $('.lite-header').text("Welcome Visitor");
   })
@@ -749,11 +806,11 @@ const initGetSampleQuestion = () => {
 }
 
 const initUserAccountListener = () => {
-  getUserInfo().then(json=>{
+  getUserInfo().then(json => {
     if (json.hasOwnProperty('_id')) {
       // hide login/register btn
       $('.text-benefits, .login, .register').hide();
-      $('.logout').show();
+      $('.logout, .btn-profile').show();
       const userDisplayName = capitalizeFirstLetter(json.first_name);
       $('.lite-header').text("Welcome " + userDisplayName);
     }
@@ -775,6 +832,46 @@ const getUserInfo = () => {
       reject(err)
     })
   });
+}
+
+const generateQuestionListTextFileAndDownload = (questionList) => {
+
+  if ('Blob' in window) {
+    var fileName = 'questionList.txt';
+    if (fileName) {
+      var textToWrite = questionList;
+      var textFileAsBlob = new Blob([textToWrite], {type: 'text/plain'});
+
+      if ('msSaveOrOpenBlob' in navigator) {
+        navigator.msSaveOrOpenBlob(textFileAsBlob, fileName);
+      } else {
+        var downloadLink = document.createElement('a');
+        downloadLink.download = fileName;
+        downloadLink.innerHTML = 'Download File';
+
+        if ('URL' in window) {
+          // Chrome allows the link to be clicked without actually adding it to the DOM.
+          downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+        } else {
+          // Firefox requires the link to be added to the DOM before it can be clicked.
+          downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+          downloadLink.click(function() {
+            document.body.removeChild(event.target);
+          });
+
+          downloadLink.style.display = 'none';
+          document.body.appendChild(downloadLink);
+        }
+        downloadLink.click();
+      }
+    }
+  } else {
+    $.notify('Your browser can not generate text file and download.', {
+      className: "error",
+      clickToHide: true,
+      autoHide: true
+    })
+  }
 }
 
 // utility func
