@@ -312,7 +312,7 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
           })
           .catch((err)=>{
             return res.status(302).json(err);
-          }); 
+          });
         }
         else{
           questionsHandle.questionHandler(req.body.question, req.decoded._id)
@@ -321,8 +321,8 @@ questionRouter.route('/send').post(Verify.verifyOrdinaryUser, function(req, res,
           })
           .catch((err)=>{
             return res.status(302).json(err);
-          }); 
-        }      
+          });
+        }
       }
       else if(data.output.text[0] == "-a new question"){
         return res.status(200).json({
@@ -500,5 +500,47 @@ questionRouter.post('/log-question', function(req,res,next){
     });
   });
 });
+
+// GET API for getting good example question
+questionRouter.get('/get-trained-question', (req, res) => {
+  Questions.findRandom({
+    'trained': true
+  }, {
+    "body": 1,
+    "_id": 1
+  }, { skip: 10, limit: 10, count: 5 }, (err, questions) => {
+    if (err) {
+      console.error(err);
+      return res.status(400).json({
+        "status": err
+      })
+    }
+    return res.status(200).json({
+      "questions": questions
+    })
+  })
+});
+
+// GET API for getting good example question
+questionRouter.post('/mark-trained-question', (req, res) => {
+  let successNum=0, failNum=0;
+  // qid in req.body.question_id
+  const promiseAry = req.body.question_id.map((qid,index)=>{
+    return new Promise(function(resolve, reject) {
+      Questions.update({'_id':qid},{ $set: { 'trained': true }},(err,newDoc)=>{
+        if (err) {
+          console.error(err);
+          failNum++;
+        }else{
+          successNum++;
+        }
+        resolve();
+      })
+    })
+  })
+  Promise.all(promiseAry).then(()=>{
+    res.status(200).json({'succeed':successNum, 'failed':failNum});
+  })
+})
 
 module.exports = questionRouter;
