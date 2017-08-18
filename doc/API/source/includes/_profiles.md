@@ -573,7 +573,7 @@ message      | Done updating        | Note
 > To add or update a user's introduction by a text or word file, use this code:
 
 ```javascript
-let formData = new FormData();
+let formData = new FormData();//input file name must be introduction
 formData.append("userfile", fileInputElement.files[0]);
 
 fetch("/profile/update-introduction-by-file", {  
@@ -588,6 +588,9 @@ fetch("/profile/update-introduction-by-file", {
   // now response is in json
 });
 ```
+<aside class="warning">
+The name property of file type input must be "introduction".
+</aside>
 
 The API requires 1 token in the header
 
@@ -602,7 +605,7 @@ Parameter          | Description
 formData           | Input file from html
 
 <aside class="warning">
-The API only accept file that has extension of .txt, .doc or .docx
+The API only accept file that has extension of .txt.
 </aside>
 
 ### Example response of error:
