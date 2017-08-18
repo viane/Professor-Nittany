@@ -178,177 +178,257 @@ profileRouter.post('/update-introduction', Verify.verifyOrdinaryUser, (req, res)
     console.error(err);
     res.status(302).json(err)
   })
-})
+});
 
-// API POST /profile/update-introduction-by-file
-profileRouter.post('/update-introduction-by-file', Verify.verifyOrdinaryUser, busboy({
-  limits: {
-    fileSize: 4 * 1024 * 1024
-  }
-}), (req, res, next) => {
-  if (!req.busboy){
-    return res.status(400).json({"message": "Busboy failure",
-    "error": {
-      "name": "SystemError",
-      "message": "Busboy failure",
-      "code": 400
-    }})
-  }
-  let fstream;
-  req.pipe(req.busboy);
-  req.busboy.on('file', (fieldname, file, filename) => {
-    if (path.extname(filename) != ".txt" && path.extname(filename) != ".doc" && path.extname(filename) != ".docx") {
-        res.status(205).json({
-          "message": "Invalid file type! Upload file can be in either .txt, .doc or .docx",
+profileRouter.post('/update-introduction-by-file', Verify.verifyOrdinaryUser, function(req,res,next){
+  console.log(req.files);
+
+  if(req.files){
+    let file = req.files.introduction;
+    let file_name = req.files.introduction.name;
+    if (path.extname(file_name) != ".txt") {
+        return res.status(205).json({
+          "message": "Invalid file type! Upload file must be in .txt",
           "error": {
             "name": "FileError",
-            "message": "Invalid file type! Upload file can be in either .txt, .doc or .docx",
+            "message": "Invalid file type! Upload file must be in .txt",
             "code": 205
           }
         })
     }
-    if (path.extname(filename) === ".txt") {
-      file.on('data', function(data) {
-        profileUtility.updateUserSelfDescription(req.decoded._id, data).then((newAssessment) => {
-          const introduction = data.toString();
-          // if user description is longer than 100 words, update persoanlity assessment and analysis
-          if (string.countWords(introduction) > 100) {
-            // update assessment and analysis
-            profileUtility.getAndUpdatePersonalityAssessment(newAssessment._id, introduction).then(() => {
-              // update interest
-              naturalLanguageUnderstanding.getAnalysis(introduction).then((analysis) => {
-                profileUtility.updateInterest(req.decoded._id, analysis).then(() => {
-                  res.status(200).json({status: "success", message: "Done updating"})
-                }).catch((err) => {
-                  console.error(err);
-                  res.status(302).json(err)
-                })
-              }).catch((err) => {
-                console.error(err);
-                res.status(200).json({status: "success", message: "Done with warning", "warning": err})
-              });
+    let data=req.files.introduction.data;
+    profileUtility.updateUserSelfDescription(req.decoded._id, data).then((newAssessment) => {
+      const introduction = data.toString();
+      // if user description is longer than 100 words, update persoanlity assessment and analysis
+      if (string.countWords(introduction) > 100) {
+        // update assessment and analysis
+        profileUtility.getAndUpdatePersonalityAssessment(newAssessment._id, introduction).then(() => {
+          // update interest
+          naturalLanguageUnderstanding.getAnalysis(introduction).then((analysis) => {
+            profileUtility.updateInterest(req.decoded._id, analysis).then(() => {
+              res.status(200).json({status: "success", message: "Done updating"})
             }).catch((err) => {
               console.error(err);
-              res.status(200).json({status: "success", message: "Done with warning", "warning": err})
-            });
-          } else {
-            // if less than 100 words, only update user description content to DB
-            newAssessment.description_content = introduction;
-            newAssessment.save().then((record) => {
-              User.update({
-                _id: req.decoded._id
-              }, {
-                $set: {
-                  'personality_evaluation': newAssessment._id
-                }
-              }).exec().then(() => {
-                // update interest
-                naturalLanguageUnderstanding.getAnalysis(introduction, 3, 3, 3).then((analysis) => {
-                  profileUtility.updateInterest(req.decoded._id, analysis).then(() => {
-                    res.status(200).json({status: "success", message: "Done updating"})
-                  }).catch((err) => {
-                    console.error(err);
-                    res.status(400).json(err)
-                  })
-                }).catch((err) => {
-                  console.error(err);
-                  res.status(400).json(err)
-                });
+              res.status(302).json(err)
+            })
+          }).catch((err) => {
+            console.error(err);
+            res.status(200).json({status: "success", message: "Done with warning", "warning": err})
+          });
+        }).catch((err) => {
+          console.error(err);
+          res.status(200).json({status: "success", message: "Done with warning", "warning": err})
+        });
+      } else {
+        // if less than 100 words, only update user description content to DB
+        newAssessment.description_content = introduction;
+        newAssessment.save().then((record) => {
+          User.update({
+            _id: req.decoded._id
+          }, {
+            $set: {
+              'personality_evaluation': newAssessment._id
+            }
+          }).exec().then(() => {
+            // update interest
+            naturalLanguageUnderstanding.getAnalysis(introduction, 3, 3, 3).then((analysis) => {
+              profileUtility.updateInterest(req.decoded._id, analysis).then(() => {
+                res.status(200).json({status: "success", message: "Done updating"})
               }).catch((err) => {
                 console.error(err);
                 res.status(400).json(err)
-              });
-            })
-          }
-        }).catch(function(err) {
-          console.error(err);
-          res.status(400).json(err);
-        });
-      });
-    } else if (path.extname(filename) === ".doc" || path.extname(filename) === ".docx") {
-      // if user upload a word file, write to temp folder and named by it's id, then parse and upload to DB
-      const filePath = path.resolve(__dirname, '../system/word-file-temp-folder/' + req.decoded._id + path.extname(filename));
-
-      fstream = fs.createWriteStream(filePath);
-      // write file to temp folder
-      file.pipe(fstream);
-
-      fstream.on('close', function() {
-        // using watson documention conversion
-
-        document_conversion.convert({
-          file: fs.createReadStream(filePath),
-          conversion_target: document_conversion.conversion_target.ANSWER_UNITS,
-          word: config.watson.document_conversion.config
-        }, (err, response) => {
-          if (err) {
-            res.status(400).json(err);
-          } else {
-            const fullDoc = wordToText.combineResult(response);
-            profileUtility.updateUserSelfDescription(req.decoded._id, fullDoc).then((newAssessment) => {
-              // done write to DB, delete file
-              del([filePath]).then().catch((err) => {
-                console.error(err);
-              });
-              if (stringChecking.countWords(fullDoc) > 100) {
-                profileUtility.getAndUpdatePersonalityAssessment(req.decoded._id, fullDoc).then(() => {
-                  // update interest
-                  naturalLanguageUnderstanding.getAnalysis(fullDoc, 20, 20, 20).then((analysis) => {
-                    profileUtility.updateInterest(req.decoded._id, analysis).then(() => {
-                      res.status(200).json({status: "success", message: "Done updating"})
-                    }).catch((err) => {
-                      console.error(err);
-                      res.status(400).json(err)
-                    })
-                  }).catch((err) => {
-                    console.error(err);
-                    res.status(400).json(err)
-                  });
-                }).catch((err) => {
-                  console.error(err);
-                  res.status(400).json(err)
-                });
-              } else {
-                // if less than 100 words, only update user description content to DB
-                newAssessment.description_content = fullDoc;
-                newAssessment.save().then((record) => {
-                  User.update({
-                    _id: req.decoded._id
-                  }, {
-                    $set: {
-                      'personality_evaluation': newAssessment._id
-                    }
-                  }).exec().then(() => {
-                    // update interest
-                    naturalLanguageUnderstanding.getAnalysis(fullDoc, 3, 3, 3).then((analysis) => {
-                      profileUtility.updateInterest(req.decoded._id, analysis).then(() => {
-                        res.status(200).json({status: "success", message: "Done updating"})
-                      }).catch((err) => {
-                        console.error(err);
-                        res.status(400).json(err)
-                      })
-                    }).catch((err) => {
-                      console.error(err);
-                      res.status(400).json(err)
-                    });
-                  }).catch((err) => {
-                    console.error(err);
-                    res.status(400).json(err)
-                  });
-                })
-              }
-            }).catch(function(err) {
-              // if error on write to DB, leave the file in the folder for further examnaton
+              })
+            }).catch((err) => {
               console.error(err);
               res.status(400).json(err)
             });
-          }
-        });
+          }).catch((err) => {
+            console.error(err);
+            res.status(400).json(err)
+          });
+        })
+      }
+    }).catch(function(err) {
+      console.error(err);
+      res.status(400).json(err);
+    });
+  }
+  else{
+    res.status(200).json({
+          "message": "you did not choose any file"
+    });
+  }
+});
+// API POST /profile/update-introduction-by-file
+// profileRouter.post('/update-introduction-by-file', Verify.verifyOrdinaryUser, busboy({
+//   limits: {
+//     fileSize: 4 * 1024 * 1024
+//   }
+// }), (req, res, next) => {
+//   if (!req.busboy){
+//     return res.status(400).json({"message": "Busboy failure",
+//     "error": {
+//       "name": "SystemError",
+//       "message": "Busboy failure",
+//       "code": 400
+//     }})
+//   }
+//   console.log("here");
+//   let fstream;
+//   req.pipe(req.busboy);
+//   req.busboy.on('file', (fieldname, file, filename) => {
+//     if (path.extname(filename) != ".txt" && path.extname(filename) != ".doc" && path.extname(filename) != ".docx") {
+//         res.status(205).json({
+//           "message": "Invalid file type! Upload file can be in either .txt, .doc or .docx",
+//           "error": {
+//             "name": "FileError",
+//             "message": "Invalid file type! Upload file can be in either .txt, .doc or .docx",
+//             "code": 205
+//           }
+//         })
+//     }
+//     if (path.extname(filename) === ".txt") {
+//       file.on('data', function(data) {
+//         profileUtility.updateUserSelfDescription(req.decoded._id, data).then((newAssessment) => {
+//           const introduction = data.toString();
+//           // if user description is longer than 100 words, update persoanlity assessment and analysis
+//           if (string.countWords(introduction) > 100) {
+//             // update assessment and analysis
+//             profileUtility.getAndUpdatePersonalityAssessment(newAssessment._id, introduction).then(() => {
+//               // update interest
+//               naturalLanguageUnderstanding.getAnalysis(introduction).then((analysis) => {
+//                 profileUtility.updateInterest(req.decoded._id, analysis).then(() => {
+//                   res.status(200).json({status: "success", message: "Done updating"})
+//                 }).catch((err) => {
+//                   console.error(err);
+//                   res.status(302).json(err)
+//                 })
+//               }).catch((err) => {
+//                 console.error(err);
+//                 res.status(200).json({status: "success", message: "Done with warning", "warning": err})
+//               });
+//             }).catch((err) => {
+//               console.error(err);
+//               res.status(200).json({status: "success", message: "Done with warning", "warning": err})
+//             });
+//           } else {
+//             // if less than 100 words, only update user description content to DB
+//             newAssessment.description_content = introduction;
+//             newAssessment.save().then((record) => {
+//               User.update({
+//                 _id: req.decoded._id
+//               }, {
+//                 $set: {
+//                   'personality_evaluation': newAssessment._id
+//                 }
+//               }).exec().then(() => {
+//                 // update interest
+//                 naturalLanguageUnderstanding.getAnalysis(introduction, 3, 3, 3).then((analysis) => {
+//                   profileUtility.updateInterest(req.decoded._id, analysis).then(() => {
+//                     res.status(200).json({status: "success", message: "Done updating"})
+//                   }).catch((err) => {
+//                     console.error(err);
+//                     res.status(400).json(err)
+//                   })
+//                 }).catch((err) => {
+//                   console.error(err);
+//                   res.status(400).json(err)
+//                 });
+//               }).catch((err) => {
+//                 console.error(err);
+//                 res.status(400).json(err)
+//               });
+//             })
+//           }
+//         }).catch(function(err) {
+//           console.error(err);
+//           res.status(400).json(err);
+//         });
+//       });
+//     } else if (path.extname(filename) === ".doc" || path.extname(filename) === ".docx") {
+//       // if user upload a word file, write to temp folder and named by it's id, then parse and upload to DB
+//       const filePath = path.resolve(__dirname, '../system/word-file-temp-folder/' + req.decoded._id + path.extname(filename));
 
-      });
-    }
-  });
-})
+//       fstream = fs.createWriteStream(filePath);
+//       // write file to temp folder
+//       file.pipe(fstream);
+
+//       fstream.on('close', function() {
+//         // using watson documention conversion
+
+//         document_conversion.convert({
+//           file: fs.createReadStream(filePath),
+//           conversion_target: document_conversion.conversion_target.ANSWER_UNITS,
+//           word: config.watson.document_conversion.config
+//         }, (err, response) => {
+//           if (err) {
+//             res.status(400).json(err);
+//           } else {
+//             const fullDoc = wordToText.combineResult(response);
+//             profileUtility.updateUserSelfDescription(req.decoded._id, fullDoc).then((newAssessment) => {
+//               // done write to DB, delete file
+//               del([filePath]).then().catch((err) => {
+//                 console.error(err);
+//               });
+//               if (stringChecking.countWords(fullDoc) > 100) {
+//                 profileUtility.getAndUpdatePersonalityAssessment(req.decoded._id, fullDoc).then(() => {
+//                   // update interest
+//                   naturalLanguageUnderstanding.getAnalysis(fullDoc, 20, 20, 20).then((analysis) => {
+//                     profileUtility.updateInterest(req.decoded._id, analysis).then(() => {
+//                       res.status(200).json({status: "success", message: "Done updating"})
+//                     }).catch((err) => {
+//                       console.error(err);
+//                       res.status(400).json(err)
+//                     })
+//                   }).catch((err) => {
+//                     console.error(err);
+//                     res.status(400).json(err)
+//                   });
+//                 }).catch((err) => {
+//                   console.error(err);
+//                   res.status(400).json(err)
+//                 });
+//               } else {
+//                 // if less than 100 words, only update user description content to DB
+//                 newAssessment.description_content = fullDoc;
+//                 newAssessment.save().then((record) => {
+//                   User.update({
+//                     _id: req.decoded._id
+//                   }, {
+//                     $set: {
+//                       'personality_evaluation': newAssessment._id
+//                     }
+//                   }).exec().then(() => {
+//                     // update interest
+//                     naturalLanguageUnderstanding.getAnalysis(fullDoc, 3, 3, 3).then((analysis) => {
+//                       profileUtility.updateInterest(req.decoded._id, analysis).then(() => {
+//                         res.status(200).json({status: "success", message: "Done updating"})
+//                       }).catch((err) => {
+//                         console.error(err);
+//                         res.status(400).json(err)
+//                       })
+//                     }).catch((err) => {
+//                       console.error(err);
+//                       res.status(400).json(err)
+//                     });
+//                   }).catch((err) => {
+//                     console.error(err);
+//                     res.status(400).json(err)
+//                   });
+//                 })
+//               }
+//             }).catch(function(err) {
+//               // if error on write to DB, leave the file in the folder for further examnaton
+//               console.error(err);
+//               res.status(400).json(err)
+//             });
+//           }
+//         });
+
+//       });
+//     }
+//   });
+// })
 
 profileRouter.get('/introduction', Verify.verifyOrdinaryUser, (req,res)=>{
   User.findById(req.decoded._id,(err,record)=>{
