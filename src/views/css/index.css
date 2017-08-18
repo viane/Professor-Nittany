@@ -94,7 +94,7 @@ html, body {
   background-color: #0F7DC2;
   height: 100vh;
   position: relative;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .title>img {

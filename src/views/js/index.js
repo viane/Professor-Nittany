@@ -753,7 +753,10 @@ const initBtnHandler = () => {
   // profile
   $($('.btn-profile button')[0]).click(() => {
     if (!$('.profile-area').hasClass('active')) {
+      // hide chat
       $('.current-chat-area').hide('slow');
+      // change button text
+      $($('.btn-profile button')[0]).text('Chat');
       $('.current-chat').append('<div class="question-loading scrollable">' + htmlLoading + '</div>');
       getUserInfo().then(json => {
         // name & email
@@ -811,12 +814,14 @@ const initBtnHandler = () => {
           }
         }
         $('.question-loading').hide('slow').remove();
+        // show profile section
         $('.profile-area').show('slow').addClass('active');
         $('.profile-introduction').css({
           "height": $('.profile-introduction').prop('scrollHeight') / 3
         });
       })
     }else {
+      $($('.btn-profile button')[0]).text('Profile');
       $('.profile-area').hide('slow').removeClass('active');
       $('.current-chat-area').show('slow');
     }
