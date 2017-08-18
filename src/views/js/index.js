@@ -696,7 +696,7 @@ function login() {
         })
         // TODO change - Currently redirecting to lite because full is not done
         // hide login/register btn
-        $('.text-benefits, .login, .register').hide();
+        $('.text-benefits, .login-wrapper, .register-wrapper').hide();
         $('.logout, .btn-profile').show();
         // close login modal
         $('#loginModal').modal('toggle');
@@ -788,7 +788,7 @@ const initBtnHandler = () => {
       clickToHide: true,
       autoHide: true
     })
-    $('.text-benefits, .login, .register').show();
+    $('.text-benefits, .login-wrapper, .register-wrapper').show();
     $('.logout, .btn-profile').hide();
     localStorage['iaa-userToken'] = null;
     $('.lite-header').text("Welcome Visitor");
@@ -815,7 +815,7 @@ const initUserAccountListener = () => {
   getUserInfo().then(json => {
     if (json.hasOwnProperty('_id')) {
       // hide login/register btn
-      $('.text-benefits, .login, .register').hide();
+      $('.text-benefits, .login-wrapper, .register-wrapper').hide();
       $('.logout, .btn-profile').show();
       const userDisplayName = capitalizeFirstLetter(json.first_name);
       $('.lite-header').text("Welcome " + userDisplayName);
