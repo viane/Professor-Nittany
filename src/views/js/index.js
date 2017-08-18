@@ -105,10 +105,10 @@ $(document).on('click', '.question-tab', function(e) {
     showLowQuestions();
     $('.low-confidence').text('Back to Chat')
   } else {
+    $('.low-confidence').text("Check Unsatisfying Questions")
     $('.current-chat-area').show();
     $('.logged-questions').remove();
   }
-
   e.preventDefault();
 });
 
@@ -626,7 +626,7 @@ function showLowQuestions() {
     var questionList = questionWrapper(json);
     $('.current-chat').append(questionList);
     // btn handler
-    $('.btn-mark-all-question').click(()=>{
+    $('.btn-mark-all-question').click(() => {
       $('.unsatisfy-question:checkbox:not(:checked)').click();
     })
     $('.btn-export-question').click(() => {
@@ -752,32 +752,80 @@ function register() {
 const initBtnHandler = () => {
   // profile
   $($('.btn-profile button')[0]).click(() => {
-    $('.current-chat-area').hide('slow');
-    $('.current-chat').append('<div class="question-loading scrollable">' + htmlLoading + '</div>');
-    getUserInfo().then(json => {
-      $('.profile-user-name').val(capitalizeFirstLetter(json.first_name + " " + json.last_name));
-      $('.profile-email').val(json.email);
-      if (json.hasOwnProperty('personality_evaluation')) {
-        if (json.personality_evaluation.hasOwnProperty('description_content')) {
-          const areaWidth = $('.current-chat').width();
-          console.log(areaWidth);
-          const introductionEle = $('.profile-introduction');
-          introductionEle.css({"width": areaWidth});
-          introductionEle.val(json.personality_evaluation.description_content);
+    if (!$('.profile-area').hasClass('active')) {
+      // hide chat
+      $('.current-chat-area').hide('slow');
+      // change button text
+      $($('.btn-profile button')[0]).text('Chat');
+      $('.current-chat').append('<div class="question-loading scrollable">' + htmlLoading + '</div>');
+      getUserInfo().then(json => {
+        // name & email
+        $('.profile-user-name').val(capitalizeFirstLetter(json.first_name + " " + json.last_name));
+        $('.profile-email').val(json.email);
+        // introduction & personality & wordcloud
+        if (json.hasOwnProperty('personality_evaluation')) {
+          if (json.personality_evaluation.hasOwnProperty('description_content')) {
+            const areaWidth = $('.current-chat').width();
+            console.log(areaWidth);
+            const introductionEle = $('.profile-introduction');
+            introductionEle.css({"width": areaWidth});
+            introductionEle.val(json.personality_evaluation.description_content);
+          }
+          if (json.personality_evaluation.hasOwnProperty('evaluation')) {
+            $('.profile-personality').show();
+            $('.legend').empty();
+            json.personality_evaluation.evaluation.values.map(item => {
+              $('.legend').append('<li><em>' + item.name + '</em><span>' + (item.percentile * 100).toFixed(1) + '</span></li>')
+            })
+            createPie(".pieID.legend", ".pieID.pie");
+          }
+          if (json.hasOwnProperty('interest')) {
+            // $('.word-cloud').text(JSON.stringify(json.interest));
+            const wordList = json.interest.interest.map(item => {
+              return [
+                item.term,
+                parseInt(item.value, 10) + 6
+              ];
+            })
+            console.log(wordList);
+            // WordCloud(document.getElementById('my_canvas'), { list: list } );
+            if (WordCloud.isSupported) {
+              WordCloud($('#word-cloud')[0], {
+                list: wordList,
+                gridSize: 20,
+                weightFactor: function(size) {
+                  return Math.pow(size, 2.3) * $('#word-cloud').width() / 800;
+                },
+                fontFamily: 'Times, serif',
+                color: function(word, weight) {
+                  return (weight === 12)
+                    ? '#f02222'
+                    : '#c09292';
+                },
+                rotateRatio: 0,
+                rotationSteps: 0,
+                clearCanvas: true,
+                minSize: 35,
+                shuffle:true,
+                backgroundColor: '#fff'
+              });
+            }
+
+          }
         }
-        if (json.personality_evaluation.hasOwnProperty('evaluation')) {
-          $('.profile-personality').text(JSON.stringify(json.personality_evaluation.evaluation));
-        }
-        if (json.hasOwnProperty('interest')) {
-          $('.word-cloud').text(JSON.stringify(json.interest));
-        }
-      }
-      $('.question-loading').hide('slow').remove();
-      $('.profile-area').show('slow');
-      $('.profile-introduction').css({
-        "height": $('.profile-introduction').prop('scrollHeight') / 3
-      });
-    })
+        $('.question-loading').hide('slow').remove();
+        // show profile section
+        $('.profile-area').show('slow').addClass('active');
+        $('.profile-introduction').css({
+          "height": $('.profile-introduction').prop('scrollHeight') / 3
+        });
+      })
+    }else {
+      $($('.btn-profile button')[0]).text('Profile');
+      $('.profile-area').hide('slow').removeClass('active');
+      $('.current-chat-area').show('slow');
+    }
+
   })
 
   // logout
@@ -885,4 +933,59 @@ const capitalizeFirstLetter = (str) => {
   return str.toLowerCase().split(' ').map(function(word) {
     return word[0].toUpperCase() + word.substr(1);
   }).join(' ');
+}
+
+function sliceSize(dataNum, dataTotal) {
+  return (dataNum / dataTotal) * 360;
+}
+function addSlice(sliceSize, pieElement, offset, sliceID, color) {
+  $(pieElement).append("<div class='slice " + sliceID + "'><span></span></div>");
+  var offset = offset - 1;
+  var sizeRotation = -179 + sliceSize;
+  $("." + sliceID).css({
+    "transform": "rotate(" + offset + "deg) translate3d(0,0,0)"
+  });
+  $("." + sliceID + " span").css({
+    "transform": "rotate(" + sizeRotation + "deg) translate3d(0,0,0)",
+    "background-color": color
+  });
+}
+function iterateSlices(sliceSize, pieElement, offset, dataCount, sliceCount, color) {
+  var sliceID = "s" + dataCount + "-" + sliceCount;
+  var maxSize = 179;
+  if (sliceSize <= maxSize) {
+    addSlice(sliceSize, pieElement, offset, sliceID, color);
+  } else {
+    addSlice(maxSize, pieElement, offset, sliceID, color);
+    iterateSlices(sliceSize - maxSize, pieElement, offset + maxSize, dataCount, sliceCount + 1, color);
+  }
+}
+function createPie(dataElement, pieElement) {
+  var listData = [];
+  $(dataElement + " span").each(function() {
+    listData.push(Number($(this).html()));
+  });
+  var listTotal = 0;
+  for (var i = 0; i < listData.length; i++) {
+    listTotal += listData[i];
+  }
+  var offset = 0;
+  var color = [
+    "cornflowerblue",
+    "olivedrab",
+    "orange",
+    "tomato",
+    "crimson",
+    "purple",
+    "turquoise",
+    "forestgreen",
+    "navy",
+    "gray"
+  ];
+  for (var i = 0; i < listData.length; i++) {
+    var size = sliceSize(listData[i], listTotal);
+    iterateSlices(size, pieElement, offset, i, 0, color[i]);
+    $(dataElement + " li:nth-child(" + (i + 1) + ")").css("border-color", color[i]);
+    offset += size;
+  }
 }

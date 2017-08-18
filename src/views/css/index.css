@@ -94,7 +94,7 @@ html, body {
   background-color: #0F7DC2;
   height: 100vh;
   position: relative;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .title>img {
@@ -855,6 +855,102 @@ body {
 .profile-area {
   display: none;
   padding: 0 10px 0 10px;
+}
+.profile-personality{
+  margin-left: -230px;
+  position: relative;
+  left: 50%;
+  margin-top: 55px;
+  =: translate(-50%,0)
+}
+
+#word-cloud{
+  position: relative;
+  left: 50%;
+  /*width: 500px;
+  height: 400px;*/
+  transform: translate(-50%,0);
+}
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+
+@keyframes bake-pie {
+  from {
+    transform: rotate(0deg) translate3d(0,0,0);
+  }
+}
+main {
+  margin: 30px auto;
+}
+.pieID {
+  display: inline-block;
+  /* vertical-align: top; */
+}
+.pie {
+  height: 200px;
+  width: 200px;
+  position: relative;
+  margin: 0 30px 30px 0;
+}
+.pie::before {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: 1;
+  width: 100px;
+  height: 100px;
+  background: #EEE;
+  border-radius: 50%;
+  top: 50px;
+  left: 50px;
+}
+.pie::after {
+  content: "";
+  display: block;
+  width: 120px;
+  /* height: 2px; */
+  background: rgba(0,0,0,0.1);
+  border-radius: 50%;
+  /* box-shadow: 0 0 3px 4px rgba(0,0,0,0.1); */
+  /* margin: 220px auto; */
+}
+.slice {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  clip: rect(0px, 200px, 200px, 100px);
+  animation: bake-pie 1s;
+}
+.slice span {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: black;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  clip: rect(0px, 200px, 200px, 100px);
+}
+.legend {
+  list-style-type: none;
+  top: -68px;
+  background: #FFF;
+  padding: 15px;
+  position: relative;
+  font-size: 13px;
+}
+.legend li {
+  height: 1.25em;
+  margin-bottom: 0.7em;
+  padding-left: 0.5em;
+  border-left: 1.25em solid black;
+}
+.legend em {
+  font-style: normal;
+  padding: 0 10px 0 0;
+}
+.legend span {
+  float: right;
 }
 
 
