@@ -478,7 +478,7 @@ if (!window.clearImmediate) {
 
       if (rotationSteps > 0) {
         // Min rotation + zero or more steps * span of one step
-        return minRotation + 
+        return minRotation +
           Math.floor(Math.random() * rotationSteps) *
           rotationRange / (rotationSteps - 1);
       }

@@ -27,6 +27,8 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.9.0/css/lightbox.min.css" rel="stylesheet" type="text/css">
   <!-- noty -->
   <script src="js/notify.js"></script>
+  <!-- wordcloud2 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.0.6/wordcloud2.js" integrity="sha256-40I0nxERIQWgPU7MWHWkBi1Zdk9RiSVpR/iwwb5xofE=" crossorigin="anonymous"></script>
   <!-- local -->
   <script src="js/index.js"></script>
   <link href="css/index.css" rel="stylesheet" type="text/css">
@@ -310,8 +312,43 @@
               <span class="profile-input-bar"></span>
               <label class="profile-label">Introduction</label>
             </div>
-            <div class="word-cloud"></div>
-            <div class="profile-personality"></div>
+            <div class="group">
+              <canvas id="word-cloud" width="600px" height="400px"></canvas>
+              <label class="profile-label">Word Cloud</label>
+            </div>
+            <div class="group">
+              <div class="profile-personality">
+                <main>
+                  <section>
+                    <div class="pieID pie">
+                    </div>
+                    <ul class="pieID legend">
+                      <li>
+                        <em>holer</em>
+                        <span>7</span>
+                      </li>
+                      <li>
+                        <em>holer</em>
+                        <span>531</span>
+                      </li>
+                      <li>
+                        <em>holer</em>
+                        <span>868</span>
+                      </li>
+                      <li>
+                        <em>holer</em>
+                        <span>344</span>
+                      </li>
+                      <li>
+                        <em>holer</em>
+                        <span>1145</span>
+                      </li>
+                    </ul>
+                  </section>
+                </main>
+              </div>
+              <label class="profile-label">Peronality</label>
+            </div>
           </div>
         </div>
       </div>
