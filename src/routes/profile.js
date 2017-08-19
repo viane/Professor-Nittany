@@ -123,7 +123,7 @@ profileRouter.post('/interest-manual', Verify.verifyOrdinaryUser, (req, res) => 
 // API POST /profile/update-introduction
 profileRouter.post('/update-introduction', Verify.verifyOrdinaryUser, (req, res) => {
   const introduction = req.body.introduction;
-  console.log(req.body);
+  console.log(req.body.introduction);
   profileUtility.updateUserSelfDescription(req.decoded._id, introduction).then((newAssessment) => {
     // if user description is longer than 100 words, update persoanlity assessment and analysis
     if (string.countWords(introduction) > 100) {

@@ -503,23 +503,69 @@ questionRouter.post('/log-question', function(req,res,next){
 
 // GET API for getting good example question
 questionRouter.get('/get-trained-question', (req, res) => {
-  Questions.findRandom({
-    'trained': true
-  }, {
-    "body": 1,
-    "_id": 1
-  }, { skip: 10, limit: 10, count: 5 }, (err, questions) => {
-    if (err) {
-      console.error(err);
-      return res.status(400).json({
-        "status": err
-      })
-    }
-    return res.status(200).json({
-      "questions": questions
-    })
+  const promiseAry = [searchTrainedQuestionOfKeyword('tuition'),
+                      searchTrainedQuestionOfKeyword('payment'),
+                      searchTrainedQuestionOfKeyword('Canvas'),
+                      searchTrainedQuestionOfKeyword('class registration'),
+                      searchTrainedQuestionOfKeyword('financial aid'),
+                      searchTrainedQuestionOfKeyword('transfer credits'),
+                      searchTrainedQuestionOfKeyword('Student loans'),
+                      searchTrainedQuestionOfKeyword('GPA'),
+                      searchTrainedQuestionOfKeyword('enrollment'),
+                      searchTrainedQuestionOfKeyword('class schedule'),
+                      searchTrainedQuestionOfKeyword('swap class'),
+                      searchTrainedQuestionOfKeyword('graduation'),
+                      searchTrainedQuestionOfKeyword('ALEKS'),
+                      searchTrainedQuestionOfKeyword('tutor'),
+                      searchTrainedQuestionOfKeyword('Withdraw'),
+                      searchTrainedQuestionOfKeyword('textbooks'),
+                      searchTrainedQuestionOfKeyword('registration'),
+                      searchTrainedQuestionOfKeyword('defer grades'),
+                      searchTrainedQuestionOfKeyword('degree'),
+                      searchTrainedQuestionOfKeyword('Penn State'),
+                      searchTrainedQuestionOfKeyword('grades')
+
+                      ];
+  Promise.all(promiseAry).then(questions=>{
+    return res.status(200).json(questions);
+  }).catch(errs=>{
+    return res.status(300).json(errs);
   })
 });
+
+const searchTrainedQuestionOfKeyword = (keyword) =>{
+  return new Promise(function(resolve, reject) {
+    const keywordRegex = new RegExp(keyword,"i");
+    Questions.findRandom({
+      'trained': true,
+      'feature.keywords.text':keywordRegex
+    }, {
+      "body": 1,
+      'feature.keywords.text':1,
+      "_id": 1
+    }, { skip: 10, limit: 10, count: 5 }, (err, questions) => {
+      if (err) {
+        console.error(err);
+        return reject({
+          "status": err
+        })
+      }
+      if (questions && questions.length>0) {
+        const questionObjAry = questions.map(question=>{
+          return { '_id' : question._id,
+            'body' : question.body,
+            'keyword' : keyword
+          }
+        })
+        return resolve({
+          "questions": questionObjAry
+        })
+      }else {
+        return resolve({})
+      }
+    })
+  })
+}
 
 // GET API for getting good example question
 questionRouter.post('/mark-trained-question', (req, res) => {
