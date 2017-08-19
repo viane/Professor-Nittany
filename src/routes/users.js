@@ -9,6 +9,7 @@ const smtpTransport = require('nodemailer-smtp-transport');
 const crypto = require('crypto');
 const async = require('async');
 import path from 'path';
+import validator from "email-validator";
 
 /* GET users listing. */
 router.route('/').get(function(req, res, next) {
@@ -30,13 +31,13 @@ router.route('/').get(function(req, res, next) {
 
 //get User information
 router.route('/get-user').get(Verify.verifyOrdinaryUser, function(req, res, next) {
-  User.findById(req.decoded._id).populate('major').populate('interest').populate('interest_manual').populate('inbox').populate('personality_evaluation').populate('assessement') //Schema hasn't been registered for model {Assessement}
-    .exec(function(err, user) {
-      if (err) {
-        return next(err)
-      }
-      res.json(user);
-    });
+  User.findById(req.decoded._id).populate('major').populate('interest').populate('interest_manual').populate('inbox').populate('personality_evaluation').populate('assessement'). //Schema hasn't been registered for model {Assessement}
+  exec(function(err, user) {
+    if (err) {
+      return next(err)
+    }
+    res.json(user);
+  });
 }).delete(function(req, res, next) {
   User.remove({
     'email': req.body.email
@@ -57,41 +58,39 @@ router.post('/signup', function(req, res) {
       }
     });
   }
-  if (!req.body.first_name || !req.body.last_name || !req.body.email || !req.body.account_role) {
+  if (!req.body.first_name || !req.body.last_name || !req.body.email || !req.body.account_role || !req.body.majors) {
     return res.status(200).json({
       err: {
         name: "MissRequiredInformation",
-        message: "Miss requireed signup infomation."
+        message: "Miss required signup infomation."
       }
     });
   }
-  User.register(new User({
-    first_name: req.body.first_name,
-    last_name: req.body.last_name,
-    email: req.body.email
-  }), req.body.password, function(err, user) {
-    if (err) {
-      return res.status(200).json({
-        err: err
-      });
-    }
-    if (req.body.account_role.toLowerCase() === "student") {
-      user.account_role = "student";
-    }
-
-    if (req.body.account_role.toLowerCase() === "adviser") {
-      user.account_role = "adviser";
-    }
-
-    user.status = "inactive";
-    console.log(req.body);
-    if(req.body.major && req.body.major.length>0){
-      for(let j=0; j<req.body.major.length; j++){
-        user.major.push(req.body.major[j]);
+  if (!validator.validate(req.body.email)) {
+    return res.status(200).json({
+      err: {
+        name: "InvalidRequiredInformation",
+        message: "Invalid signup Email."
       }
+    });
+  }
+  if (req.body.account_role.toLowerCase() != "student") {
+    return res.status(200).json({
+      err: {
+        name: "InvalidRequiredInformation",
+        message: "Invalid signup role."
+      }
+    });
+  }
+
+  User.register(new User({first_name: req.body.first_name, last_name: req.body.last_name, email: req.body.email, account_role: req.body.account_role.toLowerCase(), status: "inactive"}), req.body.password, function(err, user) {
+    if (err) {
+      return res.status(200).json({err: err});
     }
-
-
+    console.log(req.body.majors);
+    req.body.majors.map(majorID=>{
+      user.major.unshift(majorID);
+    })
     crypto.randomBytes(20, (err, buf) => {
       const token = buf.toString('hex');
       user.activation_code = token;
@@ -100,9 +99,7 @@ router.post('/signup', function(req, res) {
       user.save(function(err, user) {
         if (err) {
           console.error(err);
-          res.status(200).json({
-            status: err
-          });
+          res.status(200).json({status: err});
         }
 
         // email the actvition code
@@ -127,13 +124,9 @@ router.post('/signup', function(req, res) {
         mailer.sendMail(mailOptions, (err) => {
           if (err) {
             console.error(err);
-            return res.status(200).json({
-              status: 'Successfully registered, but failed to send you the activation link,please try reset password or contact us.'
-            });
+            return res.status(200).json({status: 'Successfully registered, but failed to send you the activation link,please try reset password or contact us.'});
           }
-          return res.status(200).json({
-            status: 'Successfully registered, an activation link has been sent to your email.'
-          });
+          return res.status(200).json({status: 'Successfully registered, an activation link has been sent to your email.'});
         });
       });
     });
@@ -147,9 +140,7 @@ router.get('/active-account/:token', (req, res) => {
     "activation_code": req.params.token
   }, (err, user) => {
     if (!user) {
-      return res.status(200).json({
-        status: 'Account activation token is invalid or account is already activated.'
-      });
+      return res.status(200).json({status: 'Account activation token is invalid or account is already activated.'});
     }
     if (user.activation_code === req.params.token) {
       user.activation_code = null;
@@ -157,16 +148,12 @@ router.get('/active-account/:token', (req, res) => {
       user.save((err, activeUser) => {
         if (err) {
           console.error(err);
-          return res.status(200).json({
-            status: 'There is an issue with the system, please try again or contact us.'
-          });
+          return res.status(200).json({status: 'There is an issue with the system, please try again or contact us.'});
         }
         req.logIn(activeUser, function(err) {
           if (err) {
             console.error(err);
-            return res.status(200).json({
-              status: 'There is an issue with the account, please try again or contact us.'
-            });
+            return res.status(200).json({status: 'There is an issue with the account, please try again or contact us.'});
           }
         });
         // email notice account is activated
@@ -193,9 +180,7 @@ router.get('/active-account/:token', (req, res) => {
             console.error(err);
           }
         });
-        return res.status(200).json({
-          status: 'Your account is successfully activated now. You can go to your <a href=\'users/profile\'>Profile Page</a> now'
-        });
+        return res.status(200).json({status: 'Your account is successfully activated now. You can go to your <a href=\'users/profile\'>Profile Page</a> now'});
       })
     }
   });
@@ -219,15 +204,15 @@ router.post('/request-reset-password', (req, res, next) => {
         if (err) {
           console.error(err);
           return res.status(200).json(err : {
-          name: "SystemError",
-          message: "An error has occured, please try again later or contact us."
+            name: "SystemError",
+            message: "An error has occured, please try again later or contact us."
           });
         }
 
         if (!user) {
           return res.status(200).json(err : {
-          name: "InvalidEmail",
-          message: "No account with this email address exists."
+            name: "InvalidEmail",
+            message: "No account with this email address exists."
           });
         }
 
@@ -238,8 +223,8 @@ router.post('/request-reset-password', (req, res, next) => {
           if (err) {
             console.error(err);
             return res.status(200).json(err : {
-            name: "SystemError",
-            message: "An error has occured, please try again later or contact us."
+              name: "SystemError",
+              message: "An error has occured, please try again later or contact us."
             });
           }
           done(err, token, user);
@@ -271,8 +256,8 @@ router.post('/request-reset-password', (req, res, next) => {
         if (err) {
           console.error(err);
           return res.status(200).json(err : {
-          name: "SystemError",
-          message: "An error has occured, please try again later or contact us."
+            name: "SystemError",
+            message: "An error has occured, please try again later or contact us."
           });
         }
         return res.status(200).json({
@@ -296,14 +281,9 @@ router.get('/update-password/:token', (req, res, next) => {
     }
   }, (err, user) => {
     if (!user) {
-      return res.status(200).json({
-        status: 'Password reset token is invalid or has expired.'
-      });
+      return res.status(200).json({status: 'Password reset token is invalid or has expired.'});
     }
-    return res.status(200).json({
-      email: user.email,
-      token: req.params.token
-    });
+    return res.status(200).json({email: user.email, token: req.params.token});
   });
 });
 
@@ -347,36 +327,28 @@ router.post('/update-password', (req, res, next) => {
           });
         }
         user.setPassword(req.body.password, function(err, resp) {
-          if (err) return next(err);
+          if (err)
+            return next(err);
           user.resetPasswordToken = null;
           user.resetPasswordExpires = null;
           user.save((err, user) => {
             if (err) {
               console.error(err);
               return res.status(200).json(err : {
-              name: "SystemError",
-              message: "An error has occured, please try again later or contact us."
+                name: "SystemError",
+                message: "An error has occured, please try again later or contact us."
               });
             }
             req.logIn(user, (err) => {
               if (err) {
                 console.error(err);
                 return res.status(200).json(err : {
-                name: "SystemError",
-                message: "An error has occured, please try again later or contact us."
+                  name: "SystemError",
+                  message: "An error has occured, please try again later or contact us."
                 });
               }
-              var token = Verify.getToken({
-                "username": user.username,
-                "_id": user._id,
-                "status": user.status,
-                "account_role": user.account_role
-              });
-              res.status(200).json({
-                status: 'Password reset successful',
-                success: true,
-                token: token
-              });
+              var token = Verify.getToken({"username": user.username, "_id": user._id, "status": user.status, "account_role": user.account_role});
+              res.status(200).json({status: 'Password reset successful', success: true, token: token});
               done(err, user);
             });
           });
@@ -421,36 +393,21 @@ router.post('/signin', function(req, res, next) {
       return next(err);
     }
     if (!user || user.status === "inactive" || user.activation_code != null) {
-      return res.status(200).json({
-        err: 'Your account does not exist or is inactive.'
-      });
+      return res.status(200).json({err: 'Your account does not exist or is inactive.'});
     }
     req.logIn(user, function(err) {
       if (err) {
-        return res.status(200).json({
-          err: 'Could not log in user'
-        });
+        return res.status(200).json({err: 'Could not log in user'});
       }
 
-      var token = Verify.getToken({
-        "username": user.username,
-        "_id": user._id,
-        "status": user.status,
-        "account_role": user.account_role
-      });
-      res.status(200).json({
-        status: 'Login successful!',
-        success: true,
-        token: token
-      });
+      var token = Verify.getToken({"username": user.username, "_id": user._id, "status": user.status, "account_role": user.account_role});
+      res.status(200).json({status: 'Login successful!', success: true, token: token});
     });
   })(req, res, next);
 });
 
 //user faceback login api : get /users/signup-facebook
-router.get('/signup-facebook', passport.authenticate('facebook', {
-  scope: 'email'
-}), function(req, res) {});
+router.get('/signup-facebook', passport.authenticate('facebook', {scope: 'email'}), function(req, res) {});
 
 //usesr facebook callback api: get /facebook/callback
 router.get('/facebook/callback', function(req, res, next) {
@@ -460,23 +417,14 @@ router.get('/facebook/callback', function(req, res, next) {
       return next(err);
     }
     if (!user) {
-      return res.status(401).json({
-        err: info
-      });
+      return res.status(401).json({err: info});
     }
 
     req.logIn(user, function(err) {
       if (err) {
-        return res.status(200).json({
-          err: 'Could not log in user'
-        });
+        return res.status(200).json({err: 'Could not log in user'});
       }
-      var token = Verify.getToken({
-        "username": user.username,
-        "_id": user._id,
-        "status": user.status,
-        "account_role": user.account_role
-      });
+      var token = Verify.getToken({"username": user.username, "_id": user._id, "status": user.status, "account_role": user.account_role});
       res.status(200).redirect("/users/signin/callback?token=" + token + "&status=Login%20successful!" + "&success=true");
     });
   })(req, res, next);
@@ -492,22 +440,13 @@ router.get('/linkedin/callback', function(req, res, next) {
       return next(err);
     }
     if (!user) {
-      return res.status(401).json({
-        err: info
-      });
+      return res.status(401).json({err: info});
     }
     req.logIn(user, function(err) {
       if (err) {
-        return res.status(200).json({
-          err: 'Could not log in user'
-        });
+        return res.status(200).json({err: 'Could not log in user'});
       }
-      var token = Verify.getToken({
-        "username": user.username,
-        "_id": user._id,
-        "status": user.status,
-        "account_role": user.account_role
-      });
+      var token = Verify.getToken({"username": user.username, "_id": user._id, "status": user.status, "account_role": user.account_role});
       res.status(200).redirect("/users/signin/callback?token=" + token + "&status=Login%20successful!" + "&success=true");
     });
   })(req, res, next);
@@ -551,23 +490,14 @@ router.get('/google/callback', function(req, res, next) {
       return next(err);
     }
     if (!user) {
-      return res.status(401).json({
-        err: info
-      });
+      return res.status(401).json({err: info});
     }
     req.logIn(user, function(err) {
       if (err) {
         console.log(err);
-        return res.status(200).json({
-          err: 'Could not log in user'
-        });
+        return res.status(200).json({err: 'Could not log in user'});
       }
-      var token = Verify.getToken({
-        "username": user.username,
-        "_id": user._id,
-        "status": user.status,
-        "account_role": user.account_role
-      });
+      var token = Verify.getToken({"username": user.username, "_id": user._id, "status": user.status, "account_role": user.account_role});
       res.status(200).redirect("/users/signin/callback?token=" + token + "&status=Login%20successful!" + "&success=true");
     });
   })(req, res, next);

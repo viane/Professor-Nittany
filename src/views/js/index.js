@@ -5,6 +5,8 @@ let data = ["test1", "test2", "test3", "test4"];
 let timeAsked = "";
 let question = {};
 let access_token;
+const pageClass = ['.current-chat-area', '.profile-area', '.logged-questions', '.sample-question-area'];
+const pageTitle = ['Chatting with IAA', 'Profile', 'Unsatisfying Question Console', 'Suggested Question Areas'];
 
 if (!localStorage.hasOwnProperty('iaa-userToken')) {
   localStorage.setItem('iaa-userToken', null);
@@ -670,7 +672,7 @@ function showLowQuestions() {
 function login() {
   let email = document.getElementById('inputUserEmail').value;
   let password = document.getElementById('inputUserPassword').value;
-
+  loadAnimationOn('.container-fluid');
   fetch("/users/signin", {
     method: 'post',
     headers: {
@@ -681,6 +683,7 @@ function login() {
   }).then(response => {
     return response.json()
   }).then(json => {
+    removeLoadAnimationOn('.container-fluid');
     if (json.err) {
       // TODO handle failure of login
       $.notify(json.err, {
@@ -706,7 +709,7 @@ function login() {
         const userDisplayName = capitalizeFirstLetter(json.first_name);
         $('.lite-header').text("Welcome " + userDisplayName);
         // show unstatisfy question tab
-        if (json.hasOwnProperty('account_role') && json.account_role==="advisor") {
+        if (json.hasOwnProperty('account_role') && json.account_role === "advisor") {
           $('.question-tab').show();
         }
       })
@@ -715,52 +718,66 @@ function login() {
   })
 }
 
-function register() {
-  let email = document.getElementById('inputEmail').value;
-  let password = document.getElementById('inputPassword').value;
-  let first_name = document.getElementById('inputUserF').value;
-  let last_name = document.getElementById('inputUserL').value;
-
-  let select = document.getElementById('major');
-  let major = select.options[select.selectedIndex].text;
-
-  console.log(email);
-  console.log(password);
-  console.log(first_name);
-  console.log(last_name);
-  console.log(major);
-
-  fetch("/users/signup", {
-    method: 'post',
-    headers: {
-      "Content-type": "application/json"
-    },
-    body: JSON.stringify({
-      'email': email,
-      'password': password,
-      'first_name': first_name,
-      'last_name': last_name,
-      'account_role': 'student',
-      'majors': [major] //allow double or triple majors. An array of major document id
-    })
-  }).then(response => {
-    return response.json()
-  }).then(json => {
-    if (json.err) {
-      // TODO handle failure of registration
-      $.notify(json.err, {
-        className: "error",
-        clickToHide: true,
-        autoHide: true
-      })
-    } else {
-      // TODO change - Currently redirecting to lite because full is not done
-      window.location.replace('./lite-version.html');
-    }
-  });
-}
-
 const initBtnHandler = () => {
+  // logo
+  $('.home_anchor').click((e) => {
+    e.preventDefault();
+    if (!$('.current-chat-area').hasClass('active')) {
+      hideAllPage();
+      showPage('.current-chat-area');
+    }
+  })
+  // login & signup
+  $('.btn-register').click(e => {
+    e.preventDefault();
+loadAnimationOn('.container-fluid');
+      let email = document.getElementById('inputEmail').value;
+      let password = document.getElementById('inputPassword').value;
+      let first_name = document.getElementById('inputUserF').value;
+      let last_name = document.getElementById('inputUserL').value;
+
+      let select = document.getElementById('major');
+      let major = [];
+      major.unshift(select.options[select.selectedIndex].value);
+
+      fetch("/users/signup", {
+        method: 'post',
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        },
+        body: JSON.stringify({
+          'email': email,
+          'password': password,
+          'first_name': first_name,
+          'last_name': last_name,
+          'account_role': 'student',
+          'majors': major
+        })
+      }).then(response => {
+        return response.json()
+      }).then(json => {
+        removeLoadAnimationOn('.container-fluid');
+        console.log(json);
+        if (json.err) {
+          // TODO handle failure of registration
+          $.notify(json.err.message, {
+            className: "error",
+            clickToHide: true,
+            autoHide: true
+          })
+        } else {
+          // close login modal
+          $('#RegisterModal').modal('toggle');
+          // TODO change - Currently redirecting to lite because full is not done
+          $.notify('You account has successfully created, we have sent a activation email to you, please check your email and active your account.', {
+            className: "success",
+            clickToHide: true,
+            autoHide: true
+          })
+        }
+      });
+
+  })
   // profile
   $($('.btn-profile button')[0]).click(() => {
     if (!$('.profile-area').hasClass('active')) {
@@ -854,13 +871,13 @@ const initBtnHandler = () => {
     }).then(response => {
       return response.json()
     }).then(json => {
-      if (json.status=="success") {
+      if (json.status == "success") {
         $.notify("Successfully upload your introduction!", {
           className: "success",
           clickToHide: true,
           autoHide: true
         })
-      }else if (json.error) {
+      } else if (json.error) {
         $.notify(json.message, {
           className: "error",
           clickToHide: true,
@@ -871,7 +888,7 @@ const initBtnHandler = () => {
   })
   // logout
   $($('.logout button')[0]).click(() => {
-    // notify login
+    // notify logout
     $.notify("Goodbye!", {
       className: "success",
       clickToHide: true,
@@ -893,29 +910,29 @@ const initGetSampleQuestion = () => {
     e.preventDefault();
     hideAllPage();
     loadAnimationOn('.current-chat');
-    if ($('.btn-sample-question').text().trim()==="Sample Questions") {
+    if ($('.btn-sample-question').text().trim() === "Suggested Question") {
       $('.btn-sample-question').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Chat')
-        $('.sample-question-area').empty();
-        fetch('/questions/get-trained-question', {method: 'get'}).then(response => {
-          return response.json()
-        }).then(json => {
-          json.map(questionAry => {
-            if (Object.keys(questionAry).length > 0 && questionAry.constructor === Object) {
-              let parseHTML = '<ul class="example-question-list"><label>' + questionAry.questions[0].keyword + '</label>';
-              questionAry.questions.map(questionObj => {
-                parseHTML += '<li>' + questionObj.body + '</li>';
+      $('.sample-question-area').empty();
+      fetch('/questions/get-trained-question', {method: 'get'}).then(response => {
+        return response.json()
+      }).then(json => {
+        json.map(questionAry => {
+          if (Object.keys(questionAry).length > 0 && questionAry.constructor === Object) {
+            let parseHTML = '<ul class="example-question-list"><label>' + questionAry.questions[0].keyword + '</label>';
+            questionAry.questions.map(questionObj => {
+              parseHTML += '<li>' + questionObj.body + '</li>';
 
-              })
-              parseHTML += '</ul>';
-              $('.sample-question-area').append(parseHTML);
-            }
-          })
-          showPage('.sample-question-area');
-          removeLoadAnimationOn('.current-chat');
+            })
+            parseHTML += '</ul>';
+            $('.sample-question-area').append(parseHTML);
+          }
         })
-    }else {
+        showPage('.sample-question-area');
+        removeLoadAnimationOn('.current-chat');
+      })
+    } else {
       showPage('.current-chat-area');
-      $('.btn-sample-question').text('Sample Questions');
+      $('.btn-sample-question').text('Suggested Question');
       removeLoadAnimationOn('.current-chat');
     }
   })
@@ -931,7 +948,7 @@ const initUserAccountListener = () => {
       $('.lite-header').text("Welcome " + userDisplayName);
     }
     // show unstatisfy question tab
-    if (json.hasOwnProperty('account_role') && json.account_role==="advisor") {
+    if (json.hasOwnProperty('account_role') && json.account_role === "advisor") {
       $('.question-tab').show();
     }
   })
@@ -1058,7 +1075,6 @@ function createPie(dataElement, pieElement) {
 
 const hideAllPage = () => {
   // fill page class name here
-  const pageClass = ['.current-chat-area', '.profile-area', '.logged-questions', '.sample-question-area'];
   pageClass.forEach(page => {
     $(page).hide();
     $($(page)).removeClass('active');
@@ -1066,15 +1082,21 @@ const hideAllPage = () => {
 }
 
 const showPage = selctor => {
-  $(selctor).show('slow');
-  $($(selctor)).addClass('active');
+  if (pageClass.indexOf(selctor) != -1) {
+    // change title
+    const title = pageTitle[pageClass.indexOf(selctor)];
+    $('.lite-header').text(title);
+    $(selctor).show('slow');
+    $($(selctor)).addClass('active');
+  }
+
 }
 
-const loadAnimationOn = ele=>{
+const loadAnimationOn = ele => {
   const loaderHtml = '<div class="loading-animation-warpper scrollable"><div class="cs-loader"><label> ●</label><label> ●</label><label> ●</label></div></div>';
   $(ele).append(loaderHtml);
 }
 
-const removeLoadAnimationOn = ele=>{
-  $( ele ).find( ".loading-animation-warpper" ).remove();
+const removeLoadAnimationOn = ele => {
+  $(ele).find(".loading-animation-warpper").remove();
 }

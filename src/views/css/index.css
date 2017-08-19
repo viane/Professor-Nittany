@@ -781,7 +781,16 @@ body {
 .loading-animation-warpper .cs-loader {
   color: #4f8dcc;
 }
-
+.loading-animation-warpper{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100%;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.32);
+  z-index: 9;
+}
 .logged-answers {
   background-color: #4f8dcc;
   color: #ffffff;
