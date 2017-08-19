@@ -104,7 +104,7 @@ $(document).on('click', '.question-tab', function(e) {
   if ($('.low-confidence').text() == "Check Unsatisfying Questions") {
     hideAllPage();
     showLowQuestions();
-    $('.low-confidence').text('Back to Chat')
+    $('.low-confidence').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Chat')
   } else {
     $('.low-confidence').text("Check Unsatisfying Questions");
     hideAllPage();
@@ -884,23 +884,29 @@ const initGetSampleQuestion = () => {
   $('.btn-sample-question').click((e) => {
     e.preventDefault();
     hideAllPage();
-    $('.sample-question-area').empty();
-    fetch('/questions/get-trained-question', {method: 'get'}).then(response => {
-      return response.json()
-    }).then(json => {
-      json.map(questionAry => {
-        if (Object.keys(questionAry).length > 0 && questionAry.constructor === Object) {
-          let parseHTML = '<ul class="example-question-list"><label>' + questionAry.questions[0].keyword + '</label>';
-          questionAry.questions.map(questionObj => {
-            parseHTML += '<li>' + questionObj.body + '</li>';
+    if ($('.btn-sample-question').text().trim()==="Sample Questions") {
+      $('.btn-sample-question').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Chat')
+        $('.sample-question-area').empty();
+        fetch('/questions/get-trained-question', {method: 'get'}).then(response => {
+          return response.json()
+        }).then(json => {
+          json.map(questionAry => {
+            if (Object.keys(questionAry).length > 0 && questionAry.constructor === Object) {
+              let parseHTML = '<ul class="example-question-list"><label>' + questionAry.questions[0].keyword + '</label>';
+              questionAry.questions.map(questionObj => {
+                parseHTML += '<li>' + questionObj.body + '</li>';
 
+              })
+              parseHTML += '</ul>';
+              $('.sample-question-area').append(parseHTML);
+            }
           })
-          parseHTML += '</ul>';
-          $('.sample-question-area').append(parseHTML);
-        }
-      })
-      showPage('.sample-question-area');
-    })
+          showPage('.sample-question-area');
+        })
+    }else {
+      showPage('.current-chat-area');
+      $('.btn-sample-question').text('Sample Questions')
+    }
   })
 }
 
