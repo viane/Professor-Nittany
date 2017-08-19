@@ -502,54 +502,61 @@ questionRouter.post('/log-question', function(req,res,next){
 });
 
 // GET API for getting good example question
-questionRouter.get('/get-trained-question', (req, res) => {
-  const promiseAry = [searchTrainedQuestionOfKeyword('tuition'),
-                      searchTrainedQuestionOfKeyword('payment'),
-                      searchTrainedQuestionOfKeyword('courses'),
-                      searchTrainedQuestionOfKeyword('class registration'),
-                      searchTrainedQuestionOfKeyword('financial aid'),
-                      searchTrainedQuestionOfKeyword('transfer credits'),
-                      searchTrainedQuestionOfKeyword('Student loans'),
-                      searchTrainedQuestionOfKeyword('GPA'),
-                      searchTrainedQuestionOfKeyword('enrollment'),
-                      searchTrainedQuestionOfKeyword('class schedule'),
-                      searchTrainedQuestionOfKeyword('Pell Grant'),
-                      searchTrainedQuestionOfKeyword('graduation'),
-                      searchTrainedQuestionOfKeyword('ALEKS'),
-                      searchTrainedQuestionOfKeyword('tutor'),
-                      searchTrainedQuestionOfKeyword('loans'),
-                      searchTrainedQuestionOfKeyword('textbooks'),
-                      searchTrainedQuestionOfKeyword('registration'),
-                      searchTrainedQuestionOfKeyword('defer grades'),
-                      searchTrainedQuestionOfKeyword('degree'),
-                      searchTrainedQuestionOfKeyword('Penn State'),
-                      searchTrainedQuestionOfKeyword('grades'),
-                      searchTrainedQuestionOfKeyword('tution Assistance'),
-                      searchTrainedQuestionOfKeyword('world campus students'),
-                      searchTrainedQuestionOfKeyword('out-of-states students'),
-                      searchTrainedQuestionOfKeyword('degrees online'),
-                      searchTrainedQuestionOfKeyword('TOEFL'),
-                      searchTrainedQuestionOfKeyword('majors'),
-                      searchTrainedQuestionOfKeyword('addmission'),
-                      searchTrainedQuestionOfKeyword('iMBA'),
-                      searchTrainedQuestionOfKeyword('nursing handbook'),
-                      searchTrainedQuestionOfKeyword('online classroom'),
-                      searchTrainedQuestionOfKeyword('schedule'),
-                      searchTrainedQuestionOfKeyword('penn state world campus'),
-                      searchTrainedQuestionOfKeyword('military transcript'),
-                      searchTrainedQuestionOfKeyword('online courses'),
-                      searchTrainedQuestionOfKeyword('tution discount'),
-                      searchTrainedQuestionOfKeyword('contact info'),
-                      searchTrainedQuestionOfKeyword('Penn State Account'),
-                      searchTrainedQuestionOfKeyword('The Faculty'),
-                      searchTrainedQuestionOfKeyword('job'),
-                      searchTrainedQuestionOfKeyword('credit cost')
-                      ];
-  Promise.all(promiseAry).then(questions=>{
-    return res.status(200).json(questions);
-  }).catch(errs=>{
-    return res.status(300).json(errs);
+questionRouter.get('/get-trained-question', Verify.verifyOrdinaryUser, (req, res) => {
+  Users.findById(req.decoded._id, function(err, user) {
+    if (user.hasOwnProperty('account_role') && user.account_role==="advisor") {
+      const promiseAry = [searchTrainedQuestionOfKeyword('tuition'),
+                          searchTrainedQuestionOfKeyword('payment'),
+                          searchTrainedQuestionOfKeyword('courses'),
+                          searchTrainedQuestionOfKeyword('class registration'),
+                          searchTrainedQuestionOfKeyword('financial aid'),
+                          searchTrainedQuestionOfKeyword('transfer credits'),
+                          searchTrainedQuestionOfKeyword('Student loans'),
+                          searchTrainedQuestionOfKeyword('GPA'),
+                          searchTrainedQuestionOfKeyword('enrollment'),
+                          searchTrainedQuestionOfKeyword('class schedule'),
+                          searchTrainedQuestionOfKeyword('Pell Grant'),
+                          searchTrainedQuestionOfKeyword('graduation'),
+                          searchTrainedQuestionOfKeyword('ALEKS'),
+                          searchTrainedQuestionOfKeyword('tutor'),
+                          searchTrainedQuestionOfKeyword('loans'),
+                          searchTrainedQuestionOfKeyword('textbooks'),
+                          searchTrainedQuestionOfKeyword('registration'),
+                          searchTrainedQuestionOfKeyword('defer grades'),
+                          searchTrainedQuestionOfKeyword('degree'),
+                          searchTrainedQuestionOfKeyword('Penn State'),
+                          searchTrainedQuestionOfKeyword('grades'),
+                          searchTrainedQuestionOfKeyword('tution Assistance'),
+                          searchTrainedQuestionOfKeyword('world campus students'),
+                          searchTrainedQuestionOfKeyword('out-of-states students'),
+                          searchTrainedQuestionOfKeyword('degrees online'),
+                          searchTrainedQuestionOfKeyword('TOEFL'),
+                          searchTrainedQuestionOfKeyword('majors'),
+                          searchTrainedQuestionOfKeyword('addmission'),
+                          searchTrainedQuestionOfKeyword('iMBA'),
+                          searchTrainedQuestionOfKeyword('nursing handbook'),
+                          searchTrainedQuestionOfKeyword('online classroom'),
+                          searchTrainedQuestionOfKeyword('schedule'),
+                          searchTrainedQuestionOfKeyword('penn state world campus'),
+                          searchTrainedQuestionOfKeyword('military transcript'),
+                          searchTrainedQuestionOfKeyword('online courses'),
+                          searchTrainedQuestionOfKeyword('tution discount'),
+                          searchTrainedQuestionOfKeyword('contact info'),
+                          searchTrainedQuestionOfKeyword('Penn State Account'),
+                          searchTrainedQuestionOfKeyword('The Faculty'),
+                          searchTrainedQuestionOfKeyword('job'),
+                          searchTrainedQuestionOfKeyword('credit cost')
+                          ];
+      Promise.all(promiseAry).then(questions=>{
+        return res.status(200).json(questions);
+      }).catch(errs=>{
+        return res.status(300).json(errs);
+      })
+    }else {
+      return res.status(300).json({status:'error',message:'Premission Denied'});
+    }
   })
+
 });
 
 const searchTrainedQuestionOfKeyword = (keyword) =>{
@@ -587,24 +594,30 @@ const searchTrainedQuestionOfKeyword = (keyword) =>{
 }
 
 // GET API for getting good example question
-questionRouter.post('/mark-trained-question', (req, res) => {
-  let successNum=0, failNum=0;
-  // qid in req.body.question_id
-  const promiseAry = req.body.question_id.map((qid,index)=>{
-    return new Promise(function(resolve, reject) {
-      Questions.update({'_id':qid},{ $set: { 'trained': true }},(err,newDoc)=>{
-        if (err) {
-          console.error(err);
-          failNum++;
-        }else{
-          successNum++;
-        }
-        resolve();
+questionRouter.post('/mark-trained-question', Verify.verifyOrdinaryUser, (req, res) => {
+  Users.findById(req.decoded._id, function(err, user) {
+    if (user.account_role==='advisor') {
+      let successNum=0, failNum=0;
+      // qid in req.body.question_id
+      const promiseAry = req.body.question_id.map((qid,index)=>{
+        return new Promise(function(resolve, reject) {
+          Questions.update({'_id':qid},{ $set: { 'trained': true }},(err,newDoc)=>{
+            if (err) {
+              console.error(err);
+              failNum++;
+            }else{
+              successNum++;
+            }
+            resolve();
+          })
+        })
       })
-    })
-  })
-  Promise.all(promiseAry).then(()=>{
-    res.status(200).json({'succeed':successNum, 'failed':failNum});
+      Promise.all(promiseAry).then(()=>{
+        res.status(200).json({'succeed':successNum, 'failed':failNum});
+      })
+    }else{
+      return res.status(200).json({status:'error',message:'Premission Denied'});
+    }
   })
 })
 

@@ -611,7 +611,7 @@ function questionWrapper(question) {
 }
 
 function showLowQuestions() {
-  $('.current-chat').append('<div class="question-loading scrollable">' + htmlLoading + '</div>');
+  loadAnimationOn('.current-chat');
   fetch("../questions/get-low-confidence", {
     method: 'get',
     headers: {
@@ -622,7 +622,7 @@ function showLowQuestions() {
     return response.json()
   }).then(json => {
     setTimeout(function() {
-      $('.question-loading').remove()
+      removeLoadAnimationOn('.current-chat')
     }, 1000);
     var questionList = questionWrapper(json);
     $('.current-chat').append(questionList);
@@ -648,7 +648,8 @@ function showLowQuestions() {
       fetch("../questions/mark-trained-question", {
         method: 'post',
         headers: {
-          "Content-type": "application/json; charset=UTF-8"
+          "Content-type": "application/json; charset=UTF-8",
+          "x-access-token": JSON.parse(localStorage['iaa-userToken'])
         },
         body: JSON.stringify({question_id: qidAry})
       }).then(response => {
@@ -704,6 +705,10 @@ function login() {
         $('#loginModal').modal('toggle');
         const userDisplayName = capitalizeFirstLetter(json.first_name);
         $('.lite-header').text("Welcome " + userDisplayName);
+        // show unstatisfy question tab
+        if (json.hasOwnProperty('account_role') && json.account_role==="advisor") {
+          $('.question-tab').show();
+        }
       })
 
     }
@@ -763,7 +768,7 @@ const initBtnHandler = () => {
       hideAllPage();
       // change button text
       $($('.btn-profile button')[0]).text('Chat');
-      $('.current-chat').append('<div class="question-loading scrollable">' + htmlLoading + '</div>');
+      loadAnimationOn('.current-chat');
       getUserInfo().then(json => {
         // name & email
         $('.profile-user-name').val(capitalizeFirstLetter(json.first_name + " " + json.last_name));
@@ -818,7 +823,7 @@ const initBtnHandler = () => {
 
           }
         }
-        $('.question-loading').hide('slow').remove();
+        removeLoadAnimationOn('.current-chat');
         // show profile section
         showPage('.profile-area');
         $('.profile-introduction').css({
@@ -875,7 +880,10 @@ const initBtnHandler = () => {
     $('.text-benefits, .login-wrapper, .register-wrapper').show();
     $('.logout, .btn-profile').hide();
     localStorage['iaa-userToken'] = null;
+    $('.question-tab').hide();
     $('.lite-header').text("Welcome Visitor");
+    hideAllPage();
+    showPage('.current-chat-area');
   })
 }
 
@@ -884,6 +892,7 @@ const initGetSampleQuestion = () => {
   $('.btn-sample-question').click((e) => {
     e.preventDefault();
     hideAllPage();
+    loadAnimationOn('.current-chat');
     if ($('.btn-sample-question').text().trim()==="Sample Questions") {
       $('.btn-sample-question').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Chat')
         $('.sample-question-area').empty();
@@ -902,10 +911,12 @@ const initGetSampleQuestion = () => {
             }
           })
           showPage('.sample-question-area');
+          removeLoadAnimationOn('.current-chat');
         })
     }else {
       showPage('.current-chat-area');
-      $('.btn-sample-question').text('Sample Questions')
+      $('.btn-sample-question').text('Sample Questions');
+      removeLoadAnimationOn('.current-chat');
     }
   })
 }
@@ -918,6 +929,10 @@ const initUserAccountListener = () => {
       $('.logout, .btn-profile').show();
       const userDisplayName = capitalizeFirstLetter(json.first_name);
       $('.lite-header').text("Welcome " + userDisplayName);
+    }
+    // show unstatisfy question tab
+    if (json.hasOwnProperty('account_role') && json.account_role==="advisor") {
+      $('.question-tab').show();
     }
   })
 }
@@ -1053,4 +1068,13 @@ const hideAllPage = () => {
 const showPage = selctor => {
   $(selctor).show('slow');
   $($(selctor)).addClass('active');
+}
+
+const loadAnimationOn = ele=>{
+  const loaderHtml = '<div class="loading-animation-warpper scrollable"><div class="cs-loader"><label> ●</label><label> ●</label><label> ●</label></div></div>';
+  $(ele).append(loaderHtml);
+}
+
+const removeLoadAnimationOn = ele=>{
+  $( ele ).find( ".loading-animation-warpper" ).remove();
 }
