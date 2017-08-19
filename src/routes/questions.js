@@ -502,9 +502,7 @@ questionRouter.post('/log-question', function(req,res,next){
 });
 
 // GET API for getting good example question
-questionRouter.get('/get-trained-question', Verify.verifyOrdinaryUser, (req, res) => {
-  Users.findById(req.decoded._id, function(err, user) {
-    if (user.hasOwnProperty('account_role') && user.account_role==="advisor") {
+questionRouter.get('/get-trained-question', (req, res) => {
       const promiseAry = [searchTrainedQuestionOfKeyword('tuition'),
                           searchTrainedQuestionOfKeyword('payment'),
                           searchTrainedQuestionOfKeyword('courses'),
@@ -552,11 +550,6 @@ questionRouter.get('/get-trained-question', Verify.verifyOrdinaryUser, (req, res
       }).catch(errs=>{
         return res.status(300).json(errs);
       })
-    }else {
-      return res.status(300).json({status:'error',message:'Premission Denied'});
-    }
-  })
-
 });
 
 const searchTrainedQuestionOfKeyword = (keyword) =>{
