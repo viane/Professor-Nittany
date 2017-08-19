@@ -730,52 +730,51 @@ const initBtnHandler = () => {
   // login & signup
   $('.btn-register').click(e => {
     e.preventDefault();
-loadAnimationOn('.container-fluid');
-      let email = document.getElementById('inputEmail').value;
-      let password = document.getElementById('inputPassword').value;
-      let first_name = document.getElementById('inputUserF').value;
-      let last_name = document.getElementById('inputUserL').value;
+    loadAnimationOn('.container-fluid');
+    let email = document.getElementById('inputEmail').value;
+    let password = document.getElementById('inputPassword').value;
+    let first_name = document.getElementById('inputUserF').value;
+    let last_name = document.getElementById('inputUserL').value;
 
-      let select = document.getElementById('major');
-      let major = [];
-      major.unshift(select.options[select.selectedIndex].value);
+    let select = document.getElementById('major');
+    let major = [];
+    major.unshift(select.options[select.selectedIndex].value);
 
-      fetch("/users/signup", {
-        method: 'post',
-        headers: {
-          "Content-type": "application/json; charset=UTF-8"
-        },
-        body: JSON.stringify({
-          'email': email,
-          'password': password,
-          'first_name': first_name,
-          'last_name': last_name,
-          'account_role': 'student',
-          'majors': major
+    fetch("/users/signup", {
+      method: 'post',
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      },
+      body: JSON.stringify({
+        'email': email,
+        'password': password,
+        'first_name': first_name,
+        'last_name': last_name,
+        'account_role': 'student',
+        'majors': major
+      })
+    }).then(response => {
+      return response.json()
+    }).then(json => {
+      removeLoadAnimationOn('.container-fluid');
+      if (json.err) {
+        // TODO handle failure of registration
+        $.notify(json.err.message, {
+          className: "error",
+          clickToHide: true,
+          autoHide: true
         })
-      }).then(response => {
-        return response.json()
-      }).then(json => {
-        removeLoadAnimationOn('.container-fluid');
-        console.log(json);
-        if (json.err) {
-          // TODO handle failure of registration
-          $.notify(json.err.message, {
-            className: "error",
-            clickToHide: true,
-            autoHide: true
-          })
-        } else {
-          // close login modal
-          $('#RegisterModal').modal('toggle');
-          // TODO change - Currently redirecting to lite because full is not done
-          $.notify('You account has successfully created, we have sent a activation email to you, please check your email and active your account.', {
-            className: "success",
-            clickToHide: true,
-            autoHide: true
-          })
-        }
-      });
+      } else {
+        // close login modal
+        $('#RegisterModal').modal('toggle');
+        // TODO change - Currently redirecting to lite because full is not done
+        $.notify('You account has successfully created, we have sent a activation email to you, please check your email and active your account.', {
+          className: "success",
+          clickToHide: true,
+          autoHide: true
+        })
+      }
+    });
 
   })
   // profile
@@ -807,6 +806,7 @@ loadAnimationOn('.container-fluid');
             createPie(".pieID.legend", ".pieID.pie");
           }
           if (json.hasOwnProperty('interest')) {
+            $('.profile-wordCloud').show();
             // $('.word-cloud').text(JSON.stringify(json.interest));
             const wordList = json.interest.interest.map(item => {
               return [
@@ -956,6 +956,7 @@ const initUserAccountListener = () => {
 
 const getUserInfo = () => {
   return new Promise(function(resolve, reject) {
+    loadAnimationOn('.current-chat');
     // get user info
     fetch("/users/get-user", {
       method: 'get',
@@ -964,8 +965,10 @@ const getUserInfo = () => {
         "x-access-token": JSON.parse(localStorage['iaa-userToken'])
       }
     }).then(response => {
+      removeLoadAnimationOn('.current-chat');
       resolve(response.json())
     }).catch(err => {
+      removeLoadAnimationOn('.current-chat');
       reject(err)
     })
   });
