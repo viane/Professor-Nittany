@@ -63,6 +63,8 @@ const displayTourFirstPart = () => {
         width: "350",
         showNextButton: true,
         onShow: () => {
+          hideAllPage();
+          showPage('.current-chat-area');
           setTimeout(() => {
             $('#question').val("What is World Campus?")
           }, 1);
