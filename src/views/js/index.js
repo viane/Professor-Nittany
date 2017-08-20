@@ -69,6 +69,7 @@ $(document).ready(function() {
   $('#lite-instruction').click(() => {
     setLocalTourBool(false);
     $('#overlay').fadeIn(300);
+    initTourFirstPart();
     $("[data-tour-step=1]").addClass('expose');
     displayTourFirstPart();
   })

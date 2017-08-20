@@ -29,7 +29,7 @@ const displayTourFirstPart = () => {
     steps: [
       {
         title: "Welcome!",
-        content: "Hi there! It's nice to see you! Let me walk you through some basic components about the lite version chat interface.",
+        content: "Hi there! It's nice to see you! Let me walk you through some basic components about the lite version chat interface. It will only take 2~3 minutes, I promise!",
         target: $(".title")[0],
         placement: "bottom",
         xOffset: 20,
@@ -121,11 +121,23 @@ const displayTourFirstPart = () => {
 }
 
 const initTourFirstPart = () => {
-
+  hideAllPage();
+  showPage('.current-chat-area');
+  if ($('.expose').length > 0) {
+    $('.expose').forEach(ele => {
+      ele.removeClass('.expose');
+    })
+  }
+  // only show frist chat bubble
+  $('li.media').slice(1).remove();
   $('.row.title').attr('data-tour-step', '1');
-$("[data-tour-step=1]").addClass('expose');
+  $("[data-tour-step=1]").addClass('expose');
+  $('#accordion.panel-group').attr('data-tour-step', '2');
+  $('.suggest-question-tab').attr('data-tour-step', '3');
+  $('.user-Account-Action').attr('data-tour-step', '4');
+  $('#question.form-control').attr('data-tour-step', '5');
+  $('.input-group-btn').attr('data-tour-step', '6');
 }
-
 
 const initTourSecondPart = () => {
 
