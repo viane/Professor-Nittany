@@ -131,6 +131,7 @@ html, body {
   display: block;
   width: 100%;
   text-align: center;
+  margin: 5px 0 10px 0;
 }
 
 .text-benefits>p {
@@ -139,17 +140,16 @@ html, body {
 }
 
 .register-wrapper, .login-wrapper, .btn-profile, .logout {
-  position: absolute;
-  left: 50%;
-  top: 50%;
+  float: left;
+  padding-right: 20px;
 }
 
 .login-wrapper, .btn-profile {
-  transform: translate(-50%, 25%);
+  /* transform: translate(-50%, 25%); */
 }
 
 .register-wrapper, .logout {
-  transform: translate(-50%, 150%);
+  /* transform: translate(-50%, 150%); */
 }
 
 .sidebar-btn {
@@ -223,6 +223,150 @@ html, body {
   height: 89vh;
   width: auto;
   padding-bottom: 37px;
+}
+
+@media only screen and (min-height : 310px) {
+  .current-chat-area {
+    height: 69vh;
+  }
+}
+
+@media only screen and (min-height: 320px) {
+  .current-chat-area {
+    height: 70vh;
+  }
+}
+
+@media only screen and (min-height : 332px) {
+  .current-chat-area {
+    height: 72vh;
+  }
+}
+
+@media only screen and (min-height: 360px) {
+  .current-chat-area {
+    height: 74vh;
+  }
+}
+
+@media only screen and (min-height: 375px) {
+  .current-chat-area {
+    height: 75vh;
+  }
+}
+
+@media only screen and (min-height: 412px) {
+  .current-chat-area {
+    height: 76vh;
+  }
+}
+
+@media only screen and (min-height: 412px) {
+  .current-chat-area {
+    height: 77vh;
+  }
+}
+
+@media only screen and (min-height: 480px) {
+  .current-chat-area {
+    height: 73vh;
+  }
+}
+
+@media only screen and (min-height: 533px) {
+  .current-chat-area {
+    height: 76vh;
+  }
+}
+
+@media only screen and (min-height: 568px) {
+  .current-chat-area {
+    height: 77vh;
+  }
+}
+
+@media only screen and (min-height: 600px) {
+  .current-chat-area {
+    height: 84vh;
+  }
+}
+
+@media only screen and (min-height : 640px) {
+  .current-chat-area {
+    height: 80vh;
+  }
+}
+
+@media only screen and (min-height : 667px) {
+  .current-chat-area {
+    height: 81vh;
+  }
+}
+
+@media only screen and (min-height : 732px) {
+  .current-chat-area {
+    height: 85vh;
+  }
+}
+
+@media only screen and (min-height : 736px) {
+  .current-chat-area {
+    height: 87vh;
+  }
+}
+
+@media only screen and (min-height : 768px) {
+  .current-chat-area {
+    height: 87vh;
+  }
+}
+
+@media only screen and (min-height : 800px) {
+  .current-chat-area {
+    height: 88vh;
+  }
+}
+@media only screen and (min-height : 900px) {
+  .current-chat-area {
+    height: 89vh;
+  }
+}
+@media only screen and (min-height : 950px) {
+  .current-chat-area {
+    height: 90vh;
+  }
+}
+@media only screen and (min-height : 960px) {
+  .current-chat-area {
+    height: 90vh;
+  }
+}
+
+@media only screen and (min-height : 1024px) {
+  .current-chat-area {
+    height: 90vh;
+  }
+}
+@media only screen and (min-height : 1280px) {
+  .current-chat-area {
+    height: 92vh;
+  }
+}
+
+@media only screen and (min-height : 1366px) {
+  .current-chat-area {
+    height: 93vh;
+  }
+}
+@media only screen and (min-height : 1600px) {
+  .current-chat-area {
+    height: 94vh;
+  }
+}
+@media only screen and (min-height : 2560px) {
+  .current-chat-area {
+    height: 96vh;
+  }
 }
 
 .current-chat-footer {
@@ -873,9 +1017,10 @@ body {
   position: relative;
   left: 50%;
   margin-top: 55px;
-display: none;
+  display: none;
 }
-.profile-wordCloud{
+
+.profile-wordCloud {
   display: none;
 }
 
@@ -1127,4 +1272,11 @@ main {
 .example-question-list li {
   padding: 0 0 5px 0;
   font-size: 1.3em;
+}
+
+.user-Account-Action {
+  transform: translate(-50%, 0%);
+  left: 50%;
+  position: absolute;
+  width: 100%;
 }
