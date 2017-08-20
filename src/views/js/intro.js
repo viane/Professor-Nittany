@@ -14,7 +14,7 @@ $(() => {
     shouldDisplayTour().then(tourBool => {
       if (tourBool) {
         $('#overlay').fadeIn(300);
-        $("[data-tour-step=1]").addClass('expose');
+        initTourFirstPart();
         displayTourFirstPart();
       }
     })
@@ -119,6 +119,13 @@ const displayTourFirstPart = () => {
   };
   hopscotch.startTour(liteVersionTour, 0);
 }
+
+const initTourFirstPart = () => {
+
+  $('.row.title').attr('data-tour-step', '1');
+$("[data-tour-step=1]").addClass('expose');
+}
+
 
 const initTourSecondPart = () => {
 

@@ -25,7 +25,7 @@ $(() => {
   lightbox.option({'resizeDuration': 200, 'wrapAround': true});
   initUserAccountListener();
   initBtnHandler();
-
+  initBornTime();
 })
 
 $(document).ready(function() {
@@ -918,7 +918,7 @@ const initGetSampleQuestion = () => {
       }).then(json => {
         json.map(questionAry => {
           if (Object.keys(questionAry).length > 0 && questionAry.constructor === Object) {
-            let parseHTML = '<ul class="example-question-list"><label>' + questionAry.questions[0].keyword + '</label>';
+            let parseHTML = '<ul class="example-question-list"><label>' + capitalizeFirstLetter(questionAry.questions[0].keyword) + '</label>';
             questionAry.questions.map(questionObj => {
               parseHTML += '<li>' + questionObj.body + '</li>';
 
@@ -1012,6 +1012,11 @@ const generateQuestionListTextFileAndDownload = (questionList) => {
       autoHide: true
     })
   }
+}
+
+const initBornTime = () => {
+  const bornTime = moment([2017, 6, 14]);
+  $('.time-from-born').text(bornTime.toNow(true));
 }
 
 // utility func
