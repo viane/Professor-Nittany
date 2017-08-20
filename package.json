@@ -7,7 +7,7 @@
     "dev-start": "npm run build && nodemon --exec babel-node ./public/bin/www",
     "watch": "babel --watch src --out-dir public --source-maps inline --copy-files",
     "build": "babel src --out-dir public --source-maps inline --copy-files && babel doc/API/build --out-dir public/views/dev-center --source-maps inline --copy-files && npm run hashJS",
-    "hashJS":"javascript-obfuscator public/views/js/index.js --output public/views/js/index.js --compact true --selfDefending false --deadCodeInjection true --disableConsoleOutput true --mangle true --seed 666 && javascript-obfuscator public/views/js/intro.js --output public/views/js/intro.js --compact true --selfDefending false --deadCodeInjection true --disableConsoleOutput true --mangle true --seed 666 && javascript-obfuscator public/views/js/forgot-pass.js --output public/views/js/forgot-pass.js --compact true --selfDefending false --deadCodeInjection true --disableConsoleOutput true --mangle true --seed 666 && javascript-obfuscator public/views/js/profile.js --output public/views/js/profile.js --compact true --selfDefending false --deadCodeInjection true --disableConsoleOutput true --mangle true --seed 666 && javascript-obfuscator public/views/js/redirect.js --output public/views/js/redirect.js --compact true --selfDefending false --deadCodeInjection true --disableConsoleOutput true --mangle true --seed 666 && javascript-obfuscator public/views/js/register.js --output public/views/js/register.js --compact true --selfDefending false --deadCodeInjection true --disableConsoleOutput true --mangle true --seed 666"
+    "hashJS": "javascript-obfuscator public/views/js/index.js --output public/views/js/index.js --compact true --selfDefending false --deadCodeInjection true --disableConsoleOutput true --mangle true --seed 666 && javascript-obfuscator public/views/js/intro.js --output public/views/js/intro.js --compact true --selfDefending false --deadCodeInjection true --disableConsoleOutput true --mangle true --seed 666 && javascript-obfuscator public/views/js/forgot-pass.js --output public/views/js/forgot-pass.js --compact true --selfDefending false --deadCodeInjection true --disableConsoleOutput true --mangle true --seed 666 && javascript-obfuscator public/views/js/profile.js --output public/views/js/profile.js --compact true --selfDefending false --deadCodeInjection true --disableConsoleOutput true --mangle true --seed 666 && javascript-obfuscator public/views/js/redirect.js --output public/views/js/redirect.js --compact true --selfDefending false --deadCodeInjection true --disableConsoleOutput true --mangle true --seed 666 && javascript-obfuscator public/views/js/register.js --output public/views/js/register.js --compact true --selfDefending false --deadCodeInjection true --disableConsoleOutput true --mangle true --seed 666"
   },
   "babel": {
     "presets": [
@@ -40,6 +40,7 @@
     "express-fileupload": "^0.1.4",
     "express-session": "^1.15.3",
     "fs": "0.0.1-security",
+    "javascript-obfuscator": "^0.11.0",
     "jsonwebtoken": "^7.4.1",
     "mongoose": "^4.11.0",
     "mongoose-currency": "^0.2.0",
