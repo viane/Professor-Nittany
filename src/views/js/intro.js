@@ -62,7 +62,11 @@ const displayTourFirstPart = () => {
         target: $(".userLog")[0],
         placement: "top",
         xOffset: 18,
-        showNextButton: true
+        showNextButton: true,
+        onNext:()=>{
+          hideAllPage();
+          showPage('.current-chat-area');
+        }
       }, {
         title: "Raise your question!",
         content: "Type your question here whenever your are ready! I have already filled a popular question for you.",
@@ -71,8 +75,6 @@ const displayTourFirstPart = () => {
         width: "350",
         showNextButton: true,
         onShow: () => {
-          hideAllPage();
-          showPage('.current-chat-area');
           setTimeout(() => {
             $('#question').val("What is World Campus?")
           }, 1);
@@ -235,7 +237,7 @@ const displayTourSecondPart = () => {
         placement: "top",
         showNextButton: true,
         onShow: () => {
-          $('.current-message').css('z-index', '100000').css('position', 'relative');
+          $('.current-message').css('z-index', '10').css('position', 'relative');
         }
       }, {
         title: "Not Happy with Any Answer?",
