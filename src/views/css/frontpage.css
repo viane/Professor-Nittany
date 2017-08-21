@@ -1,40 +1,58 @@
 .content {
-    background-image: url('../images/background-smaller.jpg');
-    background-size: 100% 100%;
-    height: 833px;
-    padding-left: 0px;
-    padding-right: 0px;
+  background-image: url('../images/background-smaller.jpg');
+  background-size: 100% 100%;
+  height: 833px;
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 html {
-    -webkit-transform: translate3d(0,0,0);
+  -webkit-transform: translate3d(0, 0, 0);
 }
 
 .image {
-    margin-left: auto;
-    margin-right: auto;
-    display: relative;
+  margin-left: auto;
+  margin-righat: auto;
+  display: relative;
 }
 
 .centering {
-    height: 50%;
-    display: block;
-    top: 60%;
-    position: relative;
-    width: 107px;
-    left: 50%;
+  height: 50%;
+  display: inline-block;
+  width: 107px;
+  left: 50%;
+  transform: translate(-50%, 75%);
+  position: relative;
 }
 
-.login > button {
-    background-color: #0F7DC2;
-    color: white;
-    width: 100%;
+@media only screen and (max-width:1623px) {
+  .centering {
+    transform: translate(-50%, 100%);
+  }
 }
 
-.img-logo{
-  max-width: 40%;
-    min-width: 320px;
-    transform: translate(-50%, 0%);
-    left: 50%;
-    position: absolute;
+@media only screen and (max-width:320px) {
+  .centering {
+    transform: translate(-50%, 41%);
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .centering {
+    transform: translate(-50%, 52%);
+  }
+}
+
+.login>button {
+  background-color: #0F7DC2;
+  color: white;
+  width: 100%;
+}
+
+.img-logo {
+  max-width: 50%;
+  min-width: 336px;
+  transform: translate(-50%, 0%);
+  left: 50%;
+  position: absolute;
 }
