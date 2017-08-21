@@ -26,6 +26,7 @@ $(() => {
   initUserAccountListener();
   initBtnHandler();
   initBornTime();
+  initAnswerVideoSizeFitOnResize();
 })
 
 $(document).ready(function() {
@@ -90,6 +91,7 @@ $(document).on('click', '.btn-log', function(e) {
   e.preventDefault();
 });
 
+//rework, bug, fix
 $(document).on('click', '.btn-answer', function(e) {
   $('.current-message').empty();
   $('.current-message').html(data[this.id]);
@@ -99,9 +101,9 @@ $(document).on('click', '.btn-answer', function(e) {
   e.preventDefault();
 });
 
-$(document).on('click', '.previous-step-btn, .next-step-btn', function(e) {
-  $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
-});
+// $(document).on('click', '.previous-step-btn, .next-step-btn', function(e) {
+//   $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
+// });
 
 $(document).on('click', '.question-tab', function(e) {
   if ($('.low-confidence').text() == "Check Unsatisfying Questions") {
@@ -274,7 +276,7 @@ const formatAnswerByTag = (input) => {
 
     extendText = extendText.replace(new RegExp("\\[/extend\\]", "g"), "");
 
-    input = input.replace(initExtendText, "<div class=\"answer-extra-info\"><div class=\"answer-body hide\">" + extendText + "</div><span class=\"read-more btn btn-secondary\">Read More</span></div>");
+    input = input.replace(initExtendText, "<div class=\"answer-extra-info\"><div class=\"answer-body\" style=\"display:none\">" + extendText + "</div><span class=\"read-more next\">Read More</span></div>");
   }
 
   // for [tip] ... [/tip]
@@ -405,10 +407,12 @@ const addReadmoreHandler = () => {
     $(this).on('click', function() {
       if ($(this).text() === "Read More") {
         $(this).text("Collapse");
-        $(this).prev().removeClass("hide");
+        $(this).removeClass('next').addClass('prev');
+        $(this).prev().show('slow');
       } else {
         $(this).text("Read More");
-        $(this).prev().addClass("hide");
+        $(this).removeClass('prev').addClass('next');
+        $(this).prev().hide('slow');
       }
       // $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
     })
@@ -429,7 +433,7 @@ function sendServerQuestion(question) {
     // console.log(json);
     $('.loading').remove();
     $('.current-message').attr('class', 'media-text');
-    $('.other-answers').remove();
+    // $('.other-answers').remove(); // cause bug on progress indicator
     $('.btn-log').remove();
     $('.active-chat').removeClass('active-chat');
     let i = 0;
@@ -456,15 +460,6 @@ function sendServerQuestion(question) {
         $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html4Buttons + '</p><small class="text-muted">Powered by <span class="watson-power-tag"><img class="small-chat-bubble-icon" src="images/watson-icon.png" /> Watson</span> | ' + timeAsked + htmlWAfter);
         break;
     }
-    // assign scroll chat to bottom on clicking each answer button
-    $('.btn-answer').each((index, ele) => {
-      $(ele).click(() => {
-        // force to scroll to bottom
-        $('.current-chat-area').animate({
-          scrollTop: $(".scroll-chat").height() + 40 + 'px'
-        });
-      })
-    })
     initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
     addReadmoreHandler();
     $('.current-chat-area').animate({scrollTop: $(".scroll-chat").height()});
@@ -921,13 +916,14 @@ const initGetSampleQuestion = () => {
           if (Object.keys(questionAry).length > 0 && questionAry.constructor === Object) {
             let parseHTML = '<ul class="example-question-list"><label>' + capitalizeFirstLetter(questionAry.questions[0].keyword) + '</label>';
             questionAry.questions.map(questionObj => {
-              parseHTML += '<li>' + questionObj.body + '</li>';
+              parseHTML += '<li class="suggest-question-element"><i class="fa fa-hashtag" aria-hidden="true"></i>&nbsp;' + questionObj.body + '</li>';
 
             })
             parseHTML += '</ul>';
             $('.sample-question-area').append(parseHTML);
           }
-        })
+        });
+        initSampleQuestionClicker();
         showPage('.sample-question-area');
         removeLoadAnimationOn('.current-chat');
       })
@@ -1108,4 +1104,27 @@ const loadAnimationOn = ele => {
 
 const removeLoadAnimationOn = ele => {
   $(ele).find(".loading-animation-warpper").remove();
+}
+
+const initAnswerVideoSizeFitOnResize = () => {
+  $(window).on('resize', function() {
+    fitCurrentAnswerVideo();
+  });
+}
+
+const fitCurrentAnswerVideo = ()=>{
+  $('.answerHTMLDOM').find('iframe').each((index,ele)=>{
+    const chatBubbleWidth = $(ele).closest('.media-watson-info').width()
+    $(ele).width(chatBubbleWidth*0.8)
+  })
+}
+
+const initSampleQuestionClicker = ()=>{
+  $('.suggest-question-element').each((index,ele)=>{
+    $(ele).click(()=>{
+      $('#question').val($(ele).text().trim());
+      $('.btn-sample-question').click();
+      $('#send').click();
+    })
+  })
 }

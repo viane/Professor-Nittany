@@ -13,19 +13,28 @@ html {
 .image {
     margin-left: auto;
     margin-right: auto;
-    width: 1000px;
     display: relative;
 }
 
 .centering {
     height: 50%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    display: block;
+    top: 60%;
+    position: relative;
+    width: 107px;
+    left: 50%;
 }
 
 .login > button {
     background-color: #0F7DC2;
     color: white;
     width: 100%;
+}
+
+.img-logo{
+  max-width: 40%;
+    min-width: 320px;
+    transform: translate(-50%, 0%);
+    left: 50%;
+    position: absolute;
 }

@@ -2,7 +2,8 @@
 const dataStorage = window.localStorage;
 $(() => {
   // turorial
-  if ($(window).width() > 768) {
+  if ($(window).width() > 992) {
+    $('.tutorial-panel').show();
     if (!localStorage.hasOwnProperty('iaa-showTourBool')) {
       setLocalTourBool(null);
     }
@@ -20,6 +21,13 @@ $(() => {
     })
   }
 
+  $(window).on('resize', function() {
+    if ($(window).width() > 992) {
+      $('.tutorial-panel').show()
+    }else {
+      $('.tutorial-panel').hide()
+    }
+  })
 })
 
 const displayTourFirstPart = () => {
