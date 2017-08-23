@@ -169,5 +169,12 @@ module.exports = {
       }
     }
   },
-  interface_version :['chat-lite','chat-full']
+  interface_version :['chat-lite','chat-full'],
+  password_rule: {
+    "min_lowercase_letter": 1,
+    "min_uppercase_letter": 1,
+    "min_number": 1,
+    "min_length": 8,
+    "max_special_character": 0
+  }
 }

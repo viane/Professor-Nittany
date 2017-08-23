@@ -8,6 +8,7 @@ const nodemailer = require('nodemailer');
 const smtpTransport = require('nodemailer-smtp-transport');
 const crypto = require('crypto');
 const async = require('async');
+const config = require('../config.js');
 import path from 'path';
 import validator from "email-validator";
 
@@ -46,6 +47,10 @@ router.route('/get-user').get(Verify.verifyOrdinaryUser, function(req, res, next
       return next(err);
     res.json(resp);
   });
+});
+
+router.route('/get-password-rules').get(function(req, res, next) {
+  res.json(config.password_rule);
 });
 
 //API user local signup : post /users/signup
