@@ -2,7 +2,8 @@
 const dataStorage = window.localStorage;
 $(() => {
   // turorial
-  if ($(window).width() > 768) {
+  if ($(window).width() > 992) {
+    $('.tutorial-panel').show();
     if (!localStorage.hasOwnProperty('iaa-showTourBool')) {
       setLocalTourBool(null);
     }
@@ -14,12 +15,19 @@ $(() => {
     shouldDisplayTour().then(tourBool => {
       if (tourBool) {
         $('#overlay').fadeIn(300);
-        $("[data-tour-step=1]").addClass('expose');
+        initTourFirstPart();
         displayTourFirstPart();
       }
     })
   }
 
+  $(window).on('resize', function() {
+    if ($(window).width() > 992) {
+      $('.tutorial-panel').show()
+    }else {
+      $('.tutorial-panel').hide()
+    }
+  })
 })
 
 const displayTourFirstPart = () => {
@@ -29,7 +37,7 @@ const displayTourFirstPart = () => {
     steps: [
       {
         title: "Welcome!",
-        content: "Hi there! It's nice to see you! Let me walk you through some basic components about the lite version chat interface.",
+        content: "Hi there! It's nice to see you! Let me walk you through some basic components about the lite version chat interface. It will only take 2~3 minutes, I promise!",
         target: $(".title")[0],
         placement: "bottom",
         xOffset: 20,
@@ -54,7 +62,11 @@ const displayTourFirstPart = () => {
         target: $(".userLog")[0],
         placement: "top",
         xOffset: 18,
-        showNextButton: true
+        showNextButton: true,
+        onNext:()=>{
+          hideAllPage();
+          showPage('.current-chat-area');
+        }
       }, {
         title: "Raise your question!",
         content: "Type your question here whenever your are ready! I have already filled a popular question for you.",
@@ -118,6 +130,25 @@ const displayTourFirstPart = () => {
     }
   };
   hopscotch.startTour(liteVersionTour, 0);
+}
+
+const initTourFirstPart = () => {
+  hideAllPage();
+  showPage('.current-chat-area');
+  if ($('.expose').length > 0) {
+    $('.expose').forEach(ele => {
+      ele.removeClass('.expose');
+    })
+  }
+  // only show frist chat bubble
+  $('li.media').slice(1).remove();
+  $('.row.title').attr('data-tour-step', '1');
+  $("[data-tour-step=1]").addClass('expose');
+  $('#accordion.panel-group').attr('data-tour-step', '2');
+  $('.suggest-question-tab').attr('data-tour-step', '3');
+  $('.user-Account-Action').attr('data-tour-step', '4');
+  $('#question.form-control').attr('data-tour-step', '5');
+  $('.input-group-btn').attr('data-tour-step', '6');
 }
 
 const initTourSecondPart = () => {
@@ -206,7 +237,7 @@ const displayTourSecondPart = () => {
         placement: "top",
         showNextButton: true,
         onShow: () => {
-          $('.current-message').css('z-index', '100000').css('position', 'relative');
+          $('.current-message').css('z-index', '10').css('position', 'relative');
         }
       }, {
         title: "Not Happy with Any Answer?",

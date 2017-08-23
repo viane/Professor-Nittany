@@ -503,43 +503,114 @@ questionRouter.post('/log-question', function(req,res,next){
 
 // GET API for getting good example question
 questionRouter.get('/get-trained-question', (req, res) => {
-  Questions.findRandom({
-    'trained': true
-  }, {
-    "body": 1,
-    "_id": 1
-  }, { skip: 10, limit: 10, count: 5 }, (err, questions) => {
-    if (err) {
-      console.error(err);
-      return res.status(400).json({
-        "status": err
+      const promiseAry = [searchTrainedQuestionOfKeyword('tuition'),
+                          searchTrainedQuestionOfKeyword('payment'),
+                          searchTrainedQuestionOfKeyword('courses'),
+                          searchTrainedQuestionOfKeyword('class registration'),
+                          searchTrainedQuestionOfKeyword('financial aid'),
+                          searchTrainedQuestionOfKeyword('transfer credits'),
+                          searchTrainedQuestionOfKeyword('Student loans'),
+                          searchTrainedQuestionOfKeyword('GPA'),
+                          searchTrainedQuestionOfKeyword('enrollment'),
+                          searchTrainedQuestionOfKeyword('class schedule'),
+                          searchTrainedQuestionOfKeyword('Pell Grant'),
+                          searchTrainedQuestionOfKeyword('graduation'),
+                          searchTrainedQuestionOfKeyword('ALEKS'),
+                          searchTrainedQuestionOfKeyword('tutor'),
+                          searchTrainedQuestionOfKeyword('loans'),
+                          searchTrainedQuestionOfKeyword('textbooks'),
+                          searchTrainedQuestionOfKeyword('registration'),
+                          searchTrainedQuestionOfKeyword('defer grades'),
+                          searchTrainedQuestionOfKeyword('degree'),
+                          searchTrainedQuestionOfKeyword('Penn State'),
+                          searchTrainedQuestionOfKeyword('grades'),
+                          searchTrainedQuestionOfKeyword('tution Assistance'),
+                          searchTrainedQuestionOfKeyword('world campus students'),
+                          searchTrainedQuestionOfKeyword('out-of-states students'),
+                          searchTrainedQuestionOfKeyword('degrees online'),
+                          searchTrainedQuestionOfKeyword('TOEFL'),
+                          searchTrainedQuestionOfKeyword('majors'),
+                          searchTrainedQuestionOfKeyword('addmission'),
+                          searchTrainedQuestionOfKeyword('iMBA'),
+                          searchTrainedQuestionOfKeyword('nursing handbook'),
+                          searchTrainedQuestionOfKeyword('online classroom'),
+                          searchTrainedQuestionOfKeyword('schedule'),
+                          searchTrainedQuestionOfKeyword('penn state world campus'),
+                          searchTrainedQuestionOfKeyword('military transcript'),
+                          searchTrainedQuestionOfKeyword('online courses'),
+                          searchTrainedQuestionOfKeyword('tution discount'),
+                          searchTrainedQuestionOfKeyword('contact info'),
+                          searchTrainedQuestionOfKeyword('Penn State Account'),
+                          searchTrainedQuestionOfKeyword('The Faculty'),
+                          searchTrainedQuestionOfKeyword('job'),
+                          searchTrainedQuestionOfKeyword('credit cost')
+                          ];
+      Promise.all(promiseAry).then(questions=>{
+        return res.status(200).json(questions);
+      }).catch(errs=>{
+        return res.status(300).json(errs);
       })
-    }
-    return res.status(200).json({
-      "questions": questions
-    })
-  })
 });
 
-// GET API for getting good example question
-questionRouter.post('/mark-trained-question', (req, res) => {
-  let successNum=0, failNum=0;
-  // qid in req.body.question_id
-  const promiseAry = req.body.question_id.map((qid,index)=>{
-    return new Promise(function(resolve, reject) {
-      Questions.update({'_id':qid},{ $set: { 'trained': true }},(err,newDoc)=>{
-        if (err) {
-          console.error(err);
-          failNum++;
-        }else{
-          successNum++;
-        }
-        resolve();
-      })
+const searchTrainedQuestionOfKeyword = (keyword) =>{
+  return new Promise(function(resolve, reject) {
+    const keywordRegex = new RegExp(keyword,"i");
+    Questions.findRandom({
+      'trained': true,
+      'feature.keywords.text':keywordRegex
+    }, {
+      "body": 1,
+      'feature.keywords.text':1,
+      "_id": 1
+    }, { skip: 10, limit: 10, count: 5 }, (err, questions) => {
+      if (err) {
+        console.error(err);
+        return reject({
+          "status": err
+        })
+      }
+      if (questions && questions.length>0) {
+        const questionObjAry = questions.map(question=>{
+          return { '_id' : question._id,
+            'body' : question.body,
+            'keyword' : keyword
+          }
+        })
+        return resolve({
+          "questions": questionObjAry
+        })
+      }else {
+        return resolve({})
+      }
     })
   })
-  Promise.all(promiseAry).then(()=>{
-    res.status(200).json({'succeed':successNum, 'failed':failNum});
+}
+
+// GET API for getting good example question
+questionRouter.post('/mark-trained-question', Verify.verifyOrdinaryUser, (req, res) => {
+  Users.findById(req.decoded._id, function(err, user) {
+    if (user.account_role==='advisor') {
+      let successNum=0, failNum=0;
+      // qid in req.body.question_id
+      const promiseAry = req.body.question_id.map((qid,index)=>{
+        return new Promise(function(resolve, reject) {
+          Questions.update({'_id':qid},{ $set: { 'trained': true }},(err,newDoc)=>{
+            if (err) {
+              console.error(err);
+              failNum++;
+            }else{
+              successNum++;
+            }
+            resolve();
+          })
+        })
+      })
+      Promise.all(promiseAry).then(()=>{
+        res.status(200).json({'succeed':successNum, 'failed':failNum});
+      })
+    }else{
+      return res.status(200).json({status:'error',message:'Premission Denied'});
+    }
   })
 })
 

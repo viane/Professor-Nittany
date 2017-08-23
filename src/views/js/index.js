@@ -5,6 +5,8 @@ let data = ["test1", "test2", "test3", "test4"];
 let timeAsked = "";
 let question = {};
 let access_token;
+const pageClass = ['.current-chat-area', '.profile-area', '.logged-questions', '.sample-question-area'];
+const pageTitle = ['Chatting with IAA', 'Profile', 'Unsatisfying Question Console', 'Suggested Question Areas'];
 
 if (!localStorage.hasOwnProperty('iaa-userToken')) {
   localStorage.setItem('iaa-userToken', null);
@@ -23,7 +25,8 @@ $(() => {
   lightbox.option({'resizeDuration': 200, 'wrapAround': true});
   initUserAccountListener();
   initBtnHandler();
-
+  initBornTime();
+  initAnswerVideoSizeFitOnResize();
 })
 
 $(document).ready(function() {
@@ -67,6 +70,7 @@ $(document).ready(function() {
   $('#lite-instruction').click(() => {
     setLocalTourBool(false);
     $('#overlay').fadeIn(300);
+    initTourFirstPart();
     $("[data-tour-step=1]").addClass('expose');
     displayTourFirstPart();
   })
@@ -87,6 +91,7 @@ $(document).on('click', '.btn-log', function(e) {
   e.preventDefault();
 });
 
+//rework, bug, fix
 $(document).on('click', '.btn-answer', function(e) {
   $('.current-message').empty();
   $('.current-message').html(data[this.id]);
@@ -96,17 +101,19 @@ $(document).on('click', '.btn-answer', function(e) {
   e.preventDefault();
 });
 
-$(document).on('click', '.previous-step-btn, .next-step-btn', function(e) {
-  $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
-});
+// $(document).on('click', '.previous-step-btn, .next-step-btn', function(e) {
+//   $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
+// });
 
 $(document).on('click', '.question-tab', function(e) {
   if ($('.low-confidence').text() == "Check Unsatisfying Questions") {
+    hideAllPage();
     showLowQuestions();
-    $('.low-confidence').text('Back to Chat')
+    $('.low-confidence').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Chat')
   } else {
-    $('.low-confidence').text("Check Unsatisfying Questions")
-    $('.current-chat-area').show();
+    $('.low-confidence').text("Check Unsatisfying Questions");
+    hideAllPage();
+    showPage('.current-chat-area');
     $('.logged-questions').remove();
   }
   e.preventDefault();
@@ -269,7 +276,7 @@ const formatAnswerByTag = (input) => {
 
     extendText = extendText.replace(new RegExp("\\[/extend\\]", "g"), "");
 
-    input = input.replace(initExtendText, "<div class=\"answer-extra-info\"><div class=\"answer-body hide\">" + extendText + "</div><span class=\"read-more btn btn-secondary\">Read More</span></div>");
+    input = input.replace(initExtendText, "<div class=\"answer-extra-info\"><div class=\"answer-body\" style=\"display:none\">" + extendText + "</div><span class=\"read-more next\">Read More</span></div>");
   }
 
   // for [tip] ... [/tip]
@@ -400,10 +407,12 @@ const addReadmoreHandler = () => {
     $(this).on('click', function() {
       if ($(this).text() === "Read More") {
         $(this).text("Collapse");
-        $(this).prev().removeClass("hide");
+        $(this).removeClass('next').addClass('prev');
+        $(this).prev().show('slow');
       } else {
         $(this).text("Read More");
-        $(this).prev().addClass("hide");
+        $(this).removeClass('prev').addClass('next');
+        $(this).prev().hide('slow');
       }
       // $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
     })
@@ -424,7 +433,7 @@ function sendServerQuestion(question) {
     // console.log(json);
     $('.loading').remove();
     $('.current-message').attr('class', 'media-text');
-    $('.other-answers').remove();
+    // $('.other-answers').remove(); // cause bug on progress indicator
     $('.btn-log').remove();
     $('.active-chat').removeClass('active-chat');
     let i = 0;
@@ -451,15 +460,6 @@ function sendServerQuestion(question) {
         $('#chat').append(htmlWBefore + watsonChatClassNumerous + data[0] + '</p></div><p>' + html4Buttons + '</p><small class="text-muted">Powered by <span class="watson-power-tag"><img class="small-chat-bubble-icon" src="images/watson-icon.png" /> Watson</span> | ' + timeAsked + htmlWAfter);
         break;
     }
-    // assign scroll chat to bottom on clicking each answer button
-    $('.btn-answer').each((index, ele) => {
-      $(ele).click(() => {
-        // force to scroll to bottom
-        $('.current-chat-area').animate({
-          scrollTop: $(".scroll-chat").height() + 40 + 'px'
-        });
-      })
-    })
     initProgressHandler($($('.progress-section')[$('.progress-section').length - 1]));
     addReadmoreHandler();
     $('.current-chat-area').animate({scrollTop: $(".scroll-chat").height()});
@@ -609,8 +609,7 @@ function questionWrapper(question) {
 }
 
 function showLowQuestions() {
-  $('.current-chat-area').hide();
-  $('.current-chat').append('<div class="question-loading scrollable">' + htmlLoading + '</div>');
+  loadAnimationOn('.current-chat');
   fetch("../questions/get-low-confidence", {
     method: 'get',
     headers: {
@@ -621,10 +620,11 @@ function showLowQuestions() {
     return response.json()
   }).then(json => {
     setTimeout(function() {
-      $('.question-loading').remove()
-    }, 200);
+      removeLoadAnimationOn('.current-chat')
+    }, 1000);
     var questionList = questionWrapper(json);
     $('.current-chat').append(questionList);
+    showPage('.logged-questions');
     // btn handler
     $('.btn-mark-all-question').click(() => {
       $('.unsatisfy-question:checkbox:not(:checked)').click();
@@ -646,7 +646,8 @@ function showLowQuestions() {
       fetch("../questions/mark-trained-question", {
         method: 'post',
         headers: {
-          "Content-type": "application/json; charset=UTF-8"
+          "Content-type": "application/json; charset=UTF-8",
+          "x-access-token": JSON.parse(localStorage['iaa-userToken'])
         },
         body: JSON.stringify({question_id: qidAry})
       }).then(response => {
@@ -667,7 +668,7 @@ function showLowQuestions() {
 function login() {
   let email = document.getElementById('inputUserEmail').value;
   let password = document.getElementById('inputUserPassword').value;
-
+  loadAnimationOn('.container-fluid');
   fetch("/users/signin", {
     method: 'post',
     headers: {
@@ -678,6 +679,7 @@ function login() {
   }).then(response => {
     return response.json()
   }).then(json => {
+    removeLoadAnimationOn('.container-fluid');
     if (json.err) {
       // TODO handle failure of login
       $.notify(json.err, {
@@ -702,62 +704,85 @@ function login() {
         $('#loginModal').modal('toggle');
         const userDisplayName = capitalizeFirstLetter(json.first_name);
         $('.lite-header').text("Welcome " + userDisplayName);
+        // show unstatisfy question tab
+        if (json.hasOwnProperty('account_role') && json.account_role === "advisor") {
+          $('.question-tab').show();
+        }
       })
 
     }
   })
 }
 
-function register() {
-  let email = document.getElementById('inputEmail').value;
-  let password = document.getElementById('inputPassword').value;
-  let first_name = document.getElementById('inputUserF').value;
-  let last_name = document.getElementById('inputUserL').value;
-
-  let select = document.getElementById('major');
-  let major = select.options[select.selectedIndex].text;
-
-  console.log(email);
-  console.log(password);
-  console.log(first_name);
-  console.log(last_name);
-  console.log(major);
-
-  fetch("/users/signup", {
-    method: 'post',
-    headers: {
-      "Content-type": "application/json"
-    },
-    body: JSON.stringify({
-      'email': email,
-      'password': password,
-      'first_name': first_name,
-      'last_name': last_name,
-      'account_role': 'student',
-      'majors': [major] //allow double or triple majors. An array of major document id
-    })
-  }).then(response => {
-    return response.json()
-  }).then(json => {
-    if (json.err) {
-      // TODO handle failure of registration
-      console.log(json.err);
-    } else {
-      // TODO change - Currently redirecting to lite because full is not done
-      window.location.replace('./lite-version.html');
-    }
-  });
-}
-
 const initBtnHandler = () => {
+  // logo
+  $('.home_anchor').click((e) => {
+    e.preventDefault();
+    if (!$('.current-chat-area').hasClass('active')) {
+      hideAllPage();
+      showPage('.current-chat-area');
+    }
+  })
+  // login & signup
+  $('.btn-register').click(e => {
+    e.preventDefault();
+    loadAnimationOn('.container-fluid');
+    let email = document.getElementById('inputEmail').value;
+    let password = document.getElementById('inputPassword').value;
+    let password2 = document.getElementById('inputConfirmPassword').value;
+    let first_name = document.getElementById('inputUserF').value;
+    let last_name = document.getElementById('inputUserL').value;
+
+    let select = document.getElementById('major');
+    let major = [];
+    major.unshift(select.options[select.selectedIndex].value);
+
+    fetch("/users/signup", {
+      method: 'post',
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      },
+      body: JSON.stringify({
+        'email': email,
+        'password': password,
+        'password2':password2,
+        'first_name': first_name,
+        'last_name': last_name,
+        'account_role': 'student',
+        'majors': major
+      })
+    }).then(response => {
+      return response.json()
+    }).then(json => {
+      removeLoadAnimationOn('.container-fluid');
+      if (json.err) {
+        // TODO handle failure of registration
+        $.notify(json.err.message, {
+          className: "error",
+          clickToHide: true,
+          autoHide: true
+        })
+      } else {
+        // close login modal
+        $('#RegisterModal').modal('toggle');
+        // TODO change - Currently redirecting to lite because full is not done
+        $.notify('You account has successfully created, we have sent a activation email to you, please check your email and active your account.', {
+          className: "success",
+          clickToHide: true,
+          autoHide: true
+        })
+      }
+    });
+
+  })
   // profile
   $($('.btn-profile button')[0]).click(() => {
     if (!$('.profile-area').hasClass('active')) {
       // hide chat
-      $('.current-chat-area').hide('slow');
+      hideAllPage();
       // change button text
       $($('.btn-profile button')[0]).text('Chat');
-      $('.current-chat').append('<div class="question-loading scrollable">' + htmlLoading + '</div>');
+      loadAnimationOn('.current-chat');
       getUserInfo().then(json => {
         // name & email
         $('.profile-user-name').val(capitalizeFirstLetter(json.first_name + " " + json.last_name));
@@ -766,7 +791,6 @@ const initBtnHandler = () => {
         if (json.hasOwnProperty('personality_evaluation')) {
           if (json.personality_evaluation.hasOwnProperty('description_content')) {
             const areaWidth = $('.current-chat').width();
-            console.log(areaWidth);
             const introductionEle = $('.profile-introduction');
             introductionEle.css({"width": areaWidth});
             introductionEle.val(json.personality_evaluation.description_content);
@@ -780,6 +804,7 @@ const initBtnHandler = () => {
             createPie(".pieID.legend", ".pieID.pie");
           }
           if (json.hasOwnProperty('interest')) {
+            $('.profile-wordCloud').show();
             // $('.word-cloud').text(JSON.stringify(json.interest));
             const wordList = json.interest.interest.map(item => {
               return [
@@ -787,7 +812,7 @@ const initBtnHandler = () => {
                 parseInt(item.value, 10) + 6
               ];
             })
-            console.log(wordList);
+            //console.log(wordList);
             // WordCloud(document.getElementById('my_canvas'), { list: list } );
             if (WordCloud.isSupported) {
               WordCloud($('#word-cloud')[0], {
@@ -806,31 +831,62 @@ const initBtnHandler = () => {
                 rotationSteps: 0,
                 clearCanvas: true,
                 minSize: 35,
-                shuffle:true,
+                shuffle: true,
                 backgroundColor: '#fff'
               });
             }
 
           }
         }
-        $('.question-loading').hide('slow').remove();
+        removeLoadAnimationOn('.current-chat');
         // show profile section
-        $('.profile-area').show('slow').addClass('active');
+        showPage('.profile-area');
         $('.profile-introduction').css({
           "height": $('.profile-introduction').prop('scrollHeight') / 3
         });
       })
-    }else {
+    } else {
       $($('.btn-profile button')[0]).text('Profile');
-      $('.profile-area').hide('slow').removeClass('active');
-      $('.current-chat-area').show('slow');
+      hideAllPage();
+      showPage('.current-chat-area');
     }
 
   })
 
+  $('.btn-profile-introduction-save').click(() => {
+    const payload = {
+      introduction: $('.profile-introduction').val()
+    };
+    //console.log(payload);
+    fetch("/profile/update-introduction", {
+      method: 'post',
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        "x-access-token": JSON.parse(localStorage['iaa-userToken'])
+      },
+      body: JSON.stringify(payload),
+      credentials: 'include'
+    }).then(response => {
+      return response.json()
+    }).then(json => {
+      if (json.status == "success") {
+        $.notify("Successfully upload your introduction!", {
+          className: "success",
+          clickToHide: true,
+          autoHide: true
+        })
+      } else if (json.error) {
+        $.notify(json.message, {
+          className: "error",
+          clickToHide: true,
+          autoHide: true
+        })
+      }
+    });
+  })
   // logout
   $($('.logout button')[0]).click(() => {
-    // notify login
+    // notify logout
     $.notify("Goodbye!", {
       className: "success",
       clickToHide: true,
@@ -839,23 +895,45 @@ const initBtnHandler = () => {
     $('.text-benefits, .login-wrapper, .register-wrapper').show();
     $('.logout, .btn-profile').hide();
     localStorage['iaa-userToken'] = null;
+    $('.question-tab').hide();
     $('.lite-header').text("Welcome Visitor");
+    hideAllPage();
+    showPage('.current-chat-area');
   })
 }
 
 const initGetSampleQuestion = () => {
   // example Questions
-  fetch('/questions/get-trained-question', {method: 'get'}).then(response => {
-    return response.json()
-  }).then(json => {
-    for (let i = 0; i < 4; i++) {
-      $('#lite-example-question-list').append("<li><i class=\"fa fa-slack\" aria-hidden=\"true\"></i>&nbsp;&nbsp;<a class=\"example-question\">" + json.questions[i].body + "</a></li>")
-    }
-    $('.example-question').each((index, item) => {
-      $(item).click(() => {
-        $('#question').val($(item).text());
+  $('.btn-sample-question').click((e) => {
+    e.preventDefault();
+    hideAllPage();
+    loadAnimationOn('.current-chat');
+    if ($('.btn-sample-question').text().trim() === "Suggested Question") {
+      $('.btn-sample-question').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Chat')
+      $('.sample-question-area').empty();
+      fetch('/questions/get-trained-question', {method: 'get'}).then(response => {
+        return response.json()
+      }).then(json => {
+        json.map(questionAry => {
+          if (Object.keys(questionAry).length > 0 && questionAry.constructor === Object) {
+            let parseHTML = '<ul class="example-question-list"><label>' + capitalizeFirstLetter(questionAry.questions[0].keyword) + '</label>';
+            questionAry.questions.map(questionObj => {
+              parseHTML += '<li class="suggest-question-element"><i class="fa fa-hashtag" aria-hidden="true"></i>&nbsp;' + questionObj.body + '</li>';
+
+            })
+            parseHTML += '</ul>';
+            $('.sample-question-area').append(parseHTML);
+          }
+        });
+        initSampleQuestionClicker();
+        showPage('.sample-question-area');
+        removeLoadAnimationOn('.current-chat');
       })
-    })
+    } else {
+      showPage('.current-chat-area');
+      $('.btn-sample-question').text('Suggested Question');
+      removeLoadAnimationOn('.current-chat');
+    }
   })
 }
 
@@ -868,11 +946,16 @@ const initUserAccountListener = () => {
       const userDisplayName = capitalizeFirstLetter(json.first_name);
       $('.lite-header').text("Welcome " + userDisplayName);
     }
+    // show unstatisfy question tab
+    if (json.hasOwnProperty('account_role') && json.account_role === "advisor") {
+      $('.question-tab').show();
+    }
   })
 }
 
 const getUserInfo = () => {
   return new Promise(function(resolve, reject) {
+    loadAnimationOn('.current-chat');
     // get user info
     fetch("/users/get-user", {
       method: 'get',
@@ -881,8 +964,10 @@ const getUserInfo = () => {
         "x-access-token": JSON.parse(localStorage['iaa-userToken'])
       }
     }).then(response => {
+      removeLoadAnimationOn('.current-chat');
       resolve(response.json())
     }).catch(err => {
+      removeLoadAnimationOn('.current-chat');
       reject(err)
     })
   });
@@ -926,6 +1011,11 @@ const generateQuestionListTextFileAndDownload = (questionList) => {
       autoHide: true
     })
   }
+}
+
+const initBornTime = () => {
+  const bornTime = moment([2017, 6, 14]);
+  $('.time-from-born').text(bornTime.toNow(true));
 }
 
 // utility func
@@ -988,4 +1078,55 @@ function createPie(dataElement, pieElement) {
     $(dataElement + " li:nth-child(" + (i + 1) + ")").css("border-color", color[i]);
     offset += size;
   }
+}
+
+const hideAllPage = () => {
+  // fill page class name here
+  pageClass.forEach(page => {
+    $(page).hide();
+    $($(page)).removeClass('active');
+  })
+}
+
+const showPage = selctor => {
+  if (pageClass.indexOf(selctor) != -1) {
+    // change title
+    const title = pageTitle[pageClass.indexOf(selctor)];
+    $('.lite-header').text(title);
+    $(selctor).show('slow');
+    $($(selctor)).addClass('active');
+  }
+
+}
+
+const loadAnimationOn = ele => {
+  const loaderHtml = '<div class="loading-animation-warpper scrollable"><div class="cs-loader"><label> ●</label><label> ●</label><label> ●</label></div></div>';
+  $(ele).append(loaderHtml);
+}
+
+const removeLoadAnimationOn = ele => {
+  $(ele).find(".loading-animation-warpper").remove();
+}
+
+const initAnswerVideoSizeFitOnResize = () => {
+  $(window).on('resize', function() {
+    fitCurrentAnswerVideo();
+  });
+}
+
+const fitCurrentAnswerVideo = ()=>{
+  $('.answerHTMLDOM').find('iframe').each((index,ele)=>{
+    const chatBubbleWidth = $(ele).closest('.media-watson-info').width()
+    $(ele).width(chatBubbleWidth*0.8)
+  })
+}
+
+const initSampleQuestionClicker = ()=>{
+  $('.suggest-question-element').each((index,ele)=>{
+    $(ele).click(()=>{
+      $('#question').val($(ele).text().trim());
+      $('.btn-sample-question').click();
+      $('#send').click();
+    })
+  })
 }
