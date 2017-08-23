@@ -92,19 +92,19 @@ questionRouter.route('/untrained')
 
 //API check low-confidence questions
 questionRouter.route('/get-low-confidence').get(function(req,res,next){
-  Questions.find({'low_confidence.mark': true, $or:[{'low_confidence.relevance_level':'some'},{'low_confidence.relevance_level':'full'}]}, function(err, questions){
+  Questions.find({'low_confidence.mark': true,'trained':false, $or:[{'low_confidence.relevance_level':'some'},{'low_confidence.relevance_level':'full'}]}, function(err, questions){
     if (err)
       return next(err);
     res.json(questions);
   })
 })
-.delete(function(req,res,next){
-  Questions.remove({'low_confidence.mark': true, $or:[{'low_confidence.relevance_level':'some'},{'low_confidence.relevance_level':'full'}]}, function(err, resp) {
-    if (err)
-      return next(err);
-    res.json(resp);
-  });
-});
+// .delete(function(req,res,next){
+//   Questions.remove({'low_confidence.mark': true, $or:[{'low_confidence.relevance_level':'some'},{'low_confidence.relevance_level':'full'}]}, function(err, resp) {
+//     if (err)
+//       return next(err);
+//     res.json(resp);
+//   });
+// });
 
 //API upload trained question to the server to add more terms
 questionRouter.route('/dominated-terms/upload-file').post(function(req,res,next){
