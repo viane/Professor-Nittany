@@ -5,7 +5,7 @@ let data = ["test1", "test2", "test3", "test4"];
 let timeAsked = "";
 let question = {};
 let access_token;
-const pageClass = ['.current-chat-area', '.profile-area', '.logged-questions', '.sample-question-area'];
+const pageClass = ['.current-chat-area', '.profile-area', '.logged-questions', '.sample-question-container'];
 const pageTitle = ['Chatting with IAA', 'Profile', 'Unsatisfying Question Console', 'Suggested Question Areas'];
 
 if (!localStorage.hasOwnProperty('iaa-userToken')) {
@@ -658,6 +658,13 @@ function showLowQuestions() {
           clickToHide: true,
           autoHide: true
         })
+        // re-render list
+        json.success_ids.map(qid=>{
+          const input = $(':input').filter(function(){return this.value==qid})[0];
+          const parentPanel = $($(input).closest('.panel')[0]);
+          parentPanel.hide('slow', function(){ parentPanel.remove()});
+        })
+
       })
     })
   })
@@ -900,6 +907,32 @@ const initBtnHandler = () => {
     hideAllPage();
     showPage('.current-chat-area');
   })
+  // sample question refresh btn
+  $('.refresh-btn-sample-question').click(()=>{
+    rotateEle($('.refresh-btn-sample-question i'));
+    $('.sample-question-area').hide('slow',()=>{
+      $('.sample-question-area').empty();
+      // retrieve and re-render
+      fetch('/questions/get-trained-question', {method: 'get'}).then(response => {
+        return response.json()
+      }).then(json => {
+        json.map(questionAry => {
+          if (Object.keys(questionAry).length > 0 && questionAry.constructor === Object) {
+            let parseHTML = '<ul class="example-question-list"><label>' + capitalizeFirstLetter(questionAry.questions[0].keyword) + '</label>';
+            questionAry.questions.map(questionObj => {
+              parseHTML += '<li class="suggest-question-element"><i class="fa fa-hashtag" aria-hidden="true"></i>&nbsp;' + questionObj.body + '</li>';
+
+            })
+            parseHTML += '</ul>';
+            $('.sample-question-area').append(parseHTML);
+          }
+        });
+        $('.refresh-btn-sample-question i').removeClass('spin');
+        $('.sample-question-area').show('slow')
+      })
+    })
+  })
+
 }
 
 const initGetSampleQuestion = () => {
@@ -926,7 +959,7 @@ const initGetSampleQuestion = () => {
           }
         });
         initSampleQuestionClicker();
-        showPage('.sample-question-area');
+        showPage('.sample-question-container');
         removeLoadAnimationOn('.current-chat');
       })
     } else {
@@ -1129,4 +1162,8 @@ const initSampleQuestionClicker = ()=>{
       $('#send').click();
     })
   })
+}
+
+const rotateEle = (ele)=> {
+        ele.addClass('spin');
 }
