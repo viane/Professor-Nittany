@@ -1,3 +1,13 @@
+html {
+  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  overflow: auto;
+}
+
 pre {
   white-space: pre-wrap;
   /* Since CSS 2.1 */
@@ -225,7 +235,7 @@ html, body {
   padding-bottom: 37px;
 }
 
-@media only screen and (min-height : 310px) {
+@media only screen and (min-height: 310px) {
   .current-chat-area {
     height: 69vh;
   }
@@ -237,7 +247,7 @@ html, body {
   }
 }
 
-@media only screen and (min-height : 332px) {
+@media only screen and (min-height: 332px) {
   .current-chat-area {
     height: 72vh;
   }
@@ -291,79 +301,85 @@ html, body {
   }
 }
 
-@media only screen and (min-height : 640px) {
+@media only screen and (min-height: 640px) {
   .current-chat-area {
     height: 80vh;
   }
 }
 
-@media only screen and (min-height : 667px) {
+@media only screen and (min-height: 667px) {
   .current-chat-area {
     height: 81vh;
   }
 }
 
-@media only screen and (min-height : 732px) {
+@media only screen and (min-height: 732px) {
   .current-chat-area {
     height: 85vh;
   }
 }
 
-@media only screen and (min-height : 736px) {
+@media only screen and (min-height: 736px) {
   .current-chat-area {
     height: 87vh;
   }
 }
 
-@media only screen and (min-height : 768px) {
+@media only screen and (min-height: 768px) {
   .current-chat-area {
     height: 87vh;
   }
 }
 
-@media only screen and (min-height : 800px) {
+@media only screen and (min-height: 800px) {
   .current-chat-area {
     height: 88vh;
   }
 }
-@media only screen and (min-height : 900px) {
+
+@media only screen and (min-height: 900px) {
   .current-chat-area {
     height: 89vh;
   }
 }
-@media only screen and (min-height : 950px) {
-  .current-chat-area {
-    height: 90vh;
-  }
-}
-@media only screen and (min-height : 960px) {
+
+@media only screen and (min-height: 950px) {
   .current-chat-area {
     height: 90vh;
   }
 }
 
-@media only screen and (min-height : 1024px) {
+@media only screen and (min-height: 960px) {
   .current-chat-area {
     height: 90vh;
   }
 }
-@media only screen and (min-height : 1280px) {
+
+@media only screen and (min-height: 1024px) {
+  .current-chat-area {
+    height: 90vh;
+  }
+}
+
+@media only screen and (min-height: 1280px) {
   .current-chat-area {
     height: 92vh;
   }
 }
 
-@media only screen and (min-height : 1366px) {
+@media only screen and (min-height: 1366px) {
   .current-chat-area {
     height: 93vh;
   }
 }
-@media only screen and (min-height : 1600px) {
+
+@media only screen and (min-height: 1600px) {
   .current-chat-area {
     height: 94vh;
   }
 }
-@media only screen and (min-height : 2560px) {
+
+@media only screen and (min-height: 2560px) {
   .current-chat-area {
     height: 96vh;
   }
@@ -514,9 +530,11 @@ html, body {
 .btn-danger {
   margin-top: 10px;
 }
-.answer-extra-info{
-      padding: 0 0 15px 0;
+
+.answer-extra-info {
+  padding: 0 0 15px 0;
 }
+
 .read-more {
   position: relative;
   padding-left: 14px;
@@ -529,6 +547,7 @@ html, body {
   top: 10px;
   border-radius: 4px;
 }
+
 .read-more::after {
   content: '';
   position: absolute;
@@ -536,43 +555,58 @@ html, body {
   width: 0;
   height: 0;
 }
+
 .read-more:hover {
   background: #00b58b;
   color: white;
   cursor: default;
 }
+
+
 /* Arrow Buttons */
+
+
 /* ------------- */
-.read-more.next::after,
-.read-more.prev::after {
+
+.read-more.next::after, .read-more.prev::after {
   border-style: solid;
 }
+
+
 /* Next Button */
+
+
 /* ----------- */
+
 .read-more.next::after {
   right: -20px;
   border-width: 11px;
   border-color: transparent transparent transparent #0d5287;
 }
+
 .read-more.next:hover::after {
   border-left-color: #00b58b;
 }
+
+
 /* Prev Button */
+
+
 /* ----------- */
-.read-more.prev{
+
+.read-more.prev {
   margin: 0px 0 0px 10px;
 }
+
 .read-more.prev::after {
   left: -20px;
   border-color: transparent #0d5287 transparent transparent;
   border-width: 11px;
 }
+
 .read-more.prev:hover::after {
   border-right-color: #00b58b;
 }
-
-
-
 
 
 /*answer progress style*/
@@ -699,9 +733,11 @@ html, body {
   max-width: 100%;
   min-width: 60%;
 }
-.step-content{
+
+.step-content {
   max-width: 80%;
 }
+
 .current-step-number, .total-step-number {
   color: #000;
 }
@@ -710,10 +746,12 @@ html, body {
   display: inline-block;
   font-size: 3em;
 }
-.step-control{
-      margin\: -20px;
-      margin: -20px 1% 0 0;
+
+.step-control {
+  margin\: -20px;
+  margin: -20px 1% 0 0;
 }
+
 .step-control, .next-step-btn {
   float: right;
 }
@@ -1310,6 +1348,13 @@ main {
   display: none;
 }
 
+.refresh-btn-sample-question {
+  position: relative;
+  padding: 10px 0 30px 0;
+  font-size: 3em;
+  left: 50%;
+}
+
 .sample-question-area {
   overflow-y: auto;
 }
@@ -1331,15 +1376,43 @@ main {
   padding: 0 0 5px 0;
   font-size: 1.3em;
 }
-.suggest-question-element{
-  cursor:default;
+
+.suggest-question-element {
+  cursor: default;
 }
-.suggest-question-element:hover{
+
+.suggest-question-element:hover {
   text-decoration: underline;
 }
+
 .user-Account-Action {
   transform: translate(-50%, 0%);
   left: 50%;
   position: absolute;
   width: 100%;
+}
+
+.spin {
+    -webkit-animation:spin 4s linear infinite;
+    -moz-animation:spin 4s linear infinite;
+    animation:spin 4s linear infinite;
+}
+
+@-moz-keyframes spin {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }

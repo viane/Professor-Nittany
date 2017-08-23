@@ -503,6 +503,7 @@ questionRouter.post('/log-question', function(req,res,next){
 
 // GET API for getting good example question
 questionRouter.get('/get-trained-question', (req, res) => {
+      // make this selections generate by AI
       const promiseAry = [searchTrainedQuestionOfKeyword('tuition'),
                           searchTrainedQuestionOfKeyword('payment'),
                           searchTrainedQuestionOfKeyword('courses'),
@@ -562,7 +563,7 @@ const searchTrainedQuestionOfKeyword = (keyword) =>{
       "body": 1,
       'feature.keywords.text':1,
       "_id": 1
-    }, { skip: 10, limit: 10, count: 5 }, (err, questions) => {
+    }, { skip: 0, limit: 8, count: 5 }, (err, questions) => {
       if (err) {
         console.error(err);
         return reject({
@@ -592,6 +593,7 @@ questionRouter.post('/mark-trained-question', Verify.verifyOrdinaryUser, (req, r
     if (user.account_role==='advisor') {
       let successNum=0, failNum=0;
       // qid in req.body.question_id
+      let questionSuccessIDAry = [];
       const promiseAry = req.body.question_id.map((qid,index)=>{
         return new Promise(function(resolve, reject) {
           Questions.update({'_id':qid},{ $set: { 'trained': true }},(err,newDoc)=>{
@@ -600,13 +602,14 @@ questionRouter.post('/mark-trained-question', Verify.verifyOrdinaryUser, (req, r
               failNum++;
             }else{
               successNum++;
+              questionSuccessIDAry.unshift(qid)
             }
             resolve();
           })
         })
       })
       Promise.all(promiseAry).then(()=>{
-        res.status(200).json({'succeed':successNum, 'failed':failNum});
+        res.status(200).json({'succeed':successNum, 'failed':failNum,'success_ids':questionSuccessIDAry});
       })
     }else{
       return res.status(200).json({status:'error',message:'Premission Denied'});
