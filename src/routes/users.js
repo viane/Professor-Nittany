@@ -50,6 +50,15 @@ router.route('/get-user').get(Verify.verifyOrdinaryUser, function(req, res, next
 
 //API user local signup : post /users/signup
 router.post('/signup', function(req, res) {
+  console.log(req.body.password, " ", req.body.password2);
+  if (req.body.password != req.body.password2) {
+    return res.status(200).json({
+      err: {
+        name: "InvalidPasswordFormat",
+        message: "Your two passwords doesn't match."
+      }
+    });
+  }
   if (!Verify.verifyPasswordFormat(req.body.password)) {
     return res.status(200).json({
       err: {

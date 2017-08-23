@@ -729,6 +729,7 @@ const initBtnHandler = () => {
     loadAnimationOn('.container-fluid');
     let email = document.getElementById('inputEmail').value;
     let password = document.getElementById('inputPassword').value;
+    let password2 = document.getElementById('inputConfirmPassword').value;
     let first_name = document.getElementById('inputUserF').value;
     let last_name = document.getElementById('inputUserL').value;
 
@@ -744,6 +745,7 @@ const initBtnHandler = () => {
       body: JSON.stringify({
         'email': email,
         'password': password,
+        'password2':password2,
         'first_name': first_name,
         'last_name': last_name,
         'account_role': 'student',
