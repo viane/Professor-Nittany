@@ -50,7 +50,7 @@ router.route('/get-user').get(Verify.verifyOrdinaryUser, function(req, res, next
 });
 
 router.route('/get-password-rules').get(function(req, res, next) {
-  res.json(config.password_rule);
+  res.json(config.password_rules);
 });
 
 //API user local signup : post /users/signup
