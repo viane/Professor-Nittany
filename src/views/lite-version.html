@@ -42,8 +42,8 @@
     <div class="full-body">
       <!-- SIDE BAR -->
       <div class="col-sm-12 col-md-3 side-bar">
-        <a href="/lite-version.html">
-          <div class="row title" data-tour-step="1">
+        <a class="home_anchor" href="/lite-version.html">
+          <div class="row title">
             <img src="images/penn-logo.png" alt="penn state logo">
           </div>
         </a>
@@ -51,7 +51,7 @@
           <span class="contact-line"><i class="fa fa-mobile" aria-hidden="true"></i>&nbsp;Call:<a class="effect-shine" href="tel:+1917-746-5704"> &nbsp;917-746-5704</a></span>
           <span class="contact-line"><i class="fa fa-commenting-o" aria-hidden="true"></i>&nbsp;SMS: &nbsp;917-746-5704</span>
         </div>
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" data-tour-step="2">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
           <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingOne">
               <h4 class="panel-title">
@@ -62,11 +62,11 @@
             </div>
             <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
               <div class="panel-body">
-                I am a virtual assistant designed specifically to answer your questions about Penn State's World Campus.
+                I am a virtual assistant designed specifically to answer your questions about Penn State's World Campus. I was created on July 14th 2017, and I have learned to answer questions for <span class="time-from-born"></span>.
               </div>
             </div>
           </div>
-          <div class="panel panel-default">
+          <div class="panel panel-default tutorial-panel" style="display:none">
             <div class="panel-heading" role="tab" id="headingTwo">
               <h4 class="panel-title">
                 <a id="lite-instruction" class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false"
@@ -82,13 +82,10 @@
               </div>
             </div> -->
           </div>
-          <div class="panel panel-default" data-tour-step="3">
+          <div class="panel panel-default suggest-question-tab">
             <div class="panel-heading" role="tab" id="headingThree">
               <h4 class="panel-title">
-                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false"
-                  aria-controls="collapseThree">
-                      Example Questions
-                  </a>
+                <a class="collapsed btn-sample-question" role="button"  aria-expanded="false">Suggested Question</a>
               </h4>
             </div>
             <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
@@ -115,8 +112,8 @@
               </div>
             </div>
           </div>
-          <div class="panel panel-default">
-            <div class="panel-heading question-tab" role="tab" id="headingFive">
+          <div class="panel panel-default question-tab">
+            <div class="panel-heading" role="tab" id="headingFive">
               <h4 class="panel-title">
                 <a class="collapsed low-confidence" role="button" data-toggle="collapse" toggle="false" data-parent="#accordion" href="#collapseFive"
                   aria-expanded="false" aria-controls="collapseFive">Check Unsatisfying Questions</a>
@@ -140,17 +137,17 @@
               </span>
               </p>
             </div>
-            <div class="col-md-12 buttons userLog" data-tour-step="4">
-              <div class="col-md-6 login-wrapper">
+            <div class="buttons userLog">
+              <div class="login-wrapper">
                 <button class="btn-lg btn-default sidebar-btn" type="submit" data-target="#loginModal" data-toggle="modal">Login</button>
               </div>
-              <div class="col-md-6 register-wrapper">
+              <div class="register-wrapper">
                 <button class="btn-lg btn-default sidebar-btn" type="submit" data-target="#RegisterModal" data-toggle="modal">Register</button>
               </div>
-              <div class="col-md-6 btn-profile">
+              <div class="btn-profile">
                 <button class="btn-lg btn-default sidebar-btn">Profile</button>
               </div>
-              <div class="col-md-6 logout">
+              <div class="logout">
                 <button class="btn-lg btn-default sidebar-btn">Logout</button>
               </div>
             </div>
@@ -235,7 +232,7 @@
                 </div>
                 <div class="modal-footer">
                   <button class="btn btn-default" data-dismiss="modal">Cancel</button>
-                  <button class="btn btn-primary" type="submit" onclick="register();">Register</button>
+                  <button class="btn btn-primary btn-register" type="submit">Register</button>
                   <div class="col-md-12">
                     <p style="text-align:center">
                       Or Register with
@@ -260,7 +257,7 @@
       <div class="col-sm-12 col-md-9 current-chat">
         <h2 class="lite-header"> Lite Version - Alpha Testing</h2>
         <hr>
-        <div class="row current-chat-area">
+        <div class="row current-chat-area active">
           <div class="col-md-12 row scroll-chat">
             <ul class="media-list row" id="chat">
               <li class="media">
@@ -279,16 +276,19 @@
           <div class="current-chat-footer">
             <div class="panel-footer">
               <div class="input-group input-group-lg">
-                <span class="input-group-btn">
+                <!-- <span class="input-group-btn">
                   <button class="btn btn-default" type="button"><i class="fa fa-microphone" aria-hidden="true"></i></button>
-                </span>
-                <input class="form-control" placeholder="Ask any question you may have ..." type="text" id="question" data-tour-step="5">
-                <span class="input-group-btn" data-tour-step="6">
-                  <button class="btn btn-default" type="button" id="send"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                </span> -->
+                <input class="form-control" placeholder="Ask any question you may have ..." type="text" id="question">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" id="send"><i class="fa fa-paw" aria-hidden="true"></i></button>
                 </span>
               </div>
             </div>
           </div>
+        </div>
+        <div class="row sample-question-area">
+
         </div>
         <div class="row profile-area">
           <div class="col-md-12 row scrollable">
@@ -311,10 +311,13 @@
               <span class="profile-highlight"></span>
               <span class="profile-input-bar"></span>
               <label class="profile-label">Introduction</label>
+              <button class="btn btn-primary btn-profile-introduction-save">Save</button>
             </div>
             <div class="group">
+              <div class="profile-wordCloud">
               <canvas id="word-cloud" width="600px" height="400px"></canvas>
-              <label class="profile-label">Word Cloud</label>
+              <label class="profile-label">Word Cloud - Your Most Focused Terms</label>
+            </div>
             </div>
             <div class="group">
               <div class="profile-personality">
@@ -347,7 +350,7 @@
                   </section>
                 </main>
               </div>
-              <label class="profile-label">Peronality</label>
+              <label class="profile-label">Peronality - Your Big Five Traits</label>
             </div>
           </div>
         </div>

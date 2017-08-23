@@ -131,6 +131,7 @@ html, body {
   display: block;
   width: 100%;
   text-align: center;
+  margin: 5px 0 10px 0;
 }
 
 .text-benefits>p {
@@ -138,18 +139,17 @@ html, body {
   display: inline-block;
 }
 
-.register-wrapper, .login-wrapper,.btn-profile, .logout {
-  position: absolute;
-  left: 50%;
-  top: 50%;
+.register-wrapper, .login-wrapper, .btn-profile, .logout {
+  float: left;
+  padding-right: 20px;
 }
 
-.login-wrapper,.btn-profile {
-  transform: translate(-50%, 25%);
+.login-wrapper, .btn-profile {
+  /* transform: translate(-50%, 25%); */
 }
 
-.register-wrapper, .logout{
-  transform: translate(-50%, 150%);
+.register-wrapper, .logout {
+  /* transform: translate(-50%, 150%); */
 }
 
 .sidebar-btn {
@@ -214,7 +214,7 @@ html, body {
 
 .current-chat, .profile {
   height: 100vh;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .current-chat-area {
@@ -223,6 +223,150 @@ html, body {
   height: 89vh;
   width: auto;
   padding-bottom: 37px;
+}
+
+@media only screen and (min-height : 310px) {
+  .current-chat-area {
+    height: 69vh;
+  }
+}
+
+@media only screen and (min-height: 320px) {
+  .current-chat-area {
+    height: 70vh;
+  }
+}
+
+@media only screen and (min-height : 332px) {
+  .current-chat-area {
+    height: 72vh;
+  }
+}
+
+@media only screen and (min-height: 360px) {
+  .current-chat-area {
+    height: 74vh;
+  }
+}
+
+@media only screen and (min-height: 375px) {
+  .current-chat-area {
+    height: 75vh;
+  }
+}
+
+@media only screen and (min-height: 412px) {
+  .current-chat-area {
+    height: 76vh;
+  }
+}
+
+@media only screen and (min-height: 412px) {
+  .current-chat-area {
+    height: 77vh;
+  }
+}
+
+@media only screen and (min-height: 480px) {
+  .current-chat-area {
+    height: 73vh;
+  }
+}
+
+@media only screen and (min-height: 533px) {
+  .current-chat-area {
+    height: 76vh;
+  }
+}
+
+@media only screen and (min-height: 568px) {
+  .current-chat-area {
+    height: 77vh;
+  }
+}
+
+@media only screen and (min-height: 600px) {
+  .current-chat-area {
+    height: 84vh;
+  }
+}
+
+@media only screen and (min-height : 640px) {
+  .current-chat-area {
+    height: 80vh;
+  }
+}
+
+@media only screen and (min-height : 667px) {
+  .current-chat-area {
+    height: 81vh;
+  }
+}
+
+@media only screen and (min-height : 732px) {
+  .current-chat-area {
+    height: 85vh;
+  }
+}
+
+@media only screen and (min-height : 736px) {
+  .current-chat-area {
+    height: 87vh;
+  }
+}
+
+@media only screen and (min-height : 768px) {
+  .current-chat-area {
+    height: 87vh;
+  }
+}
+
+@media only screen and (min-height : 800px) {
+  .current-chat-area {
+    height: 88vh;
+  }
+}
+@media only screen and (min-height : 900px) {
+  .current-chat-area {
+    height: 89vh;
+  }
+}
+@media only screen and (min-height : 950px) {
+  .current-chat-area {
+    height: 90vh;
+  }
+}
+@media only screen and (min-height : 960px) {
+  .current-chat-area {
+    height: 90vh;
+  }
+}
+
+@media only screen and (min-height : 1024px) {
+  .current-chat-area {
+    height: 90vh;
+  }
+}
+@media only screen and (min-height : 1280px) {
+  .current-chat-area {
+    height: 92vh;
+  }
+}
+
+@media only screen and (min-height : 1366px) {
+  .current-chat-area {
+    height: 93vh;
+  }
+}
+@media only screen and (min-height : 1600px) {
+  .current-chat-area {
+    height: 94vh;
+  }
+}
+@media only screen and (min-height : 2560px) {
+  .current-chat-area {
+    height: 96vh;
+  }
 }
 
 .current-chat-footer {
@@ -290,6 +434,7 @@ html, body {
   color: #ffffff;
   margin-top: 15px;
   padding: 10px;
+  min-width: 60%;
   float: left;
   transition: all 1.8s ease-in-out;
 }
@@ -369,12 +514,65 @@ html, body {
 .btn-danger {
   margin-top: 10px;
 }
-
-.read-more:hover, .read-more {
-  color: white;
-  margin-top: 10px;
-  padding-left: 0px;
+.answer-extra-info{
+      padding: 0 0 15px 0;
 }
+.read-more {
+  position: relative;
+  padding-left: 14px;
+  padding-right: 14px;
+  padding-top: 2.8px;
+  padding-bottom: 2.8px;
+  background: #0d5287;
+  color: white;
+  font-size: 14px;
+  top: 10px;
+  border-radius: 4px;
+}
+.read-more::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: 0;
+}
+.read-more:hover {
+  background: #00b58b;
+  color: white;
+  cursor: default;
+}
+/* Arrow Buttons */
+/* ------------- */
+.read-more.next::after,
+.read-more.prev::after {
+  border-style: solid;
+}
+/* Next Button */
+/* ----------- */
+.read-more.next::after {
+  right: -20px;
+  border-width: 11px;
+  border-color: transparent transparent transparent #0d5287;
+}
+.read-more.next:hover::after {
+  border-left-color: #00b58b;
+}
+/* Prev Button */
+/* ----------- */
+.read-more.prev{
+  margin: 0px 0 0px 10px;
+}
+.read-more.prev::after {
+  left: -20px;
+  border-color: transparent #0d5287 transparent transparent;
+  border-width: 11px;
+}
+.read-more.prev:hover::after {
+  border-right-color: #00b58b;
+}
+
+
+
 
 
 /*answer progress style*/
@@ -498,10 +696,12 @@ html, body {
 .step {
   display: none;
   padding: 5px 0 25px 10px;
-  max-width: 88%;
+  max-width: 100%;
   min-width: 60%;
 }
-
+.step-content{
+  max-width: 80%;
+}
 .current-step-number, .total-step-number {
   color: #000;
 }
@@ -510,10 +710,12 @@ html, body {
   display: inline-block;
   font-size: 3em;
 }
-
+.step-control{
+      margin\: -20px;
+      margin: -20px 1% 0 0;
+}
 .step-control, .next-step-btn {
   float: right;
-  /* position: absolute; */
 }
 
 .step-image {
@@ -778,8 +980,19 @@ body {
   font-size: 2rem;
 }
 
-.question-loading .cs-loader {
+.loading-animation-warpper .cs-loader {
   color: #4f8dcc;
+}
+
+.loading-animation-warpper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100%;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.32);
+  z-index: 999999;
 }
 
 .logged-answers {
@@ -856,41 +1069,57 @@ body {
   display: none;
   padding: 0 10px 0 10px;
 }
-.profile-personality{
+
+.profile-personality {
   margin-left: -230px;
   position: relative;
   left: 50%;
   margin-top: 55px;
-  =: translate(-50%,0)
+  display: none;
 }
 
-#word-cloud{
+.profile-wordCloud {
+  display: none;
+}
+
+.btn-profile-introduction-save {
+  position: relative;
+  padding: 8px 20px 8px 20px;
+  margin: 10px 0 20px -73px;
+  left: 100%;
+}
+
+#word-cloud {
   position: relative;
   left: 50%;
   /*width: 500px;
   height: 400px;*/
-  transform: translate(-50%,0);
+  transform: translate(-50%, 0);
 }
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
 
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
 @keyframes bake-pie {
   from {
-    transform: rotate(0deg) translate3d(0,0,0);
+    transform: rotate(0deg) translate3d(0, 0, 0);
   }
 }
+
 main {
   margin: 30px auto;
 }
+
 .pieID {
   display: inline-block;
   /* vertical-align: top; */
 }
+
 .pie {
   height: 200px;
   width: 200px;
   position: relative;
   margin: 0 30px 30px 0;
 }
+
 .pie::before {
   content: "";
   display: block;
@@ -903,16 +1132,18 @@ main {
   top: 50px;
   left: 50px;
 }
+
 .pie::after {
   content: "";
   display: block;
   width: 120px;
   /* height: 2px; */
-  background: rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.1);
   border-radius: 50%;
   /* box-shadow: 0 0 3px 4px rgba(0,0,0,0.1); */
   /* margin: 220px auto; */
 }
+
 .slice {
   position: absolute;
   width: 200px;
@@ -920,6 +1151,7 @@ main {
   clip: rect(0px, 200px, 200px, 100px);
   animation: bake-pie 1s;
 }
+
 .slice span {
   display: block;
   position: absolute;
@@ -931,6 +1163,7 @@ main {
   border-radius: 50%;
   clip: rect(0px, 200px, 200px, 100px);
 }
+
 .legend {
   list-style-type: none;
   top: -68px;
@@ -939,16 +1172,19 @@ main {
   position: relative;
   font-size: 13px;
 }
+
 .legend li {
   height: 1.25em;
   margin-bottom: 0.7em;
   padding-left: 0.5em;
   border-left: 1.25em solid black;
 }
+
 .legend em {
   font-style: normal;
   padding: 0 10px 0 0;
 }
+
 .legend span {
   float: right;
 }
@@ -1064,4 +1300,46 @@ main {
     width: 0;
     background: transparent;
   }
+}
+
+.question-tab {
+  display: none;
+}
+
+.logged-questions {
+  display: none;
+}
+
+.sample-question-area {
+  overflow-y: auto;
+}
+
+.example-question-list {
+  float: left;
+  padding: 0 20px 20px 5%;
+  list-style: none;
+  min-width: 50%;
+}
+
+.example-question-list label {
+  border-radius: 4px;
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.example-question-list li {
+  padding: 0 0 5px 0;
+  font-size: 1.3em;
+}
+.suggest-question-element{
+  cursor:default;
+}
+.suggest-question-element:hover{
+  text-decoration: underline;
+}
+.user-Account-Action {
+  transform: translate(-50%, 0%);
+  left: 50%;
+  position: absolute;
+  width: 100%;
 }
