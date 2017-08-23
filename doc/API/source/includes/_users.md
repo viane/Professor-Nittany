@@ -157,6 +157,48 @@ Property    | Response                                       | Description
 ---------   | ---------------------------------------------- | -----------------
 status      | Successfully registered, check actvition email | Successfully create the account, server has sent out an activation email to the email beening registered
 
+## Get Password Rules
+
+### HTTP Request
+
+`POST /users/signin`
+
+> To locally sign in a user, use this code:
+
+```javascript
+  fetch("/users/get-password-rules", {  
+    method: 'get'
+  }).then(response=>{return response.json()})
+  .then(json=> {
+    // response message will be in json
+  });
+```
+There should not be any error response.
+
+### Example response of successful signin:
+
+```json
+{
+    "min_lowercase_letter": 1,
+    "min_uppercase_letter": 1,
+    "min_number": 1,
+    "min_length": 8,
+    "max_special_character": 0
+}
+```
+
+Property    | Description
+---------   | --------------------------------
+min_lowercase_letter     | the minimum number of lowercase letter required
+min_uppercase_letter     | the minimum number of uppercase letter required
+min_number               | the minimum number of digit character required
+min_length               | the minimum length of the password
+max_special_character    | the maximum number of special character
+
+<aside class="notice">
+`token: xxxx...` is logined user identifier for all requests.
+</aside>
+
 
 ## Get Major List
 
@@ -570,3 +612,4 @@ token       | Access token
 ## Sign Out
 
 To sign out a user, simply discard the token on client side since server will not store any token.
+
