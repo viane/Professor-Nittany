@@ -39,55 +39,50 @@ mongoose.Promise = global.Promise;
 
 // define the schema for our question model
 var questionSchema = new Schema({
-  body: {
-    type: String,
-    unique: true,
-    required: true,
-    dropDups: true
-  },
-  temp_answer_holder: Array,
-  feature: {
-    concepts: [
-      {
-        type: mongoose.Schema.Types.Mixed
-      }
-    ],
-    entities: [
-      {
-        type: mongoose.Schema.Types.Mixed
-      }
-    ],
-    taxonomys: [
-      {
-        type: mongoose.Schema.Types.Mixed
-      }
-    ],
-    keywords: [
-      {
-        type: mongoose.Schema.Types.Mixed
-      }
-    ]
-  },
-  submitter: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }
-  ],
-  trained: {
-    type: Boolean,
-    default: false
-  },
-  low_confidence: {
-    mark: {
-      type: Boolean,
-      default: false
+    body: String,
+    temp_answer_holder:Array,
+    feature: {
+        concepts: [
+            {
+                type:mongoose.Schema.Types.Mixed
+            }
+        ],
+        entities: [
+            {
+                type:mongoose.Schema.Types.Mixed
+            }
+        ],
+        taxonomys: [
+            {
+                type:mongoose.Schema.Types.Mixed
+            }
+        ],
+        keywords: [
+            {
+                type:mongoose.Schema.Types.Mixed
+            }
+        ]
     },
-    answer: String,
-    relevance_level: String,
-    relevance_percent: Number
-  }
-}, {timestamps: true});
+    submitter: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    trained:{
+        type: Boolean,
+        default: false
+    },
+    low_confidence: {
+        mark: {
+            type: Boolean,
+            default: false
+        },
+        answer: String,
+        relevance_level: String,
+        relevance_percent: Number
+    }
+}, {
+    timestamps: true
+});
 questionSchema.plugin(random);
 // create the model for users and expose it to our app
 module.exports = mongoose.model('Question', questionSchema);
