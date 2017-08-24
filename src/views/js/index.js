@@ -10,6 +10,85 @@ if (!localStorage.hasOwnProperty('iaa-userToken')) {
   localStorage.setItem('iaa-userToken', JSON.stringify("null"));
 }
 
+(function( $ ) {
+
+  // Create plugin
+  $.fn.tooltips = function(el) {
+
+    var $tooltip,
+      $body = $('body'),
+      $el;
+
+    // Ensure chaining works
+    return this.each(function(i, el) {
+
+      $el = $(el).attr("data-tooltip", i);
+      var temp = '<div id="pswd_info">';
+      temp = temp +'<h4>Password must meet the following requirements:</h4>';
+      temp = temp +'<ul>';
+      temp = temp +'<li class="invalid lowercase">At least <strong><span class="amount">1</span> character</strong></li>';
+      temp = temp +'<li class="invalid uppercase">At least <strong><span class="amount">1</span> upper case character</strong></li>';
+      temp = temp +'<li class="invalid numbers">At least <strong><span class="amount">1</span> number</strong></li>';
+      temp = temp +'<li class="invalid specialchars">No <strong> special character</strong></li>';
+      temp = temp +'<li class="invalid specialchars">At least <strong><span class="amount">1</span> special character</strong></li>';
+      temp = temp +'</ul>';
+      temp = temp +'</div>';
+
+      // Make DIV and append to page 
+      var $tooltip = $('<div class="tooltip" data-tooltip="' + i + '">' + temp + '<div class="arrow"></div></div>').appendTo("body");
+
+      // Position right away, so first appearance is smooth
+      var linkPosition = $el.offset();
+
+      $tooltip.css({
+        top: linkPosition.top - $tooltip.outerHeight() - 13,
+        left: linkPosition.left - ($tooltip.width()/2) + ($el.width()/2)
+      });
+
+      $el
+      // Get rid of yellow box popup
+      .removeAttr("title")
+      // Mouseenter
+      .focus(function() {
+
+        $el = $(this);
+
+        $tooltip = $('div[data-tooltip=' + $el.data('tooltip') + ']');
+
+        // Reposition tooltip, in case of page movement e.g. screen resize                        
+        var linkPosition = $el.offset();
+
+        $tooltip.css({
+          top: linkPosition.top- $tooltip.outerHeight() - 13,
+          left: linkPosition.left- ($tooltip.width()/2) + ($el.width()/2)
+        });
+
+        // Adding class handles animation through CSS
+        $tooltip.addClass("active");
+
+        // Mouseleave
+      })
+      .focusout(function() {
+
+        $el = $(this);
+
+        // Temporary class for same-direction fadeout
+        $tooltip = $('div[data-tooltip=' + $el.data('tooltip') + ']').addClass("out");
+
+        // Remove all classes
+        setTimeout(function() {
+          $tooltip.removeClass("active").removeClass("out");
+          }, 300);
+
+        });
+
+      });
+
+    }
+
+})(jQuery);
+
+
 $(() => {
   // alpha test notification
   $.notify("You are in the alpha test version,\nsmall but unharmed bugs are expected in this stage.", {
@@ -25,6 +104,7 @@ $(() => {
   initBtnHandler();
   initBornTime();
   initAnswerVideoSizeFitOnResize();
+  $('.password').tooltips();
 })
 
 $(document).ready(function() {
@@ -1174,3 +1254,5 @@ const fitCurrentAnswerVideo = () => {
 const rotateEle = (ele) => {
   ele.addClass('spin');
 }
+
+

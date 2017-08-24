@@ -161,7 +161,7 @@ status      | Successfully registered, check actvition email | Successfully crea
 
 ### HTTP Request
 
-`POST /users/signin`
+`POST /users/get-password-rules`
 
 > To locally sign in a user, use this code:
 

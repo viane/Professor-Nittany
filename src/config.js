@@ -170,7 +170,7 @@ module.exports = {
     }
   },
   interface_version :['chat-lite','chat-full'],
-  password_rule: {
+  password_rules: {
     "min_lowercase_letter": 1,
     "min_uppercase_letter": 1,
     "min_number": 1,
