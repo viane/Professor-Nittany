@@ -157,6 +157,61 @@ html, body {
 .login-wrapper, .btn-profile {
   /* transform: translate(-50%, 25%); */
 }
+.tooltip, .arrow:after {
+  background: white;
+  border: 2px solid white;
+}
+
+.tooltip {
+  pointer-events: none;
+  opacity: 0;
+  display: inline-block;
+  position: absolute;
+  padding: 10px 20px;
+  color: #0F7DC2;
+  border-radius: 20px;
+  margin-top: 20px;
+  box-shadow: 0 0 7px black;
+}
+.arrow {
+  width: 70px;
+  height: 16px;
+  overflow: hidden;
+  position: absolute;
+  left: 50%;
+  margin-left: -35px;
+  bottom: -16px;
+}
+.arrow:after {
+  content: "";
+  position: absolute;
+  left: 20px;
+  top: -20px;
+  width: 25px;
+  height: 25px;
+  -webkit-box-shadow: 6px 5px 9px -9px black,
+                      5px 6px 9px -9px black;
+  -moz-box-shadow: 6px 5px 9px -9px black,
+                   5px 6px 9px -9px black;
+  box-shadow: 6px 5px 9px -9px black,
+              5px 6px 9px -9px black;
+  -webkit-transform: rotate(45deg);
+  -moz-transform:    rotate(45deg);
+  -ms-transform:     rotate(45deg);
+  -o-transform:      rotate(45deg);
+}
+.tooltip.active {
+  opacity: 1;
+  margin-top: 5px;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition:    all 0.2s ease;
+  -ms-transition:     all 0.2s ease;
+  -o-transition:      all 0.2s ease;
+}
+.tooltip.out {
+  opacity: 0;
+  margin-top: -20px;
+}
 
 .register-wrapper, .logout {
   /* transform: translate(-50%, 150%); */
@@ -438,9 +493,7 @@ html, body {
   height: 80px;
 }
 
-.active-chat>p, .current-message>p {
-  margin-bottom: 0px;
-}
+
 
 .media-watson-info {
   max-width: 88%;
@@ -452,12 +505,11 @@ html, body {
   padding: 10px;
   min-width: 60%;
   float: left;
-  transition: all 1.8s ease-in-out;
 }
 
-.current-message {
-  line-height: 1.5em;
-  font-size: 1.1em;
+.answer-switch-btn{
+  display: inline-block;
+  padding-right: 15px;
 }
 
 .media-user-info {
@@ -475,6 +527,7 @@ html, body {
 }
 
 .additional {
+  margin-top: 10px;
   font-style: italic;
   color: #FDF5E6;
 }
@@ -495,7 +548,7 @@ html, body {
 
 .other-answers {
   /*margin-left: 75px;*/
-  margin-top: 10px;
+  margin: 10px 0 0 20px;
 }
 
 
@@ -528,7 +581,7 @@ html, body {
 }
 
 .btn-danger {
-  margin-top: 10px;
+  margin: 10px 15px 0 0;
 }
 
 .answer-extra-info {
@@ -1155,7 +1208,7 @@ main {
   height: 200px;
   width: 200px;
   position: relative;
-  margin: 25px 30px 30px 0;
+  margin: 0 30px 30px 0;
 }
 
 .pie::before {
