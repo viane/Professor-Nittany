@@ -438,7 +438,9 @@ html, body {
   height: 80px;
 }
 
-
+.active-chat>p, .current-message>p {
+  margin-bottom: 0px;
+}
 
 .media-watson-info {
   max-width: 88%;
@@ -450,11 +452,12 @@ html, body {
   padding: 10px;
   min-width: 60%;
   float: left;
+  transition: all 1.8s ease-in-out;
 }
 
-.answer-switch-btn{
-  display: inline-block;
-  padding-right: 15px;
+.current-message {
+  line-height: 1.5em;
+  font-size: 1.1em;
 }
 
 .media-user-info {
@@ -472,7 +475,6 @@ html, body {
 }
 
 .additional {
-  margin-top: 10px;
   font-style: italic;
   color: #FDF5E6;
 }
@@ -493,7 +495,7 @@ html, body {
 
 .other-answers {
   /*margin-left: 75px;*/
-  margin: 10px 0 0 20px;
+  margin-top: 10px;
 }
 
 
@@ -526,7 +528,7 @@ html, body {
 }
 
 .btn-danger {
-  margin: 10px 15px 0 0;
+  margin-top: 10px;
 }
 
 .answer-extra-info {
