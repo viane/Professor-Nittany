@@ -128,7 +128,7 @@ module.exports.removeAnswerTags = (answerText)=>{
   // rules:
   // 1. remove [a][/a],[extend][/extend],[email][/email] tags
   // 2. remove tags and whats in between of following tags: [link][/link],[email-addr][/email-addr],[img][/img]
-  answer = answer.replace(/\[a\]/g,'').replace(/\[\/a\]/g,'').replace(/\[email\]/g,'').replace(/\[\/email\]/g,'').replace(/\[extend\]/g,'').replace(/\[\/extend\]/g,'').replace(/\[optional\]/g,'').replace(/\[\/optional\]/g,'');
+  answer = answer.replace(/\[a\]/g,'').replace(/\[\/a\]/g,'').replace(/\[email\]/g,'').replace(/\[\/email\]/g,'').replace(/\[extend\]/g,'').replace(/\[\/extend\]/g,'').replace(/\[optional\]/g,'').replace(/\[\/optional\]/g,'').replace(/\[li\]/g,',').replace(/\[\/li\]/g,',');
   answer = answer.replace(/\[link\][\s\S]*?\[\/link\]/g,'').replace(/\[email-addr\][\s\S]*?\[\/email-addr\]/g,'').replace(/\[img\][\s\S]*?\[\/img\]/g,'').replace(/\[html\][\s\S]*?\[\/html\]/g,'');
   return answer;
 }

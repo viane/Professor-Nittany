@@ -1419,6 +1419,7 @@ main {
   padding: 10px 0 30px 0;
   font-size: 3em;
   left: 50%;
+  width: 100px;
 }
 
 .sample-question-area {

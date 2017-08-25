@@ -661,8 +661,8 @@ const externalQuestionListener = () => {
     if (externalQuestionString != null && externalQuestionString.length > 0 && externalQuestionString.trim() != "") {
       $('#question').val(externalQuestionString.trim());
       setTimeout(() => {
-        $('.fa-paper-plane-o').click();
-      }, 10)
+        $('#send').click();
+      }, 50)
     }
   }
 }
