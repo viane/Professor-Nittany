@@ -7,7 +7,7 @@ const tutorial = new Schema({
     type: Boolean,
     default: false
   }
-},{ _id : false })
+}, {_id: false})
 
 var User = new Schema({
   password: String,
@@ -40,7 +40,8 @@ var User = new Schema({
     unique: true
   },
   account_role: {
-    type: String
+    type: String,
+    default: "student"
   },
   // question_history: [
   //   {
@@ -93,7 +94,7 @@ var User = new Schema({
     default: null
   },
   viewedTour: {
-    type:tutorial
+    type: tutorial
   }
 });
 
@@ -101,8 +102,6 @@ User.methods.getName = function() {
   return (this.firstname + ' ' + this.lastname);
 };
 
-User.plugin(passportLocalMongoose, {
-  'usernameField': 'email'
-});
+User.plugin(passportLocalMongoose, {'usernameField': 'email'});
 
 module.exports = mongoose.model('User', User);
