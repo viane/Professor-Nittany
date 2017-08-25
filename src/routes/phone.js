@@ -12,10 +12,7 @@ import retrieve_and_rank from '../system/watson/retrieve-rank';
 import formatter from '../system/utility/formatter';
 import path from 'path';
 import TextToSpeechV1 from 'watson-developer-cloud/text-to-speech/v1';
-const text_to_speech = new TextToSpeechV1({
-  username: config.watson.text_to_speech.username,
-  password: config.watson.text_to_speech.password
-});
+const text_to_speech = new TextToSpeechV1({username: config.watson.text_to_speech.username, password: config.watson.text_to_speech.password});
 import googleUrlShortener from '../system/google/url-shortener';
 
 let QACopyAry = [];
@@ -27,9 +24,7 @@ phoneRouter.route('/ask-phone').post(function(req, res, next) {
   twiml.play(config.server_url.public + '/audio/greeting.wav');
   // record user question, audio file will be stored in twilio server
   twiml.record({
-    maxLength: 50,
-    timeout: 55,
-    finihOnKey: '1234567890*#',
+    maxLength: 50, timeout: 55, finihOnKey: '1234567890*#',
     // transcribe: true,
     method: 'POST',
     action: '/phone/ask-phone/callback'
@@ -67,22 +62,19 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
       fs.unlink(voiceFileLocalPath, (err) => {
         if (err)
           console.error(err);
-      });
+        }
+      );
       if (error) {
         console.error(error);
         twiml.play(config.server_url.public + '/audio/system-error.wav');
         twiml.pause();
-        twiml.say("Good Bye!", {
-          voice: 'alice'
-        });
+        twiml.say("Good Bye!", {voice: 'alice'});
         return res.send(twiml.toString());
       } else {
         // console.log(JSON.stringify(resultTranscript, null, 2));
         // STT transcript (question body)
         if (resultTranscript.results.length == 0) {
-          twiml.say("Sorry I didn't hear anything", {
-            voice: 'alice'
-          });
+          twiml.say("Sorry I didn't hear anything", {voice: 'alice'});
           twiml.pause();
           twiml.redirect('/phone/ask-phone/qa-loop');
           return res.send(twiml.toString());
@@ -92,17 +84,11 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
         const transcriptArruracy = resultTranscript.results[0].alternatives[0].confidence;
         // if no transcript or low accurate on interpration
         if (!resultTranscript.results[0].alternatives[0].hasOwnProperty('transcript') || transcriptArruracy <= 0.48) {
-          twiml.say("Sorry I am not sure what you said of ", {
-            voice: 'alice'
-          });
+          twiml.say("Sorry I am not sure what you said of ", {voice: 'alice'});
           twiml.pause();
-          twiml.say(questionTranscript, {
-            voice: 'alice'
-          });
+          twiml.say(questionTranscript, {voice: 'alice'});
           twiml.pause();
-          twiml.say("Please try again or ask differently!", {
-            voice: 'alice'
-          });
+          twiml.say("Please try again or ask differently!", {voice: 'alice'});
           twiml.redirect('/phone/ask-phone/qa-loop');
           res.send(twiml.toString());
         } else {
@@ -132,11 +118,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
               twiml.play(answerURL);
               twiml.pause();
               // ask if user wants save a copy of QA or keep asking different question
-              const gather = twiml.gather({
-                timeout: 3,
-                numDigits: 1,
-                action: '/phone/ask-phone/feedback'
-              });
+              const gather = twiml.gather({timeout: 3, numDigits: 1, action: '/phone/ask-phone/feedback'});
               if (req.body.Caller === 'client:Anonymous') {
                 gather.play(config.server_url.public + '/audio/reask-or-hangup.wav');
               } else {
@@ -145,13 +127,9 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
               // If the user doesn't enter input, loop to ask question - answer
               twiml.redirect('/phone/ask-phone/qa-loop');
               res.send(twiml.toString());
-            // store QA id by CallSid, prepare to send text of copy to user
+              // store QA id by CallSid, prepare to send text of copy to user
             });
-            QACopyAry.unshift({
-              callSid: req.body.CallSid,
-              question: questionTranscript,
-              answer: answerBody
-            });
+            QACopyAry.unshift({callSid: req.body.CallSid, question: questionTranscript, answer: answerBody});
           }).catch(function(err) {
             console.error(err);
             twiml.play(config.server_url.public + '/audio/system-error.wav');
@@ -165,13 +143,9 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
     // piping error of audio file
     console.error(err);
     const twiml = new twilio.twiml.VoiceResponse();
-    twiml.say(systemErrorMSG, {
-      voice: 'alice'
-    })
+    twiml.say(systemErrorMSG, {voice: 'alice'})
     twiml.pause();
-    twiml.say("Good Bye!", {
-      voice: 'alice'
-    });
+    twiml.say("Good Bye!", {voice: 'alice'});
     res.send(twiml.toString());
   });
 
@@ -183,9 +157,7 @@ phoneRouter.route('/ask-phone/feedback').post(function(req, res, next) {
   // console.log(req.body);
   if (req.body.Digits) {
     if (req.body.Digits === '1' && req.body.Caller != 'client:Anonymous') {
-      twiml.say('Sending a copy of your question and answer to your phone!', {
-        voice: 'alice'
-      })
+      twiml.say('Sending a copy of your question and answer to your phone!', {voice: 'alice'})
       twiml.pause();
       //////////////////////////////////////////////////
       //  SMS QA to caller
@@ -206,29 +178,21 @@ phoneRouter.route('/ask-phone/feedback').post(function(req, res, next) {
       }, (err, message) => {
         if (err) {
           console.error(err);
-          twiml.say('There is an issue with SMS service, failed to send the copy, please try again later or report the issue @ www dot IAP dot com/contact.', {
-            voice: 'alice'
-          });
+          twiml.say('There is an issue with SMS service, failed to send the copy, please try again later or report the issue @ www dot IAP dot com/contact.', {voice: 'alice'});
           twiml.pause();
         } else {
-          twiml.say('Done sending.', {
-            voice: 'alice'
-          });
+          twiml.say('Done sending.', {voice: 'alice'});
         }
-        const gather = twiml.gather({
-          timeout: 3,
-          numDigits: 1,
-          action: '/phone/ask-phone/qa-loop'
-        });
+        const gather = twiml.gather({timeout: 3, numDigits: 1, action: '/phone/ask-phone/qa-loop'});
         gather.play(config.server_url.public + '/audio/reask-or-hangup.wav');
         res.send(twiml.toString());
       });
-    // SMS max limit: 1600 characters
-    // answer format rule:
-    // 1. if answer less than 3 sentences, no change
-    // 2. if answer logner than 3 sentances, only keep first 3 sentances, form a url to IAP with a external question, attach with the answer.
-    // 3. regualr flag system applies
-    // 4. for any url, use google url shortener before send
+      // SMS max limit: 1600 characters
+      // answer format rule:
+      // 1. if answer less than 3 sentences, no change
+      // 2. if answer logner than 3 sentances, only keep first 3 sentances, form a url to IAP with a external question, attach with the answer.
+      // 3. regualr flag system applies
+      // 4. for any url, use google url shortener before send
     }
     if (req.body.Digits === '2' || req.body.Caller === 'client:Anonymous') {
       twiml.redirect('/phone/ask-phone/qa-loop');
@@ -236,9 +200,7 @@ phoneRouter.route('/ask-phone/feedback').post(function(req, res, next) {
     }
     if (req.body.Digits != '1' && req.body.Digits != '2') {
       // if user input any digit other than 1 or 2
-      twiml.say('Sorry the selection are not avaliable, Have a nice day!', {
-        voice: 'alice'
-      })
+      twiml.say('Sorry the selection are not avaliable, Have a nice day!', {voice: 'alice'})
       twiml.hangup();
       res.send(twiml.toString());
     }
@@ -252,15 +214,11 @@ phoneRouter.route('/ask-phone/feedback').post(function(req, res, next) {
 
 phoneRouter.post('/ask-phone/qa-loop', (req, res) => {
   const twiml = new twilio.twiml.VoiceResponse();
-  twiml.say("Please tell me your question and press any key when finished.", {
-    voice: 'alice'
-  });
+  twiml.say("Please tell me your question and press any key when finished.", {voice: 'alice'});
 
   // record user question, audio file will be stored in twilio server
   twiml.record({
-    maxLength: 50,
-    timeout: 55,
-    finihOnKey: '1234567890*#',
+    maxLength: 50, timeout: 55, finihOnKey: '1234567890*#',
     // transcribe: true,
     method: 'POST',
     action: '/phone/ask-phone/callback'
@@ -270,20 +228,48 @@ phoneRouter.post('/ask-phone/qa-loop', (req, res) => {
 
 // twillo SMS routes
 phoneRouter.post('/ask-sms', (req, res) => {
-  retrieve_and_rank.enterMessage(req.body.Body).then(function(result) {
+  const questionBody = req.body.Body;
+  retrieve_and_rank.enterMessage(questionBody).then(function(result) {
     // speak back with answer
-    const answerBody = formatter.removeAnswerTags(result.response.docs[0].body);
-    twilioSMS.messages.create({
-      to: req.body.From,
-      from: req.body.To,
-      body: answerBody
-    }, (err, message) => {
-      if (err) {
-        console.error(err);
-        return res.status(400);
+    let answerBody = formatter.removeAnswerTags(result.response.docs[0].body); //remove tags
+    // check if message is too long to be in SMS
+    if (answerBody.indexOf("[\\n]") !== -1) {
+      // answer has [\n] tag, truncate after 1st [\n]
+      answerBody = answerBody.substring(0, answerBody.indexOf('[\\n]'));
+      if (answerBody.length > 250) {
+        const urlStringEncode = encodeURI(questionBody);
+        console.log(urlStringEncode);
+        googleUrlShortener.shortUrl("intelligent-student-advisor.herokuapp.com/lite-version.html?q=" + urlStringEncode).then(sURL => {
+          const shortenUrl = sURL;
+          answerBody += " ...";
+          answerBody += "\nThe answer is quite long, check " + shortenUrl + " for full answer!";
+          return twilioSMS.messages.create({
+            to: req.body.From,
+            from: req.body.To,
+            body: answerBody
+          }, (err, message) => {
+            if (err) {
+              console.error(err);
+              return res.status(400);
+            }
+            res.status(200);
+          });
+        })
       }
-      res.status(200);
-    });
+    } else {
+      answerBody = answerBody.substring(0, 250);
+      return twilioSMS.messages.create({
+        to: req.body.From,
+        from: req.body.To,
+        body: answerBody
+      }, (err, message) => {
+        if (err) {
+          console.error(err);
+          return res.status(400);
+        }
+        res.status(200);
+      });
+    }
   }).catch(function(err) {
     console.error(err);
     twilioSMS.messages.create({
