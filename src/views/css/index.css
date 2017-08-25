@@ -38,9 +38,11 @@ p {
   font-size: 1.5rem;
 }
 
+/*
 a {
-  /* color: #fbff00; */
+  color: #fbff00;
 }
+*/
 
 
 /* effect-shine */
@@ -161,9 +163,12 @@ html, body {
   padding-right: 20px;
 }
 
+/*
 .login-wrapper, .btn-profile {
-  /* transform: translate(-50%, 25%); */
+  transform: translate(-50%, 25%); 
 }
+*/
+
 .tooltip, .arrow:after {
   background: white;
   border: 2px solid white;
@@ -220,9 +225,11 @@ html, body {
   margin-top: -20px;
 }
 
+/*
 .register-wrapper, .logout {
-  /* transform: translate(-50%, 150%); */
+  transform: translate(-50%, 150%); 
 }
+*/
 
 .sidebar-btn {
   min-width: 110px;
@@ -808,7 +815,7 @@ html, body {
 }
 
 .step-control {
-  margin\: -20px;
+  /*margin\: -20px;*/
   margin: -20px 1% 0 0;
 }
 
@@ -1098,7 +1105,9 @@ body {
   color: #ffffff;
 }
 
+/*
 .forgetPassword {}
+*/
 
 .icon {
   cursor: pointer;
