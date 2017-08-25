@@ -1,7 +1,7 @@
 'use strict'
 
 const pageClass = ['.current-chat-area', '.profile-area', '.logged-questions', '.sample-question-container', 'ai-status-container'];
-const pageTitle = ['Chatting with IAA', 'Profile', 'Unsatisfying Question Console', 'Suggested Question Areas', 'AI Status'];
+const pageTitle = ['Chatting with Prof.Nittany', 'Profile', 'Unsatisfying Question Console', 'Suggested Question Areas', 'AI Status'];
 
 if (!localStorage.hasOwnProperty('iaa-userToken')) {
   localStorage.setItem('iaa-userToken', JSON.stringify("null"));
