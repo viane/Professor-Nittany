@@ -1,14 +1,14 @@
 'use strict'
 
-const pageClass = ['.current-chat-area', '.profile-area', '.logged-questions', '.sample-question-container'];
-const pageTitle = ['Chatting with IAA', 'Profile', 'Unsatisfying Question Console', 'Suggested Question Areas'];
+const pageClass = ['.current-chat-area', '.profile-area', '.logged-questions', '.sample-question-container', 'ai-status-container'];
+const pageTitle = ['Chatting with Prof.Nittany', 'Profile', 'Unsatisfying Question Console', 'Suggested Question Areas', 'AI Status'];
 
 if (!localStorage.hasOwnProperty('iaa-userToken')) {
   localStorage.setItem('iaa-userToken', JSON.stringify("null"));
 }
 
 // password hint
-(function( $ ) {
+(function($) {
 
   // Create plugin
   $.fn.tooltips = function(el) {
@@ -22,14 +22,14 @@ if (!localStorage.hasOwnProperty('iaa-userToken')) {
 
       $el = $(el).attr("data-tooltip", i);
       var temp = '<div id="pswd_info">';
-      temp = temp +'<h4>Password must meet the following requirements:</h4>';
-      temp = temp +'<ul>';
-      temp = temp +'<li class="invalid lowercase">At least <strong><span class="amount">1</span> character</strong></li>';
-      temp = temp +'<li class="invalid uppercase">At least <strong><span class="amount">1</span> upper case character</strong></li>';
-      temp = temp +'<li class="invalid numbers">At least <strong><span class="amount">1</span> number</strong></li>';
-      temp = temp +'<li class="invalid specialchars">No <strong> special character</strong></li>';
-      temp = temp +'</ul>';
-      temp = temp +'</div>';
+      temp = temp + '<h4>Password must meet the following requirements:</h4>';
+      temp = temp + '<ul>';
+      temp = temp + '<li class="invalid lowercase">At least <strong><span class="amount">1</span> character</strong></li>';
+      temp = temp + '<li class="invalid uppercase">At least <strong><span class="amount">1</span> upper case character</strong></li>';
+      temp = temp + '<li class="invalid numbers">At least <strong><span class="amount">1</span> number</strong></li>';
+      temp = temp + '<li class="invalid specialchars">No <strong> special character</strong></li>';
+      temp = temp + '</ul>';
+      temp = temp + '</div>';
 
       // Make DIV and append to page
       var $tooltip = $('<div class="tooltip" data-tooltip="' + i + '">' + temp + '<div class="arrow"></div></div>').appendTo("body");
@@ -39,14 +39,14 @@ if (!localStorage.hasOwnProperty('iaa-userToken')) {
 
       $tooltip.css({
         top: linkPosition.top - $tooltip.outerHeight() - 13,
-        left: linkPosition.left - ($tooltip.width()/2) + ($el.width()/2)
+        left: linkPosition.left - ($tooltip.width() / 2) + ($el.width() / 2)
       });
 
       $el
       // Get rid of yellow box popup
-      .removeAttr("title")
+        .removeAttr("title")
       // Mouseenter
-      .focus(function() {
+        .focus(function() {
 
         $el = $(this);
 
@@ -56,16 +56,15 @@ if (!localStorage.hasOwnProperty('iaa-userToken')) {
         var linkPosition = $el.offset();
 
         $tooltip.css({
-          top: linkPosition.top- $tooltip.outerHeight() - 13,
-          left: linkPosition.left- ($tooltip.width()/2) + ($el.width()/2)
+          top: linkPosition.top - $tooltip.outerHeight() - 13,
+          left: linkPosition.left - ($tooltip.width() / 2) + ($el.width() / 2)
         });
 
         // Adding class handles animation through CSS
         $tooltip.addClass("active");
 
         // Mouseleave
-      })
-      .focusout(function() {
+      }).focusout(function() {
 
         $el = $(this);
 
@@ -75,13 +74,13 @@ if (!localStorage.hasOwnProperty('iaa-userToken')) {
         // Remove all classes
         setTimeout(function() {
           $tooltip.removeClass("active").removeClass("out");
-          }, 300);
-
-        });
+        }, 300);
 
       });
 
-    }
+    });
+
+  }
 
 })(jQuery);
 
@@ -162,9 +161,8 @@ $(document).on('click', '.suggest-question-element', function(e) {
   $('#question').val($(this).text().trim());
   $('.btn-sample-question').click();
   $('#send').click();
-e.preventDefault();
+  e.preventDefault();
 })
-
 
 $(document).on('click', '.btn-log', function(e) {
   $(this).prop("disabled", true);
@@ -180,9 +178,10 @@ $(document).on('click', '.answer-switch-btn', function(e) {
   $(this).html('<i class="fa fa-circle" aria-hidden="true"></i>');
   $(this).siblings().html('<i class="fa fa-circle-o" aria-hidden="true"></i>');
   //hide all answer
-  $(this).parent().parent().find('.answer-content-wrapper.media-text').hide('slow');
+  $(this).parent().parent().find('.answer-content-wrapper.media-text').hide();
   //show target answer
-  $(this).parent().parent().find('.answer-content-wrapper[data-answer-content="'+answerIndex+'"]').show('slow');
+  $(this).parent().parent().find('.answer-content-wrapper[data-answer-content="' + answerIndex + '"]').show();
+  //$($(this).parent().parent().find('.step')[0]).show();
   initProgressHandler();
   addReadmoreHandler();
   $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
@@ -193,16 +192,31 @@ $(document).on('click', '.answer-switch-btn', function(e) {
 //   $('.current-chat-area').scrollTop($('.current-chat-area')[0].scrollHeight);
 // });
 
+// sample question btn
 $(document).on('click', '.question-tab', function(e) {
-  if ($('.low-confidence').text() == "Check Unsatisfying Questions") {
+  if ($('.low-confidence').text().trim() == "Unsatisfying Questions") {
     hideAllPage();
     showLowQuestions();
     $('.low-confidence').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Chat')
   } else {
-    $('.low-confidence').text("Check Unsatisfying Questions");
+    $('.low-confidence').text("Unsatisfying Questions");
     hideAllPage();
     showPage('.current-chat-area');
     $('.logged-questions').remove();
+  }
+  e.preventDefault();
+});
+
+// AI status switch btn
+$(document).on('click', '.server-status', function(e) {
+  if ($('.server-status').text().trim() == "AI Learning Satus") {
+    hideAllPage();
+    showAIStatus();
+    $('.ai-status-tab').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Chat')
+  } else {
+    $('.ai-status-tab').text("AI Learning Satus");
+    hideAllPage();
+    showPage('.current-chat-area');
   }
   e.preventDefault();
 });
@@ -647,8 +661,8 @@ const externalQuestionListener = () => {
     if (externalQuestionString != null && externalQuestionString.length > 0 && externalQuestionString.trim() != "") {
       $('#question').val(externalQuestionString.trim());
       setTimeout(() => {
-        $('.fa-paper-plane-o').click();
-      }, 10)
+        $('#send').click();
+      }, 50)
     }
   }
 }
@@ -694,6 +708,25 @@ function questionWrapper(question) {
   questionHTML += '<button type="button" class="btn-lg btn-default btn-mark-all-question">Mark All</button><button type="button" class="btn-lg btn-default btn-export-question">Export List</button><button class="btn-lg btn-default btn-mark-trained" type="button">Mark Trained</button';
   return questionListHTMLH + questionHTML + questionListHTMLT;
 
+}
+
+const showAIStatus = () => {
+  loadAnimationOn('.current-chat');
+  fetch("../ai/get-statistics", {
+    method: 'get',
+    headers: {
+      "Content-type": "application/json",
+      "x-access-token": JSON.parse(localStorage['iaa-userToken'])
+    }
+  }).then(response => {
+    return response.json()
+  }).then(json => {
+    setTimeout(function() {
+      removeLoadAnimationOn('.current-chat')
+    }, 1000);
+
+    showPage('.server-status');
+  })
 }
 
 function showLowQuestions() {
@@ -995,6 +1028,7 @@ const initBtnHandler = () => {
     $('.logout, .btn-profile').hide();
     localStorage['iaa-userToken'] = null;
     $('.question-tab').hide();
+    $('.server-status').hide();
     $('.lite-header').text("Welcome Visitor");
     hideAllPage();
     showPage('.current-chat-area');
@@ -1073,6 +1107,7 @@ const initUserAccountListener = () => {
     // show unstatisfy question tab
     if (json.hasOwnProperty('account_role') && json.account_role === "advisor") {
       $('.question-tab').show();
+      $('.server-status').show();
     }
   })
 }
@@ -1244,8 +1279,6 @@ const fitCurrentAnswerVideo = () => {
     $(ele).width(chatBubbleWidth * 0.8)
   })
 }
-
-
 
 const rotateEle = (ele) => {
   ele.addClass('spin');

@@ -2,7 +2,7 @@ module.exports = {
   'questionThreshold':'0.2',
   'server_url': {
     'public': 'https://intelligent-student-advisor.herokuapp.com',
-    'local': 'localhost:3000'
+    'local': 'http://055c7893.ngrok.io'
   },
   'secretKey': '12345-67890-09876-54321',
   'secret': '94838472',

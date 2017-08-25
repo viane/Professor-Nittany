@@ -795,7 +795,7 @@ html, body {
 }
 
 .step {
-  display: none;
+  display: block;
   padding: 5px 0 25px 10px;
   max-width: 100%;
   min-width: 60%;
@@ -803,6 +803,10 @@ html, body {
 
 .step-content {
   max-width: 80%;
+}
+
+.step-content .step ~ .step{
+  display: none;
 }
 
 .current-step-number, .total-step-number {
@@ -1424,6 +1428,7 @@ main {
   padding: 10px 0 30px 0;
   font-size: 3em;
   left: 50%;
+  width: 100px;
 }
 
 .sample-question-area {
@@ -1486,4 +1491,8 @@ main {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
+}
+
+.server-status, .ai-status-container{
+  display: none;
 }
