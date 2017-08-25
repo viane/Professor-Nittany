@@ -238,11 +238,10 @@ phoneRouter.post('/ask-sms', (req, res) => {
       answerBody = answerBody.substring(0, answerBody.indexOf('[\\n]'));
       if (answerBody.length > 250) {
         const urlStringEncode = encodeURI(questionBody);
-        console.log(urlStringEncode);
         googleUrlShortener.shortUrl("intelligent-student-advisor.herokuapp.com/lite-version.html?q=" + urlStringEncode).then(sURL => {
           const shortenUrl = sURL;
-          answerBody += " ...";
-          answerBody += "\nThe answer is quite long, check " + shortenUrl + " for full answer!";
+          answerBody += "\n...";
+          answerBody += "\n\nThe answer is quite long, check " + shortenUrl + " for full answer!";
           return twilioSMS.messages.create({
             to: req.body.From,
             from: req.body.To,
