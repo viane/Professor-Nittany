@@ -71,7 +71,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
         twiml.say("Good Bye!", {voice: 'alice'});
         return res.send(twiml.toString());
       } else {
-        // console.log(JSON.stringify(resultTranscript, null, 2));
+         console.log(JSON.stringify(resultTranscript, null, 2));
         // STT transcript (question body)
         if (resultTranscript.results.length == 0) {
           twiml.say("Sorry I didn't hear anything", {voice: 'alice'});
@@ -100,7 +100,6 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
               twiml.redirect('/phone/ask-phone/qa-loop');
             }
             const answerBody = formatter.removeAnswerTags(result.response.docs[0].body);
-            // console.log(answerBody);
             const TTS_Params = {
               text: answerBody,
               voice: 'en-US_AllisonVoice',
@@ -108,7 +107,8 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
             };
             // Pipe the synthesized text to a file.
             const answerFilePath = path.join(__dirname, '../views/audio/') + req.body.RecordingSid + "-answer.wav";
-            const answerURL = config.server_url.public + '/audio/' + req.body.RecordingSid + "-answer.wav";
+            // change server_url when go to dev or product
+            const answerURL = config.server_url.local + '/audio/' + req.body.RecordingSid + "-answer.wav";
             text_to_speech.synthesize(TTS_Params).on('error', function(error) {
               console.error(error);
               twiml.play(config.server_url.public + '/audio/system-error.wav');
