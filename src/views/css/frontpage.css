@@ -17,17 +17,18 @@ html {
 }
 
 .centering {
-  height: 50%;
+  /* height: 50%; */0% */
   display: inline-block;
   width: 107px;
   left: 50%;
-  transform: translate(-50%, 75%);
-  position: relative;
+  transform: translate(-50%, -50%);
+  top: 29%;
+  position: absolute;
 }
 
 @media only screen and (max-width:1623px) {
   .centering {
-    transform: translate(-50%, 100%);
+    /* transform: translate(-50%, 0); */
   }
 }
 
@@ -50,9 +51,12 @@ html {
 }
 
 .img-logo {
+  border-radius: 6px;
   max-width: 50%;
   min-width: 336px;
-  transform: translate(-50%, 0%);
-  left: 50%;
-  position: absolute;
+  /* transform: translate(-50%, 0%); */
+  /* left: 50%; */
+  margin-left: 47px;
+  position: fixed;
+  rgba(77, 84, 67, 0.45);
 }

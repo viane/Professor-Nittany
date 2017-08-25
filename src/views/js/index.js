@@ -194,12 +194,12 @@ $(document).on('click', '.answer-switch-btn', function(e) {
 
 // sample question btn
 $(document).on('click', '.question-tab', function(e) {
-  if ($('.low-confidence').text() == "Check Unsatisfying Questions") {
+  if ($('.low-confidence').text().trim() == "Unsatisfying Questions") {
     hideAllPage();
-    showAIStatus();
+    showLowQuestions();
     $('.low-confidence').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Chat')
   } else {
-    $('.low-confidence').text("Check Unsatisfying Questions");
+    $('.low-confidence').text("Unsatisfying Questions");
     hideAllPage();
     showPage('.current-chat-area');
     $('.logged-questions').remove();
@@ -1028,6 +1028,7 @@ const initBtnHandler = () => {
     $('.logout, .btn-profile').hide();
     localStorage['iaa-userToken'] = null;
     $('.question-tab').hide();
+    $('.server-status').hide();
     $('.lite-header').text("Welcome Visitor");
     hideAllPage();
     showPage('.current-chat-area');
