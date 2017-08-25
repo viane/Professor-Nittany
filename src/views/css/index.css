@@ -1471,3 +1471,7 @@ main {
     transform: rotate(360deg);
   }
 }
+
+.server-status, .ai-status-container{
+  display: none;
+}
