@@ -133,6 +133,27 @@ module.exports.checkAnswerTags = (answerText) => {
     image: false,
     html: false
   };
+  if (answerText.match("\\[a\\]")) {
+    _obj.link = true;
+  }
+  if (answerText.match("\\[email\\]")) {
+    _obj.email = true;
+  }
+  if (answerText.match("\\[extend\\]")) {
+    _obj.extend = true;
+  }
+  if (answerText.match("\\[optional\\]")) {
+    _obj.optional = true;
+  }
+  if (answerText.match("\\[progress\\]")) {
+    _obj.progress = true;
+  }
+  if (answerText.match("\\[img\\]")) {
+    _obj.image = true;
+  }
+  if (answerText.match("\\[html\\]")) {
+    _obj.html = true;
+  }
   return _obj;
 }
 
@@ -142,7 +163,7 @@ module.exports.removeAnswerTags = (answerText) => {
   // rules:
   // 1. remove [a][/a],[extend][/extend],[email][/email] tags
   // 2. remove tags and whats in between of following tags: [link][/link],[email-addr][/email-addr],[img][/img]
-  answer = answer.replace(/\[a\]/g, '').replace(/\[\/a\]/g, '').replace(/\[email\]/g, '').replace(/\[\/email\]/g, '').replace(/\[extend\]/g, '').replace(/\[\/extend\]/g, '').replace(/\[optional\]/g, '').replace(/\[\/optional\]/g, '').replace(/\[li\]/g, '-').replace(/\[\/li\]/g, '\n').replace(/\[progress\]/g, '').replace(/\[\/progress\]/g, '[\n]').replace(/\[step\]/g, '●').replace(/\[\/step\]/g, '\n').replace(/\<strong\>/g, '').replace(/\<\/strong\>/g, '');
+  answer = answer.replace(/\[a\]/g, '').replace(/\[\/a\]/g, '').replace(/\[email\]/g, '').replace(/\[\/email\]/g, '').replace(/\[extend\]/g, '').replace(/\[\/extend\]/g, '').replace(/\[optional\]/g, '').replace(/\[\/optional\]/g, '').replace(/\[li\]/g, '-').replace(/\[\/li\]/g, '\n').replace(/\[progress\]/g, '').replace(/\[\/progress\]/g, '\n').replace(/\[step\]/g, '●').replace(/\[\/step\]/g, '\n').replace(/\<strong\>/g, '').replace(/\<\/strong\>/g, '');
   answer = answer.replace(/\[link\][\s\S]*?\[\/link\]/g, '').replace(/\[email-addr\][\s\S]*?\[\/email-addr\]/g, '').replace(/\[img\][\s\S]*?\[\/img\]/g, '').replace(/\[html\][\s\S]*?\[\/html\]/g, '');
   return answer;
 }
