@@ -44,7 +44,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
   });
 
   const voiceFileWAVUrl = req.body.RecordingUrl.toString().concat(".wav");
-  console.log("Public url for question audio: ", voiceFileWAVUrl);
+  // console.log("Public url for question audio: ", voiceFileWAVUrl);
   const caller = req.body.From;
 
   const voiceFileLocalPath = path.join(__dirname, '../system/audio/audio-file-temp-folder/') + req.body.RecordingSid + "-question.wav";
@@ -54,10 +54,10 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
     const params = {
       audio: fs.createReadStream(voiceFileLocalPath),
       content_type: 'audio/wav',
-      model: 'en-US_BroadbandModel',
+      model: 'en-US_NarrowbandModel',
       timestamps: true,
       word_alternatives_threshold: 0.9,
-      continuous: true
+      smart_formatting:true
     };
     const twiml = new twilio.twiml.VoiceResponse();
     speech_to_text.recognize(params, function(error, resultTranscript) {
