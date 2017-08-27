@@ -324,7 +324,6 @@ phoneRouter.route('/ask-phone/feedback').post(function(req, res, next) {
         }
       })[0];
       // console.log(QAObject);
-<<<<<<< HEAD
       let smsBody = "Question: " + QAObject.question + "." + "\n" + "Answer: " + QAObject.answer;
       if (QAObject.longAnswer) {
         const urlStringEncode = encodeURI(QAObject.question);
@@ -371,32 +370,6 @@ phoneRouter.route('/ask-phone/feedback').post(function(req, res, next) {
         // 3. regualr flag system applies
         // 4. for any url, use google url shortener before send
       }
-=======
-
-      const smsBody = "Question: " + QAObject.question + "." + "\n" + "Answer: " + QAObject.answer;
-      twilioSMS.messages.create({
-        to: req.body.From,
-        from: req.body.To,
-        body: smsBody
-      }, (err, message) => {
-        if (err) {
-          console.error(err);
-          twiml.say('There is an issue with SMS service, failed to send the copy, please try again later or report the issue @ www dot IAP dot com/contact.', {voice: 'alice'});
-          twiml.pause();
-        } else {
-          twiml.say('Done sending.', {voice: 'alice'});
-        }
-        const gather = twiml.gather({timeout: 3, numDigits: 1, action: '/phone/ask-phone/qa-loop'});
-        gather.play(config.server_url.public + '/audio/reask-or-hangup.wav');
-        res.send(twiml.toString());
-      });
-      // SMS max limit: 1600 characters
-      // answer format rule:
-      // 1. if answer less than 3 sentences, no change
-      // 2. if answer logner than 3 sentances, only keep first 3 sentances, form a url to IAP with a external question, attach with the answer.
-      // 3. regualr flag system applies
-      // 4. for any url, use google url shortener before send
->>>>>>> parent of fe59af2... format phone answer
     }
     if (req.body.Digits === '2' || req.body.Caller === 'client:Anonymous') {
       twiml.redirect('/phone/ask-phone/qa-loop');
