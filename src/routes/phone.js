@@ -48,6 +48,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
   const voiceFileLocalPath = path.join(__dirname, '../system/audio/audio-file-temp-folder/') + req.body.RecordingSid + "-question.wav";
 
   request(voiceFileWAVUrl).pipe(fs.createWriteStream(voiceFileLocalPath)).on('finish', () => {
+    console.log("Created voice record on local hard disk.");
     const params = {
       audio: fs.createReadStream(voiceFileLocalPath),
       content_type: 'audio/wav',
@@ -58,6 +59,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
     };
     const twiml = new twilio.twiml.VoiceResponse();
     speech_to_text.recognize(params, function(error, resultTranscript) {
+      console.log("Deleting temporary voice file.");
       //delete auido file
       fs.unlink(voiceFileLocalPath, (err) => {
         if (err)
@@ -71,7 +73,6 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
         twiml.say("Good Bye!", {voice: 'alice'});
         return res.send(twiml.toString());
       } else {
-         console.log(JSON.stringify(resultTranscript, null, 2));
         // STT transcript (question body)
         if (resultTranscript.results.length == 0) {
           twiml.say("Sorry I didn't hear anything", {voice: 'alice'});
@@ -82,6 +83,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
         const questionTranscript = resultTranscript.results[0].alternatives[0].transcript;
         // confidence
         const transcriptArruracy = resultTranscript.results[0].alternatives[0].confidence;
+        console.log("STT transcript: ", questionTranscript);
         // if no transcript or low accurate on interpration
         if (!resultTranscript.results[0].alternatives[0].hasOwnProperty('transcript') || transcriptArruracy <= 0.48) {
           twiml.say("Sorry I am not sure what you said of ", {voice: 'alice'});
@@ -92,6 +94,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
           twiml.redirect('/phone/ask-phone/qa-loop');
           res.send(twiml.toString());
         } else {
+          console.log("Requesting R&R");
           // ask IAP as visitor
           retrieve_and_rank.enterMessage(questionTranscript).then(function(result) {
             // speak back with answer
@@ -100,6 +103,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
               twiml.redirect('/phone/ask-phone/qa-loop');
             }
             const answerBody = formatter.removeAnswerTags(result.response.docs[0].body);
+            console.log("Answer: ", answerBody);
             const TTS_Params = {
               text: answerBody,
               voice: 'en-US_AllisonVoice',
@@ -108,13 +112,14 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
             // Pipe the synthesized text to a file.
             const answerFilePath = path.join(__dirname, '../views/audio/') + req.body.RecordingSid + "-answer.wav";
             // change server_url when go to dev or product
-            const answerURL = config.server_url.local + '/audio/' + req.body.RecordingSid + "-answer.wav";
+            const answerURL = config.server_url.public + '/audio/' + req.body.RecordingSid + "-answer.wav";
             text_to_speech.synthesize(TTS_Params).on('error', function(error) {
               console.error(error);
               twiml.play(config.server_url.public + '/audio/system-error.wav');
               twiml.pause();
               res.send(twiml.toString());
             }).pipe(fs.createWriteStream(answerFilePath)).on('finish', () => {
+              console.log("Created public url for answer voice: ", answerURL);
               twiml.play(answerURL);
               twiml.pause();
               // ask if user wants save a copy of QA or keep asking different question
@@ -130,6 +135,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
               // store QA id by CallSid, prepare to send text of copy to user
             });
             QACopyAry.unshift({callSid: req.body.CallSid, question: questionTranscript, answer: answerBody});
+            console.log("Current phone answering que: ", JSON.stringify(QACopyAry, "\t", 4));
           }).catch(function(err) {
             console.error(err);
             twiml.play(config.server_url.public + '/audio/system-error.wav');
@@ -148,7 +154,6 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
     twiml.say("Good Bye!", {voice: 'alice'});
     res.send(twiml.toString());
   });
-
 });
 
 phoneRouter.route('/ask-phone/feedback').post(function(req, res, next) {
