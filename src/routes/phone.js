@@ -47,7 +47,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
 
   const caller = req.body.From;
 
-  const voiceFileLocalPath = path.join(__dirname, '../system/audio/audio-file-temp-folder/') + req.body.RecordingSid + "-question.wav";
+  const voiceFileLocalPath = path.join(__dirname, '../system/audio/audio-file-temp-folder/') + req.body.RecordingSid + "-question.mp3";
 
   request(voiceFileWAVUrl).pipe(fs.createWriteStream(voiceFileLocalPath)).on('finish', () => {
     //console.log("Created voice record on local hard disk.");
