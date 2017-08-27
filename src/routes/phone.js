@@ -17,6 +17,11 @@ import googleUrlShortener from '../system/google/url-shortener';
 import moment from 'moment';
 import del from 'del';
 
+import googleSpeech from '@google-cloud/speech';
+
+// Instantiates a client
+const speechClient = googleSpeech({projectId: "intelligent-academic-planer"});
+
 let QACopyAry = [];
 
 phoneRouter.use(bodyParser.json());
@@ -34,14 +39,146 @@ phoneRouter.route('/ask-phone').post(function(req, res, next) {
   res.send(twiml.toString());
 });
 
+// phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
+//   var speech_to_text = new SpeechToTextV1({
+//     username: config.watson.speech_to_text.username,
+//     password: config.watson.speech_to_text.password,
+//     headers: {
+//       'X-Watson-Learning-Opt-Out': 'true'
+//     }
+//   });
+//
+//   const voiceFileWAVUrl = req.body.RecordingUrl.toString().concat(".wav");
+//   // console.log("Public url for question audio: ", voiceFileWAVUrl);
+//   const caller = req.body.From;
+//
+//   const voiceFileLocalPath = path.join(__dirname, '../system/audio/audio-file-temp-folder/') + req.body.RecordingSid + "-question.wav";
+//
+//   request(voiceFileWAVUrl).pipe(fs.createWriteStream(voiceFileLocalPath)).on('finish', () => {
+//     //console.log("Created voice record on local hard disk.");
+//     const params = {
+//       audio: fs.createReadStream(voiceFileLocalPath),
+//       content_type: 'audio/wav',
+//       model: 'en-US_NarrowbandModel',
+//       timestamps: true,
+//       word_alternatives_threshold: 0.9,
+//       smart_formatting: true
+//     };
+//     const twiml = new twilio.twiml.VoiceResponse();
+//     speech_to_text.recognize(params, function(error, resultTranscript) {
+//       if (error) {
+//         console.error("STT recognize error: ", error);
+//         twiml.play(config.server_url.public + '/audio/system-error.wav');
+//         twiml.pause();
+//         twiml.say("Good Bye!", {voice: 'alice'});
+//         return res.send(twiml.toString());
+//       } else {
+//         // STT transcript (question body)
+//         if (resultTranscript.results.length == 0) {
+//           twiml.say("Sorry I didn't hear anything", {voice: 'alice'});
+//           twiml.pause();
+//           twiml.redirect('/phone/ask-phone/qa-loop');
+//           return res.send(twiml.toString());
+//         }
+//         const questionTranscript = resultTranscript.results[0].alternatives[0].transcript;
+//         // confidence
+//         const transcriptArruracy = resultTranscript.results[0].alternatives[0].confidence;
+//         //console.log("STT transcript: ", questionTranscript);
+//         // if no transcript or low accurate on interpration
+//         if (!resultTranscript.results[0].alternatives[0].hasOwnProperty('transcript') || transcriptArruracy <= 0.48) {
+//           twiml.say("Sorry I am not sure what you said of ", {voice: 'alice'});
+//           twiml.pause();
+//           twiml.say(questionTranscript, {voice: 'alice'});
+//           twiml.pause();
+//           twiml.say("Please try again or ask differently!", {voice: 'alice'});
+//           twiml.redirect('/phone/ask-phone/qa-loop');
+//           res.send(twiml.toString());
+//         } else {
+//           //console.log("Requesting R&R");
+//           // ask IAP as visitor
+//           retrieve_and_rank.enterMessage(questionTranscript).then(function(result) {
+//             // speak back with answer
+//             if (!result.response.docs) {
+//               twiml.say("Sorry I don't know the answer to this question")
+//               twiml.redirect('/phone/ask-phone/qa-loop');
+//             }
+//             // parse answer
+//             const tagFlag = formatter.checkAnswerTags(result.response.docs[0].body);
+//             let answerBody = formatter.removeAnswerTags(result.response.docs[0].body);
+//             let longAnswerBool = false
+//             if (answerBody.length > 300) {
+//               answerBody = answerBody.substring(0, 300);
+//               longAnswerBool = true;
+//             }
+//             // console.log("Answer: ", answerBody);
+//             // TTS
+//             const TTS_Params = {
+//               text: answerBody,
+//               voice: 'en-US_AllisonVoice',
+//               accept: 'audio/wav'
+//             };
+//             // Pipe the synthesized text to a file.
+//             const answerFilePath = path.join(__dirname, '../views/audio/') + req.body.RecordingSid + "-answer.wav";
+//             // change server_url when go to dev or product
+//             const answerURL = config.server_url.public + '/audio/' + req.body.RecordingSid + "-answer.wav";
+//             text_to_speech.synthesize(TTS_Params).on('error', function(error) {
+//               console.error(error);
+//               twiml.play(config.server_url.public + '/audio/system-error.wav');
+//               twiml.pause();
+//               res.send(twiml.toString());
+//             }).pipe(fs.createWriteStream(answerFilePath)).on('finish', () => {
+//               //console.log("Created public url for answer voice: ", answerURL);
+//               twiml.play(answerURL);
+//               if (longAnswerBool) {
+//                 twiml.say("That was a part of the full answer of your question.")
+//               } else if (tagFlag.a || tagFlag.email || tagFlag.html || tagFlag.image) {
+//                 twiml.say("There are other medias in the answer besides text.");
+//                 longAnswerBool = true;
+//               } else if (tagFlag.progress) {
+//                 twiml.say("There are some steps in the answer.");
+//                 longAnswerBool = true;
+//               }
+//               twiml.pause();
+//               // ask if user wants save a copy of QA or keep asking different question
+//               const gather = twiml.gather({timeout: 3, numDigits: 1, action: '/phone/ask-phone/feedback'});
+//               if (req.body.Caller === 'client:Anonymous') {
+//                 gather.play(config.server_url.public + '/audio/reask-or-hangup.wav');
+//               } else {
+//                 gather.play(config.server_url.public + '/audio/text-or-reask.wav');
+//               }
+//               // If the user doesn't enter input, loop to ask question - answer
+//               twiml.redirect('/phone/ask-phone/qa-loop');
+//               res.send(twiml.toString());
+//               // store QA id by CallSid, prepare to send text of copy to user
+//             });
+//             QACopyAry.map((QA, index) => {
+//               if (QA.callSid === req.body.CallSid) {
+//                 QACopyAry.splice(index, 1);
+//               }
+//             });
+//             QACopyAry.unshift({callSid: req.body.CallSid, question: questionTranscript, answer: answerBody, longAnswer: longAnswerBool, createTime: moment()});
+//             //console.log("Current phone answering que: ", JSON.stringify(QACopyAry, "\t", 4));
+//           }).catch(function(err) {
+//             console.error(err);
+//             twiml.play(config.server_url.public + '/audio/system-error.wav');
+//             twiml.pause();
+//             res.send(twiml.toString());
+//           })
+//         }
+//       }
+//     });
+//   }).on('error', (err) => {
+//     // piping error of audio file
+//     console.error(err);
+//     const twiml = new twilio.twiml.VoiceResponse();
+//     twiml.say(systemErrorMSG, {voice: 'alice'})
+//     twiml.pause();
+//     twiml.say("Good Bye!", {voice: 'alice'});
+//     res.send(twiml.toString());
+//   });
+// });
+
 phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
-  var speech_to_text = new SpeechToTextV1({
-    username: config.watson.speech_to_text.username,
-    password: config.watson.speech_to_text.password,
-    headers: {
-      'X-Watson-Learning-Opt-Out': 'true'
-    }
-  });
 
   const voiceFileWAVUrl = req.body.RecordingUrl.toString().concat(".wav");
   // console.log("Public url for question audio: ", voiceFileWAVUrl);
@@ -51,117 +188,113 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
 
   request(voiceFileWAVUrl).pipe(fs.createWriteStream(voiceFileLocalPath)).on('finish', () => {
     //console.log("Created voice record on local hard disk.");
-    const params = {
-      audio: fs.createReadStream(voiceFileLocalPath),
-      content_type: 'audio/wav',
-      model: 'en-US_NarrowbandModel',
-      timestamps: true,
-      word_alternatives_threshold: 0.9,
-      smart_formatting: true
+
+    const file = fs.readFileSync(voiceFileLocalPath);
+    const audioBytes = file.toString('base64');
+    const audio = {
+      content: audioBytes
+    };
+    const config = {
+      encoding: 'LINEAR16',
+      sampleRateHertz: 16000,
+      languageCode: 'en-US'
+    };
+    const request = {
+      audio: audio,
+      config: config
     };
     const twiml = new twilio.twiml.VoiceResponse();
-    speech_to_text.recognize(params, function(error, resultTranscript) {
-      if (error) {
-        console.error("STT recognize error: ", error);
-        twiml.play(config.server_url.public + '/audio/system-error.wav');
+    speechClient.recognize(request).then((results) => {
+      const questionTranscript = results[0].results[0].alternatives[0].transcript || null;
+      console.log(questionTranscript);
+      // if no transcript or low accurate on interpration
+      if (!rquestionTranscript) {
+        twiml.say("Sorry I am not sure what you said of ", {voice: 'alice'});
         twiml.pause();
-        twiml.say("Good Bye!", {voice: 'alice'});
-        return res.send(twiml.toString());
+        twiml.say(questionTranscript, {voice: 'alice'});
+        twiml.pause();
+        twiml.say("Please try again or ask differently!", {voice: 'alice'});
+        twiml.redirect('/phone/ask-phone/qa-loop');
+        res.send(twiml.toString());
       } else {
-        // STT transcript (question body)
-        if (resultTranscript.results.length == 0) {
-          twiml.say("Sorry I didn't hear anything", {voice: 'alice'});
-          twiml.pause();
-          twiml.redirect('/phone/ask-phone/qa-loop');
-          return res.send(twiml.toString());
-        }
-        const questionTranscript = resultTranscript.results[0].alternatives[0].transcript;
-        // confidence
-        const transcriptArruracy = resultTranscript.results[0].alternatives[0].confidence;
-        //console.log("STT transcript: ", questionTranscript);
-        // if no transcript or low accurate on interpration
-        if (!resultTranscript.results[0].alternatives[0].hasOwnProperty('transcript') || transcriptArruracy <= 0.48) {
-          twiml.say("Sorry I am not sure what you said of ", {voice: 'alice'});
-          twiml.pause();
-          twiml.say(questionTranscript, {voice: 'alice'});
-          twiml.pause();
-          twiml.say("Please try again or ask differently!", {voice: 'alice'});
-          twiml.redirect('/phone/ask-phone/qa-loop');
-          res.send(twiml.toString());
-        } else {
-          //console.log("Requesting R&R");
-          // ask IAP as visitor
-          retrieve_and_rank.enterMessage(questionTranscript).then(function(result) {
-            // speak back with answer
-            if (!result.response.docs) {
-              twiml.say("Sorry I don't know the answer to this question")
-              twiml.redirect('/phone/ask-phone/qa-loop');
-            }
-            // parse answer
-            const tagFlag = formatter.checkAnswerTags(result.response.docs[0].body);
-            let answerBody = formatter.removeAnswerTags(result.response.docs[0].body);
-            let longAnswerBool = false
-            if (answerBody.length > 300) {
-              answerBody = answerBody.substring(0, 300);
-              longAnswerBool = true;
-            }
-            // console.log("Answer: ", answerBody);
-            // TTS
-            const TTS_Params = {
-              text: answerBody,
-              voice: 'en-US_AllisonVoice',
-              accept: 'audio/wav'
-            };
-            // Pipe the synthesized text to a file.
-            const answerFilePath = path.join(__dirname, '../views/audio/') + req.body.RecordingSid + "-answer.wav";
-            // change server_url when go to dev or product
-            const answerURL = config.server_url.public + '/audio/' + req.body.RecordingSid + "-answer.wav";
-            text_to_speech.synthesize(TTS_Params).on('error', function(error) {
-              console.error(error);
-              twiml.play(config.server_url.public + '/audio/system-error.wav');
-              twiml.pause();
-              res.send(twiml.toString());
-            }).pipe(fs.createWriteStream(answerFilePath)).on('finish', () => {
-              //console.log("Created public url for answer voice: ", answerURL);
-              twiml.play(answerURL);
-              if (longAnswerBool) {
-                twiml.say("That was a part of the full answer of your question.")
-              } else if (tagFlag.a || tagFlag.email || tagFlag.html || tagFlag.image) {
-                twiml.say("There are other medias in the answer besides text.");
-                longAnswerBool = true;
-              } else if (tagFlag.progress) {
-                twiml.say("There are some steps in the answer.");
-                longAnswerBool = true;
-              }
-              twiml.pause();
-              // ask if user wants save a copy of QA or keep asking different question
-              const gather = twiml.gather({timeout: 3, numDigits: 1, action: '/phone/ask-phone/feedback'});
-              if (req.body.Caller === 'client:Anonymous') {
-                gather.play(config.server_url.public + '/audio/reask-or-hangup.wav');
-              } else {
-                gather.play(config.server_url.public + '/audio/text-or-reask.wav');
-              }
-              // If the user doesn't enter input, loop to ask question - answer
-              twiml.redirect('/phone/ask-phone/qa-loop');
-              res.send(twiml.toString());
-              // store QA id by CallSid, prepare to send text of copy to user
-            });
-            QACopyAry.map((QA, index) => {
-              if (QA.callSid === req.body.CallSid) {
-                QACopyAry.splice(index, 1);
-              }
-            });
-            QACopyAry.unshift({callSid: req.body.CallSid, question: questionTranscript, answer: answerBody, longAnswer: longAnswerBool, createTime: moment()});
-            //console.log("Current phone answering que: ", JSON.stringify(QACopyAry, "\t", 4));
-          }).catch(function(err) {
-            console.error(err);
+        //console.log("Requesting R&R");
+        // ask IAP as visitor
+        retrieve_and_rank.enterMessage(questionTranscript).then(function(result) {
+          // speak back with answer
+          if (!result.response.docs) {
+            twiml.say("Sorry I don't know the answer to this question")
+            twiml.redirect('/phone/ask-phone/qa-loop');
+          }
+          // parse answer
+          const tagFlag = formatter.checkAnswerTags(result.response.docs[0].body);
+          let answerBody = formatter.removeAnswerTags(result.response.docs[0].body);
+          let longAnswerBool = false
+          if (answerBody.length > 300) {
+            answerBody = answerBody.substring(0, 300);
+            longAnswerBool = true;
+          }
+          // console.log("Answer: ", answerBody);
+          // TTS
+          const TTS_Params = {
+            text: answerBody,
+            voice: 'en-US_AllisonVoice',
+            accept: 'audio/wav'
+          };
+          // Pipe the synthesized text to a file.
+          const answerFilePath = path.join(__dirname, '../views/audio/') + req.body.RecordingSid + "-answer.wav";
+          // change server_url when go to dev or product
+          const answerURL = config.server_url.public + '/audio/' + req.body.RecordingSid + "-answer.wav";
+          text_to_speech.synthesize(TTS_Params).on('error', function(error) {
+            console.error(error);
             twiml.play(config.server_url.public + '/audio/system-error.wav');
             twiml.pause();
             res.send(twiml.toString());
-          })
-        }
+          }).pipe(fs.createWriteStream(answerFilePath)).on('finish', () => {
+            //console.log("Created public url for answer voice: ", answerURL);
+            twiml.play(answerURL);
+            if (longAnswerBool) {
+              twiml.say("That was a part of the full answer of your question.")
+            } else if (tagFlag.a || tagFlag.email || tagFlag.html || tagFlag.image) {
+              twiml.say("There are other medias in the answer besides text.");
+              longAnswerBool = true;
+            } else if (tagFlag.progress) {
+              twiml.say("There are some steps in the answer.");
+              longAnswerBool = true;
+            }
+            twiml.pause();
+            // ask if user wants save a copy of QA or keep asking different question
+            const gather = twiml.gather({timeout: 3, numDigits: 1, action: '/phone/ask-phone/feedback'});
+            if (req.body.Caller === 'client:Anonymous') {
+              gather.play(config.server_url.public + '/audio/reask-or-hangup.wav');
+            } else {
+              gather.play(config.server_url.public + '/audio/text-or-reask.wav');
+            }
+            // If the user doesn't enter input, loop to ask question - answer
+            twiml.redirect('/phone/ask-phone/qa-loop');
+            res.send(twiml.toString());
+            // store QA id by CallSid, prepare to send text of copy to user
+          });
+          QACopyAry.map((QA, index) => {
+            if (QA.callSid === req.body.CallSid) {
+              QACopyAry.splice(index, 1);
+            }
+          });
+          QACopyAry.unshift({callSid: req.body.CallSid, question: questionTranscript, answer: answerBody, longAnswer: longAnswerBool, createTime: moment()});
+          //console.log("Current phone answering que: ", JSON.stringify(QACopyAry, "\t", 4));
+        }).catch(function(err) {
+          console.error(err);
+          twiml.play(config.server_url.public + '/audio/system-error.wav');
+          twiml.pause();
+          res.send(twiml.toString());
+        })
       }
-    });
+    }).catch(error => {
+      console.error("STT recognize error: ", error);
+      twiml.play(config.server_url.public + '/audio/system-error.wav');
+      twiml.pause();
+      twiml.say("Good Bye!", {voice: 'alice'});
+      return res.send(twiml.toString());
+    })
   }).on('error', (err) => {
     // piping error of audio file
     console.error(err);
@@ -213,7 +346,7 @@ phoneRouter.route('/ask-phone/feedback').post(function(req, res, next) {
             res.send(twiml.toString());
           });
         })
-      }else {
+      } else {
         twilioSMS.messages.create({
           to: req.body.From,
           from: req.body.To,
