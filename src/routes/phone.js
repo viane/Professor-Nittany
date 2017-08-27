@@ -57,15 +57,10 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
       model: 'en-US_NarrowbandModel',
       timestamps: true,
       word_alternatives_threshold: 0.9,
-      smart_formatting:true
+      smart_formatting: true
     };
     const twiml = new twilio.twiml.VoiceResponse();
     speech_to_text.recognize(params, function(error, resultTranscript) {
-      //console.log("Deleting temporary voice file.");
-      //delete auido file
-      deleteFileByPath(voiceFileLocalPath).catch(err => {
-        console.error(err);
-      });
       if (error) {
         console.error("STT recognize error: ", error);
         twiml.play(config.server_url.public + '/audio/system-error.wav');
@@ -324,6 +319,15 @@ const initSpaceClearner = () => {
         path.join(__dirname, '../views/audio/')
       ]).then(paths => {
         console.log('Success clean answer voice copys')
+      }).catch(err => {
+        console.error(err);
+      })
+      // delete question voice file
+      del([
+        path.join(__dirname, '../system/audio/audio-file-temp-folder/**'),
+        path.join(__dirname, '../system/audio/audio-file-temp-folder/')
+      ]).then(paths => {
+        console.log('Success clean question voice copys')
       }).catch(err => {
         console.error(err);
       })
