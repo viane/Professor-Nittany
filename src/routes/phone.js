@@ -17,9 +17,6 @@ import googleUrlShortener from '../system/google/url-shortener';
 import moment from 'moment';
 import del from 'del';
 
-// Instantiates a client
-const speechClient = googleSpeech({projectId: "intelligent-academic-planer"});
-
 let QACopyAry = [];
 
 phoneRouter.use(bodyParser.json());
