@@ -43,17 +43,17 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
     }
   });
 
-  const voiceFileWAVUrl = req.body.RecordingUrl.toString().concat(".mp3");
-
+  const voiceFileWAVUrl = req.body.RecordingUrl.toString().concat(".wav");
+  console.log("Public url for question audio: ", voiceFileWAVUrl);
   const caller = req.body.From;
 
-  const voiceFileLocalPath = path.join(__dirname, '../system/audio/audio-file-temp-folder/') + req.body.RecordingSid + "-question.mp3";
+  const voiceFileLocalPath = path.join(__dirname, '../system/audio/audio-file-temp-folder/') + req.body.RecordingSid + "-question.wav";
 
   request(voiceFileWAVUrl).pipe(fs.createWriteStream(voiceFileLocalPath)).on('finish', () => {
     //console.log("Created voice record on local hard disk.");
     const params = {
       audio: fs.createReadStream(voiceFileLocalPath),
-      content_type: 'audio/mp3',
+      content_type: 'audio/wav',
       model: 'en-US_BroadbandModel',
       timestamps: true,
       word_alternatives_threshold: 0.9,
