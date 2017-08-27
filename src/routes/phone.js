@@ -43,7 +43,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
     }
   });
 
-  const voiceFileWAVUrl = req.body.RecordingUrl.toString().concat(".wav");
+  const voiceFileWAVUrl = req.body.RecordingUrl.toString().concat(".mp3");
 
   const caller = req.body.From;
 
@@ -53,8 +53,8 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
     //console.log("Created voice record on local hard disk.");
     const params = {
       audio: fs.createReadStream(voiceFileLocalPath),
-      content_type: 'audio/wav',
-      model: 'en-US_NarrowbandModel',
+      content_type: 'audio/mp3',
+      model: 'en-US_BroadbandModel',
       timestamps: true,
       word_alternatives_threshold: 0.9,
       continuous: true
