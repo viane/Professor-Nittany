@@ -42,6 +42,7 @@
     "fs": "0.0.1-security",
     "javascript-obfuscator": "^0.11.0",
     "jsonwebtoken": "^7.4.1",
+    "moment": "^2.18.1",
     "mongoose": "^4.11.0",
     "mongoose-currency": "^0.2.0",
     "mongoose-simple-random": "^0.4.1",
