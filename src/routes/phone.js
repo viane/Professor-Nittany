@@ -98,8 +98,13 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
               twiml.redirect('/phone/ask-phone/qa-loop');
             }
             // parse answer
-            const flag = formatter.checkAnswerTags(result.response.docs[0].body);
-            const answerBody = formatter.removeAnswerTags(result.response.docs[0].body);
+            const tagFlag = formatter.checkAnswerTags(result.response.docs[0].body);
+            let answerBody = formatter.removeAnswerTags(result.response.docs[0].body);
+            let longAnswerBool = false
+            if (answerBody.length > 300) {
+              answerBody = answerBody.substring(0, 300);
+              longAnswerBool = true;
+            }
             // console.log("Answer: ", answerBody);
             // TTS
             const TTS_Params = {
@@ -119,6 +124,15 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
             }).pipe(fs.createWriteStream(answerFilePath)).on('finish', () => {
               //console.log("Created public url for answer voice: ", answerURL);
               twiml.play(answerURL);
+              if (longAnswerBool) {
+                twiml.say("That was a part of the full answer of your question.")
+              } else if (tagFlag.a || tagFlag.email || tagFlag.html || tagFlag.image) {
+                twiml.say("There are other medias in the answer besides text.");
+                longAnswerBool = true;
+              } else if (tagFlag.progress) {
+                twiml.say("There are some steps in the answer.");
+                longAnswerBool = true;
+              }
               twiml.pause();
               // ask if user wants save a copy of QA or keep asking different question
               const gather = twiml.gather({timeout: 3, numDigits: 1, action: '/phone/ask-phone/feedback'});
@@ -137,7 +151,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
                 QACopyAry.splice(index, 1);
               }
             });
-            QACopyAry.unshift({callSid: req.body.CallSid, question: questionTranscript, answer: answerBody, createTime: moment()});
+            QACopyAry.unshift({callSid: req.body.CallSid, question: questionTranscript, answer: answerBody, longAnswer: longAnswerBool, createTime: moment()});
             //console.log("Current phone answering que: ", JSON.stringify(QACopyAry, "\t", 4));
           }).catch(function(err) {
             console.error(err);
@@ -177,30 +191,52 @@ phoneRouter.route('/ask-phone/feedback').post(function(req, res, next) {
         }
       })[0];
       // console.log(QAObject);
-
-      const smsBody = "Question: " + QAObject.question + "." + "\n" + "Answer: " + QAObject.answer;
-      twilioSMS.messages.create({
-        to: req.body.From,
-        from: req.body.To,
-        body: smsBody
-      }, (err, message) => {
-        if (err) {
-          console.error(err);
-          twiml.say('There is an issue with SMS service, failed to send the copy, please try again later or report the issue @ www dot IAP dot com/contact.', {voice: 'alice'});
-          twiml.pause();
-        } else {
-          twiml.say('Done sending.', {voice: 'alice'});
-        }
-        const gather = twiml.gather({timeout: 3, numDigits: 1, action: '/phone/ask-phone/qa-loop'});
-        gather.play(config.server_url.public + '/audio/reask-or-hangup.wav');
-        res.send(twiml.toString());
-      });
-      // SMS max limit: 1600 characters
-      // answer format rule:
-      // 1. if answer less than 3 sentences, no change
-      // 2. if answer logner than 3 sentances, only keep first 3 sentances, form a url to IAP with a external question, attach with the answer.
-      // 3. regualr flag system applies
-      // 4. for any url, use google url shortener before send
+      let smsBody = "Question: " + QAObject.question + "." + "\n" + "Answer: " + QAObject.answer;
+      if (QAObject.longAnswer) {
+        const urlStringEncode = encodeURI(QAObject.question);
+        googleUrlShortener.shortUrl("intelligent-student-advisor.herokuapp.com/lite-version.html?q=" + urlStringEncode).then(sURL => {
+          smsBody += "\n Check " + sURL + " for full answer!";
+          twilioSMS.messages.create({
+            to: req.body.From,
+            from: req.body.To,
+            body: smsBody
+          }, (err, message) => {
+            if (err) {
+              console.error(err);
+              twiml.say('There is an issue with SMS service, failed to send the copy, please try again later or report the issue @ www dot IAP dot com/contact.', {voice: 'alice'});
+              twiml.pause();
+            } else {
+              twiml.say('Done sending.', {voice: 'alice'});
+            }
+            const gather = twiml.gather({timeout: 3, numDigits: 1, action: '/phone/ask-phone/qa-loop'});
+            gather.play(config.server_url.public + '/audio/reask-or-hangup.wav');
+            res.send(twiml.toString());
+          });
+        })
+      }else {
+        twilioSMS.messages.create({
+          to: req.body.From,
+          from: req.body.To,
+          body: smsBody
+        }, (err, message) => {
+          if (err) {
+            console.error(err);
+            twiml.say('There is an issue with SMS service, failed to send the copy, please try again later or report the issue @ www dot IAP dot com/contact.', {voice: 'alice'});
+            twiml.pause();
+          } else {
+            twiml.say('Done sending.', {voice: 'alice'});
+          }
+          const gather = twiml.gather({timeout: 3, numDigits: 1, action: '/phone/ask-phone/qa-loop'});
+          gather.play(config.server_url.public + '/audio/reask-or-hangup.wav');
+          res.send(twiml.toString());
+        });
+        // SMS max limit: 1600 characters
+        // answer format rule:
+        // 1. if answer less than 3 sentences, no change
+        // 2. if answer logner than 3 sentances, only keep first 3 sentances, form a url to IAP with a external question, attach with the answer.
+        // 3. regualr flag system applies
+        // 4. for any url, use google url shortener before send
+      }
     }
     if (req.body.Digits === '2' || req.body.Caller === 'client:Anonymous') {
       twiml.redirect('/phone/ask-phone/qa-loop');
