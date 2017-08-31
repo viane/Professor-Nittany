@@ -52,6 +52,7 @@
     "nodemailer-smtp-transport": "^2.7.4",
     "nodemon": "^1.11.0",
     "opbeat": "^4.15.0",
+    "os": "^0.1.1",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",
     "passport-google-oauth2": "^0.1.6",
