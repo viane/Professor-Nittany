@@ -20,6 +20,7 @@
     ]
   },
   "dependencies": {
+    "@google-cloud/speech": "^0.10.2",
     "@risingstack/trace": "^3.14.0",
     "babel-cli": "^6.24.1",
     "babel-eslint": "^6.0.2",

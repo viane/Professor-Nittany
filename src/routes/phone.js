@@ -45,7 +45,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
   });
 
   const voiceFileWAVUrl = req.body.RecordingUrl.toString().concat(".wav");
-  console.log("Public url for question audio: ", voiceFileWAVUrl);
+  // console.log("Public url for question audio: ", voiceFileWAVUrl);
   const caller = req.body.From;
 
   const voiceFileLocalPath = path.join(__dirname, '../system/audio/audio-file-temp-folder/') + req.body.RecordingSid + "-question.wav";
@@ -166,6 +166,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
   });
 });
 
+
 phoneRouter.route('/ask-phone/feedback').post(function(req, res, next) {
   const twiml = new twilio.twiml.VoiceResponse();
   // If the user entered digits, process their request
@@ -184,7 +185,6 @@ phoneRouter.route('/ask-phone/feedback').post(function(req, res, next) {
         }
       })[0];
       // console.log(QAObject);
-
       const smsBody = "Question: " + QAObject.question + "." + "\n" + "Answer: " + QAObject.answer;
       twilioSMS.messages.create({
         to: req.body.From,
@@ -326,6 +326,15 @@ const initSpaceClearner = () => {
         path.join(__dirname, '../views/audio/')
       ]).then(paths => {
         console.log('Success clean answer voice copys')
+      }).catch(err => {
+        console.error(err);
+      })
+      // delete question voice file
+      del([
+        path.join(__dirname, '../system/audio/audio-file-temp-folder/**'),
+        path.join(__dirname, '../system/audio/audio-file-temp-folder/')
+      ]).then(paths => {
+        console.log('Success clean question voice copys')
       }).catch(err => {
         console.error(err);
       })
