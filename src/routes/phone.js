@@ -16,7 +16,6 @@ const text_to_speech = new TextToSpeechV1({username: config.watson.text_to_speec
 import googleUrlShortener from '../system/google/url-shortener';
 import moment from 'moment';
 import del from 'del';
-import os from 'os';
 
 let QACopyAry = [];
 
@@ -24,7 +23,7 @@ phoneRouter.use(bodyParser.json());
 
 phoneRouter.route('/ask-phone').post(function(req, res, next) {
   const twiml = new twilio.twiml.VoiceResponse();
-  twiml.play(os.hostname() + '/audio/greeting.wav');
+  twiml.play(req.hostname + '/audio/greeting.wav');
   // record user question, audio file will be stored in twilio server
   twiml.record({
     maxLength: 50, timeout: 55, finihOnKey: '1234567890*#',
@@ -69,9 +68,9 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
         });
         if (error) {
           console.error("STT recognize error: ", error);
-          twiml.play(os.hostname() + '/audio/system-error.wav');
+          twiml.play(req.hostname + '/audio/system-error.wav');
           twiml.pause();
-          twiml.play(os.hostname() + '/audio/bye.wav');
+          twiml.play(req.hostname + '/audio/bye.wav');
           return res.send(twiml.toString());
         } else {
           // STT transcript (question body)
@@ -116,10 +115,10 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
               // Pipe the synthesized text to a file.
               const answerFilePath = path.join(__dirname, '../views/audio/') + req.body.RecordingSid + "-answer.wav";
               // change server_url when go to dev or product
-              const answerURL = os.hostname() + '/audio/' + req.body.RecordingSid + "-answer.wav";
+              const answerURL = req.hostname + '/audio/' + req.body.RecordingSid + "-answer.wav";
               text_to_speech.synthesize(TTS_Params).on('error', function(error) {
                 console.error(error);
-                twiml.play(os.hostname() + '/audio/system-error.wav');
+                twiml.play(req.hostname + '/audio/system-error.wav');
                 twiml.pause();
                 res.send(twiml.toString());
               }).pipe(fs.createWriteStream(answerFilePath)).on('finish', () => {
@@ -129,9 +128,9 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
                 // ask if user wants save a copy of QA or keep asking different question
                 const gather = twiml.gather({timeout: 3, numDigits: 1, action: '/phone/ask-phone/feedback'});
                 if (req.body.Caller === 'client:Anonymous') {
-                  gather.play(os.hostname() + '/audio/reask-or-hangup.wav');
+                  gather.play(req.hostname + '/audio/reask-or-hangup.wav');
                 } else {
-                  gather.play(os.hostname() + '/audio/text-or-reask.wav');
+                  gather.play(req.hostname + '/audio/text-or-reask.wav');
                 }
                 // If the user doesn't enter input, loop to ask question - answer
                 twiml.redirect('/phone/ask-phone/qa-loop');
@@ -147,7 +146,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
               //console.log("Current phone answering que: ", JSON.stringify(QACopyAry, "\t", 4));
             }).catch(function(err) {
               console.error(err);
-              twiml.play(os.hostname() + '/audio/system-error.wav');
+              twiml.play(req.hostname + '/audio/system-error.wav');
               twiml.pause();
               res.send(twiml.toString());
             })
@@ -161,7 +160,7 @@ phoneRouter.route('/ask-phone/callback').post(function(req, res, next) {
     const twiml = new twilio.twiml.VoiceResponse();
     twiml.say(systemErrorMSG, {voice: 'alice'})
     twiml.pause();
-    twiml.play(os.hostname() + '/audio/bye.wav');
+    twiml.play(req.hostname + '/audio/bye.wav');
     res.send(twiml.toString());
   });
 });
@@ -199,7 +198,7 @@ phoneRouter.route('/ask-phone/feedback').post(function(req, res, next) {
           twiml.say('Done sending.', {voice: 'alice'});
         }
         const gather = twiml.gather({timeout: 3, numDigits: 1, action: '/phone/ask-phone/qa-loop'});
-        gather.play(os.hostname() + '/audio/reask-or-hangup.wav');
+        gather.play(req.hostname + '/audio/reask-or-hangup.wav');
         res.send(twiml.toString());
       });
       // SMS max limit: 1600 characters
