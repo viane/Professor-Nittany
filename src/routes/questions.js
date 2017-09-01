@@ -92,7 +92,12 @@ questionRouter.route('/untrained')
 
 //API check low-confidence questions
 questionRouter.route('/get-low-confidence').get(function(req,res,next){
-  Questions.find({'low_confidence.mark': true,'trained':false, $or:[{'low_confidence.relevance_level':'some'},{'low_confidence.relevance_level':'full'}]}, function(err, questions){
+  // Questions.find({'low_confidence.mark': true,'trained':false, $or:[{'low_confidence.relevance_level':'some'},{'low_confidence.relevance_level':'full'}]}, function(err, questions){
+  //   if (err)
+  //     return next(err);
+  //   res.json(questions);
+  // })
+  Questions.find({'trained':false}, function(err, questions){
     if (err)
       return next(err);
     res.json(questions);

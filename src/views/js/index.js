@@ -700,21 +700,21 @@ function questionWrapper(question) {
     questionHTML = questionHTML + '</div>'
     questionHTML = questionHTML + '<div id="collapse' + i + '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">'
     questionHTML = questionHTML + '<div class="panel-body logged-stats">'
-    question[i].feature.map(term=>{
-      term.keywords.map(keyword=>{
-        questionHTML+='<span class="unsatisfy-question-feature">'+keyword+'</span>'
-      })
-      term.taxonomys.map(taxonomy=>{
-        questionHTML+='<span class="unsatisfy-question-feature">'+taxonomy+'</span>'
-      })
-      term.entities.map(entity=>{
-        questionHTML+='<span class="unsatisfy-question-feature">'+entity+'</span>'
-      })
-      term.concepts.map(concept=>{
-        questionHTML+='<span class="unsatisfy-question-feature">'+concept+'</span>'
-      })
+    question[i].feature.keywords.map(keyword => {
+      questionHTML += '<span class="unsatisfy-question-feature">' + keyword.text + '</span>'
     })
-    questionHTML = questionHTML + "Low Confidence Level: " + question[i].low_confidence.relevance_level;
+    question[i].feature.taxonomys.map(taxonomy => {
+      questionHTML += '<span class="unsatisfy-question-feature">' + taxonomy.text + '</span>'
+    })
+    question[i].feature.entities.map(entity => {
+      questionHTML += '<span class="unsatisfy-question-feature">' + entity.text + '</span>'
+    })
+    question[i].feature.concepts.map(concept => {
+      questionHTML += '<span class="unsatisfy-question-feature">' + concept.text + '</span>'
+    })
+    if (question[i].low_confidence.hasOwnProperty('relevance_level')) {
+      questionHTML = questionHTML + "Low Confidence Level: " + question[i].low_confidence.relevance_level
+    }
     questionHTML = questionHTML + '</div>';
     questionHTML = questionHTML + '</div>';
     questionHTML = questionHTML + '</div>';
