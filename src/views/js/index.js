@@ -693,21 +693,34 @@ function questionWrapper(question) {
     questionHTML = questionHTML + '<div class="panel-heading" role="tab">'
     questionHTML = questionHTML + '<h3 class="panel-title">'
     questionHTML += '<input class="unsatisfy-question" type="checkbox" value="' + question[i]._id + '">'
-    questionHTML = questionHTML + '<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse' + i + '" aria-expanded="true" aria-controls="collapseOne">';
+    questionHTML = questionHTML + '<a class="unsatisfy-question-body" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse' + i + '" aria-expanded="true" aria-controls="collapseOne">';
     questionHTML = questionHTML + question[i].body;
     questionHTML = questionHTML + '</a>'
     questionHTML = questionHTML + '</h3>'
     questionHTML = questionHTML + '</div>'
     questionHTML = questionHTML + '<div id="collapse' + i + '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">'
     questionHTML = questionHTML + '<div class="panel-body logged-stats">'
-    questionHTML = questionHTML + "<pre>" + JSON.stringify(question[i].feature, '\t', 2) + " </pre>" + "Low Confidence Level: " + question[i].low_confidence.relevance_level;
+    question[i].feature.keywords.map(keyword => {
+      questionHTML += '<span class="unsatisfy-question-feature">' + keyword.text + '</span>'
+    })
+    question[i].feature.taxonomys.map(taxonomy => {
+      questionHTML += '<span class="unsatisfy-question-feature">' + taxonomy.text + '</span>'
+    })
+    question[i].feature.entities.map(entity => {
+      questionHTML += '<span class="unsatisfy-question-feature">' + entity.text + '</span>'
+    })
+    question[i].feature.concepts.map(concept => {
+      questionHTML += '<span class="unsatisfy-question-feature">' + concept.text + '</span>'
+    })
+    if (question[i].low_confidence.hasOwnProperty('relevance_level')) {
+      questionHTML = questionHTML + "Low Confidence Level: " + question[i].low_confidence.relevance_level
+    }
     questionHTML = questionHTML + '</div>';
     questionHTML = questionHTML + '</div>';
     questionHTML = questionHTML + '</div>';
   }
   questionHTML += '<button type="button" class="btn-lg btn-default btn-mark-all-question">Mark All</button><button type="button" class="btn-lg btn-default btn-export-question">Export List</button><button class="btn-lg btn-default btn-mark-trained" type="button">Mark Trained</button';
   return questionListHTMLH + questionHTML + questionListHTMLT;
-
 }
 
 const showAIStatus = () => {
@@ -789,7 +802,6 @@ function showLowQuestions() {
             parentPanel.remove()
           });
         })
-
       })
     })
   })

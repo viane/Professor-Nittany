@@ -165,7 +165,7 @@ html, body {
 
 /*
 .login-wrapper, .btn-profile {
-  transform: translate(-50%, 25%); 
+  transform: translate(-50%, 25%);
 }
 */
 
@@ -227,7 +227,7 @@ html, body {
 
 /*
 .register-wrapper, .logout {
-  transform: translate(-50%, 150%); 
+  transform: translate(-50%, 150%);
 }
 */
 
@@ -1419,6 +1419,18 @@ main {
 
 .logged-questions {
   display: none;
+}
+.unsatisfy-question-body{
+  padding-left: 10px;
+text-decoration: none;
+}
+.unsatisfy-question-feature{
+  float: left;
+  border: 1px solid lightblue;
+  border-radius: 11px;
+  text-align: center;
+  padding: 0 10px 0 10px;
+  margin-left: 28px;
 }
 .sample-question-container{
   display: none;
