@@ -1,6 +1,14 @@
 'use strict'
 
-const pageClass = ['.current-chat-area', '.profile-area', '.logged-questions', '.sample-question-container', 'ai-status-container'];
+// socket io
+$(() => {
+  const socket = io();
+  socket.on('connected client change', function(data) {
+    $('.client-count').text(data.count)
+  });
+})
+
+const pageClass = ['.current-chat-area', '.profile-area', '.logged-questions', '.sample-question-container', '.server-status-area'];
 const pageTitle = ['Chatting with Prof.Nittany', 'Profile', 'Unsatisfying Question Console', 'Suggested Question Areas', 'AI Status'];
 
 if (!localStorage.hasOwnProperty('iaa-userToken')) {
@@ -209,12 +217,12 @@ $(document).on('click', '.question-tab', function(e) {
 
 // AI status switch btn
 $(document).on('click', '.server-status', function(e) {
-  if ($('.server-status').text().trim() == "AI Learning Satus") {
+  if ($('.server-status').text().trim() == "Status") {
     hideAllPage();
     showAIStatus();
     $('.ai-status-tab').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Chat')
   } else {
-    $('.ai-status-tab').text("AI Learning Satus");
+    $('.ai-status-tab').text("Status");
     hideAllPage();
     showPage('.current-chat-area');
   }
@@ -685,8 +693,9 @@ function logQuestion(question) {
 }
 
 function questionWrapper(question) {
-  var questionHTML = '';
   var questionListHTMLH = '<div class="panel-group scrollable logged-questions" id="accordion" role="tablist" aria-multiselectable="true">';
+  var questionHTML = '';
+      questionHTML += '<div class="logged-questions-btn-group"><button type="button" class="btn-lg btn-default btn-mark-all-question">Mark All</button><button type="button" class="btn-lg btn-default btn-export-question">Export List</button><button class="btn-lg btn-default btn-mark-trained" type="button">Mark Trained</button></div>';
   var questionListHTMLT = '</div>';
   for (let i = 0; i < question.length; i++) {
     questionHTML = questionHTML + '<div class="panel panel-default">';
@@ -719,13 +728,12 @@ function questionWrapper(question) {
     questionHTML = questionHTML + '</div>';
     questionHTML = questionHTML + '</div>';
   }
-  questionHTML += '<button type="button" class="btn-lg btn-default btn-mark-all-question">Mark All</button><button type="button" class="btn-lg btn-default btn-export-question">Export List</button><button class="btn-lg btn-default btn-mark-trained" type="button">Mark Trained</button';
   return questionListHTMLH + questionHTML + questionListHTMLT;
 }
 
 const showAIStatus = () => {
   loadAnimationOn('.current-chat');
-  fetch("../ai/get-statistics", {
+  fetch("../status/get-status", {
     method: 'get',
     headers: {
       "Content-type": "application/json",
@@ -737,8 +745,7 @@ const showAIStatus = () => {
     setTimeout(function() {
       removeLoadAnimationOn('.current-chat')
     }, 1000);
-
-    showPage('.server-status');
+    showPage('.server-status-area');
   })
 }
 
