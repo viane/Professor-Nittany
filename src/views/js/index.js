@@ -1,9 +1,9 @@
 'use strict'
 
 // temp redirect
-if (window.location.href == "https://intelligent-student-advisor.herokuapp.com/" || window.location.href == "http://intelligent-student-advisor.herokuapp.com/"){
-  window.location.replace("https://intelligent-student-advisor.herokuapp.com/lite-version.html")
-}
+// if (window.location.href == "https://intelligent-student-advisor.herokuapp.com/" || window.location.href == "http://intelligent-student-advisor.herokuapp.com/"){
+//   window.location.replace("https://intelligent-student-advisor.herokuapp.com/lite-version.html")
+// }
 
 // socket io
 $(() => {
