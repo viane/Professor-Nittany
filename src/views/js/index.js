@@ -857,7 +857,7 @@ function login() {
         $('.lite-header').text("Welcome " + userDisplayName);
         // show unstatisfy question tab
         if (json.hasOwnProperty('account_role') && json.account_role === "advisor") {
-          $('.question-tab').show();
+          $('.question-tab,.server-status').show();
         }
       })
 
