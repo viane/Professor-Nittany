@@ -11,7 +11,7 @@ import statusRouter from './status';
 module.exports = function(app) {
   /* GET home page. */
   app.get('/', function(req, res, next) {
-    res.sendFile(__dirname+'lite-version.html');
+    res.sendFile(__dirname + 'lite-version.html');
   });
 
   app.use('/users', usersRouter);
