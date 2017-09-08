@@ -22,6 +22,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hopscotch/0.3.1/css/hopscotch.css" integrity="sha256-9AwOdAFXdP+eiA5U7oKXavaar85eeJgoQbCXv7Vo/j4=" crossorigin="anonymous" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/hopscotch/0.3.1/js/hopscotch.js" integrity="sha256-rD/TJ6a2WMugA0WkPJDjx2Q0AnoGxtSaJeXjXhLFa0k=" crossorigin="anonymous"></script>
   <script src="js/intro.js"></script>
+  <!-- socket.io -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js" integrity="sha256-sdmLD9jD1PIzq3KOQPNSGZYxjv76rds79Mnyk5JNp1M=" crossorigin="anonymous"></script>
   <!-- lightbox -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.9.0/js/lightbox.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.9.0/css/lightbox.min.css" rel="stylesheet" type="text/css">
@@ -33,7 +35,6 @@
   <script src="js/index.js"></script>
   <link href="css/index.css" rel="stylesheet" type="text/css">
   <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-
 </head>
 
 <body>
@@ -117,7 +118,7 @@
             <div class="panel-heading" role="tab" id="headingSix">
               <h4 class="panel-title">
                 <a class="collapsed ai-status-tab" role="button" data-toggle="collapse" toggle="false" data-parent="#accordion" href="#collapseSix"
-                  aria-expanded="false" aria-controls="collapseFive">AI Learning Satus</a>
+                  aria-expanded="false" aria-controls="collapseSix">Status</a>
               </h4>
             </div>
           </div>
@@ -356,11 +357,12 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="ai-status-container">
-      <div class="row ai-status-area">
-
+        <div class="server-status-area">
+          <div class="row">
+            <div class="client-count-wrapper"><i class="fa fa-plug" aria-hidden="true"></i> Connected clients: <span class="client-count">...</span></div>
+            <div>Total learned questions: <span>...</span></div>
+          </div>
+        </div>
       </div>
     </div>
     <!-- modal form Nor Currently Needed

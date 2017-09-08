@@ -7,13 +7,14 @@ require('@risingstack/trace');
 const app = require('../app');
 const debug = require('debug')('rest-server:server');
 const http = require('http');
-const https = require('https');
+//const https = require('https');
 const fs = require('fs');
 const opbeat = require('opbeat').start({
   appId: '813f711937',
   organizationId: '5ea731d93ff346b1ad13fb8ddc6ea8bd',
   secretToken: '5646d3dc59d3ead94d5429ca17d70b112bf0a6cf'
 })
+import socketIO from '../routes/socket.io';
 app.use(opbeat.middleware.express())
 
 /**
@@ -31,6 +32,11 @@ app.set('secPort',port+443);
 
 const server = http.createServer(app);
 
+/**
+ * Socket.IO
+ */
+const io = require('socket.io')(server);
+socketIO(io);
 /**
  * Listen on provided port, on all network interfaces.
  */

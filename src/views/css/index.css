@@ -1420,6 +1420,13 @@ main {
 .logged-questions {
   display: none;
 }
+
+.logged-questions-btn-group{
+  position: fixed;
+  display: block;
+  clear: both;
+  top: 13px;
+}
 .unsatisfy-question-body{
   padding-left: 10px;
 text-decoration: none;
