@@ -16,7 +16,7 @@ const text_to_speech = new TextToSpeechV1({username: config.watson.text_to_speec
 import googleUrlShortener from '../system/google/url-shortener';
 import moment from 'moment';
 import del from 'del';
-import schedule from 'node-schedule';
+
 
 let QACopyAry = [];
 
@@ -316,33 +316,33 @@ const deleteFileByPath = filePath => {
 }
 
 const initSpaceClearner = () => {
-  // clean disk space at 3:05am each day
-  schedule.scheduleJob('5 3 * * *', function(){
-    console.log('Run schedule of space cleaner');
-    // empty qa array
-    QACopyAry.length = 0;
-    // delete answer voice file
-    del([
-      path.join(__dirname, '../views/audio/**'),
-      path.join(__dirname, '../views/audio/')
-    ]).then(paths => {
-      console.log('Success clean answer voice copys')
-    }).catch(err => {
-      console.error(err);
-    })
-    // delete question voice file
-    del([
-      path.join(__dirname, '../system/audio/audio-file-temp-folder/**'),
-      path.join(__dirname, '../system/audio/audio-file-temp-folder/')
-    ]).then(paths => {
-      console.log('Success clean question voice copys')
-    }).catch(err => {
-      console.error(err);
-    })
-  });
+  const timeFrame = 600000; // every 1 hr
+  setInterval(() => {
+    const timeNow = moment().format("hA");
+    if (timeNow === "3AM") {
+      // empty qa array
+      QACopyAry.length = 0;
+      // delete answer voice file
+      del([
+        path.join(__dirname, '../views/audio/**'),
+        path.join(__dirname, '../views/audio/')
+      ]).then(paths => {
+        console.log('Success clean answer voice copys')
+      }).catch(err => {
+        console.error(err);
+      })
+      // delete question voice file
+      del([
+        path.join(__dirname, '../system/audio/audio-file-temp-folder/**'),
+        path.join(__dirname, '../system/audio/audio-file-temp-folder/')
+      ]).then(paths => {
+        console.log('Success clean question voice copys')
+      }).catch(err => {
+        console.error(err);
+      })
+    }
+  }, timeFrame)
 }
-
-
 
 // clean local storage at 3am every morning
 initSpaceClearner();

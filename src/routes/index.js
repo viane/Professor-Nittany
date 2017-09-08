@@ -6,7 +6,6 @@ const majorListRouter = require('./major-list');
 const profileRouter = require('./profile');
 import phoneRouter from './phone';
 import devRouter from './dev';
-import statusRouter from './status';
 
 module.exports = function(app) {
   /* GET home page. */
@@ -20,5 +19,4 @@ module.exports = function(app) {
   app.use('/profile', profileRouter);
   app.use('/phone', phoneRouter)
   app.use('/dev', devRouter)
-  app.use('/status', statusRouter)
 }
