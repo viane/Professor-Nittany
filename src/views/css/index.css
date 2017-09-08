@@ -1420,6 +1420,13 @@ main {
 .logged-questions {
   display: none;
 }
+
+.logged-questions-btn-group{
+  position: fixed;
+  display: block;
+  clear: both;
+  top: 13px;
+}
 .unsatisfy-question-body{
   padding-left: 10px;
 text-decoration: none;
@@ -1505,6 +1512,6 @@ text-decoration: none;
   }
 }
 
-.server-status, .ai-status-container{
+.server-status, .ai-status-container,.server-status-area{
   display: none;
 }
