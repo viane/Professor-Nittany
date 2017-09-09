@@ -37,7 +37,7 @@
     "debug": "~2.6.3",
     "del": "^3.0.0",
     "email-validator": "^1.1.1",
-    "express": "~4.15.2",
+    "express": "^4.15.4",
     "express-fileupload": "^0.1.4",
     "express-session": "^1.15.3",
     "fs": "0.0.1-security",
