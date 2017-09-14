@@ -745,6 +745,8 @@ const showAIStatus = () => {
     setTimeout(function() {
       removeLoadAnimationOn('.current-chat')
     }, 1000);
+    console.log(json);
+    $('.total-trained-question-count').text(json.trainedQuestionCount)
     showPage('.server-status-area');
   })
 }
