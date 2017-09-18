@@ -86,31 +86,25 @@
           <div class="panel panel-default suggest-question-tab">
             <div class="panel-heading" role="tab" id="headingThree">
               <h4 class="panel-title">
-                <a class="collapsed btn-sample-question" role="button"  aria-expanded="false">Suggested Question</a>
+                <a class="collapsed btn-sample-question" role="button"  aria-expanded="false" data-btn-type="nav-tab" data-btn-name="Suggested Question">Suggested Question</a>
               </h4>
             </div>
           </div>
-          <div class="panel panel-default">
+          <div class="panel panel-default" class="contact-tab">
             <div class="panel-heading" role="tab" id="headingFour">
               <h4 class="panel-title">
-                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false"
-                  aria-controls="collapseFour">
+                <a class="collapsed btn-contact" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false"
+                  aria-controls="collapseFour" data-btn-type="nav-tab" data-btn-name="Contact Us">
                       Contact Us
                   </a>
               </h4>
-            </div>
-            <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-              <div class="panel-body">
-                If you have any issues using me, or have some valuable feedback you would like to leave, email us at
-                <a class="effect-shine forgetPassword" target="_blank" href="mailto: IntelligentAcademicAdvisor@gmail.com">IntelligentAcademicAdvisor@gmail.com</a>
-              </div>
             </div>
           </div>
           <div class="panel panel-default question-tab">
             <div class="panel-heading" role="tab" id="headingFive">
               <h4 class="panel-title">
                 <a class="collapsed low-confidence" role="button" data-toggle="collapse" toggle="false" data-parent="#accordion" href="#collapseFive"
-                  aria-expanded="false" aria-controls="collapseFive">Unsatisfying Questions</a>
+                  aria-expanded="false" aria-controls="collapseFive" data-btn-type="nav-tab" data-btn-name="Unsatisfying Questions">Unsatisfying Questions</a>
               </h4>
             </div>
           </div>
@@ -118,7 +112,7 @@
             <div class="panel-heading" role="tab" id="headingSix">
               <h4 class="panel-title">
                 <a class="collapsed ai-status-tab" role="button" data-toggle="collapse" toggle="false" data-parent="#accordion" href="#collapseSix"
-                  aria-expanded="false" aria-controls="collapseSix">Status</a>
+                  aria-expanded="false" aria-controls="collapseSix" data-btn-type="nav-tab" data-btn-name="Status">Status</a>
               </h4>
             </div>
           </div>
@@ -290,7 +284,30 @@
         <div class="sample-question-container">
           <div class="refresh-btn-sample-question"><i class="fa fa-refresh" aria-hidden="true"></i></div>
           <div class="row sample-question-area">
-
+          </div>
+        </div>
+        <div class="contact-container">
+          <div class="row contact-area">
+            <div class="form-group center">
+              <label for="title">Title:</label>
+              <input type="text" class="form-control contact-input">
+              <label for="comment">Comment:</label>
+              <textarea class="form-control contact-comment" rows="8"></textarea>
+              <div class="contact-btn-group">
+                <button type="button" class="btn btn-primary btn-contact-submit">Submit</button>
+                <button type="button" class="btn btn-danger btn-contact-discard">Discard</button>
+              </div>
+            </div>
+            <div class="form-group center">
+              <table class="responstable tbl-contact-ticket">
+                <tr>
+                  <th><span>Ticket ID</span></th>
+                  <th>Status</th>
+                  <th>Submit Time</th>
+                  <th>Comment</th>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
         <div class="row profile-area">
