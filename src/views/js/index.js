@@ -8,8 +8,23 @@ $(() => {
   });
 })
 
-const pageClass = ['.current-chat-area', '.profile-area', '.logged-questions', '.sample-question-container', '.server-status-area'];
-const pageTitle = ['Chatting with Prof.Nittany', 'Profile', 'Unsatisfying Question Console', 'Suggested Question Areas', 'AI Status'];
+const pageClass = [
+  '.current-chat-area',
+  '.profile-area',
+  '.logged-questions',
+  '.sample-question-container',
+  '.server-status-area',
+  '.contact-container'
+];
+const pageTitle = [
+  'Chatting with Prof.Nittany',
+  'Profile',
+  'Unsatisfying Question Console',
+  'Suggested Question Areas',
+  'Status',
+  'Contact Us'
+];
+const tabClass = ['.btn-sample-question', '.btn-contact', '.low-confidence', '.ai-status-tab'];
 
 if (!localStorage.hasOwnProperty('iaa-userToken')) {
   localStorage.setItem('iaa-userToken', JSON.stringify("null"));
@@ -105,6 +120,7 @@ $(() => {
   lightbox.option({'resizeDuration': 200, 'wrapAround': true});
   initUserAccountListener();
   initBtnHandler();
+  initContactPage();
   initBornTime();
   initAnswerVideoSizeFitOnResize();
   $('.password').tooltips();
@@ -207,8 +223,8 @@ $(document).on('click', '.question-tab', function(e) {
     showLowQuestions();
     $('.low-confidence').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Chat')
   } else {
-    $('.low-confidence').text("Unsatisfying Questions");
     hideAllPage();
+    $('.low-confidence').text("Unsatisfying Questions");
     showPage('.current-chat-area');
     $('.logged-questions').remove();
   }
@@ -222,8 +238,8 @@ $(document).on('click', '.server-status', function(e) {
     showAIStatus();
     $('.ai-status-tab').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Chat')
   } else {
-    $('.ai-status-tab').text("Status");
     hideAllPage();
+    $('.ai-status-tab').text("Status");
     showPage('.current-chat-area');
   }
   e.preventDefault();
@@ -695,7 +711,7 @@ function logQuestion(question) {
 function questionWrapper(question) {
   var questionListHTMLH = '<div class="panel-group scrollable logged-questions" id="accordion" role="tablist" aria-multiselectable="true">';
   var questionHTML = '';
-      questionHTML += '<div class="logged-questions-btn-group"><button type="button" class="btn-lg btn-default btn-mark-all-question">Mark All</button><button type="button" class="btn-lg btn-default btn-export-question">Export List</button><button class="btn-lg btn-default btn-mark-trained" type="button">Mark Trained</button></div>';
+  questionHTML += '<div class="logged-questions-btn-group"><button type="button" class="btn-lg btn-default btn-mark-all-question">Mark All</button><button type="button" class="btn-lg btn-default btn-export-question">Export List</button><button class="btn-lg btn-default btn-mark-trained" type="button">Mark Trained</button></div>';
   var questionListHTMLT = '</div>';
   for (let i = 0; i < question.length; i++) {
     questionHTML = questionHTML + '<div class="panel panel-default">';
@@ -745,6 +761,8 @@ const showAIStatus = () => {
     setTimeout(function() {
       removeLoadAnimationOn('.current-chat')
     }, 1000);
+    console.log(json);
+    $('.total-trained-question-count').text(json.trainedQuestionCount)
     showPage('.server-status-area');
   })
 }
@@ -874,6 +892,19 @@ const initBtnHandler = () => {
       showPage('.current-chat-area');
     }
   })
+  // reset sidebar btn title
+  $('[data-btn-type="nav-tab"]').each((i, e) => {
+    // i is current pressed btn index
+    $(e).click(() => {
+      $('[data-btn-type="nav-tab"]').each((index, ele) => {
+        // for all other sidebar btn
+        if (index != i) {
+          // reset to its orginal btn name
+          $(ele).text($(ele).data('btn-name'))
+        }
+      })
+    })
+  })
   // login & signup
   $('.btn-register').click(e => {
     e.preventDefault();
@@ -997,8 +1028,9 @@ const initBtnHandler = () => {
         });
       })
     } else {
-      $($('.btn-profile button')[0]).text('Profile');
+      // back to chat
       hideAllPage();
+      $($('.btn-profile button')[0]).text('Profile');
       showPage('.current-chat-area');
     }
 
@@ -1048,8 +1080,8 @@ const initBtnHandler = () => {
     localStorage['iaa-userToken'] = null;
     $('.question-tab').hide();
     $('.server-status').hide();
-    $('.lite-header').text("Welcome Visitor");
     hideAllPage();
+    $('.lite-header').text("Welcome Visitor");
     showPage('.current-chat-area');
   })
   // sample question refresh btn
@@ -1111,6 +1143,120 @@ const initGetSampleQuestion = () => {
       $('.btn-sample-question').text('Suggested Question');
       removeLoadAnimationOn('.current-chat');
     }
+  })
+}
+
+const initContactPage = () => {
+  // btn
+  $('.btn-contact').click((e) => {
+    e.preventDefault();
+    hideAllPage();
+    $(".tbl-contact-ticket tr td").remove();
+    $('.tbl-contact-ticket').hide();
+    if ($('.btn-contact').text().trim() === "Contact Us") {
+      $('.btn-contact').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Chat')
+      // get user ticket record
+      fetch("/contact/get-ticket", {
+        method: 'get',
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "x-access-token": JSON.parse(localStorage['iaa-userToken'])
+        }
+      }).then(response => {
+        removeLoadAnimationOn('.current-chat');
+        return(response.json())
+      }).then(res=>{
+        // if user not login
+        if (res.status=="success") {
+          $('.tbl-contact-ticket').show();
+          res.tickets.forEach(ticket=>{
+            $('.tbl-contact-ticket').append('<tr><td>'+ticket._id+'</td><td>'+ticket.status+'</td><td>'+moment(ticket.createdAt).format("dddd, h:mm a")+'</td><td>'+ticket.title+'<br>'+ticket.comment+'</td></tr>')
+          })
+        }
+      }).catch(err => {
+        $.notify(err, {
+          className: "warn",
+          clickToHide: true,
+          autoHide: true
+        })
+      })
+      showPage('.contact-container');
+    } else {
+      $('.btn-contact').text('Contact Us');
+      showPage('.current-chat-area');
+    }
+  })
+
+  // textarea
+  $('.contact-comment').keypress(function(event) {
+    // If the user has pressed enter
+    if (event.which === 13) {
+      event.preventDefault();
+      $('.contact-comment')[0].value = $('.contact-comment')[0].value + "\n";
+      return false;
+    } else {
+      return true;
+    }
+  })
+
+  // discard btn
+  $('.btn-contact-discard').click((e) => {
+    e.preventDefault();
+    $('.contact-input').val("");
+    $('.contact-comment').val("");
+  })
+  // submit btn
+  $('.btn-contact-submit').click((e) => {
+    e.preventDefault();
+    loadAnimationOn('.contact-container')
+    if ($('.contact-input').val().length==0 && $('.contact-comment').val().length==0) {
+      $.notify("Please fill the title and comment section.", {
+        className: "error",
+        clickToHide: true,
+        autoHide: true
+      })
+      removeLoadAnimationOn('.contact-container')
+      return false;
+    }
+    const title = $('.contact-input').val(), comment = $('.contact-comment').val();
+    fetch("/contact/submit-ticket", {
+      method: 'post',
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "x-access-token": JSON.parse(localStorage['iaa-userToken'])
+      },
+      body:"title="+title+"&comment="+comment
+    }).then(response => {
+      return (response.json())
+    }).then(res => {
+      // if user not login
+      if (res.hasOwnProperty('name') && res.name==="LoginError") {
+        $.notify("Please login to submit a ticket", {
+          className: "warn",
+          clickToHide: true,
+          autoHide: true
+        })
+        removeLoadAnimationOn('.contact-container')
+        setTimeout(()=>{$('.login-wrapper').find('button').click()},500)
+        return false;
+      }
+      removeLoadAnimationOn('.contact-container')
+      $.notify("Successfully submit your ticket", {
+        className: "success",
+        clickToHide: true,
+        autoHide: true
+      })
+      console.log(res);
+      $('.tbl-contact-ticket').append('<tr><td>' + res.ticket._id + '</td><td>' + res.ticket.status + '</td><td>' + moment(res.ticket.createdAt).format("dddd, h:mm a") + '</td><td>' + res.ticket.title + '<br>' + res.ticket.comment + '</td></tr>')
+      $('.btn-contact-discard').click()
+    }).catch(err => {
+      removeLoadAnimationOn('.contact-container')
+      $.notify(err, {
+        className: "error",
+        clickToHide: true,
+        autoHide: true
+      })
+    })
   })
 }
 
@@ -1259,10 +1405,18 @@ function createPie(dataElement, pieElement) {
 }
 
 const hideAllPage = () => {
-  // fill page class name here
   pageClass.forEach(page => {
     $(page).hide();
     $($(page)).removeClass('active');
+  })
+}
+
+const resetTabTitle = () => {
+  tabClass.forEach(e => {
+    const tabTitle = $(e).text()
+    if (tabTitle == "Back to Chat") {
+      $(e).text($(e).data('btn-name'))
+    }
   })
 }
 

@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var comment = new Schema({
   postedBy: {
-    type: mongoose.Schema.Type.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User"
   },
   body: String
@@ -24,12 +24,12 @@ var ProfileAssessement = new Schema({
   personality_comment: [comment],
   interest: [
     {
-      type: mongoose.Schema.Type.Mixed
+      type: mongoose.Schema.Types.Mixed
     }
   ],
   interest_mamual: [
     {
-      type: mongoose.Schema.Type.Mixed
+      type: mongoose.Schema.Types.Mixed
     }
   ],
   interest_comment: [comment],
@@ -37,12 +37,12 @@ var ProfileAssessement = new Schema({
   introduction_comment: [comment],
   send_to: [
     {
-      type: mongoose.Schema.Type.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User"
     }
   ],
   submitter: {
-    type: mongoose.Schema.Type.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User"
   },
   status: {
