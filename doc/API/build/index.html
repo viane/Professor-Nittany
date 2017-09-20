@@ -230,6 +230,9 @@
                     <a href="#local-signup" class="toc-h2 toc-link" data-title="Uers">Local Signup</a>
                   </li>
                   <li>
+                    <a href="#get-password-rules" class="toc-h2 toc-link" data-title="Uers">Get Password Rules</a>
+                  </li>
+                  <li>
                     <a href="#get-major-list" class="toc-h2 toc-link" data-title="Uers">Get Major List</a>
                   </li>
                   <li>
@@ -413,7 +416,7 @@ The response are either success or error.
 <blockquote>
 <p>To locally sign up a user, use this code:</p>
 </blockquote>
-<pre class="highlight javascript tab-javascript"><code>  <span class="nx">fetch</span><span class="p">(</span><span class="s2">"/questions/send-lite"</span><span class="p">,</span> <span class="p">{</span>  
+<pre class="highlight javascript tab-javascript"><code>  <span class="nx">fetch</span><span class="p">(</span><span class="s2">"/users/signup"</span><span class="p">,</span> <span class="p">{</span>  
   <span class="na">method</span><span class="p">:</span> <span class="s1">'post'</span><span class="p">,</span>  
   <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>  
     <span class="s2">"Content-type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
@@ -424,7 +427,7 @@ The response are either success or error.
         <span class="s1">'first_name'</span><span class="p">:</span><span class="s1">''</span><span class="p">,</span>
         <span class="s1">'last_name'</span><span class="p">:</span><span class="s1">''</span><span class="p">,</span>
         <span class="s1">'account_role'</span><span class="p">:</span><span class="s1">''</span><span class="p">,</span>
-        <span class="s1">'majors'</span><span class="p">:[]</span> <span class="c1">//allow double or triple majors. An array of major document id</span>
+        <span class="s1">'major'</span><span class="p">:[]</span> <span class="c1">//allow double or triple majors. An array of major document id such as ["59868428a9a69f4d0028cd58"]</span>
   <span class="p">})</span>
 <span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
 <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">json</span><span class="o">=&gt;</span> <span class="p">{</span>
@@ -458,14 +461,14 @@ The response are either success or error.
 <td>The password of account</td>
 </tr>
 <tr>
-<td>majors</td>
-<td>An array of document id</td>
+<td>major</td>
+<td>An array of majors&#39; document id</td>
 </tr>
 </tbody></table>
 
 <aside class="notice">The response are either success or error.</aside>
 
-<aside class="notice">Majors is an array of document id</aside>
+<aside class="notice">major is an array of majors' document id</aside>
 <pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
     </span><span class="s2">"err"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
         </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UserExistsError"</span><span class="p">,</span><span class="w">
@@ -520,7 +523,60 @@ The response are either success or error.
 <td>Successfully create the account, server has sent out an activation email to the email beening registered</td>
 </tr>
 </tbody></table>
-<h2 id='get-major-list'>Get Major List</h2><h3 id='http-request-3'>HTTP Request</h3>
+<h2 id='get-password-rules'>Get Password Rules</h2><h3 id='http-request-3'>HTTP Request</h3>
+<p><code>POST /users/get-password-rules</code></p>
+
+<blockquote>
+<p>To locally sign in a user, use this code:</p>
+</blockquote>
+<pre class="highlight javascript tab-javascript"><code>  <span class="nx">fetch</span><span class="p">(</span><span class="s2">"/users/get-password-rules"</span><span class="p">,</span> <span class="p">{</span>  
+    <span class="na">method</span><span class="p">:</span> <span class="s1">'get'</span>
+  <span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">json</span><span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// response message will be in json</span>
+  <span class="p">});</span>
+</code></pre>
+<p>There should not be any error response.</p>
+<h3 id='example-response-of-successful-signin-2'>Example response of successful signin:</h3><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"min_lowercase_letter"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"min_uppercase_letter"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"min_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"min_length"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"max_special_character"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<table><thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>min_lowercase_letter</td>
+<td>the minimum number of lowercase letter required</td>
+</tr>
+<tr>
+<td>min_uppercase_letter</td>
+<td>the minimum number of uppercase letter required</td>
+</tr>
+<tr>
+<td>min_number</td>
+<td>the minimum number of digit character required</td>
+</tr>
+<tr>
+<td>min_length</td>
+<td>the minimum length of the password</td>
+</tr>
+<tr>
+<td>max_special_character</td>
+<td>the maximum number of special character</td>
+</tr>
+</tbody></table>
+
+<aside class="notice">
+`token: xxxx...` is logined user identifier for all requests.
+</aside>
+<h2 id='get-major-list'>Get Major List</h2><h3 id='http-request-4'>HTTP Request</h3>
 <p><code>POST /users/signup</code></p>
 
 <blockquote>
@@ -733,9 +789,9 @@ The response are either success or error.
 </tbody></table>
 
 <aside class="notice">There should not be any client side error. Either shown or not.</aside>
-<h2 id='local-account-activation'>Local Account Activation</h2><h3 id='http-request-4'>HTTP Request</h3>
+<h2 id='local-account-activation'>Local Account Activation</h2><h3 id='http-request-5'>HTTP Request</h3>
 <p><code>GET /users/active-account/{token}</code></p>
-<h2 id='request-account-password-change'>Request Account Password Change</h2><h3 id='http-request-5'>HTTP Request</h3>
+<h2 id='request-account-password-change'>Request Account Password Change</h2><h3 id='http-request-6'>HTTP Request</h3>
 <p><code>POST /users/request-reset-password</code></p>
 
 <blockquote>
@@ -760,7 +816,7 @@ The response are either success or error.
     </span><span class="s2">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"An e-mail has been sent to harryhappy111@gmail.com with further instructions."</span><span class="p">,</span><span class="w">
     </span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6076253795a31fade21b1c6b106cd0bf1df08334"</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre><h2 id='get-email-by-password-request-token-the-link-will-be-in-the-user-39-s-email'>Get Email by Password Request Token (The link will be in the user&#39;s email)</h2><h3 id='http-request-6'>HTTP Request</h3>
+</span></code></pre><h2 id='get-email-by-password-request-token-the-link-will-be-in-the-user-39-s-email'>Get Email by Password Request Token (The link will be in the user&#39;s email)</h2><h3 id='http-request-7'>HTTP Request</h3>
 <p><code>GET /users/update-password/{token}</code></p>
 
 <p>Sever will send back user&#39;s email and token, which are used to update password.</p>
@@ -768,7 +824,7 @@ The response are either success or error.
     </span><span class="s2">"email"</span><span class="p">:</span><span class="s2">"harryhappy111@gmail.com"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"token"</span><span class="p">:</span><span class="s2">"6076253795a31fade21b1c6b106cd0bf1df08334"</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre><h2 id='update-account-password'>Update Account Password</h2><h3 id='http-request-7'>HTTP Request</h3>
+</span></code></pre><h2 id='update-account-password'>Update Account Password</h2><h3 id='http-request-8'>HTTP Request</h3>
 <p><code>POST /users/update-password</code></p>
 
 <blockquote>
@@ -813,7 +869,7 @@ The response are either success or error.
 <td>Access token</td>
 </tr>
 </tbody></table>
-<h2 id='facebook-signin'>Facebook SignIn</h2><h3 id='http-request-8'>HTTP Request</h3>
+<h2 id='facebook-signin'>Facebook SignIn</h2><h3 id='http-request-9'>HTTP Request</h3>
 <p><code>Get /users/signup-facebook</code></p>
 <h3 id='example-callback-response-of-successful-signin-at-code-users-signin-callback-xxx-xxx-code'>Example callback response of successful signin at <code>/users/signin/callback?xxx=xxx</code>:</h3><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
     </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Login successful!"</span><span class="p">,</span><span class="w">
@@ -844,7 +900,7 @@ The response are either success or error.
 <aside class="notice">
 `token: xxxx...` is logined user identifier for all requests.
 </aside>
-<h2 id='google-signin'>Google SignIn</h2><h3 id='http-request-9'>HTTP Request</h3>
+<h2 id='google-signin'>Google SignIn</h2><h3 id='http-request-10'>HTTP Request</h3>
 <p><code>Get /users/signup-google</code></p>
 <h3 id='example-callback-response-of-successful-signin-at-code-users-signin-callback-xxx-xxx-code-2'>Example callback response of successful signin at <code>/users/signin/callback?xxx=xxx</code>:</h3><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
     </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Login successful!"</span><span class="p">,</span><span class="w">
@@ -875,7 +931,7 @@ The response are either success or error.
 <aside class="notice">
 `token: xxxx...` is logined user identifier for all requests.
 </aside>
-<h2 id='linkedin-signin'>Linkedin SignIn</h2><h3 id='http-request-10'>HTTP Request</h3>
+<h2 id='linkedin-signin'>Linkedin SignIn</h2><h3 id='http-request-11'>HTTP Request</h3>
 <p><code>Get /users/signup-linkedin</code></p>
 <h3 id='example-callback-response-of-successful-signin-at-code-users-signin-callback-xxx-xxx-code-3'>Example callback response of successful signin at <code>/users/signin/callback?xxx=xxx</code>:</h3><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
     </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Login successful!"</span><span class="p">,</span><span class="w">
@@ -906,7 +962,7 @@ The response are either success or error.
 <aside class="notice">
 `token: xxxx...` is logined user identifier for all requests.
 </aside>
-<h2 id='twitter-signin-currently-disabled'>Twitter SignIn (Currently Disabled)</h2><h3 id='http-request-11'>HTTP Request</h3>
+<h2 id='twitter-signin-currently-disabled'>Twitter SignIn (Currently Disabled)</h2><h3 id='http-request-12'>HTTP Request</h3>
 <p><code>Get /users/signup-twitter</code></p>
 <h3 id='example-callback-response-of-successful-signin-at-code-users-signin-callback-xxx-xxx-code-4'>Example callback response of successful signin at <code>/users/signin/callback?xxx=xxx</code>:</h3><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
     </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Login successful!"</span><span class="p">,</span><span class="w">
@@ -2075,7 +2131,7 @@ The response are either success or error due to invalid token.
 <blockquote>
 <p>To add or update a user&#39;s introduction by a text or word file, use this code:</p>
 </blockquote>
-<pre class="highlight javascript tab-javascript"><code><span class="kd">let</span> <span class="nx">formData</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
+<pre class="highlight javascript tab-javascript"><code><span class="kd">let</span> <span class="nx">formData</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span><span class="c1">//input file name must be introduction</span>
 <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"userfile"</span><span class="p">,</span> <span class="nx">fileInputElement</span><span class="p">.</span><span class="nx">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
 
 <span class="nx">fetch</span><span class="p">(</span><span class="s2">"/profile/update-introduction-by-file"</span><span class="p">,</span> <span class="p">{</span>  
@@ -2090,6 +2146,10 @@ The response are either success or error due to invalid token.
   <span class="c1">// now response is in json</span>
 <span class="p">});</span>
 </code></pre>
+<aside class="warning">
+The name property of file type input must be "introduction".
+</aside>
+
 <p>The API requires 1 token in the header</p>
 
 <table><thead>
@@ -2119,7 +2179,7 @@ The response are either success or error due to invalid token.
 </tbody></table>
 
 <aside class="warning">
-The API only accept file that has extension of .txt, .doc or .docx
+The API only accept file that has extension of .txt.
 </aside>
 <h3 id='example-response-of-error-7'>Example response of error:</h3><pre class="highlight json tab-json"><code><span class="err">//</span><span class="w"> </span><span class="err">error</span><span class="w"> </span><span class="err">due</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">incorrect</span><span class="w"> </span><span class="err">token</span><span class="w">
 </span><span class="p">{</span><span class="w">
