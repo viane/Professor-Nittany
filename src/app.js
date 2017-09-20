@@ -45,7 +45,8 @@ app.use(uploadfile());
 //app.use(session({secret:config.secret, resave: false, saveUninitialized:false}));//commented because twitter signin disabled
 app.use(passport.initialize());
 //app.use(passport.session());//commented because twitter signin disabled
-app.use(express.static(path.join(__dirname, 'views')));
+app.use(express.static(path.join(__dirname, 'views'))); // front end
+app.use('/dev-center',express.static(path.join(__dirname, 'doc/API/build'))); // API doc
 require('./routes/index')(app);
 
 // catch 404 and forward to error handler

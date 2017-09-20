@@ -38,6 +38,7 @@ p {
   font-size: 1.5rem;
 }
 
+
 /*
 a {
   color: #fbff00;
@@ -107,7 +108,6 @@ html, body {
   height: 100vh;
   position: relative;
   overflow-y: auto;
-  width: 22%;
 }
 
 .title>img {
@@ -128,7 +128,9 @@ html, body {
   height: auto;
 }
 
+
 /* centers the buttons at the bottom of the sidebar */
+
 .centering {
   display: flex;
   justify-content: center;
@@ -164,6 +166,7 @@ html, body {
   padding-right: 20px;
 }
 
+
 /*
 .login-wrapper, .btn-profile {
   transform: translate(-50%, 25%);
@@ -186,6 +189,7 @@ html, body {
   margin-top: 20px;
   box-shadow: 0 0 7px black;
 }
+
 .arrow {
   width: 70px;
   height: 16px;
@@ -195,6 +199,7 @@ html, body {
   margin-left: -35px;
   bottom: -16px;
 }
+
 .arrow:after {
   content: "";
   position: absolute;
@@ -202,29 +207,29 @@ html, body {
   top: -20px;
   width: 25px;
   height: 25px;
-  -webkit-box-shadow: 6px 5px 9px -9px black,
-                      5px 6px 9px -9px black;
-  -moz-box-shadow: 6px 5px 9px -9px black,
-                   5px 6px 9px -9px black;
-  box-shadow: 6px 5px 9px -9px black,
-              5px 6px 9px -9px black;
+  -webkit-box-shadow: 6px 5px 9px -9px black, 5px 6px 9px -9px black;
+  -moz-box-shadow: 6px 5px 9px -9px black, 5px 6px 9px -9px black;
+  box-shadow: 6px 5px 9px -9px black, 5px 6px 9px -9px black;
   -webkit-transform: rotate(45deg);
-  -moz-transform:    rotate(45deg);
-  -ms-transform:     rotate(45deg);
-  -o-transform:      rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
 }
+
 .tooltip.active {
   opacity: 1;
   margin-top: 5px;
   -webkit-transition: all 0.2s ease;
-  -moz-transition:    all 0.2s ease;
-  -ms-transition:     all 0.2s ease;
-  -o-transition:      all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -ms-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
 }
+
 .tooltip.out {
   opacity: 0;
   margin-top: -20px;
 }
+
 
 /*
 .register-wrapper, .logout {
@@ -292,11 +297,16 @@ html, body {
 
 /* ------------------- CHAT AREA CSS ------------------- */
 
-.current-chat, .profile {
+.current-chat{
   height: 100vh;
   overflow: auto;
-  width: 78%;
 }
+
+ .profile {
+   height: 100vh;
+   overflow: auto;
+   width: 78%;
+ }
 
 .current-chat-area {
   padding-top: 5px;
@@ -509,8 +519,6 @@ html, body {
   height: 80px;
 }
 
-
-
 .media-watson-info {
   max-width: 88%;
   border-left: 2px solid;
@@ -523,7 +531,7 @@ html, body {
   float: left;
 }
 
-.answer-switch-btn{
+.answer-switch-btn {
   display: inline-block;
   padding-right: 15px;
 }
@@ -596,12 +604,12 @@ html, body {
   color: #000
 }
 
-.contact-btn-group{
+.contact-btn-group {
   position: relative;
   width: 80%;
 }
 
-.btn-contact-submit{
+.btn-contact-submit {
   margin-left: 40%;
   margin-right: 20px;
 }
@@ -611,8 +619,8 @@ html, body {
   font-size: 1.2em;
   margin-top: 20px;
   font-weight: 100;
-  padding: 10px 20px 10px 20px;15px 20px 15px 20px
-  em;
+  padding: 10px 20px 10px 20px;
+  15px 20px 15px 20px em;
 }
 
 .answer-extra-info {
@@ -822,7 +830,7 @@ html, body {
   max-width: 80%;
 }
 
-.step-content .step ~ .step{
+.step-content .step~.step {
   display: none;
 }
 
@@ -1125,6 +1133,7 @@ body {
   background-color: #4f8dcc;
   color: #ffffff;
 }
+
 
 /*
 .forgetPassword {}
@@ -1438,17 +1447,19 @@ main {
   display: none;
 }
 
-.logged-questions-btn-group{
+.logged-questions-btn-group {
   position: fixed;
   display: block;
   clear: both;
   top: 13px;
 }
-.unsatisfy-question-body{
+
+.unsatisfy-question-body {
   padding-left: 10px;
-text-decoration: none;
+  text-decoration: none;
 }
-.unsatisfy-question-feature{
+
+.unsatisfy-question-feature {
   float: left;
   border: 1px solid lightblue;
   border-radius: 11px;
@@ -1456,20 +1467,24 @@ text-decoration: none;
   padding: 0 10px 0 10px;
   margin-left: 28px;
 }
-.sample-question-container,.contact-container{
+
+.sample-question-container, .contact-container {
   display: none;
 }
-.center{
+
+.center {
   position: relative;
-  te; */
-  width: 76%;
+  te;
+  */ width: 76%;
   left: 10%;
   margin-top: 5%;
 }
-.contact-input,.contact-comment{
+
+.contact-input, .contact-comment {
   width: 80%;
   resize: vertical;
 }
+
 .refresh-btn-sample-question {
   position: relative;
   padding: 10px 0 30px 0;
@@ -1516,9 +1531,9 @@ text-decoration: none;
 }
 
 .spin {
-    -webkit-animation:spin 4s linear infinite;
-    -moz-animation:spin 4s linear infinite;
-    animation:spin 4s linear infinite;
+  -webkit-animation: spin 4s linear infinite;
+  -moz-animation: spin 4s linear infinite;
+  animation: spin 4s linear infinite;
 }
 
 @-moz-keyframes spin {
@@ -1540,14 +1555,17 @@ text-decoration: none;
   }
 }
 
-.server-status, .ai-status-container,.server-status-area{
+.server-status, .ai-status-container, .server-status-area {
   display: none;
 }
 
+
 /*table*/
-.tbl-contact-ticket{
+
+.tbl-contact-ticket {
   display: none;
 }
+
 .responstable {
   margin: 1em 0;
   width: 80%;
@@ -1557,12 +1575,15 @@ text-decoration: none;
   border-radius: 10px;
   border: 1px solid #167F92;
 }
+
 .responstable tr {
   border: 1px solid #D9E4E6;
 }
+
 .responstable tr:nth-child(odd) {
   background-color: #EAF3F3;
 }
+
 .responstable th {
   display: none;
   border: 1px solid #FFF;
@@ -1570,24 +1591,30 @@ text-decoration: none;
   color: #FFF;
   padding: 1em;
 }
+
 .responstable th:first-child {
   display: table-cell;
   text-align: center;
   min-width: 117px;
 }
+
 .responstable th:nth-child(2) {
   min-width: 46px;
   display: table-cell;
 }
+
 .responstable th:nth-child(2) span {
   display: none;
 }
+
 .responstable th:nth-child(2):after {
   content: attr(data-th);
 }
-.responstable th:nth-child(4){
+
+.responstable th:nth-child(4) {
   min-width: 223px;
 }
+
 @media (min-width: 480px) {
   .responstable th:nth-child(2) span {
     display: block;
@@ -1596,25 +1623,30 @@ text-decoration: none;
     display: none;
   }
 }
+
 .responstable td {
   display: block;
   word-wrap: break-word;
   max-width: 7em;
 }
+
 .responstable td:first-child {
   display: table-cell;
   text-align: center;
   border-right: 1px solid #D9E4E6;
 }
+
 @media (min-width: 480px) {
   .responstable td {
     border: 1px solid #D9E4E6;
   }
 }
+
 .responstable th, .responstable td {
   text-align: left;
   margin: .5em 1em;
 }
+
 @media (min-width: 480px) {
   .responstable th, .responstable td {
     display: table-cell;
