@@ -7,7 +7,7 @@
     "dev-start": "npm run build && nodemon --exec babel-node ./public/bin/www",
     "watch": "babel --watch src --out-dir public --source-maps inline --copy-files",
     "build": "babel src --out-dir public --source-maps inline --copy-files",
-    "complie-dev-doc":"cd doc/API/ && NO_CONTRACTS=true bundle exec middleman build",
+    "complie-dev-doc":"cd doc/API/ && gem install bundler && bundle install -j4 && NO_CONTRACTS=true bundle exec middleman build",
     "hashJS": "javascript-obfuscator public/views/js/index.js --output public/views/js/index.js --compact true --selfDefending true --deadCodeInjection false --disableConsoleOutput true --mangle true --seed 0 && javascript-obfuscator public/views/js/intro.js --output public/views/js/intro.js --compact true --selfDefending true --deadCodeInjection false --disableConsoleOutput true --mangle true --seed 0 && javascript-obfuscator public/views/js/forgot-pass.js --output public/views/js/forgot-pass.js --compact true --selfDefending true --deadCodeInjection false --disableConsoleOutput true --mangle true --seed 0 && javascript-obfuscator public/views/js/profile.js --output public/views/js/profile.js --compact true --selfDefending true --deadCodeInjection false --disableConsoleOutput true --mangle true --seed 0 && javascript-obfuscator public/views/js/redirect.js --output public/views/js/redirect.js --compact true --selfDefending true --deadCodeInjection false --disableConsoleOutput true --mangle true --seed 0 && javascript-obfuscator public/views/js/register.js --output public/views/js/register.js --compact true --selfDefending true --deadCodeInjection false --disableConsoleOutput true --mangle true --seed 666"
   },
   "babel": {
