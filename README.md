@@ -10,7 +10,7 @@
 
 ### Config
 
->Fill the service username and password that you need in /src/config-template.js, then <b>rename<b> to config.js
+>Fill the service username and password that you need in /src/config-template.js, then <b>rename</b> to config.js
 
 ### How to use
 
