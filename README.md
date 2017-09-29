@@ -6,8 +6,11 @@
 
 ### APIs
 
-[API]https://viane.github.io/Intelligent-Academic-Advisor/
+[API](https://viane.github.io/Intelligent-Academic-Advisor/)
 
+### Config
+
+>Fill the service username and password that you need in /src/config-template.js, then <b>rename<b> to config.js
 
 ### How to use
 
