@@ -14,7 +14,8 @@ const pageClass = [
   '.logged-questions',
   '.sample-question-container',
   '.server-status-area',
-  '.contact-container'
+  '.contact-container',
+  '.dev-team-area'
 ];
 const pageTitle = [
   'Chatting with Prof.Nittany',
@@ -22,9 +23,10 @@ const pageTitle = [
   'Unsatisfying Question Console',
   'Suggested Question Areas',
   'Status',
-  'Contact Us'
+  'Contact Us',
+  'Developer Team'
 ];
-const tabClass = ['.btn-sample-question', '.btn-contact', '.low-confidence', '.ai-status-tab'];
+const tabClass = ['.btn-sample-question', '.btn-contact', '.low-confidence', '.ai-status-tab','.team-tab'];
 
 if (!localStorage.hasOwnProperty('iaa-userToken')) {
   localStorage.setItem('iaa-userToken', JSON.stringify("null"));
@@ -240,6 +242,20 @@ $(document).on('click', '.server-status', function(e) {
   } else {
     hideAllPage();
     $('.ai-status-tab').text("Status");
+    showPage('.current-chat-area');
+  }
+  e.preventDefault();
+});
+
+// Developer Team switch btn
+$(document).on('click', '.show-dev-team', function(e) {
+  if ($('.show-dev-team').text().trim() == "Developer Team") {
+    hideAllPage();
+    showDeveloperTeam();
+    $('.show-dev-team').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Chat')
+  } else {
+    hideAllPage();
+    $('.show-dev-team').text("Developer Team");
     showPage('.current-chat-area');
   }
   e.preventDefault();
@@ -831,6 +847,42 @@ function showLowQuestions() {
     })
   })
 
+}
+
+const showDeveloperTeam = ()=>{
+  $('.dev-team-wrapper #hexGrid').empty()
+
+  // load team member
+  // template:
+    // <li class="hex">
+    //   <a class="hexIn" href="#">
+    //                  <img src="https://farm9.staticflickr.com/8461/8048823381_0fbc2d8efb.jpg" alt="" />
+    //                  <h1>{{Name}}</h1>
+    //                  <p>{{Detail description}}</p>
+    //              </a>
+    // </li>
+  const dummyData = [{
+    name:'xyz',
+    description:`I am The One`,
+    avatar:`https://farm9.staticflickr.com/8461/8048823381_0fbc2d8efb.jpg`,
+    skills:['web-dev','full-stack'],
+    link:`www...`
+  }]
+
+  dummyData.map((data) => {
+    const domEle = `
+    <li class="hex">
+      <a class="hexIn" href="#">
+                     <img src="${data.avatar}" alt="" />
+                     <h1>${data.name}</h1>
+                     <p>${data.description}</p>
+                 </a>
+    </li>
+    `
+    $('.dev-team-wrapper #hexGrid').append(domEle)
+  })
+
+    showPage('.dev-team-area')
 }
 
 // -------------------------------------- Sign in Stuff ---------------------------------- //
