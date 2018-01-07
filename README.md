@@ -1,4 +1,4 @@
-# Intelligent Academic Planner
+# Professor Nittany (Formerly ```Intelligent Academic Adavisor```)
 
 [![Build Status](https://travis-ci.com/viane/Intelligent-Academic-Planner.svg?token=XgfkcuxVwTbc4rLjo63E&branch=master)](https://travis-ci.com/viane/Intelligent-Academic-Planner)
 
@@ -6,7 +6,7 @@
 
 ### APIs
 
-[API](https://viane.github.io/Intelligent-Academic-Advisor/)
+[Link to API document](https://viane.github.io/Professor-Nittany/)
 
 ### Config
 
@@ -25,4 +25,4 @@ npm run dev-start
 npm run watch
 ```
 ### Demo
-[Demo](https://intelligent-student-advisor.herokuapp.com/)
+[Living Alpha Version Demo](https://intelligent-student-advisor.herokuapp.com/)
