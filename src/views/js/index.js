@@ -858,30 +858,28 @@ const showDeveloperTeam = ()=>{
     //   <a class="hexIn" href="#">
     //                  <img src="https://farm9.staticflickr.com/8461/8048823381_0fbc2d8efb.jpg" alt="" />
     //                  <h1>{{Name}}</h1>
-    //                  <p>{{Detail description}}</p>
+    //                  <p>{{titles}}</p>
     //              </a>
     // </li>
-  const dummyData = [{
-    name:'xyz',
-    description:`I am The One`,
-    avatar:`https://farm9.staticflickr.com/8461/8048823381_0fbc2d8efb.jpg`,
-    skills:['web-dev','full-stack'],
-    link:`www...`
-  }]
 
-  dummyData.map((data) => {
-    const domEle = `
-    <li class="hex">
-      <a class="hexIn" href="#">
-                     <img src="${data.avatar}" alt="" />
-                     <h1>${data.name}</h1>
-                     <p>${data.description}</p>
-                 </a>
-    </li>
-    `
-    $('.dev-team-wrapper #hexGrid').append(domEle)
+
+  fetch('/status/team-member').then(res => {return res.json()}).then(data=>{
+    console.log(data);
+    data.map((data) => {
+      const titleStr = data['main-title'].join(',')
+      const domEle = `
+      <li class="hex">
+        <a class="hexIn" href="#">
+                       <img src="${data.avatar}" alt="" />
+                       <h1>${data.name}</h1>
+                       <p>${titleStr}</p>
+                   </a>
+      </li>
+      `
+      $('.dev-team-wrapper #hexGrid').append(domEle)
+    })
+
   })
-
     showPage('.dev-team-area')
 }
 
