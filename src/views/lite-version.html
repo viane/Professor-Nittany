@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -400,45 +399,59 @@
         </div>
         <div class="dev-team-area">
           <div class="row">
-            <div class="dev-team-wrapper"><i class="fa fa-terminal" aria-hidden="true"></i>
+            <div class="dev-team-wrapper">
               <ul id="hexGrid">
-                
-
               </ul>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <!-- modal form Nor Currently Needed
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Modal title</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Test for when we need a form&hellip;</p>
-                        <form>
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="inputFName" placeholder="First Name">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="inputLName" placeholder="Last Name">
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary">Submit</button>
-                    </div>
+    <div class="modal fade" id="team-member-info-modal" tabindex="-1" role="dialog" aria-labelledby="team-member-info-modal-Label" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="team-member-info-modal-Label"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <div class="col-md-6">
+                  <div class="avatar-container">
+                  	<div class="avatar">
+                  		<a href="#">
+                  			<img class="col-form-label label-avatar" >
+                  		</a>
+                  	</div>
+                  </div>
                 </div>
-                 /.modal-content
-            </div>
-            <!-- /.modal-dialog
-        </div> -->
-    <!-- /.modal -->
+                <div class="col-md-6">
+                  <label class="col-form-label" for="member-name">Name:</label>
+                  <label class="col-form-label label-name">{{member-name}}</label>
+
+                  <label class="col-form-label" for="member-name">Role:</label>
+                  <label class="col-form-label label-title" id="member-title">{{member-title}}</label>
+
+                  <label class="col-form-label label-description" id="member-description">{{member-description}}</label>
+
+                  <label class="col-form-label" for="member-name">Skill(s):</label>
+                  <label class="col-form-label label-skill" id="member-skill">{{member-skill}}</label>
+
+                  <label class="col-form-label" for="member-name">Link:</label>
+                  <label class="col-form-label label-link" id="member-link">{{member-link}}</label>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 </body>
 
 </html>

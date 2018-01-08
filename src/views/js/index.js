@@ -853,7 +853,40 @@ const showDeveloperTeam = ()=>{
   $('.dev-team-wrapper #hexGrid').empty()
 
   // load team member
-  // template:
+
+  const assignHandler = ()=>{
+    $('.team-member-container').each((index,el)=>{
+      console.log($(el).attr('data-name'))
+
+    })
+
+    $('#team-member-info-modal').on('show.bs.modal', function (event) {
+      const button = $(event.relatedTarget) // Button that triggered the modal
+      const developerName = button.data('name') // Extract info from data-* attributes
+      const developerDescription = button.data('description')
+      const developerSkill = button.data('skill')
+      const developerTitile = button.data('title')
+      const developerLink = button.data('link')
+      const developerAvatar = button.data('avatar')
+
+      // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+      // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+      var modal = $(this)
+      modal.find('.modal-title').html('<i class="fa fa-terminal" aria-hidden="true"></i> &nbsp;Developer Detail')
+
+      modal.find('.modal-body .label-name').text(capitalizeFirstLetter(developerName))
+      modal.find('.modal-body .label-description').text(developerDescription)
+      modal.find('.modal-body .label-title').text(developerTitile)
+      modal.find('.modal-body .label-skill').text(developerSkill)
+      modal.find('.modal-body .label-link').text(developerLink)
+      modal.find('.modal-body .label-avatar').attr('src',developerAvatar)
+
+      console.log(developerDescription + developerSkill+ developerTitile+ developerLink + developerAvatar);
+    })
+  }
+
+  const fetchAndRender = ()=>{
+    // template:
     // <li class="hex">
     //   <a class="hexIn" href="#">
     //                  <img src="https://farm9.staticflickr.com/8461/8048823381_0fbc2d8efb.jpg" alt="" />
@@ -861,26 +894,36 @@ const showDeveloperTeam = ()=>{
     //                  <p>{{titles}}</p>
     //              </a>
     // </li>
+    fetch('/status/team-member').then(res => {return res.json()}).then(data=>{
+      data.map((data) => {
+        const titleArray = shuffleArray(data['main-title'])
+        let titleStr = ''
+        if (titleArray.length>3) {
+          for (var i = 0; i < 3; i++) {
+              titleStr += titleArray[i] + "</br>"
+          }
+          titleStr += " ..."
+        }else {
+          titleStr = titleArray.join(',')
+        }
+        const domEle = `
+                          <li class="team-member-container hex" data-avatar="${data.avatar}"  data-name="${data.name}" data-title="${data['main-title']}"  data-description="${data.description}" data-skill="${data.skill}"  data-link="${data.link}" data-toggle="modal"  data-target="#team-member-info-modal" data-whatever="@mdo">
+                            <a class="hexIn" href="#">
+                               <img src="${data.avatar}" alt="user-avatar" />
+                               <h1>${data.name}</h1>
+                               <p>${titleStr}</p>
+                            </a>
+                          </li>
+                        `
+        $('.dev-team-wrapper #hexGrid').append(domEle)
+      })
 
-
-  fetch('/status/team-member').then(res => {return res.json()}).then(data=>{
-    console.log(data);
-    data.map((data) => {
-      const titleStr = data['main-title'].join(',')
-      const domEle = `
-      <li class="hex">
-        <a class="hexIn" href="#">
-                       <img src="${data.avatar}" alt="" />
-                       <h1>${data.name}</h1>
-                       <p>${titleStr}</p>
-                   </a>
-      </li>
-      `
-      $('.dev-team-wrapper #hexGrid').append(domEle)
-    })
-
-  })
+    assignHandler()
     showPage('.dev-team-area')
+    })
+  }
+
+  fetchAndRender()
 }
 
 // -------------------------------------- Sign in Stuff ---------------------------------- //
@@ -1397,6 +1440,26 @@ const capitalizeFirstLetter = (str) => {
   return str.toLowerCase().split(' ').map(function(word) {
     return word[0].toUpperCase() + word.substr(1);
   }).join(' ');
+}
+
+const shuffleArray = (array)=> {
+    let counter = array.length;
+
+    // While there are elements in the array
+    while (counter > 0) {
+        // Pick a random index
+        let index = Math.floor(Math.random() * counter);
+
+        // Decrease counter by 1
+        counter--;
+
+        // And swap the last element with it
+        let temp = array[counter];
+        array[counter] = array[index];
+        array[index] = temp;
+    }
+
+    return array;
 }
 
 function sliceSize(dataNum, dataTotal) {
