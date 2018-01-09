@@ -864,8 +864,27 @@ const showDeveloperTeam = ()=>{
       const button = $(event.relatedTarget) // Button that triggered the modal
       const developerName = button.data('name') // Extract info from data-* attributes
       const developerDescription = button.data('description')
-      const developerSkill = button.data('skill')
-      const developerTitile = button.data('title')
+      const developerSkill = button.data('skill').split(',').map(skill => {
+        return '<span class="btn btn-primary developer-skill">' + skill + '</span>'
+      })
+      const badgeColors = ["yellow","orange","pink","red","purple","teal","blue","blue-dark","green","green-dark","silver","gold"]
+      const developerTitile = button.data('title').split(',').map(title => {
+        /*
+        <!-- Badge Template -->
+        <div class="badge-wrapper">
+          ...
+          <div class="badge yellow">
+            <div class="circle"> <i class="fa fa-code-fork"></i></div>
+            <div class="ribbon">Title</div>
+          </div>
+          ...
+        </div>
+
+        Colors: [yellow,orange,pink,red,purple,teal,blue,blue-dark,green,green-dark,silver,gold]
+         */
+        const domEle = '<div class="title-badge '+ badgeColors[0] +'"><div class="circle"> <i class="fa fa-code-fork"></i></div><div class="ribbon">'+title+'</div></div>'
+        return domEle
+      })
       const developerLink = button.data('link')
       const developerAvatar = button.data('avatar')
 
@@ -876,9 +895,9 @@ const showDeveloperTeam = ()=>{
 
       modal.find('.modal-body .label-name').text(capitalizeFirstLetter(developerName))
       modal.find('.modal-body .label-description').text(developerDescription)
-      modal.find('.modal-body .label-title').text(developerTitile)
-      modal.find('.modal-body .label-skill').text(developerSkill)
-      modal.find('.modal-body .label-link').text(developerLink)
+      modal.find('.modal-body .label-title .badge-wrapper').html(developerTitile)
+      modal.find('.modal-body .label-skill').html(developerSkill)
+      modal.find('.modal-body .label-link').html(`<a target="_blank" href="${developerLink}">${developerLink}</a>`)
       modal.find('.modal-body .label-avatar').attr('src',developerAvatar)
 
       console.log(developerDescription + developerSkill+ developerTitile+ developerLink + developerAvatar);

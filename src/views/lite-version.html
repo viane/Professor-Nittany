@@ -433,9 +433,15 @@
                   <label class="col-form-label label-name">{{member-name}}</label>
 
                   <label class="col-form-label" for="member-name">Role:</label>
-                  <label class="col-form-label label-title" id="member-title">{{member-title}}</label>
+                  <label class="col-form-label label-title" id="member-title">
+                    <div class="badge-wrapper">
+                      {{member-title}}
+                    </div>
+                  </label>
 
-                  <label class="col-form-label label-description" id="member-description">{{member-description}}</label>
+                  <blockquote>
+                    <label class="col-form-label label-description" id="member-description">{{member-description}}</label>
+                  </blockquote>
 
                   <label class="col-form-label" for="member-name">Skill(s):</label>
                   <label class="col-form-label label-skill" id="member-skill">{{member-skill}}</label>
