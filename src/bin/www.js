@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 require('@risingstack/trace');
+import "babel-polyfill";
 const app = require('../app');
 const debug = require('debug')('rest-server:server');
 const http = require('http');
@@ -46,7 +47,7 @@ server.listen(port, function() {
 });
 server.on('error', onError);
 server.on('listening', onListening);
- 
+
 // /**
 //  * Create HTTPS server.
 //  */ const options = {
