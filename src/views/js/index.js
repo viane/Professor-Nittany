@@ -14,7 +14,8 @@ const pageClass = [
   '.logged-questions',
   '.sample-question-container',
   '.server-status-area',
-  '.contact-container'
+  '.contact-container',
+  '.dev-team-area'
 ];
 const pageTitle = [
   'Chatting with Prof.Nittany',
@@ -22,9 +23,10 @@ const pageTitle = [
   'Unsatisfying Question Console',
   'Suggested Question Areas',
   'Status',
-  'Contact Us'
+  'Contact Us',
+  'Developer Team'
 ];
-const tabClass = ['.btn-sample-question', '.btn-contact', '.low-confidence', '.ai-status-tab'];
+const tabClass = ['.btn-sample-question', '.btn-contact', '.low-confidence', '.ai-status-tab','.team-tab'];
 
 if (!localStorage.hasOwnProperty('iaa-userToken')) {
   localStorage.setItem('iaa-userToken', JSON.stringify("null"));
@@ -240,6 +242,20 @@ $(document).on('click', '.server-status', function(e) {
   } else {
     hideAllPage();
     $('.ai-status-tab').text("Status");
+    showPage('.current-chat-area');
+  }
+  e.preventDefault();
+});
+
+// Developer Team switch btn
+$(document).on('click', '.show-dev-team', function(e) {
+  if ($('.show-dev-team').text().trim() == "Developer Team") {
+    hideAllPage();
+    showDeveloperTeam();
+    $('.show-dev-team').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Chat')
+  } else {
+    hideAllPage();
+    $('.show-dev-team').text("Developer Team");
     showPage('.current-chat-area');
   }
   e.preventDefault();
@@ -833,6 +849,102 @@ function showLowQuestions() {
 
 }
 
+const showDeveloperTeam = ()=>{
+  $('.dev-team-wrapper #hexGrid').empty()
+
+  // load team member
+
+  const assignHandler = ()=>{
+    $('.team-member-container').each((index,el)=>{
+      console.log($(el).attr('data-name'))
+
+    })
+
+    $('#team-member-info-modal').on('show.bs.modal', function (event) {
+      const button = $(event.relatedTarget) // Button that triggered the modal
+      const developerName = button.data('name') // Extract info from data-* attributes
+      const developerDescription = button.data('description')
+      const developerSkill = button.data('skill').split(',').map(skill => {
+        return '<span class="btn btn-primary developer-skill">' + skill + '</span>'
+      })
+      const badgeColors = ["yellow","orange","pink","red","purple","teal","blue","blue-dark","green","green-dark","silver","gold"]
+      const developerTitile = button.data('title').split(',').map(title => {
+        /*
+        <!-- Badge Template -->
+        <div class="badge-wrapper">
+          ...
+          <div class="badge yellow">
+            <div class="circle"> <i class="fa fa-code-fork"></i></div>
+            <div class="ribbon">Title</div>
+          </div>
+          ...
+        </div>
+
+        Colors: [yellow,orange,pink,red,purple,teal,blue,blue-dark,green,green-dark,silver,gold]
+         */
+        const domEle = '<div class="title-badge '+ badgeColors[0] +'"><div class="circle"> <i class="fa fa-code-fork"></i></div><div class="ribbon">'+title+'</div></div>'
+        return domEle
+      })
+      const developerLink = button.data('link')
+      const developerAvatar = button.data('avatar')
+
+      // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+      // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+      var modal = $(this)
+      modal.find('.modal-title').html('<i class="fa fa-terminal" aria-hidden="true"></i> &nbsp;Developer Detail')
+
+      modal.find('.modal-body .label-name').text(capitalizeFirstLetter(developerName))
+      modal.find('.modal-body .label-description').text(developerDescription)
+      modal.find('.modal-body .label-title .badge-wrapper').html(developerTitile)
+      modal.find('.modal-body .label-skill').html(developerSkill)
+      modal.find('.modal-body .label-link').html(`<a target="_blank" href="${developerLink}">${developerLink}</a>`)
+      modal.find('.modal-body .label-avatar').attr('src',developerAvatar)
+
+      console.log(developerDescription + developerSkill+ developerTitile+ developerLink + developerAvatar);
+    })
+  }
+
+  const fetchAndRender = ()=>{
+    // template:
+    // <li class="hex">
+    //   <a class="hexIn" href="#">
+    //                  <img src="https://farm9.staticflickr.com/8461/8048823381_0fbc2d8efb.jpg" alt="" />
+    //                  <h1>{{Name}}</h1>
+    //                  <p>{{titles}}</p>
+    //              </a>
+    // </li>
+    fetch('/status/team-member').then(res => {return res.json()}).then(data=>{
+      data.map((data) => {
+        const titleArray = shuffleArray(data['main-title'])
+        let titleStr = ''
+        if (titleArray.length>3) {
+          for (var i = 0; i < 3; i++) {
+              titleStr += titleArray[i] + "</br>"
+          }
+          titleStr += " ..."
+        }else {
+          titleStr = titleArray.join(',')
+        }
+        const domEle = `
+                          <li class="team-member-container hex" data-avatar="${data.avatar}"  data-name="${data.name}" data-title="${data['main-title']}"  data-description="${data.description}" data-skill="${data.skill}"  data-link="${data.link}" data-toggle="modal"  data-target="#team-member-info-modal" data-whatever="@mdo">
+                            <a class="hexIn" href="#">
+                               <img src="${data.avatar}" alt="user-avatar" />
+                               <h1>${data.name}</h1>
+                               <p>${titleStr}</p>
+                            </a>
+                          </li>
+                        `
+        $('.dev-team-wrapper #hexGrid').append(domEle)
+      })
+
+    assignHandler()
+    showPage('.dev-team-area')
+    })
+  }
+
+  fetchAndRender()
+}
+
 // -------------------------------------- Sign in Stuff ---------------------------------- //
 function login() {
   let email = document.getElementById('inputUserEmail').value;
@@ -1347,6 +1459,26 @@ const capitalizeFirstLetter = (str) => {
   return str.toLowerCase().split(' ').map(function(word) {
     return word[0].toUpperCase() + word.substr(1);
   }).join(' ');
+}
+
+const shuffleArray = (array)=> {
+    let counter = array.length;
+
+    // While there are elements in the array
+    while (counter > 0) {
+        // Pick a random index
+        let index = Math.floor(Math.random() * counter);
+
+        // Decrease counter by 1
+        counter--;
+
+        // And swap the last element with it
+        let temp = array[counter];
+        array[counter] = array[index];
+        array[index] = temp;
+    }
+
+    return array;
 }
 
 function sliceSize(dataNum, dataTotal) {
