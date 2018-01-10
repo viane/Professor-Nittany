@@ -882,7 +882,8 @@ const showDeveloperTeam = ()=>{
 
         Colors: [yellow,orange,pink,red,purple,teal,blue,blue-dark,green,green-dark,silver,gold]
          */
-        const domEle = '<div class="title-badge '+ badgeColors[0] +'"><div class="circle"> <i class="fa fa-code-fork"></i></div><div class="ribbon">'+title+'</div></div>'
+        const randomColorIndex = Math.floor(Math.random() * badgeColors.length)
+        const domEle = '<div class="title-badge '+ badgeColors[randomColorIndex] +'"><div class="circle"> <i class="fa fa-code-fork"></i></div><div class="ribbon">'+title+'</div></div>'
         return domEle
       })
       const developerLink = button.data('link')

@@ -2,8 +2,7 @@ const express = require('express')
 const router = express.Router()
 import Question from '../models/question'
 import Developer from '../models/developer'
-const adminCode = "defaultAdinCode"
-
+const config = require('../config.js');
 
 router.get("/get-status", (req, res) => {
   const trainedQuestionCount = new Promise((resolve, reject) => {
@@ -38,10 +37,10 @@ router.get('/team-member', async (req, res) => {
 })
 
 router.post('/team-member', async (req, res) => {
-  if (req.body.adminCode != adminCode) {
+  if (req.body.adminCode != config['api-auth-code']) {
     return res.status(200).json({status: 'Unauthorized operation'})
   }
-  
+
   const checkRequiredFields = ['name', 'description', 'main-title']
 
   checkRequiredFields.map((field) => {
@@ -71,7 +70,7 @@ router.post('/team-member', async (req, res) => {
 })
 
 router.delete('/team-member', async (req, res) => {
-  if (req.body.adminCode != adminCode) {
+  if (req.body.adminCode != config['api-auth-code']) {
     return res.status(200).json({status: 'Unauthorized operation'})
   }
   try {

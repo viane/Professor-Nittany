@@ -6,6 +6,7 @@ module.exports = {
   },
   secretKey: '...',
   secret: '...',
+  'api-auth-code':'...',
   mongoUrl: '...',
   'facebook': {
     clientID: '...',
