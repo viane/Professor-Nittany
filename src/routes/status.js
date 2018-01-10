@@ -28,8 +28,8 @@ router.get("/get-status", (req, res) => {
 
 router.get('/team-member', async (req, res) => {
   try {
-    const result = await Developer.find({})
-    return res.status(200).json(result : result)
+    const result = await Developer.find({},{ '_id': 0})
+    return res.status(200).json(result)
   } catch (err) {
     console.error(err);
     return res.status(200).json(status : err)

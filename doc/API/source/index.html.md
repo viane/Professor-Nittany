@@ -1,5 +1,5 @@
 ---
-title: IAA API Reference
+title: Professor Nittany API Documentation
 language_tabs:
   - Javascript
 toc_footers:
@@ -10,6 +10,7 @@ includes:
   - users
   - questions
   - profiles
+  - status
   - errors
 search: true
 ---
