@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>IAA API Reference</title>
+    <title>Professor Nittany API Documentation</title>
 
     <style>
       .highlight table td { padding: 5px; }
@@ -302,6 +302,17 @@
               </ul>
           </li>
           <li>
+            <a href="#status" class="toc-h1 toc-link" data-title="Status">Status</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#total-trained-questions" class="toc-h2 toc-link" data-title="Status">Total Trained Questions</a>
+                  </li>
+                  <li>
+                    <a href="#developer-team-information" class="toc-h2 toc-link" data-title="Status">Developer Team Information</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
           </li>
       </div>
@@ -314,7 +325,7 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='introduction'>Introduction</h1>
-<p>Welcome to the IAA API! You can use our API to access IAA API endpoints.</p>
+<p>Welcome to the Professor Nittany API! You can use our API to access PN API endpoints.</p>
 
 <p>We have language bindings in NodeJS! You can view code examples in the dark area to the right.</p>
 <h1 id='uers'>Uers</h1><h2 id='local-signin'>Local SignIn</h2><h3 id='http-request'>HTTP Request</h3>
@@ -2236,6 +2247,312 @@ The API only accept file that has extension of .txt.
 <td>message</td>
 <td>Done updating</td>
 <td>Note</td>
+</tr>
+</tbody></table>
+<h1 id='status'>Status</h1><h2 id='total-trained-questions'>Total Trained Questions</h2><h3 id='http-request'>HTTP Request</h3>
+<p><code>GET /get-status</code></p>
+
+<blockquote>
+<p>To get total trained questions count:</p>
+</blockquote>
+<pre class="highlight javascript tab-javascript"><code>  <span class="nx">fetch</span><span class="p">(</span><span class="s2">"../status/get-status"</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="s1">'get'</span>
+  <span class="p">})</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">json</span><span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// response message will be in json</span>
+  <span class="p">});</span>
+</code></pre><h3 id='the-api-doesn-39-t-require-any-parameter'>The API doesn&#39;t require any parameter</h3>
+<p></br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br></p>
+<h3 id='example-response-of-successful-response'>Example response of successful response:</h3><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"good"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"trainedQuestionCount"</span><span class="p">:</span><span class="w"> </span><span class="mi">352</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<table><thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td>Show login status</td>
+</tr>
+<tr>
+<td>trainedQuestionCount</td>
+<td>How many questions were trained in the system</td>
+</tr>
+</tbody></table>
+<h2 id='developer-team-information'>Developer Team Information</h2><h3 id='http-request-2'>HTTP Request</h3>
+<p><code>GET /team-member</code></p>
+
+<p></br></p>
+
+<blockquote>
+<p>To get list of developer information:</p>
+</blockquote>
+<pre class="highlight javascript tab-javascript"><code>  <span class="nx">fetch</span><span class="p">(</span><span class="s2">"../status/team-member"</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="s1">'get'</span>
+  <span class="p">})</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">json</span><span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// response message will be in json</span>
+  <span class="p">});</span>
+</code></pre><h3 id='the-api-doesn-39-t-require-any-parameter-2'>The API doesn&#39;t require any parameter</h3>
+<p></br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br></p>
+<h3 id='example-response-of-successful-response-2'>Example response of successful response:</h3><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"link"</span><span class="p">:</span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"description"</span><span class="p">:</span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"avatar"</span><span class="p">:</span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"__v"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"main-title"</span><span class="p">:[</span><span class="s2">"..."</span><span class="p">,</span><span class="s2">"..."</span><span class="p">,</span><span class="err">...</span><span class="p">],</span><span class="w">
+    </span><span class="s2">"skill"</span><span class="p">:[</span><span class="s2">"..."</span><span class="p">,</span><span class="s2">"..."</span><span class="p">,</span><span class="err">...</span><span class="p">]</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="err">...</span><span class="p">},</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+<table><thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>name</td>
+<td>Developer&#39;s name</td>
+</tr>
+<tr>
+<td>avatar</td>
+<td>Developer&#39;s avatar</td>
+</tr>
+<tr>
+<td>description</td>
+<td>Short description text about the developer</td>
+</tr>
+<tr>
+<td>main-title</td>
+<td>Array of roles and team titles of this developer</td>
+</tr>
+<tr>
+<td>link</td>
+<td>Preferred public link of the developer</td>
+</tr>
+<tr>
+<td>skill</td>
+<td>Array of skills that the developer used during development</td>
+</tr>
+</tbody></table>
+<h3 id='http-request-3'>HTTP Request</h3>
+<p><code>POST /team-member</code></p>
+
+<blockquote>
+<p>To post developer information to the server:</p>
+</blockquote>
+<pre class="highlight javascript tab-javascript"><code>
+
+  <span class="nx">fetch</span><span class="p">(</span><span class="s2">"../status/team-member"</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="s1">'post'</span><span class="p">,</span>
+    <span class="na">body</span><span class="p">:{</span>
+            <span class="s2">"name"</span><span class="p">:</span><span class="s2">"..."</span><span class="p">,</span>
+            <span class="s2">"skill"</span><span class="p">:[</span><span class="s2">"..."</span><span class="p">,</span> <span class="s2">"..."</span><span class="p">,</span> <span class="s2">"..."</span><span class="p">,</span> <span class="s2">"..."</span><span class="p">,</span>
+            <span class="s2">"Babel"</span><span class="p">,</span><span class="s2">"..."</span><span class="p">,</span><span class="s2">"..."</span><span class="p">,</span><span class="s2">"..."</span><span class="p">,</span><span class="s2">"..."</span><span class="p">],</span>
+            <span class="s2">"description"</span><span class="p">:</span><span class="s2">"..."</span><span class="p">,</span>
+            <span class="s2">"link"</span><span class="p">:</span><span class="s2">"..."</span><span class="p">,</span>
+            <span class="s2">"avatar"</span><span class="p">:</span><span class="s2">"..."</span><span class="p">,</span>
+            <span class="s2">"main-title"</span><span class="p">:[</span><span class="s2">"..."</span><span class="p">,</span><span class="s2">"..."</span><span class="p">,</span><span class="s2">"..."</span><span class="p">,</span><span class="s2">"..."</span><span class="p">,</span><span class="s2">"..."</span><span class="p">,</span><span class="s2">"..."</span><span class="p">,</span><span class="s2">"..."</span><span class="p">],</span>
+            <span class="s2">"adminCode"</span><span class="p">:</span><span class="s2">"..."</span>
+          <span class="p">}</span>
+  <span class="p">})</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">json</span><span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// response message will be in json</span>
+  <span class="p">});</span>
+
+
+
+</code></pre><h3 id='the-api-requires-1-parameter'>The API requires 1 parameter</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>body</td>
+<td>A json object string of developer&#39;s information</td>
+</tr>
+</tbody></table>
+
+<table><thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>name</td>
+<td>Developer&#39;s name</td>
+</tr>
+<tr>
+<td>avatar</td>
+<td>Developer&#39;s avatar</td>
+</tr>
+<tr>
+<td>description</td>
+<td>Short description text about the developer</td>
+</tr>
+<tr>
+<td>main-title</td>
+<td>Array of roles and team titles of this developer</td>
+</tr>
+<tr>
+<td>link</td>
+<td>Preferred public link of the developer</td>
+</tr>
+<tr>
+<td>skill</td>
+<td>Array of skills that the developer used during development</td>
+</tr>
+<tr>
+<td>adminCode</td>
+<td>Operation token for posting and deleting on server</td>
+</tr>
+</tbody></table>
+<h3 id='example-response-of-successful-response-3'>Example response of successful response:</h3>
+<blockquote>
+<p>Updated new developer record:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"link"</span><span class="p">:</span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"description"</span><span class="p">:</span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"avatar"</span><span class="p">:</span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"__v"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"main-title"</span><span class="p">:[</span><span class="s2">"..."</span><span class="p">,</span><span class="s2">"..."</span><span class="p">,</span><span class="err">...</span><span class="p">],</span><span class="w">
+    </span><span class="s2">"skill"</span><span class="p">:[</span><span class="s2">"..."</span><span class="p">,</span><span class="s2">"..."</span><span class="p">,</span><span class="err">...</span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+<table><thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>name</td>
+<td>Developer&#39;s name</td>
+</tr>
+<tr>
+<td>avatar</td>
+<td>Developer&#39;s avatar</td>
+</tr>
+<tr>
+<td>description</td>
+<td>Short description text about the developer</td>
+</tr>
+<tr>
+<td>main-title</td>
+<td>Array of roles and team titles of this developer</td>
+</tr>
+<tr>
+<td>link</td>
+<td>Preferred public link of the developer</td>
+</tr>
+<tr>
+<td>skill</td>
+<td>Array of skills that the developer used during development</td>
+</tr>
+</tbody></table>
+
+<p></br>
+</br>
+</br>
+</br></p>
+<h3 id='http-request-4'>HTTP Request</h3>
+<p><code>DELETE /team-member</code></p>
+
+<blockquote>
+<p>To post developer information to the server:</p>
+</blockquote>
+<pre class="highlight javascript tab-javascript"><code>  <span class="nx">fetch</span><span class="p">(</span><span class="s2">"../status/team-member"</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="s1">'delete'</span><span class="p">,</span>
+    <span class="na">body</span><span class="p">:{</span>
+          <span class="s2">"name"</span><span class="p">:</span><span class="s2">"..."</span><span class="p">,</span>
+          <span class="s2">"adminCode"</span><span class="p">:</span><span class="s2">"..."</span>
+          <span class="p">}</span>
+  <span class="p">})</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">json</span><span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// response message will be in json</span>
+  <span class="p">});</span>
+</code></pre><h3 id='the-api-requires-1-parameter-2'>The API requires 1 parameter</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>body</td>
+<td>A json object string of developer&#39;s information</td>
+</tr>
+</tbody></table>
+
+<table><thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>name</td>
+<td>Developer&#39;s name</td>
+</tr>
+<tr>
+<td>adminCode</td>
+<td>Operation token for posting and deleting on server</td>
+</tr>
+</tbody></table>
+
+<p></br></p>
+<h3 id='example-response-of-successful-response-4'>Example response of successful response:</h3>
+<blockquote>
+<p>Updated new developer record:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Successfully delete record"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<p></br></p>
+
+<table><thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td>Operation result</td>
 </tr>
 </tbody></table>
 <h1 id='errors'>Errors</h1>
