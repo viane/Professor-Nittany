@@ -6,6 +6,7 @@ module.exports = {
   },
   'secretKey': '12345-67890-09876-54321',
   'secret': '94838472',
+  'api-auth-code':'defaultAdinCode',
   'mongoUrl': 'mongodb://Pb7TdS:qyW3g8LLAqaCELzB@ds033056.mlab.com:33056/intelligent_academic_planner',
   'facebook': {
     clientID: '1099198873493707',
