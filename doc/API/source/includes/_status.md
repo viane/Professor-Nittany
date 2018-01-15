@@ -115,7 +115,6 @@ skill | Array of skills that the developer used during development
     body:{
           	"name":"...",
           	"skill":["...", "...", "...", "...",
-            "Babel","...","...","...","..."],
           	"description":"...",
           	"link":"...",
           	"avatar":"...",
