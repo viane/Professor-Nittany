@@ -1,4 +1,4 @@
-# Uers
+# Users
 
 ## Local SignIn
 
@@ -612,4 +612,3 @@ token       | Access token
 ## Sign Out
 
 To sign out a user, simply discard the token on client side since server will not store any token.
-
