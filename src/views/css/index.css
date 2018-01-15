@@ -1683,6 +1683,11 @@ main {
   transform: skewY(-30deg) rotate(60deg);
 }
 
+.label-avatar{
+  max-width: 400px;
+  max-height: 400px;
+}
+
 /*** HEX CONTENT **********************************************************************/
 
 .hex img {

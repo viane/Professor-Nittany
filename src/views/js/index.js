@@ -777,7 +777,7 @@ const showAIStatus = () => {
     setTimeout(function() {
       removeLoadAnimationOn('.current-chat')
     }, 1000);
-    console.log(json);
+    //console.log(json);
     $('.total-trained-question-count').text(json.trainedQuestionCount)
     showPage('.server-status-area');
   })
@@ -856,7 +856,7 @@ const showDeveloperTeam = ()=>{
 
   const assignHandler = ()=>{
     $('.team-member-container').each((index,el)=>{
-      console.log($(el).attr('data-name'))
+      //console.log($(el).attr('data-name'))
 
     })
 
@@ -901,7 +901,7 @@ const showDeveloperTeam = ()=>{
       modal.find('.modal-body .label-link').html(`<a target="_blank" href="${developerLink}">${developerLink}</a>`)
       modal.find('.modal-body .label-avatar').attr('src',developerAvatar)
 
-      console.log(developerDescription + developerSkill+ developerTitile+ developerLink + developerAvatar);
+      //console.log(developerDescription + developerSkill+ developerTitile+ developerLink + developerAvatar);
     })
   }
 
@@ -927,10 +927,10 @@ const showDeveloperTeam = ()=>{
           titleStr = titleArray.join(',')
         }
         const domEle = `
-                          <li class="team-member-container hex" data-avatar="${data.avatar}"  data-name="${data.name}" data-title="${data['main-title']}"  data-description="${data.description}" data-skill="${data.skill}"  data-link="${data.link}" data-toggle="modal"  data-target="#team-member-info-modal" data-whatever="@mdo">
+                          <li class="team-member-container hex" data-avatar="${data.avatar}"  data-name="${data.name}" data-title="${data['main-title']}"  data-description="${data.description}" data-skill="${data.skill}"  data-link="${data.link}" data-toggle="modal"  data-target="#team-member-info-modal">
                             <a class="hexIn" href="#">
                                <img src="${data.avatar}" alt="user-avatar" />
-                               <h1>${data.name}</h1>
+                               <h1>${capitalizeFirstLetter(data.name)}</h1>
                                <p>${titleStr}</p>
                             </a>
                           </li>
@@ -1359,7 +1359,7 @@ const initContactPage = () => {
         clickToHide: true,
         autoHide: true
       })
-      console.log(res);
+      //console.log(res);
       $('.tbl-contact-ticket').append('<tr><td>' + res.ticket._id + '</td><td>' + res.ticket.status + '</td><td>' + moment(res.ticket.createdAt).format("dddd, h:mm a") + '</td><td>' + res.ticket.title + '<br>' + res.ticket.comment + '</td></tr>')
       $('.btn-contact-discard').click()
     }).catch(err => {
