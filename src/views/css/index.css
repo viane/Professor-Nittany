@@ -1928,6 +1928,8 @@ main {
   font-weight:normal;
   font-size: 1.5em;
   padding: 0 0 0 10px;
+  overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .label-name, .label-title, .label-skill, .label-link,.label-description{
